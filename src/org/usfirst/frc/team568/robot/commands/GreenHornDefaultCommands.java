@@ -2,7 +2,6 @@ package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.subsystems.*;
 import org.usfirst.frc.team568.robot.ControllerButtons;
-import org.usfirst.frc.team568.robot.GreenHorn;
 import org.usfirst.frc.team568.robot.RobotMap;
 
 
