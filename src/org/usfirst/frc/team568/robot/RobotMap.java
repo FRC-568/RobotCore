@@ -24,13 +24,13 @@ public class RobotMap {
 	public static final int leftBackMotor = 4;
 	public static final int rightFrontMotor = 5;
 	public static final int rightBackMotor = 6;
+	public static final int lowZoneMotor = 7;
 
 	public static final int joy1Pos = 0;
 	public static final int joy2Pos = 1;
 
 	public static final int aimerUp = 0;
 	public static final int aimerDown = 1;
-	public static final int lowZone = 2;
 
 	// public static final int rightMidMotor = 5;
 	// public static final int leftMidMotor = 2;

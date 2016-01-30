@@ -21,7 +21,7 @@ public class GreenHorn extends Subsystem {
 		leftMotor = new Talon(RobotMap.leftShooterMotor);
 		leftMotor.setInverted(true);
 		rightMotor = new Talon(RobotMap.rightShooterMotor);
-		lowGoal = new Talon(RobotMap.lowZone);
+		lowGoal = new Talon(RobotMap.lowZoneMotor);
 		aimerUp = new Solenoid(RobotMap.aimerUp);
 		aimerDown = new Solenoid(RobotMap.aimerDown);
 		nudger = new Servo(RobotMap.nudge);
