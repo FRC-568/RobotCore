@@ -1,12 +1,14 @@
 
 package org.usfirst.frc.team568.robot;
+ 
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.usfirst.frc.team568.robot.commands.ExampleCommand;
-import org.usfirst.frc.team568.robot.subsystems.ExampleSubsystem;
+import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -19,8 +21,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 
-	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
+	public static final ArcadeDrive arcadeDrive = new ArcadeDrive();
 	public static OI oi;
+	
 
     Command autonomousCommand;
     SendableChooser chooser;
@@ -82,6 +85,7 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
+        
     }
 
     public void teleopInit() {
@@ -97,6 +101,7 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+        arcadeDrive.manualDrive();
     }
     
     /**
