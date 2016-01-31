@@ -16,8 +16,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class GreenHorn extends Subsystem {
 	public final Robot robot;
-	SpeedController leftMotor;
-	SpeedController rightMotor;
+	SpeedController shooterMotor;
 	SpeedController lowGoal;
 	Solenoid aimerUp;
 	Solenoid aimerDown;
@@ -25,9 +24,7 @@ public class GreenHorn extends Subsystem {
 
 	public GreenHorn() {
 		this.robot = Robot.getInstance();
-		leftMotor = new Talon(RobotMap.leftShooterMotor);
-		leftMotor.setInverted(true);
-		rightMotor = new Talon(RobotMap.rightShooterMotor);
+		shooterMotor = new Talon(RobotMap.rightShooterMotor);
 		lowGoal = new Talon(RobotMap.lowZoneMotor);
 		aimerUp = new Solenoid(RobotMap.aimerUp);
 		aimerDown = new Solenoid(RobotMap.aimerDown);
@@ -55,8 +52,7 @@ public class GreenHorn extends Subsystem {
 	}
 
 	public void setSpeed(double speed) {
-		leftMotor.set(speed);
-		rightMotor.set(speed);
+		shooterMotor.set(speed);
 	}
 
 	public void goToPositionShootHigh() {
