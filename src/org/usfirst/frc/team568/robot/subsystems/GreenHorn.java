@@ -1,15 +1,17 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
+import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
 import org.usfirst.frc.team568.robot.commands.GreenHornDefaultCommands;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.SpeedController;
 
 public class GreenHorn extends Subsystem {
+	public final Robot robot;
 	SpeedController leftMotor;
 	SpeedController rightMotor;
 	SpeedController lowGoal;
@@ -18,6 +20,7 @@ public class GreenHorn extends Subsystem {
 	Servo nudger;
 
 	public GreenHorn() {
+		this.robot = Robot.getInstance();
 		leftMotor = new Talon(RobotMap.leftShooterMotor);
 		leftMotor.setInverted(true);
 		rightMotor = new Talon(RobotMap.rightShooterMotor);
@@ -81,7 +84,6 @@ public class GreenHorn extends Subsystem {
 	@Override
 	protected void initDefaultCommand() {
 		setDefaultCommand(new GreenHornDefaultCommands());
-		// TODO Auto-generated method stub
-
 	}
+
 }

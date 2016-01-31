@@ -1,4 +1,3 @@
-
 package org.usfirst.frc.team568.robot;
 
 import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
@@ -19,13 +18,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
+	protected static Robot instance;
 
-	public static final ArcadeDrive arcadeDrive = new ArcadeDrive();
-	public static OI oi;
+	public OI oi;
+	public ArcadeDrive drive;
+	public GreenHorn shooter;
 
 	Command autonomousCommand;
 	SendableChooser chooser;
-	GreenHorn shooter;
+
+	public Robot() {
+		instance = this;
+		oi = new OI();
+		drive = new ArcadeDrive();
+		shooter = new GreenHorn();
+	}
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -33,12 +40,10 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		oi = new OI();
 		chooser = new SendableChooser();
 		// chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
-		shooter = new GreenHorn();
 	}
 
 	/**
@@ -108,7 +113,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		arcadeDrive.manualDrive();
+		drive.manualDrive();
 	}
 
 	/**
@@ -117,5 +122,9 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 		LiveWindow.run();
+	}
+
+	public static Robot getInstance() {
+		return instance;
 	}
 }
