@@ -2,7 +2,11 @@ package org.usfirst.frc.team568.robot.subsystems;
 
 import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
-import org.usfirst.frc.team568.robot.commands.GreenHornDefaultCommands;
+import org.usfirst.frc.team568.robot.commands.GreenHornPositionHighZone;
+import org.usfirst.frc.team568.robot.commands.GreenHornPositionLowZone;
+import org.usfirst.frc.team568.robot.commands.GreenHornPositionPickUpBall;
+import org.usfirst.frc.team568.robot.commands.GreenHornShootBall;
+import org.usfirst.frc.team568.robot.commands.GreenhornObtainBall;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -28,6 +32,12 @@ public class GreenHorn extends Subsystem {
 		aimerUp = new Solenoid(RobotMap.aimerUp);
 		aimerDown = new Solenoid(RobotMap.aimerDown);
 		nudger = new Servo(RobotMap.nudge);
+
+		robot.oi.one.whenPressed(new GreenHornShootBall());
+		robot.oi.two.whenPressed(new GreenhornObtainBall());
+		robot.oi.three.whenPressed(new GreenHornPositionPickUpBall());
+		robot.oi.four.whenPressed(new GreenHornPositionLowZone());
+		robot.oi.five.whenPressed(new GreenHornPositionHighZone());
 	}
 
 	public void nudgerNeutral() {
@@ -83,7 +93,7 @@ public class GreenHorn extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new GreenHornDefaultCommands());
+
 	}
 
 }
