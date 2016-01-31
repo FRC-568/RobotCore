@@ -3,6 +3,8 @@ package org.usfirst.frc.team568.robot;
 import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 import org.usfirst.frc.team568.robot.subsystems.GreenHorn;
 
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -26,12 +28,18 @@ public class Robot extends IterativeRobot {
 
 	Command autonomousCommand;
 	SendableChooser chooser;
+	CameraServer cam;
+	Compressor comp;
 
 	public Robot() {
 		instance = this;
 		oi = new OI();
 		drive = new ArcadeDrive();
 		shooter = new GreenHorn();
+		cam = CameraServer.getInstance();
+		cam.startAutomaticCapture("cam0");
+		comp = new Compressor();
+
 	}
 
 	/**
@@ -44,6 +52,8 @@ public class Robot extends IterativeRobot {
 		// chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
+		comp.start();
+
 	}
 
 	/**
