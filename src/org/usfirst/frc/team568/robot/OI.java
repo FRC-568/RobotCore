@@ -9,13 +9,9 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-	public Joystick leftStick;
-	public Joystick rightStick;
 
-	public OI() {
-		leftStick = new Joystick(RobotMap.joy1Pos);
-		rightStick = new Joystick(RobotMap.joy2Pos);
-	}
+	public Joystick leftStick = new Joystick(RobotMap.joy1Pos);
+	public Joystick rightStick = new Joystick(RobotMap.joy2Pos);
 
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
@@ -29,6 +25,15 @@ public class OI {
 	public Button three = new JoystickButton(rightStick, ControllerButtons.aimPickUpBallButton);
 	public Button four = new JoystickButton(rightStick, ControllerButtons.aimShootLowGoalButton);
 	public Button five = new JoystickButton(rightStick, ControllerButtons.aimShootHighGoalButton);
+
+	public Button liftFlipper = new JoystickButton(leftStick, ControllerButtons.liftFlipper);
+	public Button lowerFlipper = new JoystickButton(leftStick, ControllerButtons.lowerFlipper);
+
+	public Button crateOut = new JoystickButton(leftStick, ControllerButtons.crateOut);
+	public Button crateIn = new JoystickButton(leftStick, ControllerButtons.crateIn);
+	public Button liftGo = new JoystickButton(leftStick, ControllerButtons.lifterGo);
+	public Button liftStop = new JoystickButton(leftStick, ControllerButtons.lifterStop);
+	public Button lifterReverse = new JoystickButton(leftStick, ControllerButtons.lifterReverse);
 
 	// There are a few additional built in buttons you can use. Additionally,
 	// by subclassing Button you can create custom triggers and bind those to
