@@ -2,6 +2,7 @@ package org.usfirst.frc.team568.robot;
 
 import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 import org.usfirst.frc.team568.robot.subsystems.GreenHorn;
+import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -23,6 +24,7 @@ public class Robot extends IterativeRobot {
 	public OI oi;
 	public ArcadeDrive drive;
 	public GreenHorn shooter;
+	public ReferenceFrame referenceframe;
 
 	Command autonomousCommand;
 	SendableChooser chooser;
@@ -32,6 +34,7 @@ public class Robot extends IterativeRobot {
 		oi = new OI();
 		drive = new ArcadeDrive();
 		shooter = new GreenHorn();
+		referenceframe = new ReferenceFrame();
 	}
 
 	/**
