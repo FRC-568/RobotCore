@@ -1,6 +1,8 @@
 package org.usfirst.frc.team568.robot;
 
 import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
+import org.usfirst.frc.team568.robot.subsystems.CrateLifter;
+import org.usfirst.frc.team568.robot.subsystems.Flipper;
 import org.usfirst.frc.team568.robot.subsystems.GreenHorn;
 
 import edu.wpi.first.wpilibj.CameraServer;
@@ -25,19 +27,25 @@ public class Robot extends IterativeRobot {
 	public OI oi;
 	public ArcadeDrive drive;
 	public GreenHorn shooter;
+	public Flipper flipper;
+	public CrateLifter crateLifter;
 
 	Command autonomousCommand;
 	SendableChooser chooser;
 	CameraServer cam;
+	// CameraServer cam2;
 	Compressor comp;
 
 	public Robot() {
 		instance = this;
 		oi = new OI();
 		drive = new ArcadeDrive();
-		shooter = new GreenHorn();
+		// shooter = new GreenHorn();
+		flipper = new Flipper();
+		crateLifter = new CrateLifter();
 		cam = CameraServer.getInstance();
 		cam.startAutomaticCapture("cam0");
+		// cam2.startAutomaticCapture("cam1");
 		comp = new Compressor();
 
 	}
@@ -48,6 +56,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+
 		chooser = new SendableChooser();
 		// chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());

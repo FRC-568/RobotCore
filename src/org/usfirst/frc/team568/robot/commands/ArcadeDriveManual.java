@@ -7,10 +7,12 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class ArcadeDriveManual extends Command {
 	public final ArcadeDrive drive;
+	// CrateLifter lifter = Robot.getInstance().crateLifter;
 
 	public ArcadeDriveManual() {
 		drive = Robot.getInstance().drive;
 		requires(drive);
+
 	}
 
 	@Override
@@ -21,6 +23,7 @@ public class ArcadeDriveManual extends Command {
 	@Override
 	protected void execute() {
 		drive.manualDrive();
+		// lifter.lift();
 	}
 
 	@Override
