@@ -1,40 +1,35 @@
 package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.Robot;
-import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class DriveForwardInInches extends Command {
+public class TurnToHeading extends Command {
 	double speed;
-	double inches;
-	ReferenceFrame referenceframe;
+	double position;
 
-	public DriveForwardInInches(double speed, double inches) {
+	TurnToHeading(double speed, double position) {
+		this.position = position;
 		this.speed = speed;
-		this.inches = inches;
 	}
 
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
-		// referenceframe.calabrateimu();
-		// referenceframe.resetData();
+
 	}
 
 	@Override
 	protected void execute() {
 		// TODO Auto-generated method stub
-		Robot.getInstance().referenceframe.stayTrueToHeading();
-		Robot.getInstance().referenceframe.travelForwardToDistance(inches, speed);
+		Robot.getInstance().referenceframe.TurnToHeading(speed, position);
 	}
 
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		if (Robot.getInstance().referenceframe.getDistanceNeededToTravel(inches) < 0) {
+		if (Robot.getInstance().referenceframe.TurnToHeading(speed, position) == true) {
 			return true;
-			// return false;
 		}
 		return false;
 	}
@@ -43,14 +38,12 @@ public class DriveForwardInInches extends Command {
 	protected void end() {
 		// TODO Auto-generated method stub
 		Robot.getInstance().drive.halt();
-
 	}
 
 	@Override
 	protected void interrupted() {
-		end();
 		// TODO Auto-generated method stub
+		end();
 
 	}
-
 }
