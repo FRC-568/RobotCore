@@ -31,10 +31,17 @@ public class ReferenceFrame extends Subsystem {
 		imu.reset();
 	}
 
-	public double calculateDistanceLeft(double distanceWantedToTravel) {
-		double distanceLeft = imu.getDisX() - distanceWantedToTravel;
-		return distanceLeft;
+	public void getCurrentPosition() {
+		imu.getDisX();
 	}
+
+	public void getDistanceNeededToTravel(double inches) {
+
+	}
+
+	// public void calculateDistanceLeftToGo(){
+	// double distanceLeft = getCurrentPosition
+	// }
 
 	public double calculateHeading() {
 		return imu.getAngleZ();
