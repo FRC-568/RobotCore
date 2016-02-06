@@ -70,7 +70,6 @@ public class ReferenceFrame extends Subsystem {
 		} else {
 			return true;
 		}
-
 	}
 
 	public boolean TurnToHeading(double speed, double position) {
