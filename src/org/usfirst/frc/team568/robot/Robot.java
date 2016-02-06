@@ -1,5 +1,6 @@
 package org.usfirst.frc.team568.robot;
 
+import org.usfirst.frc.team568.robot.commands.AutonomousTest;
 import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 import org.usfirst.frc.team568.robot.subsystems.CrateLifter;
 import org.usfirst.frc.team568.robot.subsystems.Flipper;
@@ -28,6 +29,9 @@ public class Robot extends IterativeRobot {
 	SendableChooser chooser;
 	CameraServer cam0;
 	Compressor comp;
+	double speed = 0;
+	double inches = 0;
+	double timeout = 0;
 
 	public Robot() {
 		instance = this;
@@ -40,6 +44,9 @@ public class Robot extends IterativeRobot {
 		cam0 = CameraServer.getInstance();
 		cam0.startAutomaticCapture("cam0");
 		comp = new Compressor();
+		SmartDashboard.putNumber("speed", .5);
+		SmartDashboard.putNumber("inches", 70);
+		SmartDashboard.putNumber("timeOut", 5);
 	}
 
 	@Override
@@ -62,8 +69,10 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		autonomousCommand = (Command) chooser.getSelected();
-		SmartDashboard.putNumber("Motor speed", 0.5);
-		SmartDashboard.putNumber("inches", 70);
+		double speed = SmartDashboard.getNumber("speed");
+		double inches = SmartDashboard.getNumber("inches");
+		double timeout = SmartDashboard.getNumber("Timeout");
+
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -72,15 +81,19 @@ public class Robot extends IterativeRobot {
 		 */
 
 		// schedule the autonomous command (example)
-		this.autonomousCommand = ((Command) this.chooser.getSelected());
-		if (this.autonomousCommand != null) {
-			this.autonomousCommand.start();
-		}
+		/*
+		 * this.autonomousCommand = ((Command) this.chooser.getSelected()); if
+		 * (this.autonomousCommand != null) { this.autonomousCommand.start();
+		 * 
+		 * }
+		 */
+		new AutonomousTest(speed, inches, timeout);
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+
 	}
 
 	@Override

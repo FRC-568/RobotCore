@@ -13,6 +13,7 @@ public class DriveForwardInInches extends Command {
 	public DriveForwardInInches(double speed, double inches) {
 		this.speed = speed;
 		this.inches = inches;
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
