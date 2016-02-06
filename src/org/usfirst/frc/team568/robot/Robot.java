@@ -88,7 +88,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		autonomousCommand = (Command) chooser.getSelected();
-
+		SmartDashboard.putNumber("Motor speed", 0.5);
+		SmartDashboard.putNumber("inches", 70);
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
