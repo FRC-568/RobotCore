@@ -5,12 +5,12 @@ import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class DriveForwardInInches extends Command {
+public class DriveBackwardsInInches extends Command {
 	double speed;
 	double inches;
 	ReferenceFrame referenceframe;
 
-	public DriveForwardInInches(double speed, double inches) {
+	public DriveBackwardsInInches(double speed, double inches) {
 		this.speed = speed;
 		this.inches = inches;
 	}
@@ -26,7 +26,7 @@ public class DriveForwardInInches extends Command {
 	protected void execute() {
 		// TODO Auto-generated method stub
 		Robot.getInstance().referenceframe.stayTrueToHeading();
-		Robot.getInstance().referenceframe.travelForwardToDistance(inches, speed);
+		Robot.getInstance().referenceframe.travelBackwardsToDistance(inches, speed);
 	}
 
 	@Override

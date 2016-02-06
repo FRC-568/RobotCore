@@ -45,6 +45,16 @@ public class ArcadeDrive extends Subsystem {
 		Timer.delay(0.01);
 	}
 
+	public void applyPowerToLeftMotors(double speed) {
+		leftFront.set(speed);
+		leftBack.set(speed);
+	}
+
+	public void applyPowerToRightMotors(double speed) {
+		rightBack.set(speed);
+		rightFront.set(speed);
+	}
+
 	public void goForwards(double speed) {
 		leftFront.set(speed);
 		leftBack.set(speed);
