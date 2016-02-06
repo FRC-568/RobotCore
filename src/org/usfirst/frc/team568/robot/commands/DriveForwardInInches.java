@@ -48,6 +48,7 @@ public class DriveForwardInInches extends Command {
 
 	@Override
 	protected void interrupted() {
+		end();
 		// TODO Auto-generated method stub
 
 	}

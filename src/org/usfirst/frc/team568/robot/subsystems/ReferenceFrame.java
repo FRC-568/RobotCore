@@ -70,7 +70,21 @@ public class ReferenceFrame extends Subsystem {
 		} else {
 			return true;
 		}
+	}
 
+	public boolean TurnToHeading(double speed, double position) {
+		if (Math.abs(currentHeading - position) > tolerance) {
+			Robot.getInstance().drive.applyPowerToLeftMotors(speed * -1);
+			Robot.getInstance().drive.applyPowerToRightMotors(speed);
+			return false;
+		} else if (Math.abs(currentHeading) - position < tolerance) {
+			Robot.getInstance().drive.applyPowerToLeftMotors(speed);
+			Robot.getInstance().drive.applyPowerToRightMotors(-1 * speed);
+			return false;
+		} else {
+			Robot.getInstance().drive.halt();
+			return true;
+		}
 	}
 
 	public double calculateTimeLeft() {
