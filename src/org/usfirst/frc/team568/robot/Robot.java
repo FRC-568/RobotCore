@@ -32,9 +32,9 @@ public class Robot extends IterativeRobot {
 	public Robot() {
 		instance = this;
 		oi = new OI();
-		drive = new ArcadeDrive();
+		// drive = new ArcadeDrive();
 		meccanumDrive = new MeccanumDrive();
-		referenceframe = new ReferenceFrame();
+		// referenceframe = new ReferenceFrame();
 		flipper = new Flipper();
 		crateLifter = new CrateLifter();
 		cam0 = CameraServer.getInstance();
@@ -44,10 +44,10 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void robotInit() {
-		this.chooser = new SendableChooser();
+		chooser = new SendableChooser();
 
-		SmartDashboard.putData("Auto mode", this.chooser);
-		this.comp.start();
+		SmartDashboard.putData("Auto mode", chooser);
+		comp.start();
 	}
 
 	@Override
@@ -62,8 +62,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		this.autonomousCommand = ((Command) this.chooser.getSelected());
-		if (this.autonomousCommand != null) {
-			this.autonomousCommand.start();
+		if (autonomousCommand != null) {
+			autonomousCommand.start();
 		}
 	}
 
@@ -74,15 +74,15 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		if (this.autonomousCommand != null) {
-			this.autonomousCommand.cancel();
+		if (autonomousCommand != null) {
+			autonomousCommand.cancel();
 		}
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		this.drive.manualDrive();
+		meccanumDrive.manualDrive();
 	}
 
 	@Override
