@@ -14,8 +14,9 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class ArcadeDrive extends Subsystem {
 	public final Robot robot;
 	protected SpeedController leftFront, leftBack, rightFront, rightBack;
-	protected Joystick driveStick;
-	// protected Joystick driveRight;
+	protected Joystick driveStickL;
+	protected Joystick driveStickR;
+
 	RobotDrive myDrive;
 
 	public ArcadeDrive() {
@@ -37,11 +38,12 @@ public class ArcadeDrive extends Subsystem {
 		rightBack.setInverted(true);
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
-		driveStick = robot.oi.leftStick;
+		driveStickL = robot.oi.leftStick;
+		driveStickR = robot.oi.rightStick;
 	}
 
 	public void manualDrive() {
-		myDrive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), driveStick.getRawAxis(3), 0);
+		myDrive.tankDrive(driveStickL, driveStickR);
 		Timer.delay(0.01);
 	}
 

@@ -39,8 +39,10 @@ public class Robot extends IterativeRobot {
 		instance = this;
 		oi = new OI();
 		// arcadeDrive = new ArcadeDrive();
+
 		referenceframe = new ReferenceFrame();
 		drive = new MeccanumDrive();
+		referenceframe = new ReferenceFrame();
 		flipper = new Flipper();
 		crateLifter = new CrateLifter();
 		cam0 = CameraServer.getInstance();
@@ -73,7 +75,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 
-		// comp.start();
+		comp.start();
 		// autonomousCommand = (Command) chooser.getSelected();
 		double speed = SmartDashboard.getNumber("speed");
 		double inches = SmartDashboard.getNumber("inches");
