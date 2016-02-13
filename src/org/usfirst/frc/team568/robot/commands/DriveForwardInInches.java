@@ -13,6 +13,7 @@ public class DriveForwardInInches extends Command {
 	public DriveForwardInInches(double speed, double inches) {
 		this.speed = speed;
 		this.inches = inches;
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -20,19 +21,20 @@ public class DriveForwardInInches extends Command {
 		// TODO Auto-generated method stub
 		// referenceframe.calabrateimu();
 		// referenceframe.resetData();
+
 	}
 
 	@Override
 	protected void execute() {
 		// TODO Auto-generated method stub
-		Robot.getInstance().referenceframe.stayTrueToHeading();
-		Robot.getInstance().referenceframe.travelForwardToDistance(inches, speed);
+		// Robot.getInstance().referenceframe.stayTrueToHeading(0);
+		Robot.getInstance().referenceframe.travelForwardToDistance(speed);
 	}
 
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		if (Robot.getInstance().referenceframe.getDistanceNeededToTravel(inches) < 0) {
+		if (Robot.getInstance().referenceframe.imu.getDisX() > inches) {
 			return true;
 			// return false;
 		}

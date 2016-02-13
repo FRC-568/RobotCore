@@ -18,21 +18,19 @@ public class DriveBackwardsInInches extends Command {
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
-		// referenceframe.calabrateimu();
-		// referenceframe.resetData();
 	}
 
 	@Override
 	protected void execute() {
 		// TODO Auto-generated method stub
-		Robot.getInstance().referenceframe.stayTrueToHeading();
+		Robot.getInstance().referenceframe.stayTrueToHeading(0);
 		Robot.getInstance().referenceframe.travelBackwardsToDistance(inches, speed);
 	}
 
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		if (Robot.getInstance().referenceframe.getDistanceNeededToTravel(inches) < 0) {
+		if (Robot.getInstance().referenceframe.imu.getDisX() < 0) {
 			return true;
 			// return false;
 		}

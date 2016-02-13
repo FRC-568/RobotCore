@@ -2,7 +2,6 @@ package org.usfirst.frc.team568.robot.subsystems;
 
 import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
-import org.usfirst.frc.team568.robot.commands.MeccanumDriveManual;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Joystick;
@@ -49,6 +48,30 @@ public class MeccanumDrive extends Subsystem {
 		Timer.delay(0.01);
 	}
 
+	public void applyPowerToLeftMotors(double speed) {
+		leftFront.set(speed);
+		leftBack.set(speed);
+	}
+
+	public void applyPowerToRightMotors(double speed) {
+		rightBack.set(speed);
+		rightFront.set(speed);
+	}
+
+	public void goForwards(double speed) {
+		leftFront.set(speed);
+		leftBack.set(speed);
+		rightFront.set(speed);
+		rightBack.set(speed);
+	}
+
+	public void goBackwards(double speed) {
+		leftFront.set(speed * -1);
+		leftBack.set(speed * -1);
+		rightFront.set(speed * -1);
+		rightBack.set(speed * -1);
+	}
+
 	public void halt() {
 		leftFront.set(0.0);
 		leftBack.set(0.0);
@@ -58,6 +81,6 @@ public class MeccanumDrive extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new MeccanumDriveManual());
+		// setDefaultCommand(new MeccanumDriveManual());
 	}
 }

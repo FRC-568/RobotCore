@@ -15,7 +15,6 @@ public class TurnToHeading extends Command {
 
 	@Override
 	protected void initialize() {
-		// TODO Auto-generated method stub
 
 	}
 

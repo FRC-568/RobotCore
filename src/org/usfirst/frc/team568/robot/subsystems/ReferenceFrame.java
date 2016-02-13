@@ -7,16 +7,17 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class ReferenceFrame extends Subsystem {
-	ADIS16448_IMU imu;
+	public ADIS16448_IMU imu;
 	Timer time;
-	double currentPosition = imu.getDisX();
-	double startingPosition = currentPosition;
-	double currentHeading = imu.getAngleZ();
-	double wantedHeading = currentHeading;
+	// double currentPosition = imu.getDisX();
+	double startingPosition = 0;
+	// double currentHeading = imu.getAngleZ();
+	/// double wantedHeading = currentHeading;
 	static double tolerance = 4;
 
 	public ReferenceFrame() {
 		imu = new ADIS16448_IMU();
+
 		time = new Timer();
 
 	}
@@ -38,32 +39,23 @@ public class ReferenceFrame extends Subsystem {
 		imu.reset();
 	}
 
-	public double getDistanceNeededToTravel(double inches) {
-		double distanceNeededToTravel = Math.abs(currentPosition - startingPosition);
-		return distanceNeededToTravel;
+	public void travelForwardToDistance(double speed) {
 
-	}
-
-	public void travelForwardToDistance(double inches, double speed) {
-		while (getDistanceNeededToTravel(inches) > 0) {
-			Robot.getInstance().drive.goForwards(speed);
-		}
-		Robot.getInstance().drive.halt();
+		Robot.getInstance().drive.goForwards(speed);
 	}
 
 	public void travelBackwardsToDistance(double inches, double speed) {
-		while (getDistanceNeededToTravel(inches) > 0) {
-			Robot.getInstance().drive.goForwards(speed * -1);
-		}
-		Robot.getInstance().drive.halt();
+
+		Robot.getInstance().drive.goForwards(speed * -1);
+
 	}
 
-	public boolean stayTrueToHeading() {
-		if (currentHeading - wantedHeading < tolerance) {
+	public boolean stayTrueToHeading(double wantedHeading) {
+		if (imu.getAngleZ() - wantedHeading < tolerance) {
 			Robot.getInstance().drive.applyPowerToLeftMotors(.5);
 			Robot.getInstance().drive.applyPowerToRightMotors(-.5);
 			return false;
-		} else if (currentHeading - wantedHeading > tolerance) {
+		} else if (imu.getAngleZ() - wantedHeading > tolerance) {
 			Robot.getInstance().drive.applyPowerToLeftMotors(-.5);
 			Robot.getInstance().drive.applyPowerToRightMotors(.5);
 			return false;
@@ -73,11 +65,11 @@ public class ReferenceFrame extends Subsystem {
 	}
 
 	public boolean TurnToHeading(double speed, double position) {
-		if (Math.abs(currentHeading - position) > tolerance) {
+		if (Math.abs(imu.getAngleZ() - position) > tolerance) {
 			Robot.getInstance().drive.applyPowerToLeftMotors(speed * -1);
 			Robot.getInstance().drive.applyPowerToRightMotors(speed);
 			return false;
-		} else if (Math.abs(currentHeading) - position < tolerance) {
+		} else if (Math.abs(imu.getAngleZ()) - position < tolerance) {
 			Robot.getInstance().drive.applyPowerToLeftMotors(speed);
 			Robot.getInstance().drive.applyPowerToRightMotors(-1 * speed);
 			return false;
