@@ -21,6 +21,7 @@ public class DriveForwardInInches extends Command {
 		// TODO Auto-generated method stub
 		// referenceframe.calabrateimu();
 		// referenceframe.resetData();
+		Robot.getInstance().referenceframe.resetData();
 
 	}
 
@@ -34,7 +35,7 @@ public class DriveForwardInInches extends Command {
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		if (Robot.getInstance().referenceframe.imu.getDisX() > inches) {
+		if (Robot.getInstance().referenceframe.imu.getDisY() * -1 > inches) {
 			return true;
 			// return false;
 		}

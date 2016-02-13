@@ -2,9 +2,11 @@ package org.usfirst.frc.team568.robot.subsystems;
 
 import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.commands.Brake;
+import org.usfirst.frc.team568.robot.commands.CalabrateIMU;
 import org.usfirst.frc.team568.robot.commands.CrateLifterIn;
 import org.usfirst.frc.team568.robot.commands.CrateLifterOut;
 import org.usfirst.frc.team568.robot.commands.Lifter;
+import org.usfirst.frc.team568.robot.commands.ResetIMU;
 import org.usfirst.frc.team568.robot.commands.Reverse;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -38,6 +40,8 @@ public class CrateLifter extends Subsystem {
 		this.robot.oi.liftGo.whenPressed(new Lifter());
 		this.robot.oi.liftStop.whenPressed(new Brake());
 		this.robot.oi.lifterReverse.whenPressed(new Reverse());
+		this.robot.oi.Calabrate.whenPressed(new CalabrateIMU());
+		this.robot.oi.Calabrate.whenPressed(new ResetIMU());
 	}
 
 	public void reverse() {

@@ -44,7 +44,7 @@ public class MeccanumDrive extends Subsystem {
 	}
 
 	public void manualDrive() {
-		this.myDrive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), driveStick.getRawAxis(3), 0);
+		this.myDrive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), driveStick.getRawAxis(2), 0);
 		Timer.delay(0.01);
 	}
 
