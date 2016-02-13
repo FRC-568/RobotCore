@@ -19,7 +19,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 	protected static Robot instance;
 	public OI oi;
-	public ArcadeDrive drive;
+
+	public MeccanumDrive drive;
+	public ArcadeDrive arcadeDrive;
 	public GreenHorn shooter;
 	public Flipper flipper;
 	public CrateLifter crateLifter;
@@ -36,25 +38,27 @@ public class Robot extends IterativeRobot {
 	public Robot() {
 		instance = this;
 		oi = new OI();
-		drive = new ArcadeDrive();
-		meccanumDrive = new MeccanumDrive();
+		// drive = new ArcadeDrive();
+		// meccanumDrive = new MeccanumDrive();
 		referenceframe = new ReferenceFrame();
+		drive = new MeccanumDrive();
 		flipper = new Flipper();
 		crateLifter = new CrateLifter();
 		cam0 = CameraServer.getInstance();
 		cam0.startAutomaticCapture("cam0");
 		comp = new Compressor();
 		SmartDashboard.putNumber("speed", .5);
-		SmartDashboard.putNumber("inches", 70);
+		SmartDashboard.putNumber("inches", 1);
 		SmartDashboard.putNumber("timeOut", 5);
+		SmartDashboard.putNumber("IMUCurrentPosition", referenceframe.imu.getDisX());
 	}
 
 	@Override
 	public void robotInit() {
-		this.chooser = new SendableChooser();
+		chooser = new SendableChooser();
 
-		SmartDashboard.putData("Auto mode", this.chooser);
-		this.comp.start();
+		SmartDashboard.putData("Auto mode", chooser);
+		comp.start();
 	}
 
 	@Override
@@ -68,10 +72,12 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = (Command) chooser.getSelected();
+
+		// comp.start();
+		// autonomousCommand = (Command) chooser.getSelected();
 		double speed = SmartDashboard.getNumber("speed");
 		double inches = SmartDashboard.getNumber("inches");
-		double timeout = SmartDashboard.getNumber("Timeout");
+		// double timeout = SmartDashboard.getNumber("Timeout");
 
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -79,34 +85,47 @@ public class Robot extends IterativeRobot {
 		 * = new MyAutoCommand(); break; case "Default Auto": default:
 		 * autonomousCommand = new ExampleCommand(); break; }
 		 */
-
+		autonomousCommand = new AutonomousTest(speed, inches);
+		autonomousCommand.start();
 		// schedule the autonomous command (example)
+
 		/*
 		 * this.autonomousCommand = ((Command) this.chooser.getSelected()); if
 		 * (this.autonomousCommand != null) { this.autonomousCommand.start();
 		 * 
 		 * }
 		 */
-		new AutonomousTest(speed, inches, timeout);
+
+		// this.autonomousCommand = ((Command) this.chooser.getSelected());
+		// if (autonomousCommand != null) {
+		/// autonomousCommand.start();
+		// }
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-
+		SmartDashboard.putNumber("speed", .5);
+		SmartDashboard.putNumber("inches", 1);
+		SmartDashboard.putNumber("timeOut", 5);
+		SmartDashboard.putNumber("IMUCurrentPosition", referenceframe.imu.getDisY());
 	}
 
 	@Override
 	public void teleopInit() {
-		if (this.autonomousCommand != null) {
-			this.autonomousCommand.cancel();
+		if (autonomousCommand != null) {
+			autonomousCommand.cancel();
 		}
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		this.drive.manualDrive();
+		drive.manualDrive();
+		SmartDashboard.putNumber("speed", .5);
+		SmartDashboard.putNumber("inches", 1);
+		SmartDashboard.putNumber("timeOut", 5);
+		SmartDashboard.putNumber("IMUCurrentPosition", referenceframe.imu.getDisX());
 	}
 
 	@Override

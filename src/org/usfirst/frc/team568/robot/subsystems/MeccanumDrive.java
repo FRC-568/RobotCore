@@ -1,7 +1,7 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
 import org.usfirst.frc.team568.robot.Robot;
-import org.usfirst.frc.team568.robot.commands.ArcadeDriveManual;
+import org.usfirst.frc.team568.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Joystick;
@@ -23,41 +23,64 @@ public class MeccanumDrive extends Subsystem {
 	Gyro gyro;
 
 	public MeccanumDrive() {
-		this.robot = Robot.getInstance();
+		robot = Robot.getInstance();
 
-		this.gyro = new AnalogGyro(0);
+		gyro = new AnalogGyro(0);
 
-		this.leftFront = new Talon(0);
-		this.leftBack = new Talon(1);
-		this.rightFront = new Talon(2);
-		this.rightBack = new Talon(4);
+		leftFront = new Talon(RobotMap.leftFrontMotor);
+		leftBack = new Talon(RobotMap.leftBackMotor);
+		rightFront = new Talon(RobotMap.rightFrontMotor);
+		rightBack = new Talon(RobotMap.rightBackMotor);
 
-		this.rightFront.setInverted(true);
-		this.rightBack.setInverted(true);
+		rightFront.setInverted(true);
+		rightBack.setInverted(true);
 
-		this.myDrive = new RobotDrive(this.leftFront, this.leftBack, this.rightFront, this.rightBack);
-		this.driveStick = this.robot.oi.leftStick;
+		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
+		driveStick = robot.oi.leftStick;
 	}
 
 	public void calibrate() {
-		this.gyro.calibrate();
+		gyro.calibrate();
 	}
 
 	public void manualDrive() {
-		this.myDrive.mecanumDrive_Cartesian(this.driveStick.getX(), this.driveStick.getY(),
-				this.driveStick.getRawAxis(3), 0.0D);
-		Timer.delay(0.01D);
+		this.myDrive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), driveStick.getRawAxis(3), 0);
+		Timer.delay(0.01);
+	}
+
+	public void applyPowerToLeftMotors(double speed) {
+		leftFront.set(speed);
+		leftBack.set(speed);
+	}
+
+	public void applyPowerToRightMotors(double speed) {
+		rightBack.set(speed);
+		rightFront.set(speed);
+	}
+
+	public void goForwards(double speed) {
+		leftFront.set(speed);
+		leftBack.set(speed);
+		rightFront.set(speed);
+		rightBack.set(speed);
+	}
+
+	public void goBackwards(double speed) {
+		leftFront.set(speed * -1);
+		leftBack.set(speed * -1);
+		rightFront.set(speed * -1);
+		rightBack.set(speed * -1);
 	}
 
 	public void halt() {
-		this.leftFront.set(0.0D);
-		this.leftBack.set(0.0D);
-		this.rightFront.set(0.0D);
-		this.rightBack.set(0.0D);
+		leftFront.set(0.0);
+		leftBack.set(0.0);
+		rightFront.set(0.0);
+		rightBack.set(0.0);
 	}
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new ArcadeDriveManual());
+		// setDefaultCommand(new MeccanumDriveManual());
 	}
 }

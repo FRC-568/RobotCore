@@ -4,15 +4,10 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutonomousTest extends CommandGroup {
 
-	public AutonomousTest(double inches, double speed, double timeOut) {
+	public AutonomousTest(double speed, double inches) {
 
 		// TODO Auto-generated constructor stub
-		addSequential(new DriveForwardInInches(inches, speed), timeOut);
-	}
-
-	public AutonomousTest(String name) {
-		super(name);
-		// TODO Auto-generated constructor stub
+		addSequential(new DriveForwardInInches(speed, inches));
 	}
 
 }
