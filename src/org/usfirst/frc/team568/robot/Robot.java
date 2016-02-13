@@ -34,7 +34,7 @@ public class Robot extends IterativeRobot {
 		oi = new OI();
 		// drive = new ArcadeDrive();
 		meccanumDrive = new MeccanumDrive();
-		// referenceframe = new ReferenceFrame();
+		referenceframe = new ReferenceFrame();
 		flipper = new Flipper();
 		crateLifter = new CrateLifter();
 		cam0 = CameraServer.getInstance();
