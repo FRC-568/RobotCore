@@ -39,6 +39,8 @@ public class Robot extends IterativeRobot {
 		instance = this;
 		oi = new OI();
 		// arcadeDrive = new ArcadeDrive();
+
+		referenceframe = new ReferenceFrame();
 		drive = new MeccanumDrive();
 		referenceframe = new ReferenceFrame();
 		flipper = new Flipper();
@@ -47,7 +49,7 @@ public class Robot extends IterativeRobot {
 		cam0.startAutomaticCapture("cam0");
 		comp = new Compressor();
 		SmartDashboard.putNumber("speed", .5);
-		SmartDashboard.putNumber("inches", 1);
+		SmartDashboard.putNumber("inches", 20);
 		SmartDashboard.putNumber("timeOut", 5);
 		SmartDashboard.putNumber("IMUCurrentPosition", referenceframe.imu.getDisY());
 	}
@@ -57,6 +59,7 @@ public class Robot extends IterativeRobot {
 		chooser = new SendableChooser();
 		SmartDashboard.putData("Auto mode", chooser);
 		comp.start();
+		Robot.getInstance().referenceframe.imu.calibrate();
 	}
 
 	@Override
@@ -75,8 +78,6 @@ public class Robot extends IterativeRobot {
 		// autonomousCommand = (Command) chooser.getSelected();
 		double speed = SmartDashboard.getNumber("speed");
 		double inches = SmartDashboard.getNumber("inches");
-		// double timeout = SmartDashboard.getNumber("Timeout");
-
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -123,7 +124,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("speed", .5);
 		SmartDashboard.putNumber("inches", 1);
 		SmartDashboard.putNumber("timeOut", 5);
-		SmartDashboard.putNumber("IMUCurrentPosition", referenceframe.imu.getDisX());
+		SmartDashboard.putNumber("IMUCurrentPosition", referenceframe.imu.getDisY() * 1000);
 	}
 
 	@Override
