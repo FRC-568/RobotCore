@@ -21,6 +21,7 @@ public class CrateLifter extends Subsystem {
 	Solenoid brake;
 	Solenoid brake1;
 	SpeedController lift;
+	public int pov;
 
 	public CrateLifter() {
 		this.robot = Robot.getInstance();

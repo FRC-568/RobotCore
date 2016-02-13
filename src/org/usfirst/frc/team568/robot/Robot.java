@@ -55,7 +55,6 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		chooser = new SendableChooser();
-
 		SmartDashboard.putData("Auto mode", chooser);
 		comp.start();
 	}
