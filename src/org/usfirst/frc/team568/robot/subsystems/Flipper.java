@@ -18,14 +18,14 @@ public class Flipper extends Subsystem {
 	}
 
 	public Flipper() {
-		this.robot = Robot.getInstance();
+		robot = Robot.getInstance();
 
-		this.robot.oi.liftFlipper.whenPressed(new LiftFlipper());
-		this.robot.oi.lowerFlipper.whenPressed(new LowerFlipper());
+		robot.oi.liftFlipper.whenPressed(new LiftFlipper());
+		robot.oi.lowerFlipper.whenPressed(new LowerFlipper());
 
-		this.lift1 = new Solenoid(5);
-		this.lift2 = new Solenoid(6);
-		this.lift3 = new Solenoid(4);
+		lift1 = new Solenoid(5);
+		lift2 = new Solenoid(6);
+		lift3 = new Solenoid(4);
 	}
 
 	public void liftUp() {
