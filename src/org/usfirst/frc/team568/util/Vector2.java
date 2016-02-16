@@ -83,4 +83,12 @@ public class Vector2 implements Comparable<Vector2> {
 		double angle = angle(v1, v2);
 		return (angle > 0) ? (360 - angle) : (-angle);
 	}
+
+	public static Vector2 rotate(Vector2 v1, double r) {
+		double rRad = Math.toRadians(r);
+		double rCos = Math.cos(rRad);
+		double rSin = Math.sin(rRad);
+		return new Vector2(v1.x * rCos - v1.y * rSin, v1.x * rSin + v1.y * rCos);
+
+	}
 }

@@ -2,15 +2,14 @@ package org.usfirst.frc.team568.robot.subsystems;
 
 import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
+import org.usfirst.frc.team568.robot.commands.MeccanumDriveManual;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class MeccanumDrive extends Subsystem {
 	public final Robot robot;
@@ -20,12 +19,12 @@ public class MeccanumDrive extends Subsystem {
 	protected SpeedController rightBack;
 	protected Joystick driveStick;
 	RobotDrive myDrive;
-	Gyro gyro;
+	ReferenceFrame2 ref;
+	double heading;
 
 	public MeccanumDrive() {
 		robot = Robot.getInstance();
-
-		gyro = new AnalogGyro(0);
+		ref = new ReferenceFrame2();
 
 		leftFront = new Talon(RobotMap.leftFrontMotor);
 		leftBack = new Talon(RobotMap.leftBackMotor);
@@ -37,14 +36,17 @@ public class MeccanumDrive extends Subsystem {
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 		driveStick = robot.oi.leftStick;
-	}
 
-	public void calibrate() {
-		gyro.calibrate();
 	}
 
 	public void manualDrive() {
-		this.myDrive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), driveStick.getRawAxis(2), 0);
+		if (Math.abs(driveStick.getRawAxis(2)) < .1)
+			heading = ref.getHeading();
+		else
+			heading += driveStick.getRawAxis(2) * 3;
+		double error = (ref.getHeading() - heading) * .025;
+		myDrive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), -error, 0);
+
 		Timer.delay(0.01);
 	}
 
@@ -81,6 +83,6 @@ public class MeccanumDrive extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		// setDefaultCommand(new MeccanumDriveManual());
+		setDefaultCommand(new MeccanumDriveManual());
 	}
 }

@@ -9,19 +9,21 @@ public class MeccanumDriveManual extends Command {
 	public MeccanumDrive drive;
 
 	public MeccanumDriveManual() {
+		drive = Robot.getInstance().meccanumDrive;
+		requires(drive);
 
 	}
 
 	@Override
 	protected void initialize() {
 		drive = Robot.getInstance().meccanumDrive;
-		requires(drive);
-		drive.calibrate();
+
 	}
 
 	@Override
 	protected void execute() {
 		drive.manualDrive();
+
 	}
 
 	@Override

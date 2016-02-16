@@ -41,23 +41,23 @@ public class ReferenceFrame extends Subsystem {
 
 	public void travelForwardToDistance(double speed) {
 
-		Robot.getInstance().drive.goForwards(speed);
+		Robot.getInstance().meccanumDrive.goForwards(speed);
 	}
 
 	public void travelBackwardsToDistance(double inches, double speed) {
 
-		Robot.getInstance().drive.goForwards(speed * -1);
+		Robot.getInstance().meccanumDrive.goForwards(speed * -1);
 
 	}
 
 	public boolean stayTrueToHeading(double wantedHeading) {
 		if (imu.getAngleZ() - wantedHeading < tolerance) {
-			Robot.getInstance().drive.applyPowerToLeftMotors(.5);
-			Robot.getInstance().drive.applyPowerToRightMotors(-.5);
+			Robot.getInstance().meccanumDrive.applyPowerToLeftMotors(.5);
+			Robot.getInstance().meccanumDrive.applyPowerToRightMotors(-.5);
 			return false;
 		} else if (imu.getAngleZ() - wantedHeading > tolerance) {
-			Robot.getInstance().drive.applyPowerToLeftMotors(-.5);
-			Robot.getInstance().drive.applyPowerToRightMotors(.5);
+			Robot.getInstance().meccanumDrive.applyPowerToLeftMotors(-.5);
+			Robot.getInstance().meccanumDrive.applyPowerToRightMotors(.5);
 			return false;
 		} else {
 			return true;
@@ -66,15 +66,15 @@ public class ReferenceFrame extends Subsystem {
 
 	public boolean TurnToHeading(double speed, double position) {
 		if (Math.abs(imu.getAngleZ() - position) > tolerance) {
-			Robot.getInstance().drive.applyPowerToLeftMotors(speed * -1);
-			Robot.getInstance().drive.applyPowerToRightMotors(speed);
+			Robot.getInstance().meccanumDrive.applyPowerToLeftMotors(speed * -1);
+			Robot.getInstance().meccanumDrive.applyPowerToRightMotors(speed);
 			return false;
 		} else if (Math.abs(imu.getAngleZ()) - position < tolerance) {
-			Robot.getInstance().drive.applyPowerToLeftMotors(speed);
-			Robot.getInstance().drive.applyPowerToRightMotors(-1 * speed);
+			Robot.getInstance().meccanumDrive.applyPowerToLeftMotors(speed);
+			Robot.getInstance().meccanumDrive.applyPowerToRightMotors(-1 * speed);
 			return false;
 		} else {
-			Robot.getInstance().drive.halt();
+			Robot.getInstance().meccanumDrive.halt();
 			return true;
 		}
 	}

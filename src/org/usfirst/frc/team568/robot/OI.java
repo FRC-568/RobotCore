@@ -34,8 +34,8 @@ public class OI {
 	public Button liftGo = new JoystickButton(leftStick, ControllerButtons.lifterGo);
 	public Button liftStop = new JoystickButton(leftStick, ControllerButtons.lifterStop);
 	public Button lifterReverse = new JoystickButton(leftStick, ControllerButtons.lifterReverse);
-	public Button Calabrate = new JoystickButton(leftStick, ControllerButtons.calabrateIMU);
-	public Button Reset = new JoystickButton(leftStick, ControllerButtons.resetIMU);
+	public Button Calabrate = new JoystickButton(rightStick, ControllerButtons.calabrateIMU);
+	public Button Reset = new JoystickButton(rightStick, ControllerButtons.resetIMU);
 
 	// There are a few additional built in buttons you can use. Additionally,
 	// by subclassing Button you can create custom triggers and bind those to

@@ -45,7 +45,7 @@ public class DriveForwardInInches extends Command {
 	@Override
 	protected void end() {
 		// TODO Auto-generated method stub
-		Robot.getInstance().drive.halt();
+		Robot.getInstance().meccanumDrive.halt();
 
 	}
 

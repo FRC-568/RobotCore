@@ -19,14 +19,17 @@ public class Reverse extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		return true;
+		return false;
 	}
 
 	@Override
 	protected void end() {
+		Robot.getInstance().crateLifter.brake();
+
 	}
 
 	@Override
 	protected void interrupted() {
+		Robot.getInstance().crateLifter.brake();
 	}
 }

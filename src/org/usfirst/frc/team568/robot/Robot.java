@@ -7,6 +7,8 @@ import org.usfirst.frc.team568.robot.subsystems.Flipper;
 import org.usfirst.frc.team568.robot.subsystems.GreenHorn;
 import org.usfirst.frc.team568.robot.subsystems.MeccanumDrive;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame;
+import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
+import org.usfirst.frc.team568.robot.subsystems.TankDrive;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
@@ -20,17 +22,19 @@ public class Robot extends IterativeRobot {
 	protected static Robot instance;
 	public OI oi;
 
-	public MeccanumDrive drive;
+	public MeccanumDrive meccanumDrive;
 	public ArcadeDrive arcadeDrive;
+	public TankDrive tankDrive;
 	public GreenHorn shooter;
 	public Flipper flipper;
 	public CrateLifter crateLifter;
 	public ReferenceFrame referenceframe;
-	public MeccanumDrive meccanumDrive;
+	public ReferenceFrame2 referanceFrame2;
 	Command autonomousCommand;
 	SendableChooser chooser;
 	CameraServer cam0;
 	Compressor comp;
+
 	double speed = 0;
 	double inches = 0;
 	double timeout = 0;
@@ -38,20 +42,24 @@ public class Robot extends IterativeRobot {
 	public Robot() {
 		instance = this;
 		oi = new OI();
+		// tankDrive = new TankDrive();
 		// arcadeDrive = new ArcadeDrive();
-
+		meccanumDrive = new MeccanumDrive();
 		referenceframe = new ReferenceFrame();
-		drive = new MeccanumDrive();
-		referenceframe = new ReferenceFrame();
+		referanceFrame2 = new ReferenceFrame2();
 		flipper = new Flipper();
 		crateLifter = new CrateLifter();
 		cam0 = CameraServer.getInstance();
 		cam0.startAutomaticCapture("cam0");
 		comp = new Compressor();
+		referanceFrame2.start();
+		referanceFrame2.calabrateGyro();
+
 		SmartDashboard.putNumber("speed", .5);
 		SmartDashboard.putNumber("inches", 20);
 		SmartDashboard.putNumber("timeOut", 5);
 		SmartDashboard.putNumber("IMUCurrentPosition", referenceframe.imu.getDisY());
+
 	}
 
 	@Override
@@ -60,6 +68,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto mode", chooser);
 		comp.start();
 		Robot.getInstance().referenceframe.imu.calibrate();
+
 	}
 
 	@Override
@@ -108,6 +117,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("inches", 1);
 		SmartDashboard.putNumber("timeOut", 5);
 		SmartDashboard.putNumber("IMUCurrentPosition", referenceframe.imu.getDisY());
+
 	}
 
 	@Override
@@ -115,16 +125,20 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
+		referanceFrame2.reset();
+
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		drive.manualDrive();
 		SmartDashboard.putNumber("speed", .5);
 		SmartDashboard.putNumber("inches", 1);
 		SmartDashboard.putNumber("timeOut", 5);
 		SmartDashboard.putNumber("IMUCurrentPosition", referenceframe.imu.getDisY() * 1000);
+
+		SmartDashboard.putNumber("POS X", referanceFrame2.getPos().x);
+		SmartDashboard.putNumber("POS Y", referanceFrame2.getPos().y);
 	}
 
 	@Override

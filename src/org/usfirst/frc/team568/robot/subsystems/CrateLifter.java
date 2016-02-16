@@ -38,9 +38,9 @@ public class CrateLifter extends Subsystem {
 
 		this.robot.oi.crateIn.whenPressed(new CrateLifterIn());
 		this.robot.oi.crateOut.whenPressed(new CrateLifterOut());
-		this.robot.oi.liftGo.whenPressed(new Lifter());
+		this.robot.oi.liftGo.whileHeld(new Lifter());
 		this.robot.oi.liftStop.whenPressed(new Brake());
-		this.robot.oi.lifterReverse.whenPressed(new Reverse());
+		this.robot.oi.lifterReverse.whileHeld(new Reverse());
 		this.robot.oi.Calabrate.whenPressed(new CalabrateIMU());
 		this.robot.oi.Calabrate.whenPressed(new ResetIMU());
 	}
@@ -48,13 +48,14 @@ public class CrateLifter extends Subsystem {
 	public void reverse() {
 		this.brake.set(true);
 		this.brake1.set(false);
-		this.lift.set(-0.75D);
+		this.lift.set(-0.75);
+
 	}
 
 	public void lift() {
 		this.brake.set(true);
 		this.brake1.set(false);
-		this.lift.set(0.75D);
+		this.lift.set(0.75);
 	}
 
 	public void brake() {

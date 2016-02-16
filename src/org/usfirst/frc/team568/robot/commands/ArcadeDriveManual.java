@@ -6,12 +6,12 @@ import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ArcadeDriveManual extends Command {
-	public final ArcadeDrive ArcadeDrive;
+	public final ArcadeDrive arcadeDrive;
 	// CrateLifter lifter = Robot.getInstance().crateLifter;
 
 	public ArcadeDriveManual() {
-		ArcadeDrive = Robot.getInstance().arcadeDrive;
-		requires(ArcadeDrive);
+		arcadeDrive = Robot.getInstance().arcadeDrive;
+		requires(arcadeDrive);
 
 	}
 
@@ -22,7 +22,7 @@ public class ArcadeDriveManual extends Command {
 
 	@Override
 	protected void execute() {
-		ArcadeDrive.manualDrive();
+		arcadeDrive.manualDrive();
 		// lifter.lift();
 	}
 

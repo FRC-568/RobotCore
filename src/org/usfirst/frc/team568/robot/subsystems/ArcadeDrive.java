@@ -43,7 +43,7 @@ public class ArcadeDrive extends Subsystem {
 	}
 
 	public void manualDrive() {
-		myDrive.tankDrive(driveStickL, driveStickR);
+		myDrive.arcadeDrive(driveStickL);
 		Timer.delay(0.01);
 	}
 
