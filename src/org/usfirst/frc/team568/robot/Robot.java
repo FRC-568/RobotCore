@@ -4,10 +4,10 @@ import org.usfirst.frc.team568.robot.commands.AutonomousTest;
 import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 import org.usfirst.frc.team568.robot.subsystems.CrateLifter;
 import org.usfirst.frc.team568.robot.subsystems.Flipper;
-import org.usfirst.frc.team568.robot.subsystems.GreenHorn;
 import org.usfirst.frc.team568.robot.subsystems.MeccanumDrive;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
+import org.usfirst.frc.team568.robot.subsystems.Shooter;
 import org.usfirst.frc.team568.robot.subsystems.TankDrive;
 
 import edu.wpi.first.wpilibj.CameraServer;
@@ -23,9 +23,9 @@ public class Robot extends IterativeRobot {
 	public OI oi;
 
 	public MeccanumDrive meccanumDrive;
+	public Shooter shooter;
 	public ArcadeDrive arcadeDrive;
 	public TankDrive tankDrive;
-	public GreenHorn shooter;
 	public Flipper flipper;
 	public CrateLifter crateLifter;
 	public ReferenceFrame referenceframe;
@@ -44,7 +44,9 @@ public class Robot extends IterativeRobot {
 		oi = new OI();
 		// tankDrive = new TankDrive();
 		// arcadeDrive = new ArcadeDrive();
-		meccanumDrive = new MeccanumDrive();
+		// meccanumDrive = new MeccanumDrive();
+		tankDrive = new TankDrive();
+		shooter = new Shooter();
 		referenceframe = new ReferenceFrame();
 		referanceFrame2 = new ReferenceFrame2();
 		flipper = new Flipper();

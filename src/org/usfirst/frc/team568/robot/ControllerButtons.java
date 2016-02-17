@@ -2,11 +2,11 @@ package org.usfirst.frc.team568.robot;
 
 public class ControllerButtons {
 
-	public static int shootBallButton = 1;
-	public static int obtainBallButton = 2;
-	public static int aimPickUpBallButton = 3;
-	public static int aimShootLowGoalButton = 4;
-	public static int aimShootHighGoalButton = 5;
+	public static int shootBallButton = 3;
+	public static int obtainBallButton = 5;
+	public static int stopShooterButton = 2;
+	public static int bringShooterDown = 5;
+	public static int bringShooterUp = 3;
 
 	public static int liftFlipper = 5;
 	public static int lowerFlipper = 6;
