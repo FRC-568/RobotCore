@@ -13,11 +13,12 @@ public class Shoot extends Command {
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
-		Robot.getInstance().tankDrive.shoot();
+		Robot.getInstance().shooter.shoot();
 	}
 
 	@Override
 	protected void execute() {
+
 		// TODO Auto-generated method stub
 
 	}

@@ -13,7 +13,7 @@ public class GetBall extends Command {
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
-		Robot.getInstance().tankDrive.obtainBall();
+		Robot.getInstance().shooter.obtainBall();
 	}
 
 	@Override

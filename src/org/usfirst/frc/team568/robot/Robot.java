@@ -42,7 +42,6 @@ public class Robot extends IterativeRobot {
 	public Robot() {
 		instance = this;
 		oi = new OI();
-		// tankDrive = new TankDrive();
 		// arcadeDrive = new ArcadeDrive();
 		// meccanumDrive = new MeccanumDrive();
 		tankDrive = new TankDrive();

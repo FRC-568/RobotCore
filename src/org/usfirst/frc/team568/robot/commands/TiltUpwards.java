@@ -13,7 +13,7 @@ public class TiltUpwards extends Command {
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
-		Robot.getInstance().tankDrive.tiltUp();
+		Robot.getInstance().shooter.tiltUp();
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class TiltUpwards extends Command {
 	@Override
 	protected void end() {
 		// TODO Auto-generated method stub
-		Robot.getInstance().tankDrive.stopTilt();
+		Robot.getInstance().shooter.stopTilt();
 	}
 
 	@Override

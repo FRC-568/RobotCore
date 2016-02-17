@@ -17,24 +17,21 @@ public class RobotMap {
 	// public static int rangefinderPort = 1;
 	// public static int rangefinderModule = 1;
 
-	public static final int leftShooterMotor = 9;
-	public static final int rightShooterMotor = 6;
 	public static final int nudge = 7;
-	public static final int leftFrontMotor = 0;
-	public static final int leftBackMotor = 1;
-	public static final int rightFrontMotor = 2;
-	public static final int rightBackMotor = 4;
-	public static final int lifterMotor = 5;
-	public static final int lowZoneMotor = 8;
+	public static final int leftFrontMotor = 4;
+	public static final int leftBackMotor = 5;
+	public static final int rightFrontMotor = 1;
+	public static final int rightBackMotor = 2;
+	// public static final int lifterMotor = 5;
+	// public static final int lowZoneMotor = 8;
 
 	public static final int joy1Pos = 0;
 	public static final int joy2Pos = 1;
 	public static final int joy3Pos = 2;
-
-	public static final int aimerUp = 0;
-	public static final int aimerDown = 1;
-	public static final int brake = 2;
-
+	/*
+	 * public static final int aimerUp = 0; public static final int aimerDown =
+	 * 1; public static final int brake = 2;
+	 */
 	public static final int shooterLeftPort = 8;
 	public static final int shooterRightPort = 9;
 	public static final int leftTiltPort = 7;

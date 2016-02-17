@@ -13,7 +13,7 @@ public class DoNotShoot extends Command {
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
-		Robot.getInstance().tankDrive.stopShooter();
+		Robot.getInstance().shooter.stopShooter();
 	}
 
 	@Override
