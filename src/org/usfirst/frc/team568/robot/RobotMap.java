@@ -35,6 +35,10 @@ public class RobotMap {
 	public static final int aimerDown = 1;
 	public static final int brake = 2;
 
+	public static final int shooterLeftPort = 8;
+	public static final int shooterRightPort = 9;
+	public static final int leftTiltPort = 7;
+	public static final int rightTiltPort = 6;
 	// public static final int rightMidMotor = 5;
 	// public static final int leftMidMotor = 2;
 

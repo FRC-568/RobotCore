@@ -20,11 +20,12 @@ public class OI {
 	// number it is.
 	// Joystick stick = new Joystick(port);
 	// Button button = new JoystickButton(stick, buttonNumber);
-	public Button one = new JoystickButton(rightStick, ControllerButtons.shootBallButton);
-	public Button two = new JoystickButton(rightStick, ControllerButtons.obtainBallButton);
-	public Button three = new JoystickButton(rightStick, ControllerButtons.aimPickUpBallButton);
-	public Button four = new JoystickButton(rightStick, ControllerButtons.aimShootLowGoalButton);
-	public Button five = new JoystickButton(rightStick, ControllerButtons.aimShootHighGoalButton);
+	public Button rightThree = new JoystickButton(rightStick, ControllerButtons.shootBallButton);
+	public Button rightFive = new JoystickButton(rightStick, ControllerButtons.obtainBallButton);
+	public Button rightTwo = new JoystickButton(rightStick, ControllerButtons.stopShooterButton);
+
+	public Button leftFive = new JoystickButton(leftStick, ControllerButtons.bringShooterDown);
+	public Button leftThree = new JoystickButton(leftStick, ControllerButtons.bringShooterUp);
 
 	public Button liftFlipper = new JoystickButton(leftStick, ControllerButtons.liftFlipper);
 	public Button lowerFlipper = new JoystickButton(leftStick, ControllerButtons.lowerFlipper);

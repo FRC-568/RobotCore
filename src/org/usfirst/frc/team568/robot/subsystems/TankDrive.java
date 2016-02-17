@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class TankDrive extends Subsystem {
@@ -16,6 +17,11 @@ public class TankDrive extends Subsystem {
 	protected SpeedController leftFront, leftBack, rightFront, rightBack;
 	protected Joystick driveStickL;
 	protected Joystick driveStickR;
+	RobotDrive myRobot;
+	SpeedController shooterLeft;
+	SpeedController shooterRight;
+	SpeedController leftTilt;
+	SpeedController rightTilt;
 
 	RobotDrive myDrive;
 
@@ -37,9 +43,46 @@ public class TankDrive extends Subsystem {
 		rightFront.setInverted(true);
 		rightBack.setInverted(true);
 
+		shooterRight = new Victor(RobotMap.shooterRightPort);
+		shooterLeft = new Victor(RobotMap.shooterLeftPort);
+		shooterRight.setInverted(true);
+
+		leftTilt = new Talon(RobotMap.leftTiltPort);
+		rightTilt = new Talon(RobotMap.rightTiltPort);
+
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 		driveStickL = robot.oi.leftStick;
 		driveStickR = robot.oi.rightStick;
+	}
+
+	public void shoot() {
+		shooterRight.set(0.75);
+		shooterLeft.set(0.75);
+	}
+
+	public void obtainBall() {
+		shooterRight.set(-0.25);
+		shooterLeft.set(-0.25);
+	}
+
+	public void stopShooter() {
+		shooterRight.set(0);
+		shooterLeft.set(0);
+	}
+
+	public void tiltUp() {
+		leftTilt.set(-0.5);
+		rightTilt.set(-0.5);
+	}
+
+	public void tiltDown() {
+		leftTilt.set(1);
+		rightTilt.set(1);
+	}
+
+	public void stopTilt() {
+		leftTilt.set(0);
+		rightTilt.set(0);
 	}
 
 	public void manualDrive() {
