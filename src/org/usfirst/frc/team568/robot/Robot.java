@@ -139,6 +139,10 @@ public class Robot extends IterativeRobot {
 
 		SmartDashboard.putNumber("POS X", referanceFrame2.getPos().x);
 		SmartDashboard.putNumber("POS Y", referanceFrame2.getPos().y);
+		SmartDashboard.putNumber("Heading", referanceFrame2.getHeading());
+		SmartDashboard.putNumber("Acel Y", referanceFrame2.getAcel().y);
+		SmartDashboard.putNumber("Acel X", referanceFrame2.getAcel().x);
+
 	}
 
 	@Override
