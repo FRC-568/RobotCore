@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.util;
 
-public class Vector2 implements Comparable<Vector2> {
+public class Vector2 {
 	public double x;
 	public double y;
 
@@ -39,12 +39,6 @@ public class Vector2 implements Comparable<Vector2> {
 		return (o instanceof Vector2) ? (this.x == ((Vector2) o).x && this.y == ((Vector2) o).y) : false;
 	}
 
-	@Override
-	public int compareTo(Vector2 o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public static Vector2 add(Vector2 v1, Vector2 v2) {
 		return new Vector2(v1.x + v2.x, v1.y + v2.y);
 	}
@@ -80,8 +74,7 @@ public class Vector2 implements Comparable<Vector2> {
 	}
 
 	public static double heading(Vector2 v1, Vector2 v2) {
-		double angle = angle(v1, v2);
-		return (angle > 0) ? (360 - angle) : (-angle);
+		return 360 - angle(v1, v2) % 360;
 	}
 
 	public static Vector2 rotate(Vector2 v1, double r) {

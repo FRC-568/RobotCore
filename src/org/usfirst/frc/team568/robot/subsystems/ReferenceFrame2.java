@@ -13,39 +13,81 @@ import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ReferenceFrame2 extends Subsystem implements Runnable {
-	ADXRS450_Gyro gyro;
-	ADXL362 acel;
-	Thread updateThread;
+public class ReferenceFrame2 extends Subsystem {
+	public int calibrationSamples = 250;
+	public int calibrationSampleRate = 20;
+
+	protected ADXRS450_Gyro gyro;
+	protected ADXL362 acel;
+	protected Thread updateThread;
 	protected Vector2 acceleration;
 	protected Vector2 velocity;
 	protected Vector2 position;
-	public double samples;
 	protected Vector2 acelBias;
 
-	// double currentPosition = imu.getDisX();
-	double startingPosition = 0;
-	// double currentHeading = imu.getAngleZ();
-	/// double wantedHeading = currentHeading;
-	static double tolerance = 4;
+	private double lastTimestamp;
+	private Filter xFilter;
+	private Filter yFilter;
 
 	public ReferenceFrame2() {
-		gyro = new ADXRS450_Gyro();
-		acel = new ADXL362(Range.k16G);
 		acceleration = Vector2.zero;
 		velocity = Vector2.zero;
 		position = Vector2.zero;
-		samples = 250;
 
+		gyro = new ADXRS450_Gyro();
+		acel = new ADXL362(Range.k16G);
+		calibrateAcel();
+
+		xFilter = LinearDigitalFilter.movingAverage(new PIDSource() {
+			@Override
+			public void setPIDSourceType(PIDSourceType pidSource) {
+			}
+
+			@Override
+			public PIDSourceType getPIDSourceType() {
+				return PIDSourceType.kDisplacement;
+			}
+
+			@Override
+			public double pidGet() {
+				return acel.getX() - acelBias.x;
+			}
+		}, 4);
+
+		yFilter = LinearDigitalFilter.movingAverage(new PIDSource() {
+			@Override
+			public void setPIDSourceType(PIDSourceType pidSource) {
+			}
+
+			@Override
+			public PIDSourceType getPIDSourceType() {
+				return PIDSourceType.kDisplacement;
+			}
+
+			@Override
+			public double pidGet() {
+				return acel.getY() - acelBias.y;
+			}
+		}, 4);
 	}
 
 	public void start() {
-		if (updateThread != null) {
+		if (updateThread != null)
 			updateThread.interrupt();
-		}
-		updateThread = new Thread(this);
-		updateThread.start();
 
+		updateThread = new Thread(() -> {
+			while (!Thread.interrupted()) {
+				updateAcel();
+				SmartDashboard.putNumber("Raw Y", acel.getY());
+				SmartDashboard.putNumber("Raw X", acel.getX());
+				try {
+					Thread.sleep(calibrationSampleRate);
+				} catch (InterruptedException e) {
+					break;
+				}
+			}
+		});
+		updateThread.start();
 	}
 
 	public void stop() {
@@ -83,7 +125,7 @@ public class ReferenceFrame2 extends Subsystem implements Runnable {
 
 	@Override
 	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
+
 	}
 
 	public void calabrateGyro() {
@@ -91,91 +133,25 @@ public class ReferenceFrame2 extends Subsystem implements Runnable {
 	}
 
 	public void calibrateAcel() {
-		double avgTotalX = 0;
-		double avgTotalY = 0;
+		double avgX = 0;
+		double avgY = 0;
 
-		for (int i = 0; i < samples; i++) {
-			avgTotalX += acel.getX() / samples;
-			avgTotalY += acel.getY() / samples;
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-
-				break;
-			}
+		for (int i = 0; i < calibrationSamples; i++) {
+			avgX += acel.getX() / calibrationSamples;
+			avgY += acel.getY() / calibrationSamples;
+			Timer.delay(calibrationSampleRate / 1000.0);
 		}
-		acelBias = new Vector2(-avgTotalX, -avgTotalY);
-
+		acelBias = new Vector2(avgX, avgY);
+		lastTimestamp = Timer.getFPGATimestamp();
 	}
 
-	@Override
-	public void run() {
-		double lastTime = Timer.getFPGATimestamp();
-		double time = lastTime;
-		double deltaTime;
-
-		PIDSource xSource = new PIDSource() {
-
-			@Override
-			public void setPIDSourceType(PIDSourceType pidSource) {
-
-			}
-
-			@Override
-			public PIDSourceType getPIDSourceType() {
-
-				return null;
-			}
-
-			@Override
-			public double pidGet() {
-
-				return acel.getX() + acelBias.x;
-			}
-
-		};
-
-		PIDSource ySource = new PIDSource() {
-
-			@Override
-			public void setPIDSourceType(PIDSourceType pidSource) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public PIDSourceType getPIDSourceType() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public double pidGet() {
-				// TODO Auto-generated method stub
-				return acel.getY() + acelBias.y;
-			}
-
-		};
-
-		Filter xFilter = LinearDigitalFilter.movingAverage(xSource, 4);
-		Filter yFilter = LinearDigitalFilter.movingAverage(ySource, 4);
-
-		while (!Thread.interrupted()) {
-			time = Timer.getFPGATimestamp();
-			deltaTime = time - lastTime;
-			acceleration = new Vector2(xFilter.pidGet(), yFilter.pidGet());
-			velocity = Vector2.add(velocity, Vector2.scale(acceleration, deltaTime));
-			position = Vector2.add(position, Vector2.rotate(Vector2.scale(velocity, deltaTime), -getHeading()));
-			SmartDashboard.putNumber("Raw Y", acel.getY());
-			SmartDashboard.putNumber("Raw X", acel.getX());
-			lastTime = time;
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-
-			}
-		}
-
+	public void updateAcel() {
+		double timestamp = Timer.getFPGATimestamp();
+		double deltaTime = timestamp - lastTimestamp;
+		acceleration = new Vector2(xFilter.pidGet(), yFilter.pidGet());
+		velocity = Vector2.add(velocity, Vector2.scale(acceleration, deltaTime));
+		position = Vector2.add(position, Vector2.rotate(Vector2.scale(velocity, deltaTime), -getHeading()));
+		lastTimestamp = timestamp;
 	}
 
 }
