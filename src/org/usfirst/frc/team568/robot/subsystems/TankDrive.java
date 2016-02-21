@@ -32,10 +32,11 @@ public class TankDrive extends Subsystem {
 		leftBack = new VictorSP(RobotMap.leftBackMotor);
 		rightFront = new VictorSP(RobotMap.rightFrontMotor);
 		rightBack = new VictorSP(RobotMap.rightBackMotor);
-		/*
-		 * leftFront.setInverted(true); leftBack.setInverted(true);
-		 * rightFront.setInverted(true); rightBack.setInverted(true);
-		 */
+
+		leftFront.setInverted(true);
+		leftBack.setInverted(true);
+		rightFront.setInverted(true);
+		rightBack.setInverted(true);
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 		driveStickL = robot.oi.leftStick;
@@ -43,8 +44,15 @@ public class TankDrive extends Subsystem {
 	}
 
 	public void manualDrive() {
-		myDrive.tankDrive(driveStickL, driveStickR);
+		if (Robot.getInstance().oi.leftTrigger.get()) {
+			myDrive.tankDrive(driveStickL, driveStickR);
+		} else if (Robot.getInstance().oi.rightTrigger.get()) {
+			myDrive.tankDrive(driveStickL, driveStickR);
+		} else {
+			myDrive.tankDrive(0, 0);
+		}
 		Timer.delay(0.01);
+
 	}
 
 	public void applyPowerToLeftMotors(double speed) {

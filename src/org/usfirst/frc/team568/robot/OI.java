@@ -23,6 +23,9 @@ public class OI {
 	public Button rightThree = new JoystickButton(rightStick, ControllerButtons.shootBallButton);
 	public Button rightFive = new JoystickButton(rightStick, ControllerButtons.obtainBallButton);
 	public Button rightTwo = new JoystickButton(rightStick, ControllerButtons.stopShooterButton);
+	public Button rightFour = new JoystickButton(rightStick, ControllerButtons.nudge);
+	public Button rightTrigger = new JoystickButton(rightStick, ControllerButtons.safty);
+	public Button leftTrigger = new JoystickButton(leftStick, ControllerButtons.safty);
 
 	public Button leftFive = new JoystickButton(leftStick, ControllerButtons.bringShooterDown);
 	public Button leftThree = new JoystickButton(leftStick, ControllerButtons.bringShooterUp);
