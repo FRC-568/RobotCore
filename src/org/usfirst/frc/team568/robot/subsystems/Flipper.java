@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.CrateBot;
 import org.usfirst.frc.team568.robot.commands.LiftFlipper;
 import org.usfirst.frc.team568.robot.commands.LowerFlipper;
 
@@ -11,14 +11,14 @@ public class Flipper extends Subsystem {
 	Solenoid lift1;
 	Solenoid lift2;
 	Solenoid lift3;
-	private final Robot robot;
+	private final CrateBot robot;
 
 	@Override
 	protected void initDefaultCommand() {
 	}
 
 	public Flipper() {
-		robot = Robot.getInstance();
+		robot = CrateBot.getInstance();
 
 		robot.oi.liftFlipper.whenPressed(new LiftFlipper());
 		robot.oi.lowerFlipper.whenPressed(new LowerFlipper());

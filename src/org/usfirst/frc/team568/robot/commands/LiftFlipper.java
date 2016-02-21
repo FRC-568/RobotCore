@@ -1,16 +1,16 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.CrateBot;
 import org.usfirst.frc.team568.robot.subsystems.Flipper;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class LiftFlipper extends Command {
-	Flipper flipper = Robot.getInstance().flipper;
+	Flipper flipper = CrateBot.getInstance().flipper;
 
 	@Override
 	protected void initialize() {
-		Robot.getInstance().flipper.liftUp();
+		CrateBot.getInstance().flipper.liftUp();
 	}
 
 	@Override

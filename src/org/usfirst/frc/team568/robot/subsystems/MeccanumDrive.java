@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.CrateBot;
 import org.usfirst.frc.team568.robot.RobotMap;
 import org.usfirst.frc.team568.robot.commands.MeccanumDriveManual;
 
@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class MeccanumDrive extends Subsystem {
-	public final Robot robot;
+	public final CrateBot robot;
 	protected SpeedController leftFront;
 	protected SpeedController leftBack;
 	protected SpeedController rightFront;
@@ -23,13 +23,13 @@ public class MeccanumDrive extends Subsystem {
 	double heading;
 
 	public MeccanumDrive() {
-		robot = Robot.getInstance();
+		robot = CrateBot.getInstance();
 		ref = new ReferenceFrame2();
 
-		leftFront = new Talon(RobotMap.leftFrontMotor);
-		leftBack = new Talon(RobotMap.leftBackMotor);
-		rightFront = new Talon(RobotMap.rightFrontMotor);
-		rightBack = new Talon(RobotMap.rightBackMotor);
+		leftFront = new Talon(RobotMap.CrateBot.leftFront);
+		leftBack = new Talon(RobotMap.CrateBot.leftBack);
+		rightFront = new Talon(RobotMap.CrateBot.rightFront);
+		rightBack = new Talon(RobotMap.CrateBot.rightBack);
 
 		rightFront.setInverted(true);
 		rightBack.setInverted(true);

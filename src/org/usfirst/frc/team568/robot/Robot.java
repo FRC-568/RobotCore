@@ -48,8 +48,8 @@ public class Robot extends IterativeRobot {
 		shooter = new Shooter();
 		referenceframe = new ReferenceFrame();
 		referanceFrame2 = new ReferenceFrame2();
-		flipper = new Flipper();
-		crateLifter = new CrateLifter();
+		// flipper = new Flipper();
+		// crateLifter = new CrateLifter();
 		cam0 = CameraServer.getInstance();
 		cam0.startAutomaticCapture("cam0");
 		comp = new Compressor();

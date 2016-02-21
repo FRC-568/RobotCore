@@ -17,7 +17,7 @@ public class RobotMap {
 	// public static int rangefinderPort = 1;
 	// public static int rangefinderModule = 1;
 
-	public static final int nudge = 7;
+	public static final int nudge = 0;
 	public static final int leftFrontMotor = 4;
 	public static final int leftBackMotor = 5;
 	public static final int rightFrontMotor = 1;
@@ -36,7 +36,18 @@ public class RobotMap {
 	public static final int shooterRightPort = 9;
 	public static final int leftTiltPort = 7;
 	public static final int rightTiltPort = 6;
+
 	// public static final int rightMidMotor = 5;
 	// public static final int leftMidMotor = 2;
+	public class CrateBot {
+		public static final int leftFront = 0;
+		public static final int leftBack = 1;
+		public static final int rightFront = 2;
+		public static final int rightBack = 4;
 
+		public static final int brake = 2;
+		public static final int lifterMotor = 5;
+		public static final int lowZoneMotor = 8;
+
+	}
 }

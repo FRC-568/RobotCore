@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.CrateBot;
 import org.usfirst.frc.team568.robot.commands.Brake;
 import org.usfirst.frc.team568.robot.commands.CalabrateIMU;
 import org.usfirst.frc.team568.robot.commands.CrateLifterIn;
@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class CrateLifter extends Subsystem {
-	private final Robot robot;
+	private final CrateBot robot;
 	protected Joystick driveStick;
 	Solenoid in;
 	Solenoid out;
@@ -26,7 +26,7 @@ public class CrateLifter extends Subsystem {
 	public int pov;
 
 	public CrateLifter() {
-		this.robot = Robot.getInstance();
+		this.robot = CrateBot.getInstance();
 		this.lift = new Victor(5);
 
 		this.driveStick = this.robot.oi.leftStick;

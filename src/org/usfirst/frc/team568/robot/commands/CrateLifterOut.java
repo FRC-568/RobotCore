@@ -1,16 +1,16 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.CrateBot;
 import org.usfirst.frc.team568.robot.subsystems.CrateLifter;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class CrateLifterOut extends Command {
-	CrateLifter crateLifter = Robot.getInstance().crateLifter;
+	CrateLifter crateLifter = CrateBot.getInstance().crateLifter;
 
 	@Override
 	protected void initialize() {
-		Robot.getInstance().crateLifter.crateOut();
+		CrateBot.getInstance().crateLifter.crateOut();
 	}
 
 	@Override

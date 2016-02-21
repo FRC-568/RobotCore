@@ -1,16 +1,16 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.CrateBot;
 import org.usfirst.frc.team568.robot.subsystems.CrateLifter;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class Reverse extends Command {
-	CrateLifter crateLifter = Robot.getInstance().crateLifter;
+	CrateLifter crateLifter = CrateBot.getInstance().crateLifter;
 
 	@Override
 	protected void initialize() {
-		Robot.getInstance().crateLifter.reverse();
+		CrateBot.getInstance().crateLifter.reverse();
 	}
 
 	@Override
@@ -24,12 +24,12 @@ public class Reverse extends Command {
 
 	@Override
 	protected void end() {
-		Robot.getInstance().crateLifter.brake();
+		CrateBot.getInstance().crateLifter.brake();
 
 	}
 
 	@Override
 	protected void interrupted() {
-		Robot.getInstance().crateLifter.brake();
+		CrateBot.getInstance().crateLifter.brake();
 	}
 }
