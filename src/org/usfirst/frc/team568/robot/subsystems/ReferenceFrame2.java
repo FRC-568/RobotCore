@@ -56,7 +56,7 @@ public class ReferenceFrame2 extends Subsystem implements Runnable {
 		acceleration = Vector2.zero;
 		velocity = Vector2.zero;
 		position = Vector2.zero;
-		gyro.reset();
+		// gyro.reset();
 	}
 
 	public Vector2 getVelocity() {
@@ -110,6 +110,7 @@ public class ReferenceFrame2 extends Subsystem implements Runnable {
 
 	@Override
 	public void run() {
+		SmartDashboard.putString("Status", "Started");
 		double lastTime = Timer.getFPGATimestamp();
 		double time = lastTime;
 		double deltaTime;
@@ -159,20 +160,26 @@ public class ReferenceFrame2 extends Subsystem implements Runnable {
 
 		Filter xFilter = LinearDigitalFilter.movingAverage(xSource, 4);
 		Filter yFilter = LinearDigitalFilter.movingAverage(ySource, 4);
+		SmartDashboard.putString("Status", "Filtered");
 
 		while (!Thread.interrupted()) {
+			SmartDashboard.putString("Status", "looping");
 			time = Timer.getFPGATimestamp();
+			SmartDashboard.putString("Status", "timestamped");
 			deltaTime = time - lastTime;
 			acceleration = new Vector2(xFilter.pidGet(), yFilter.pidGet());
+			SmartDashboard.putString("Status", "accelerated");
 			velocity = Vector2.add(velocity, Vector2.scale(acceleration, deltaTime));
+			SmartDashboard.putString("Status", "velocirated");
 			position = Vector2.add(position, Vector2.rotate(Vector2.scale(velocity, deltaTime), -getHeading()));
+			SmartDashboard.putString("Status", "positioned");
 			SmartDashboard.putNumber("Raw Y", acel.getY());
 			SmartDashboard.putNumber("Raw X", acel.getX());
 			lastTime = time;
 			try {
 				Thread.sleep(20);
 			} catch (InterruptedException e) {
-
+				SmartDashboard.putString("Interrupted", "true");
 			}
 		}
 
