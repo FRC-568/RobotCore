@@ -10,7 +10,6 @@ import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
 import org.usfirst.frc.team568.robot.subsystems.TankDrive;
 
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -32,7 +31,7 @@ public class Robot extends IterativeRobot {
 	public ReferenceFrame2 referanceFrame2;
 	Command autonomousCommand;
 	SendableChooser chooser;
-	CameraServer cam0;
+	// CameraServer cam0;
 	Compressor comp;
 
 	double speed = 0;
@@ -50,16 +49,15 @@ public class Robot extends IterativeRobot {
 		referanceFrame2 = new ReferenceFrame2();
 		// flipper = new Flipper();
 		// crateLifter = new CrateLifter();
-		cam0 = CameraServer.getInstance();
-		cam0.startAutomaticCapture("cam0");
+		// cam0 = CameraServer.getInstance();
+		// cam0.startAutomaticCapture("cam0");
 		comp = new Compressor();
 		referanceFrame2.start();
 		referanceFrame2.calabrateGyro();
 
-		SmartDashboard.putNumber("speed", .5);
-		SmartDashboard.putNumber("inches", 20);
-		SmartDashboard.putNumber("timeOut", 5);
 		SmartDashboard.putNumber("IMUCurrentPosition", referenceframe.imu.getDisY());
+		referanceFrame2.threshold = SmartDashboard.getNumber("Threshold");
+		SmartDashboard.putNumber("Threshold", referanceFrame2.threshold);
 
 	}
 
@@ -69,6 +67,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto mode", chooser);
 		comp.start();
 		Robot.getInstance().referenceframe.imu.calibrate();
+		referanceFrame2.threshold = SmartDashboard.getNumber("Threshold");
 
 	}
 
@@ -143,6 +142,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Heading", referanceFrame2.getHeading());
 		SmartDashboard.putNumber("Acel Y", referanceFrame2.getAcel().y);
 		SmartDashboard.putNumber("Acel X", referanceFrame2.getAcel().x);
+
+		referanceFrame2.threshold = SmartDashboard.getNumber("Threshold");
 
 	}
 

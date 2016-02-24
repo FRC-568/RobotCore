@@ -4,11 +4,11 @@ import org.usfirst.frc.team568.robot.CrateBot;
 import org.usfirst.frc.team568.robot.RobotMap;
 import org.usfirst.frc.team568.robot.commands.MeccanumDriveManual;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class MeccanumDrive extends Subsystem {
@@ -20,34 +20,47 @@ public class MeccanumDrive extends Subsystem {
 	protected Joystick driveStick;
 	RobotDrive myDrive;
 	ReferenceFrame2 ref;
+	DigitalInput limitS;
 	double heading;
 
 	public MeccanumDrive() {
 		robot = CrateBot.getInstance();
 		ref = new ReferenceFrame2();
 
-		leftFront = new Talon(RobotMap.CrateBot.leftFront);
-		leftBack = new Talon(RobotMap.CrateBot.leftBack);
-		rightFront = new Talon(RobotMap.CrateBot.rightFront);
-		rightBack = new Talon(RobotMap.CrateBot.rightBack);
+		leftFront = new Victor(RobotMap.CrateBot.leftFront);
+		leftBack = new Victor(RobotMap.CrateBot.leftBack);
+		rightFront = new Victor(RobotMap.CrateBot.rightFront);
+		rightBack = new Victor(RobotMap.CrateBot.rightBack);
 
 		rightFront.setInverted(true);
 		rightBack.setInverted(true);
+
+		limitS = new DigitalInput(0);
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 		driveStick = robot.oi.leftStick;
 
 	}
 
-	public void manualDrive() {
-		if (Math.abs(driveStick.getRawAxis(2)) < .1)
-			heading = ref.getHeading();
+	/*
+	 * public void manualDrive() { if (driveStick.getRawButton(1) == true) { if
+	 * (Math.abs(driveStick.getRawAxis(2)) < .1) heading = ref.getHeading();
+	 * else heading += driveStick.getRawAxis(2) * 3; double error =
+	 * (ref.getHeading() - heading) * .075;
+	 * myDrive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(),
+	 * -error, 0); Timer.delay(0.01); } }
+	 */
+	public String limitTF() {
+		if (limitS.get() == true)
+			return "true";
+		else if (limitS.get() == false)
+			return "false";
 		else
-			heading += driveStick.getRawAxis(2) * 3;
-		double error = (ref.getHeading() - heading) * .025;
-		myDrive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), -error, 0);
+			return "N/A";
+	}
 
-		Timer.delay(0.01);
+	public void manualDrive() {
+		myDrive.arcadeDrive(driveStick, 2, driveStick, 1);
 	}
 
 	public void applyPowerToLeftMotors(double speed) {

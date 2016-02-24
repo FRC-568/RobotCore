@@ -1,10 +1,7 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
 import org.usfirst.frc.team568.robot.CrateBot;
-import org.usfirst.frc.team568.robot.commands.Brake;
 import org.usfirst.frc.team568.robot.commands.CalabrateIMU;
-import org.usfirst.frc.team568.robot.commands.CrateLifterIn;
-import org.usfirst.frc.team568.robot.commands.CrateLifterOut;
 import org.usfirst.frc.team568.robot.commands.Lifter;
 import org.usfirst.frc.team568.robot.commands.ResetIMU;
 import org.usfirst.frc.team568.robot.commands.Reverse;
@@ -33,34 +30,34 @@ public class CrateLifter extends Subsystem {
 
 		this.in = new Solenoid(7);
 		this.out = new Solenoid(3);
-		this.brake = new Solenoid(2);
-		this.brake1 = new Solenoid(1);
+		// this.brake = new Solenoid(2);
+		// this.brake1 = new Solenoid(1);
 
-		this.robot.oi.crateIn.whenPressed(new CrateLifterIn());
-		this.robot.oi.crateOut.whenPressed(new CrateLifterOut());
+		// this.robot.oi.crateIn.whenPressed(new CrateLifterIn());
+		// this.robot.oi.crateOut.whenPressed(new CrateLifterOut());
 		this.robot.oi.liftGo.whileHeld(new Lifter());
-		this.robot.oi.liftStop.whenPressed(new Brake());
+		// this.robot.oi.liftStop.whenPressed(new Brake());
 		this.robot.oi.lifterReverse.whileHeld(new Reverse());
 		this.robot.oi.Calabrate.whenPressed(new CalabrateIMU());
 		this.robot.oi.Calabrate.whenPressed(new ResetIMU());
 	}
 
 	public void reverse() {
-		this.brake.set(true);
-		this.brake1.set(false);
+		// this.brake.set(true);
+		// this.brake1.set(false);
 		this.lift.set(-0.75);
 
 	}
 
 	public void lift() {
-		this.brake.set(true);
-		this.brake1.set(false);
+		// this.brake.set(true);
+		// this.brake1.set(false);
 		this.lift.set(0.75);
 	}
 
 	public void brake() {
-		this.brake.set(false);
-		this.brake1.set(true);
+		// this.brake.set(false);
+		// this.brake1.set(true);
 		this.lift.set(0.0D);
 	}
 
