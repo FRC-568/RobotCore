@@ -22,6 +22,9 @@ public class RobotMap {
 	public static final int leftBackMotor = 5;
 	public static final int rightFrontMotor = 1;
 	public static final int rightBackMotor = 2;
+
+	public static final int upperLimmitSwitch = 0;
+	public static final int lowerLimmitSwitch = 1;
 	// public static final int lifterMotor = 5;
 	// public static final int lowZoneMotor = 8;
 

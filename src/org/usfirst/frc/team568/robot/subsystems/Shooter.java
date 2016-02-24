@@ -9,6 +9,7 @@ import org.usfirst.frc.team568.robot.commands.TiltDownwards;
 import org.usfirst.frc.team568.robot.commands.TiltUpwards;
 import org.usfirst.frc.team568.robot.commands.nudge;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
@@ -20,6 +21,8 @@ public class Shooter {
 	SpeedController leftTilt;
 	SpeedController rightTilt;
 	Servo nudge;
+	public DigitalInput upperLimmitSwitch;
+	public DigitalInput lowerLimmitSwitch;
 
 	public Shooter() {
 		shooterRight = new Victor(RobotMap.shooterRightPort);
@@ -30,27 +33,31 @@ public class Shooter {
 		rightTilt = new Talon(RobotMap.rightTiltPort);
 
 		nudge = new Servo(RobotMap.nudge);
+
+		upperLimmitSwitch = new DigitalInput(RobotMap.upperLimmitSwitch);
+		lowerLimmitSwitch = new DigitalInput(RobotMap.lowerLimmitSwitch);
 		// TODO Auto-generated constructor stub
-		Robot.getInstance().oi.rightThree.whileHeld(new Shoot());
-		Robot.getInstance().oi.rightFive.whileHeld(new GetBall());
-		Robot.getInstance().oi.rightTwo.whileHeld(new DoNotShoot());
-		Robot.getInstance().oi.leftFive.whileHeld(new TiltDownwards());
-		Robot.getInstance().oi.leftThree.whileHeld(new TiltUpwards());
-		Robot.getInstance().oi.rightFour.whenPressed(new nudge());
+		Robot.getInstance().oi.shootFour.whileHeld(new Shoot());
+		Robot.getInstance().oi.shootFive.whileHeld(new GetBall());
+		Robot.getInstance().oi.shootSix.whenPressed(new DoNotShoot());
+		Robot.getInstance().oi.shootTwo.whenPressed(new TiltDownwards());
+		Robot.getInstance().oi.shootThree.whenPressed(new TiltUpwards());
+		Robot.getInstance().oi.shootOne.whileHeld(new nudge());
+
 	}
 
 	public void shoot() {
-		shooterRight.set(0.85);
-		shooterLeft.set(0.85);
+		shooterRight.set(0.65);
+		shooterLeft.set(0.65);
 
 	}
 
 	public void nudge() {
-		nudge.setAngle(90);
+		nudge.setAngle(180);
 	}
 
 	public void stopnudge() {
-		nudge.setAngle(0);
+		nudge.setAngle(90);
 	}
 
 	public void obtainBall() {
@@ -63,12 +70,12 @@ public class Shooter {
 		shooterLeft.set(0);
 	}
 
-	public void tiltUp() {
+	public void tiltDown() {
 		leftTilt.set(-0.5);
 		rightTilt.set(-0.5);
 	}
 
-	public void tiltDown() {
+	public void tiltUp() {
 		leftTilt.set(1);
 		rightTilt.set(1);
 	}

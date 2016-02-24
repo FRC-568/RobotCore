@@ -12,6 +12,7 @@ public class OI {
 
 	public Joystick leftStick = new Joystick(RobotMap.joy1Pos);
 	public Joystick rightStick = new Joystick(RobotMap.joy2Pos);
+	public Joystick shootStick = new Joystick(RobotMap.joy3Pos);
 
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
@@ -20,15 +21,15 @@ public class OI {
 	// number it is.
 	// Joystick stick = new Joystick(port);
 	// Button button = new JoystickButton(stick, buttonNumber);
-	public Button rightThree = new JoystickButton(rightStick, ControllerButtons.shootBallButton);
-	public Button rightFive = new JoystickButton(rightStick, ControllerButtons.obtainBallButton);
-	public Button rightTwo = new JoystickButton(rightStick, ControllerButtons.stopShooterButton);
-	public Button rightFour = new JoystickButton(rightStick, ControllerButtons.nudge);
+	public Button shootFour = new JoystickButton(shootStick, ControllerButtons.shootBallButton);
+	public Button shootFive = new JoystickButton(shootStick, ControllerButtons.obtainBallButton);
+	public Button shootSix = new JoystickButton(shootStick, ControllerButtons.stopShooterButton);
+	public Button shootOne = new JoystickButton(shootStick, ControllerButtons.nudge);
 	public Button rightTrigger = new JoystickButton(rightStick, ControllerButtons.safty);
 	public Button leftTrigger = new JoystickButton(leftStick, ControllerButtons.safty);
 
-	public Button leftFive = new JoystickButton(leftStick, ControllerButtons.bringShooterDown);
-	public Button leftThree = new JoystickButton(leftStick, ControllerButtons.bringShooterUp);
+	public Button shootTwo = new JoystickButton(shootStick, ControllerButtons.bringShooterDown);
+	public Button shootThree = new JoystickButton(shootStick, ControllerButtons.bringShooterUp);
 
 	public Button liftFlipper = new JoystickButton(leftStick, ControllerButtons.liftFlipper);
 	public Button lowerFlipper = new JoystickButton(leftStick, ControllerButtons.lowerFlipper);

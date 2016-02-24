@@ -25,7 +25,11 @@ public class TiltDownwards extends Command {
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		return false;
+		if (Robot.getInstance().oi.shootTwo.get()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	@Override

@@ -25,7 +25,11 @@ public class nudge extends Command {
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		return true;
+		if (Robot.getInstance().oi.shootOne.get()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	@Override

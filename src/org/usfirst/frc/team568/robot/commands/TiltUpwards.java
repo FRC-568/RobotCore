@@ -13,6 +13,7 @@ public class TiltUpwards extends Command {
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
+
 		Robot.getInstance().shooter.tiltUp();
 	}
 
@@ -25,7 +26,11 @@ public class TiltUpwards extends Command {
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		return false;
+		if (Robot.getInstance().oi.shootThree.get()) {
+			return false;
+		} else {
+			return false;
+		}
 	}
 
 	@Override

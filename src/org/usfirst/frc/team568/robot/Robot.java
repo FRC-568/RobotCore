@@ -10,6 +10,9 @@ import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
 import org.usfirst.frc.team568.robot.subsystems.TankDrive;
 
+import com.ni.vision.NIVision;
+import com.ni.vision.NIVision.Image;
+
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -19,6 +22,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
+	int session;
+	Image frame;
+	double BoxSize;
+	double KI;
+	double KP;
+	double KD;
+	double TiltKP;
+	double TiltKD;
+	double TiltKI;
+	double ErrSum;
+	double Err2;
+	double Err;
+	double Pow;
+	boolean LL;
+	boolean LR;
+	double tiltErr;
+	double tiltErr2;
+	double tiltPow;
+
 	protected static Robot instance;
 	public OI oi;
 
@@ -69,6 +91,15 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto mode", chooser);
 		comp.start();
 		Robot.getInstance().referenceframe.imu.calibrate();
+		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+		NIVision.IMAQdxConfigureGrab(session);
+		SmartDashboard.putNumber("P", 0.700);
+		SmartDashboard.putNumber("I", 0.700);
+		SmartDashboard.putNumber("D", 0);
+		SmartDashboard.putNumber("TP", 0.500);
+		SmartDashboard.putNumber("TI", 0);
+		SmartDashboard.putNumber("TD", 0);
 
 	}
 
@@ -143,6 +174,20 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Heading", referanceFrame2.getHeading());
 		SmartDashboard.putNumber("Acel Y", referanceFrame2.getAcel().y);
 		SmartDashboard.putNumber("Acel X", referanceFrame2.getAcel().x);
+
+		KP = SmartDashboard.getNumber("P");
+		KI = SmartDashboard.getNumber("I");
+		KD = SmartDashboard.getNumber("D");
+		TiltKP = SmartDashboard.getNumber("TP");
+		TiltKI = SmartDashboard.getNumber("TI");
+		TiltKD = SmartDashboard.getNumber("TD");
+		/////// aquire
+		NIVision.IMAQdxStartAcquisition(session);
+		/**
+		 * grab an image, draw the circle, and provide it for the camera server
+		 * which will in turn send it to the dashboard.
+		 */
+		NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
 
 	}
 
