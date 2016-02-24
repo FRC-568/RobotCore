@@ -7,6 +7,8 @@ public class ControllerButtons {
 	public static int stopShooterButton = 2;
 	public static int bringShooterDown = 5;
 	public static int bringShooterUp = 3;
+	public static int nudge = 4;
+	public static int safty = 1;
 
 	public static int liftFlipper = 5;
 	public static int lowerFlipper = 6;

@@ -7,11 +7,11 @@ import org.usfirst.frc.team568.robot.commands.GetBall;
 import org.usfirst.frc.team568.robot.commands.Shoot;
 import org.usfirst.frc.team568.robot.commands.TiltDownwards;
 import org.usfirst.frc.team568.robot.commands.TiltUpwards;
+import org.usfirst.frc.team568.robot.commands.nudge;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 
 public class Shooter {
@@ -31,24 +31,31 @@ public class Shooter {
 
 		nudge = new Servo(RobotMap.nudge);
 		// TODO Auto-generated constructor stub
-		Robot.getInstance().oi.rightThree.whenPressed(new Shoot());
-		Robot.getInstance().oi.rightFive.whenPressed(new GetBall());
-		Robot.getInstance().oi.rightTwo.whenPressed(new DoNotShoot());
-		Robot.getInstance().oi.leftFive.whenPressed(new TiltDownwards());
-		Robot.getInstance().oi.leftThree.whenPressed(new TiltUpwards());
+		Robot.getInstance().oi.rightThree.whileHeld(new Shoot());
+		Robot.getInstance().oi.rightFive.whileHeld(new GetBall());
+		Robot.getInstance().oi.rightTwo.whileHeld(new DoNotShoot());
+		Robot.getInstance().oi.leftFive.whileHeld(new TiltDownwards());
+		Robot.getInstance().oi.leftThree.whileHeld(new TiltUpwards());
+		Robot.getInstance().oi.rightFour.whenPressed(new nudge());
 	}
 
 	public void shoot() {
+		shooterRight.set(0.85);
+		shooterLeft.set(0.85);
+
+	}
+
+	public void nudge() {
 		nudge.setAngle(90);
-		shooterRight.set(0.75);
-		shooterLeft.set(0.75);
-		Timer.delay(.01);
+	}
+
+	public void stopnudge() {
 		nudge.setAngle(0);
 	}
 
 	public void obtainBall() {
-		shooterRight.set(-0.25);
-		shooterLeft.set(-0.25);
+		shooterRight.set(-0.20);
+		shooterLeft.set(-0.20);
 	}
 
 	public void stopShooter() {

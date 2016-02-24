@@ -17,7 +17,7 @@ public class RobotMap {
 	// public static int rangefinderPort = 1;
 	// public static int rangefinderModule = 1;
 
-	public static final int nudge = 0;
+	public static final int nudge = 8;
 	public static final int leftFrontMotor = 4;
 	public static final int leftBackMotor = 5;
 	public static final int rightFrontMotor = 1;
@@ -32,7 +32,7 @@ public class RobotMap {
 	 * public static final int aimerUp = 0; public static final int aimerDown =
 	 * 1; public static final int brake = 2;
 	 */
-	public static final int shooterLeftPort = 8;
+	public static final int shooterLeftPort = 0;
 	public static final int shooterRightPort = 9;
 	public static final int leftTiltPort = 7;
 	public static final int rightTiltPort = 6;
