@@ -41,6 +41,7 @@ public class Robot extends IterativeRobot {
 	double tiltPow;
 	public int whichOne;
 	public boolean over;
+	public double speed;
 	// public double EncoderValue;
 
 	protected static Robot instance;
@@ -95,8 +96,10 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-		double speed = SmartDashboard.getNumber("speed");
-		double inches = SmartDashboard.getNumber("inches");
+		speed = SmartDashboard.getNumber("speed", .75);
+		// double inches = SmartDashboard.getNumber("inches");
+		whichOne = (int) SmartDashboard.getNumber("Autonomous #");
+		over = SmartDashboard.getBoolean("Over or To obstacle");
 
 		// autonomousCommand = new AutonomousTest(speed, inches);
 		autonomousCommand.start();
