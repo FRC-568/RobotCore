@@ -40,6 +40,7 @@ public class Robot extends IterativeRobot {
 	double tiltErr2;
 	double tiltPow;
 	public int whichOne;
+	public boolean over;
 	// public double EncoderValue;
 
 	protected static Robot instance;
@@ -62,7 +63,7 @@ public class Robot extends IterativeRobot {
 		referanceFrame2 = new ReferenceFrame2();
 		referanceFrame2.start();
 		referanceFrame2.calabrateGyro();
-		whichOne = 0;
+
 	}
 
 	@Override
@@ -71,15 +72,15 @@ public class Robot extends IterativeRobot {
 		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		NIVision.IMAQdxConfigureGrab(session);
-		SmartDashboard.putNumber("P", 2.00);
-		SmartDashboard.putNumber("I", 0.700);
-		SmartDashboard.putNumber("D", 0);
-		SmartDashboard.putNumber("TP", 5.000);
-		SmartDashboard.putNumber("TI", 0);
-		SmartDashboard.putNumber("TD", 0);
-		SmartDashboard.putNumber("encoderValue", encoder.getDistance());
-
-		SmartDashboard.getNumber("Autonomous #");
+		/*
+		 * SmartDashboard.putNumber("P", 2.00); SmartDashboard.putNumber("I",
+		 * 0.700); SmartDashboard.putNumber("D", 0);
+		 * SmartDashboard.putNumber("TP", 5.000); SmartDashboard.putNumber("TI",
+		 * 0); SmartDashboard.putNumber("TD", 0);
+		 * SmartDashboard.putNumber("encoderValue", encoder.getDistance());
+		 */
+		whichOne = (int) SmartDashboard.getNumber("Autonomous #");
+		over = SmartDashboard.getBoolean("Over or To obstacle");
 
 	}
 
