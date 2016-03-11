@@ -1,12 +1,6 @@
 package org.usfirst.frc.team568.robot;
 
-import org.usfirst.frc.team568.robot.commands.AutonomousTest;
-import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 import org.usfirst.frc.team568.robot.subsystems.Arms;
-import org.usfirst.frc.team568.robot.subsystems.CrateLifter;
-import org.usfirst.frc.team568.robot.subsystems.Flipper;
-import org.usfirst.frc.team568.robot.subsystems.MeccanumDrive;
-import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
 import org.usfirst.frc.team568.robot.subsystems.TankDrive;
@@ -17,7 +11,6 @@ import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -28,6 +21,8 @@ public class Robot extends IterativeRobot {
 	Encoder encoder;
 	int session;
 	Image frame;
+	double Pan;
+	double Tilt;
 	double BoxSize;
 	double KI;
 	double KP;
@@ -44,76 +39,45 @@ public class Robot extends IterativeRobot {
 	double tiltErr;
 	double tiltErr2;
 	double tiltPow;
+	public int whichOne;
 	// public double EncoderValue;
 
 	protected static Robot instance;
 	public OI oi;
 
 	public Arms arms;
-	public MeccanumDrive meccanumDrive;
+
 	public Shooter shooter;
-	public ArcadeDrive arcadeDrive;
+
 	public TankDrive tankDrive;
-	public Flipper flipper;
-	public CrateLifter crateLifter;
-	public ReferenceFrame referenceframe;
 	public ReferenceFrame2 referanceFrame2;
 	Command autonomousCommand;
-	// SendableChooser chooser;
-	// CameraServer cam0;
-	Compressor comp;
-
-	// double speed = 0;
-	// double inches = 0;
-	// double timeout = 0;
-	// double encoderValue = 0;
 
 	public Robot() {
 		instance = this;
 		oi = new OI();
-		// arcadeDrive = new ArcadeDrive();
-		// meccanumDrive = new MeccanumDrive();
 		tankDrive = new TankDrive();
 		shooter = new Shooter();
 		arms = new Arms();
-		// referenceframe = new ReferenceFrame();
 		referanceFrame2 = new ReferenceFrame2();
-		// flipper = new Flipper();
-		// crateLifter = new CrateLifter();
-		encoder = new Encoder(8, 9);
-		// cam0 = CameraServer.getInstance();
-		// cam0.startAutomaticCapture("cam1");
-		comp = new Compressor();
 		referanceFrame2.start();
 		referanceFrame2.calabrateGyro();
-		// SmartDashboard.putNumber("EncoderValue", encoder.getDistance());
-		// SmartDashboard.putNumber("IMUCurrentPosition",
-		// referenceframe.imu.getDisY());
-		// referanceFrame2.threshold = SmartDashboard.getNumber("Threshold");
-		// SmartDashboard.putNumber("Threshold", referanceFrame2.threshold);
-
+		whichOne = 0;
 	}
 
 	@Override
 	public void robotInit() {
 		encoder.reset();
-		// chooser = new SendableChooser();
-		// SmartDashboard.putData("Auto mode", chooser);
-		comp.start();
-		// Robot.getInstance().referenceframe.imu.calibrate();
 		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-		// NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		NIVision.IMAQdxConfigureGrab(session);
-		SmartDashboard.putNumber("P", 0.700);
+		SmartDashboard.putNumber("P", 2.00);
 		SmartDashboard.putNumber("I", 0.700);
 		SmartDashboard.putNumber("D", 0);
-		SmartDashboard.putNumber("TP", 0.500);
+		SmartDashboard.putNumber("TP", 5.000);
 		SmartDashboard.putNumber("TI", 0);
 		SmartDashboard.putNumber("TD", 0);
 		SmartDashboard.putNumber("encoderValue", encoder.getDistance());
-		// referanceFrame2.threshold = SmartDashboard.getNumber("Threshold");
-		encoder.reset();
 	}
 
 	@Override
@@ -127,42 +91,17 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-
-		comp.start();
-		// autonomousCommand = (Command) chooser.getSelected();
 		double speed = SmartDashboard.getNumber("speed");
 		double inches = SmartDashboard.getNumber("inches");
-		/*
-		 * String autoSelected = SmartDashboard.getString("Auto Selector",
-		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-		 * = new MyAutoCommand(); break; case "Default Auto": default:
-		 * autonomousCommand = new ExampleCommand(); break; }
-		 */
-		autonomousCommand = new AutonomousTest(speed, inches);
+
+		// autonomousCommand = new AutonomousTest(speed, inches);
 		autonomousCommand.start();
-		// schedule the autonomous command (example)
 
-		/*
-		 * this.autonomousCommand = ((Command) this.chooser.getSelected()); if
-		 * (this.autonomousCommand != null) { this.autonomousCommand.start();
-		 * 
-		 * }
-		 */
-
-		// this.autonomousCommand = ((Command) this.chooser.getSelected());
-		// if (autonomousCommand != null) {
-		/// autonomousCommand.start();
-		// }
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		// SmartDashboard.putNumber("speed", .5);
-		// SmartDashboard.putNumber("inches", 1);
-		// SmartDashboard.putNumber("timeOut", 5);
-		// SmartDashboard.putNumber("IMUCurrentPosition",
-		// referenceframe.imu.getDisY());
 
 	}
 
@@ -177,12 +116,6 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		Scheduler.getInstance().run();
-		SmartDashboard.putNumber("speed", .5);
-		SmartDashboard.putNumber("inches", 1);
-		SmartDashboard.putNumber("timeOut", 5);
-		// SmartDashboard.putNumber("IMUCurrentPosition",
-		// referenceframe.imu.getDisY() * 1000);
 
 		SmartDashboard.putNumber("POS X", referanceFrame2.getPos().x);
 		SmartDashboard.putNumber("POS Y", referanceFrame2.getPos().y);
@@ -197,21 +130,52 @@ public class Robot extends IterativeRobot {
 		TiltKP = SmartDashboard.getNumber("TP");
 		TiltKI = SmartDashboard.getNumber("TI");
 		TiltKD = SmartDashboard.getNumber("TD");
-		/////// aquire
 		NIVision.IMAQdxStartAcquisition(session);
-		/**
-		 * grab an image, draw the circle, and provide it for the camera server
-		 * which will in turn send it to the dashboard.
-		 */
 		NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
-
-		// referanceFrame2.threshold = SmartDashboard.getNumber("Threshold");
 		NIVision.IMAQdxGrab(session, frame, 1);
 		NIVision.imaqDrawShapeOnImage(frame, frame, rect, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
 		CameraServer.getInstance().setImage(frame);
-		// NIVision.IMAQdxStopAcquisition(session);
+		/*
+		 * NetworkTable server = NetworkTable.getTable("SmartDashboard"); try {
+		 * System.out.println(server.getNumber("COG_X", 0.0));
+		 * System.out.println(server.getNumber("COG_Y", 0.0)); } catch
+		 * (TableKeyNotDefinedException ex) {
+		 * 
+		 * }
+		 * 
+		 * if (rightStick.getRawButton(3)) { Pan =
+		 * SmartDashboard.getNumber("COG_X"); Tilt =
+		 * SmartDashboard.getNumber("COG_Y"); BoxSize =
+		 * SmartDashboard.getNumber("COG_BOX_SIZE"); if (Pan > 0) { Err2 = Err;
+		 * Err = Pan - 320; ErrSum += Err; if (ErrSum > 1000) ErrSum = 1000; if
+		 * (ErrSum < -1000) ErrSum = -1000; Pow = Err * (KP / 1000) + Pow * (KI
+		 * / 1000) + (Err - Err2) * (KD / 1000);// Pos // turn
+		 * Robot.tankDrive(-Pow, Pow); if (Err < 0) { LL = false; LR = true; }
+		 * else { LL = true; LR = false; } SmartDashboard.putNumber("ERR", Err);
+		 * SmartDashboard.putNumber("Pow", Pow);
+		 * SmartDashboard.putNumber("Size", BoxSize);
+		 * 
+		 * if (Math.abs(Err) < 100) { // ErrSum = 0; if (BoxSize < 100)
+		 * DarwinsRobot.tankDrive(-.5, -.5);
+		 * 
+		 * tiltErr = 240 - Tilt; tiltErr2 = tiltErr; tiltPow = tiltErr * (TiltKP
+		 * / 1000) + tiltPow * (TiltKI / 1000)+ (tiltErr - tiltErr2) * (TiltKD /
+		 * 1000); bob.set(tiltPow); sam.set(tiltPow);
+		 * SmartDashboard.putNumber("TiltPow", tiltPow);
+		 * 
+		 * }
+		 * 
+		 * }
+		 * 
+		 * else { bob.set(0); sam.set(0); if (LL) { DarwinsRobot.tankDrive(-.55,
+		 * .55); } if (LR) { DarwinsRobot.tankDrive(.55, -.55); } }
+		 * 
+		 * }
+		 */
 
 	}
+
+	// NIVision.IMAQdxStopAcquisition(session);
 
 	@Override
 	public void testPeriodic() {

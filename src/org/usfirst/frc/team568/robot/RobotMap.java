@@ -42,8 +42,8 @@ public class RobotMap {
 	 */
 	public static final int shooterLeftPort = 0;
 	public static final int shooterRightPort = 9;
-	public static final int leftTiltPort = 7;
-	public static final int rightTiltPort = 6;
+	public static final int leftTiltPort = 6;
+	public static final int rightTiltPort = 7;
 
 	// public static final int rightMidMotor = 5;
 	// public static final int leftMidMotor = 2;

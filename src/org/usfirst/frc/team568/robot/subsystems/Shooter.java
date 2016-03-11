@@ -55,11 +55,11 @@ public class Shooter extends Subsystem {
 	}
 
 	public void nudge() {
-		nudge.setAngle(81);
+		nudge.setAngle(85);
 	}
 
 	public void stopnudge() {
-		nudge.setAngle(25);
+		nudge.setAngle(0);
 	}
 
 	public void obtainBall() {
