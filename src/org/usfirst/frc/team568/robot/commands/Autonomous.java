@@ -7,13 +7,33 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class Autonomous extends CommandGroup {
 
 	public Autonomous() {
-		if (Robot.getInstance().whichOne == 1) {
+		if (Robot.getInstance().whichOne == 1 || Robot.getInstance().whichOne == 2 || Robot.getInstance().whichOne == 3
+				|| Robot.getInstance().whichOne == 4 || Robot.getInstance().whichOne == 5) {
+			addSequential(new GoForwardToObsticles());
+			if (Robot.getInstance().over == true) {
 
-		} else if (Robot.getInstance().whichOne == 2) {
+				if (Robot.getInstance().whichOne == 1) {
 
+				} else if (Robot.getInstance().whichOne == 2) {
+
+				}
+
+				else if (Robot.getInstance().whichOne == 3) {
+
+				}
+
+				else if (Robot.getInstance().whichOne == 4) {
+
+				}
+
+				else if (Robot.getInstance().whichOne == 5) {
+				}
+			} else {
+				addSequential(new Stop());
+			}
+		} else {
+			addSequential(new Stop());
 		}
 
-		// TODO Auto-generated constructor stub
 	}
-
 }

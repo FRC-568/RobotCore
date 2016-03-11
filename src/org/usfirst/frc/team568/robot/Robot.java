@@ -1,5 +1,6 @@
 package org.usfirst.frc.team568.robot;
 
+import org.usfirst.frc.team568.robot.commands.Autonomous;
 import org.usfirst.frc.team568.robot.subsystems.Arms;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
@@ -40,6 +41,7 @@ public class Robot extends IterativeRobot {
 	double tiltErr2;
 	double tiltPow;
 	public int whichOne;
+	public boolean over;
 	// public double EncoderValue;
 
 	protected static Robot instance;
@@ -94,10 +96,8 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-		double speed = SmartDashboard.getNumber("speed");
-		double inches = SmartDashboard.getNumber("inches");
 
-		// autonomousCommand = new AutonomousTest(speed, inches);
+		autonomousCommand = new Autonomous();
 		autonomousCommand.start();
 
 	}
