@@ -49,7 +49,7 @@ public class CrateBot extends IterativeRobot {
 		// referenceframe = new ReferenceFrame();
 		referanceFrame2 = new ReferenceFrame2();
 		meccanumDrive = new MeccanumDrive();
-		flipper = new Flipper();
+		// flipper = new Flipper();
 		crateLifter = new CrateLifter();
 		cam0 = CameraServer.getInstance();
 		cam0.startAutomaticCapture("cam0");
@@ -147,6 +147,7 @@ public class CrateBot extends IterativeRobot {
 		SmartDashboard.putNumber("Heading", referanceFrame2.getHeading());
 		SmartDashboard.putNumber("Acel Y", referanceFrame2.getAcel().y);
 		SmartDashboard.putNumber("Acel X", referanceFrame2.getAcel().x);
+		SmartDashboard.putString("Limit Switch", meccanumDrive.limitTF());
 
 	}
 

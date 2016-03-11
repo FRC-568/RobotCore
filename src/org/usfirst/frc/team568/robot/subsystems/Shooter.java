@@ -14,8 +14,9 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class Shooter {
+public class Shooter extends Subsystem {
 	SpeedController shooterLeft;
 	SpeedController shooterRight;
 	SpeedController leftTilt;
@@ -31,18 +32,19 @@ public class Shooter {
 
 		leftTilt = new Talon(RobotMap.leftTiltPort);
 		rightTilt = new Talon(RobotMap.rightTiltPort);
+		rightTilt.setInverted(true);
 
 		nudge = new Servo(RobotMap.nudge);
 
 		upperLimmitSwitch = new DigitalInput(RobotMap.upperLimmitSwitch);
 		lowerLimmitSwitch = new DigitalInput(RobotMap.lowerLimmitSwitch);
 		// TODO Auto-generated constructor stub
-		Robot.getInstance().oi.shootFour.whileHeld(new Shoot());
-		Robot.getInstance().oi.shootFive.whileHeld(new GetBall());
-		Robot.getInstance().oi.shootSix.whenPressed(new DoNotShoot());
-		Robot.getInstance().oi.shootTwo.whenPressed(new TiltDownwards());
-		Robot.getInstance().oi.shootThree.whenPressed(new TiltUpwards());
-		Robot.getInstance().oi.shootOne.whileHeld(new nudge());
+		Robot.getInstance().oi.shootFour.whenPressed(new Shoot());
+		Robot.getInstance().oi.shootFive.whenPressed(new GetBall());
+		Robot.getInstance().oi.shootEleven.whenPressed(new DoNotShoot());
+		Robot.getInstance().oi.shootTwo.whileHeld(new TiltDownwards());
+		Robot.getInstance().oi.shootThree.whileHeld(new TiltUpwards());
+		Robot.getInstance().oi.shootOne.whenPressed(new nudge());
 
 	}
 
@@ -53,11 +55,11 @@ public class Shooter {
 	}
 
 	public void nudge() {
-		nudge.setAngle(180);
+		nudge.setAngle(81);
 	}
 
 	public void stopnudge() {
-		nudge.setAngle(90);
+		nudge.setAngle(25);
 	}
 
 	public void obtainBall() {
@@ -83,6 +85,12 @@ public class Shooter {
 	public void stopTilt() {
 		leftTilt.set(0);
 		rightTilt.set(0);
+	}
+
+	@Override
+	protected void initDefaultCommand() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

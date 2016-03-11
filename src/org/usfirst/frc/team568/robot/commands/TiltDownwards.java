@@ -30,6 +30,9 @@ public class TiltDownwards extends Command {
 		} else {
 			return true;
 		}
+		// } else {
+		// return false;
+		// }
 	}
 
 	@Override

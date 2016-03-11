@@ -29,8 +29,11 @@ public class TiltUpwards extends Command {
 		if (Robot.getInstance().oi.shootThree.get()) {
 			return false;
 		} else {
-			return false;
+			return true;
 		}
+		// } else {
+		// return false;
+		// }
 	}
 
 	@Override
@@ -41,6 +44,7 @@ public class TiltUpwards extends Command {
 
 	@Override
 	protected void interrupted() {
+		Robot.getInstance().shooter.stopTilt();
 		// TODO Auto-generated method stub
 	}
 

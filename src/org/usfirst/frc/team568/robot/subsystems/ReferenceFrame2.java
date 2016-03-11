@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ReferenceFrame2 extends Subsystem {
-	public int calibrationSamples = 250;
+	public int calibrationSamples = 500;
 	public int calibrationSampleRate = 20;
 
 	protected ADXRS450_Gyro gyro;
@@ -28,11 +28,14 @@ public class ReferenceFrame2 extends Subsystem {
 	private double lastTimestamp;
 	private Filter xFilter;
 	private Filter yFilter;
+	public double threshold;
+	private static final int filterPoles = 20;
 
 	public ReferenceFrame2() {
 		acceleration = Vector2.zero;
 		velocity = Vector2.zero;
 		position = Vector2.zero;
+		threshold = .03;
 
 		gyro = new ADXRS450_Gyro();
 		acel = new ADXL362(Range.k16G);
@@ -50,9 +53,13 @@ public class ReferenceFrame2 extends Subsystem {
 
 			@Override
 			public double pidGet() {
-				return acel.getX() - acelBias.x;
+				double x = acel.getX() - acelBias.x;
+				if (x > threshold || x < -threshold)
+					return x;
+				else
+					return 0;
 			}
-		}, 4);
+		}, filterPoles);
 
 		yFilter = LinearDigitalFilter.movingAverage(new PIDSource() {
 			@Override
@@ -66,9 +73,13 @@ public class ReferenceFrame2 extends Subsystem {
 
 			@Override
 			public double pidGet() {
-				return acel.getY() - acelBias.y;
+				double y = acel.getY() - acelBias.y;
+				if (y > threshold || y < -threshold)
+					return y;
+				else
+					return 0;
 			}
-		}, 4);
+		}, filterPoles);
 	}
 
 	public void start() {
@@ -78,8 +89,8 @@ public class ReferenceFrame2 extends Subsystem {
 		updateThread = new Thread(() -> {
 			while (!Thread.interrupted()) {
 				updateAcel();
-				SmartDashboard.putNumber("Raw Y", acel.getY());
-				SmartDashboard.putNumber("Raw X", acel.getX());
+				SmartDashboard.putNumber("Raw Y", acel.getY() - acelBias.y);
+				SmartDashboard.putNumber("Raw X", acel.getX() - acelBias.x);
 				try {
 					Thread.sleep(calibrationSampleRate);
 				} catch (InterruptedException e) {
@@ -137,12 +148,16 @@ public class ReferenceFrame2 extends Subsystem {
 		double avgY = 0;
 
 		for (int i = 0; i < calibrationSamples; i++) {
-			avgX += acel.getX() / calibrationSamples;
-			avgY += acel.getY() / calibrationSamples;
-			Timer.delay(calibrationSampleRate / 1000.0);
+			avgX += acel.getX();
+			avgY += acel.getY();
+			Timer.delay(0.005);// calibrationSampleRate / 1000.0);
 		}
+		avgX /= calibrationSamples;
+		avgY /= calibrationSamples;
 		acelBias = new Vector2(avgX, avgY);
 		lastTimestamp = Timer.getFPGATimestamp();
+		SmartDashboard.putNumber("X Bias", acelBias.x);
+		SmartDashboard.putNumber("Y Bias", acelBias.y);
 	}
 
 	public void run() {
@@ -151,71 +166,18 @@ public class ReferenceFrame2 extends Subsystem {
 		double time = lastTime;
 		double deltaTime;
 
-		PIDSource xSource = new PIDSource() {
-
-			@Override
-			public void setPIDSourceType(PIDSourceType pidSource) {
-
-			}
-
-			@Override
-			public PIDSourceType getPIDSourceType() {
-
-				return null;
-			}
-
-			@Override
-			public double pidGet() {
-
-				return acel.getX() + acelBias.x;
-			}
-
-		};
-
-		PIDSource ySource = new PIDSource() {
-
-			@Override
-			public void setPIDSourceType(PIDSourceType pidSource) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public PIDSourceType getPIDSourceType() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public double pidGet() {
-				// TODO Auto-generated method stub
-				return acel.getY() + acelBias.y;
-			}
-
-		};
-
-		Filter xFilter = LinearDigitalFilter.movingAverage(xSource, 4);
-		Filter yFilter = LinearDigitalFilter.movingAverage(ySource, 4);
-		SmartDashboard.putString("Status", "Filtered");
-
 		while (!Thread.interrupted()) {
-			SmartDashboard.putString("Status", "looping");
 			time = Timer.getFPGATimestamp();
-			SmartDashboard.putString("Status", "timestamped");
 			deltaTime = time - lastTime;
 			acceleration = new Vector2(xFilter.pidGet(), yFilter.pidGet());
-			SmartDashboard.putString("Status", "accelerated");
 			velocity = Vector2.add(velocity, Vector2.scale(acceleration, deltaTime));
-			SmartDashboard.putString("Status", "velocirated");
 			position = Vector2.add(position, Vector2.rotate(Vector2.scale(velocity, deltaTime), -getHeading()));
-			SmartDashboard.putString("Status", "positioned");
-			SmartDashboard.putNumber("Raw Y", acel.getY());
-			SmartDashboard.putNumber("Raw X", acel.getX());
+
 			lastTime = time;
 			try {
 				Thread.sleep(20);
 			} catch (InterruptedException e) {
-				SmartDashboard.putString("Interrupted", "true");
+				break;
 			}
 		}
 	}
@@ -224,8 +186,8 @@ public class ReferenceFrame2 extends Subsystem {
 		double timestamp = Timer.getFPGATimestamp();
 		double deltaTime = timestamp - lastTimestamp;
 		acceleration = new Vector2(xFilter.pidGet(), yFilter.pidGet());
-		velocity = Vector2.add(velocity, Vector2.scale(acceleration, deltaTime));
-		position = Vector2.add(position, Vector2.rotate(Vector2.scale(velocity, deltaTime), -getHeading()));
+		velocity = Vector2.add(velocity, Vector2.rotate(Vector2.scale(acceleration, deltaTime), -getHeading()));
+		position = Vector2.add(position, Vector2.scale(velocity, deltaTime));
 		lastTimestamp = timestamp;
 	}
 
