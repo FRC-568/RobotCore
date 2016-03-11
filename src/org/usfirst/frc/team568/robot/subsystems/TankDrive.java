@@ -17,11 +17,14 @@ public class TankDrive extends Subsystem {
 	protected Joystick driveStickL;
 	protected Joystick driveStickR;
 	RobotDrive myRobot;
-
 	RobotDrive myDrive;
+	ReferenceFrame2 ref;
+	static double sHeading;
 
 	public TankDrive() {
 		this.robot = Robot.getInstance();
+		ref = new ReferenceFrame2();
+		sHeading = ref.getHeading();
 
 		// leftFront = new Victor(RobotMap.leftFrontMotor);
 		// leftBack = new Victor(RobotMap.leftBackMotor);
@@ -52,6 +55,47 @@ public class TankDrive extends Subsystem {
 			myDrive.tankDrive(0, 0);
 		}
 		Timer.delay(0.01);
+
+	}
+
+	public void forwardWithGyro(double speed) {
+		if (ref.getAngle() <= 5 && ref.getAngle() >= -5) {
+			leftFront.set(speed);
+			leftBack.set(speed);
+			rightFront.set(speed);
+			rightBack.set(speed);
+		} else if (ref.getAngle() > 5) {
+			leftFront.set(-speed);
+			leftBack.set(-speed);
+			rightFront.set(speed);
+			rightBack.set(speed);
+		} else if (ref.getAngle() < -5) {
+			leftFront.set(speed);
+			leftBack.set(speed);
+			rightFront.set(-speed);
+			rightBack.set(-speed);
+		}
+
+	}
+
+	public void rightWithGyro(double degrees, double speed) {
+		double ra = ref.getAngle() + degrees;
+		if (ref.getAngle() != ra) {
+			leftFront.set(-speed);
+			leftBack.set(-speed);
+			rightFront.set(speed);
+			rightBack.set(speed);
+		}
+	}
+
+	public void leftWithGyro(double degrees, double speed) {
+		double ra = ref.getAngle() + degrees;
+		if (ref.getAngle() != ra) {
+			leftFront.set(speed);
+			leftBack.set(speed);
+			rightFront.set(-speed);
+			rightBack.set(-speed);
+		}
 
 	}
 

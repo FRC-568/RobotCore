@@ -112,6 +112,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("TI", 0);
 		SmartDashboard.putNumber("TD", 0);
 		SmartDashboard.putNumber("encoderValue", encoder.getDistance());
+		SmartDashboard.getNumber("Autonomous #");
+
 		// referanceFrame2.threshold = SmartDashboard.getNumber("Threshold");
 		encoder.reset();
 	}

@@ -125,6 +125,10 @@ public class ReferenceFrame2 extends Subsystem {
 			return clip;
 	}
 
+	public double getAngle() {
+		return gyro.getAngle();
+	}
+
 	public Vector2 getAcel() {
 		return acceleration;
 
