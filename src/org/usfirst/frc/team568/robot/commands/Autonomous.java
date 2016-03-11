@@ -8,6 +8,7 @@ public class Autonomous extends CommandGroup {
 
 	public Autonomous() {
 		if (Robot.getInstance().whichOne == 1) {
+
 		} else if (Robot.getInstance().whichOne == 2) {
 
 		}
