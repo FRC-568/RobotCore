@@ -11,65 +11,57 @@ import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
-	Encoder encoder;
-	int session;
-	Image frame;
-	double Pan;
-	double Tilt;
-	double BoxSize;
-	double KI;
-	double KP;
-	double KD;
-	double TiltKP;
-	double TiltKD;
-	double TiltKI;
-	double ErrSum;
-	double Err2;
-	double Err;
-	double Pow;
-	boolean LL;
-	boolean LR;
-	double tiltErr;
-	double tiltErr2;
-	double tiltPow;
-	public int whichOne;
-	public boolean over;
-	public double speed;
-	// public double EncoderValue;
-
 	protected static Robot instance;
 	public OI oi;
 
-	public Arms arms;
-
-	public Shooter shooter;
-
 	public TankDrive tankDrive;
+	public Shooter shooter;
+	public Arms arms;
 	public ReferenceFrame2 referanceFrame2;
 	Command autonomousCommand;
+
+	public double whichOne;
+	public boolean over;
+	public double speed;
+
+	int session;
+	Image frame;
+	/*
+	 * double Pan; double Tilt; double BoxSize;
+	 * 
+	 * double KI; double KP; double KD; double TiltKP; double TiltKD; double
+	 * TiltKI; double ErrSum; double Err2; double Err; double Pow; boolean LL;
+	 * boolean LR;
+	 * 
+	 * double tiltErr; double tiltErr2; double tiltPow;
+	 */
 
 	public Robot() {
 		instance = this;
 		oi = new OI();
+
 		tankDrive = new TankDrive();
 		shooter = new Shooter();
 		arms = new Arms();
+
 		referanceFrame2 = new ReferenceFrame2();
-		referanceFrame2.start();
-		referanceFrame2.calabrateGyro();
+
+		SmartDashboard.putNumber("Autonomous", 0);
+		SmartDashboard.putBoolean("Over or To", false);
 
 	}
 
 	@Override
 	public void robotInit() {
-		encoder.reset();
+		referanceFrame2.start();
+		referanceFrame2.calabrateGyro();
+
 		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		NIVision.IMAQdxConfigureGrab(session);
@@ -80,8 +72,6 @@ public class Robot extends IterativeRobot {
 		 * 0); SmartDashboard.putNumber("TD", 0);
 		 * SmartDashboard.putNumber("encoderValue", encoder.getDistance());
 		 */
-		whichOne = (int) SmartDashboard.getNumber("Autonomous #");
-		over = SmartDashboard.getBoolean("Over or To obstacle");
 
 	}
 
@@ -98,8 +88,8 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		speed = SmartDashboard.getNumber("speed", .75);
 		// double inches = SmartDashboard.getNumber("inches");
-		whichOne = (int) SmartDashboard.getNumber("Autonomous #");
-		over = SmartDashboard.getBoolean("Over or To obstacle");
+		whichOne = SmartDashboard.getNumber("Autonomous");
+		over = SmartDashboard.getBoolean("Over or To");
 
 		// autonomousCommand = new AutonomousTest(speed, inches);
 		autonomousCommand.start();
@@ -123,20 +113,20 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopPeriodic() {
-
-		SmartDashboard.putNumber("POS X", referanceFrame2.getPos().x);
-		SmartDashboard.putNumber("POS Y", referanceFrame2.getPos().y);
-		SmartDashboard.putNumber("Heading", referanceFrame2.getHeading());
-		SmartDashboard.putNumber("Acel Y", referanceFrame2.getAcel().y);
-		SmartDashboard.putNumber("Acel X", referanceFrame2.getAcel().x);
-		SmartDashboard.putNumber("Encoder", encoder.getDistance());
-
-		KP = SmartDashboard.getNumber("P");
-		KI = SmartDashboard.getNumber("I");
-		KD = SmartDashboard.getNumber("D");
-		TiltKP = SmartDashboard.getNumber("TP");
-		TiltKI = SmartDashboard.getNumber("TI");
-		TiltKD = SmartDashboard.getNumber("TD");
+		/*
+		 * SmartDashboard.putNumber("POS X", referanceFrame2.getPos().x);
+		 * SmartDashboard.putNumber("POS Y", referanceFrame2.getPos().y);
+		 * SmartDashboard.putNumber("Heading", referanceFrame2.getHeading());
+		 * SmartDashboard.putNumber("Acel Y", referanceFrame2.getAcel().y);
+		 * SmartDashboard.putNumber("Acel X", referanceFrame2.getAcel().x);
+		 * SmartDashboard.putNumber("Encoder", encoder.getDistance());
+		 * 
+		 * KP = SmartDashboard.getNumber("P"); KI =
+		 * SmartDashboard.getNumber("I"); KD = SmartDashboard.getNumber("D");
+		 * TiltKP = SmartDashboard.getNumber("TP"); TiltKI =
+		 * SmartDashboard.getNumber("TI"); TiltKD =
+		 * SmartDashboard.getNumber("TD");
+		 */
 		NIVision.IMAQdxStartAcquisition(session);
 		NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
 		NIVision.IMAQdxGrab(session, frame, 1);
