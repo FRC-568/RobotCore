@@ -1,23 +1,27 @@
 package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.subsystems.Arms;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ArmUP extends Command {
+	Arms arms;
 
 	public ArmUP() {
+
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void initialize() {
-		Robot.getInstance().arms.GoUp();
+		arms = Robot.getInstance().arms;
 
 	}
 
 	@Override
 	protected void execute() {
+		Robot.getInstance().arms.GoUp();
 		// TODO Auto-generated method stub
 
 	}

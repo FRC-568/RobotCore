@@ -1,24 +1,30 @@
 package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class Shoot extends Command {
+	Shooter shooter;
 
 	public Shoot() {
-		// TODO Auto-generated constructor stub
+
+		// requires(shooter);
 	}
 
 	@Override
 	protected void initialize() {
+		shooter = Robot.getInstance().shooter;
+
 		// TODO Auto-generated method stub
-		Robot.getInstance().shooter.shoot();
+
 	}
 
 	@Override
 	protected void execute() {
-
+		System.out.println("Shoot");
+		shooter.shoot();
 		// TODO Auto-generated method stub
 
 	}

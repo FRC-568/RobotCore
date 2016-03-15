@@ -5,6 +5,7 @@ import org.usfirst.frc.team568.robot.RobotMap;
 import org.usfirst.frc.team568.robot.commands.DoNotShoot;
 import org.usfirst.frc.team568.robot.commands.GetBall;
 import org.usfirst.frc.team568.robot.commands.Shoot;
+import org.usfirst.frc.team568.robot.commands.StopShoot;
 import org.usfirst.frc.team568.robot.commands.TiltDownwards;
 import org.usfirst.frc.team568.robot.commands.TiltUpwards;
 import org.usfirst.frc.team568.robot.commands.nudge;
@@ -13,12 +14,15 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends Subsystem {
-	SpeedController shooterLeft;
-	SpeedController shooterRight;
+	private final Robot robot;
+	SpeedController shooter;
+
 	SpeedController leftTilt;
 	SpeedController rightTilt;
 	Servo nudge;
@@ -26,65 +30,83 @@ public class Shooter extends Subsystem {
 	public DigitalInput lowerLimmitSwitch;
 
 	public Shooter() {
-		shooterRight = new Victor(RobotMap.shooterRightPort);
-		shooterLeft = new Victor(RobotMap.shooterLeftPort);
-		shooterRight.setInverted(true);
+		robot = Robot.getInstance();
+
+		shooter = new Victor(RobotMap.shooterLeftPort);
+		shooter.setInverted(true);
 
 		leftTilt = new Talon(RobotMap.leftTiltPort);
 		rightTilt = new Talon(RobotMap.rightTiltPort);
-		rightTilt.setInverted(true);
+		leftTilt.setInverted(true);
 
 		nudge = new Servo(RobotMap.nudge);
 
 		upperLimmitSwitch = new DigitalInput(RobotMap.upperLimmitSwitch);
 		lowerLimmitSwitch = new DigitalInput(RobotMap.lowerLimmitSwitch);
 		// TODO Auto-generated constructor stub
-		Robot.getInstance().oi.shootFour.whenPressed(new Shoot());
-		Robot.getInstance().oi.shootFive.whenPressed(new GetBall());
-		Robot.getInstance().oi.shootEleven.whenPressed(new DoNotShoot());
-		Robot.getInstance().oi.shootTwo.whileHeld(new TiltDownwards());
-		Robot.getInstance().oi.shootThree.whileHeld(new TiltUpwards());
-		Robot.getInstance().oi.shootOne.whenPressed(new nudge());
+		robot.oi.shootFour.whenPressed(new Shoot());
+		robot.oi.shootFive.whenPressed(new GetBall());
+		robot.oi.shootEleven.whenPressed(new DoNotShoot());
+		robot.oi.shootTwo.whileHeld(new TiltDownwards());
+		robot.oi.shootThree.whileHeld(new TiltUpwards());
+		robot.oi.shootOne.whenPressed(new nudge());
+		robot.oi.shootSix.whenPressed(new StopShoot());
 
 	}
 
 	public void shoot() {
-		shooterRight.set(0.65);
-		shooterLeft.set(0.65);
+
+		shooter.set(0.65);
+		SmartDashboard.putString("Event:", "Shoot");
 
 	}
 
 	public void nudge() {
-		nudge.setAngle(85);
+		nudge.setAngle(180);
+		SmartDashboard.putString("Event:", "Nudge");
+		Timer.delay(.25);
 	}
 
 	public void stopnudge() {
 		nudge.setAngle(0);
+		SmartDashboard.putString("Event:", "Stop Nudge");
 	}
 
 	public void obtainBall() {
-		shooterRight.set(-0.20);
-		shooterLeft.set(-0.20);
+
+		shooter.set(-0.325);
+		SmartDashboard.putString("Event:", "Get Ball");
 	}
 
 	public void stopShooter() {
-		shooterRight.set(0);
-		shooterLeft.set(0);
+
+		shooter.set(0);
+		SmartDashboard.putString("Event:", " Stop Shoot");
 	}
 
 	public void tiltDown() {
+
 		leftTilt.set(-0.5);
-		rightTilt.set(-0.5);
+		rightTilt.set(0.5);
+
+		SmartDashboard.putString("Event:", "Tilt Down");
+		Timer.delay(.01);
 	}
 
 	public void tiltUp() {
-		leftTilt.set(1);
-		rightTilt.set(1);
+
+		leftTilt.set(SmartDashboard.getNumber("leftTilt"));
+		rightTilt.set(SmartDashboard.getNumber("rightTilt"));
+
+		System.out.println(SmartDashboard.getNumber("leftTilt"));
+		SmartDashboard.putString("Event:", "Tilt Up");
+		Timer.delay(.01);
 	}
 
 	public void stopTilt() {
 		leftTilt.set(0);
 		rightTilt.set(0);
+		SmartDashboard.putString("Event:", "Stop Tilt");
 	}
 
 	@Override

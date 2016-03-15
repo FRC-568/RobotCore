@@ -1,38 +1,34 @@
 package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.Robot;
-import org.usfirst.frc.team568.robot.subsystems.Shooter;
+import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class GetBall extends Command {
-	Shooter shooter;
+public class ArcadeDriveManual extends Command {
+	public final ArcadeDrive arcadeDrive;
+	// CrateLifter lifter = Robot.getInstance().crateLifter;
 
-	public GetBall() {
+	public ArcadeDriveManual() {
+		arcadeDrive = Robot.getInstance().arcadeDrive;
+		requires(arcadeDrive);
 
-		// requires(shooter);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void initialize() {
-		shooter = Robot.getInstance().shooter;
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected void execute() {
-		shooter.obtainBall();
-		System.out.println("Get Ball");
-		// TODO Auto-generated method stub
-
+		arcadeDrive.manualDrive();
+		// lifter.lift();
 	}
 
 	@Override
 	protected boolean isFinished() {
-		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
 
 	@Override
@@ -43,7 +39,6 @@ public class GetBall extends Command {
 	@Override
 	protected void interrupted() {
 		// TODO Auto-generated method stub
-
 	}
 
 }

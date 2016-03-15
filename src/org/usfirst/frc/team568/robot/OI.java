@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 public class OI {
 
 	public Joystick leftStick = new Joystick(RobotMap.joy1Pos);
-	public Joystick rightStick = new Joystick(RobotMap.joy2Pos);
-	public Joystick shootStick = new Joystick(RobotMap.joy3Pos);
+	public Joystick rightStick = new Joystick(RobotMap.joy3Pos);
+	public Joystick shootStick = new Joystick(RobotMap.joy2Pos);
 
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a

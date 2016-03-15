@@ -1,9 +1,10 @@
 package org.usfirst.frc.team568.robot;
 
+import org.usfirst.frc.team568.robot.commands.Autonomous;
+import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 import org.usfirst.frc.team568.robot.subsystems.Arms;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
-import org.usfirst.frc.team568.robot.subsystems.TankDrive;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
@@ -20,18 +21,19 @@ public class Robot extends IterativeRobot {
 	protected static Robot instance;
 	public OI oi;
 
-	public TankDrive tankDrive;
+	public ArcadeDrive arcadeDrive;
 	public Shooter shooter;
 	public Arms arms;
 	public ReferenceFrame2 referanceFrame2;
 	Command autonomousCommand;
 
-	public double whichOne;
-	public boolean over;
+	public double howLong;
+	public boolean forward;
 	public double speed;
 
 	int session;
 	Image frame;
+
 	/*
 	 * double Pan; double Tilt; double BoxSize;
 	 * 
@@ -46,21 +48,25 @@ public class Robot extends IterativeRobot {
 		instance = this;
 		oi = new OI();
 
-		tankDrive = new TankDrive();
+		arcadeDrive = new ArcadeDrive();
 		shooter = new Shooter();
 		arms = new Arms();
 
 		referanceFrame2 = new ReferenceFrame2();
 
-		SmartDashboard.putNumber("Autonomous", 0);
-		SmartDashboard.putBoolean("Over or To", false);
+		SmartDashboard.putNumber("How Long?", 12);
+		SmartDashboard.putBoolean("Forward?", true);
+		SmartDashboard.putNumber("leftTilt", .5);
+		SmartDashboard.putNumber("rightTilt", -.5);
 
 	}
 
 	@Override
 	public void robotInit() {
+		System.out.println("Robot Init");
 		referanceFrame2.start();
 		referanceFrame2.calabrateGyro();
+		referanceFrame2.reset();
 
 		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
@@ -86,12 +92,11 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
+
 		speed = SmartDashboard.getNumber("speed", .75);
 		// double inches = SmartDashboard.getNumber("inches");
-		whichOne = SmartDashboard.getNumber("Autonomous");
-		over = SmartDashboard.getBoolean("Over or To");
 
-		// autonomousCommand = new AutonomousTest(speed, inches);
+		autonomousCommand = new Autonomous();
 		autonomousCommand.start();
 
 	}
@@ -107,12 +112,20 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
-		referanceFrame2.reset();
 
 	}
 
 	@Override
 	public void teleopPeriodic() {
+
+		Scheduler.getInstance().run();
+
+		NIVision.IMAQdxStartAcquisition(session);
+		NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
+		NIVision.IMAQdxGrab(session, frame, 1);
+		NIVision.imaqDrawShapeOnImage(frame, frame, rect, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
+		CameraServer.getInstance().setImage(frame);
+
 		/*
 		 * SmartDashboard.putNumber("POS X", referanceFrame2.getPos().x);
 		 * SmartDashboard.putNumber("POS Y", referanceFrame2.getPos().y);
@@ -127,11 +140,7 @@ public class Robot extends IterativeRobot {
 		 * SmartDashboard.getNumber("TI"); TiltKD =
 		 * SmartDashboard.getNumber("TD");
 		 */
-		NIVision.IMAQdxStartAcquisition(session);
-		NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
-		NIVision.IMAQdxGrab(session, frame, 1);
-		NIVision.imaqDrawShapeOnImage(frame, frame, rect, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
-		CameraServer.getInstance().setImage(frame);
+
 		/*
 		 * NetworkTable server = NetworkTable.getTable("SmartDashboard"); try {
 		 * System.out.println(server.getNumber("COG_X", 0.0));
@@ -176,6 +185,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void testPeriodic() {
+
 	}
 
 	public static Robot getInstance() {

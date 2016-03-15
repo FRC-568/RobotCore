@@ -1,44 +1,50 @@
 package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.Robot;
-import org.usfirst.frc.team568.robot.subsystems.TankDrive;
+import org.usfirst.frc.team568.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class TankDriveManual extends Command {
-	public final TankDrive tankDrive;
-	// CrateLifter lifter = Robot.getInstance().crateLifter;
+public class StopShoot extends Command {
+	Shooter shooter;
 
-	public TankDriveManual() {
-		tankDrive = Robot.getInstance().tankDrive;
-		requires(tankDrive);
+	public StopShoot() {
 
+		// requires(shooter);
 	}
 
 	@Override
 	protected void initialize() {
+		shooter = Robot.getInstance().shooter;
+
+		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected void execute() {
-		tankDrive.manualDrive();
-		// lifter.lift();
+		System.out.println("Stop Shoot");
+		shooter.stopShooter();
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	protected boolean isFinished() {
-		return false;
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 	@Override
 	protected void end() {
 		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	protected void interrupted() {
 		// TODO Auto-generated method stub
+
 	}
 
 }
