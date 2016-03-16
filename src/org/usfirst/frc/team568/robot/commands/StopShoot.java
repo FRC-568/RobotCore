@@ -1,23 +1,30 @@
 package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class Stop extends Command {
+public class StopShoot extends Command {
+	Shooter shooter;
 
-	public Stop() {
-		// TODO Auto-generated constructor stub
+	public StopShoot() {
+
+		// requires(shooter);
 	}
 
 	@Override
 	protected void initialize() {
+		shooter = Robot.getInstance().shooter;
+
 		// TODO Auto-generated method stub
-		Robot.getInstance().tankDrive.halt();
+
 	}
 
 	@Override
 	protected void execute() {
+		System.out.println("Stop Shoot");
+		shooter.stopShooter();
 		// TODO Auto-generated method stub
 
 	}
@@ -31,13 +38,11 @@ public class Stop extends Command {
 	@Override
 	protected void end() {
 		// TODO Auto-generated method stub
-		Robot.getInstance().tankDrive.halt();
 
 	}
 
 	@Override
 	protected void interrupted() {
-		Robot.getInstance().tankDrive.halt();
 		// TODO Auto-generated method stub
 
 	}

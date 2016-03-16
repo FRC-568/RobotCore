@@ -1,17 +1,17 @@
 package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.Robot;
-import org.usfirst.frc.team568.robot.subsystems.TankDrive;
+import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class TankDriveManual extends Command {
-	public final TankDrive tankDrive;
+public class ArcadeDriveManual extends Command {
+	public final ArcadeDrive arcadeDrive;
 	// CrateLifter lifter = Robot.getInstance().crateLifter;
 
-	public TankDriveManual() {
-		tankDrive = Robot.getInstance().tankDrive;
-		requires(tankDrive);
+	public ArcadeDriveManual() {
+		arcadeDrive = Robot.getInstance().arcadeDrive;
+		requires(arcadeDrive);
 
 	}
 
@@ -22,7 +22,7 @@ public class TankDriveManual extends Command {
 
 	@Override
 	protected void execute() {
-		tankDrive.manualDrive();
+		arcadeDrive.manualDrive();
 		// lifter.lift();
 	}
 

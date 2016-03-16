@@ -28,8 +28,8 @@ public class RobotMap {
 	public static final int topLimmitSwitch = 0;
 	public static final int bottomLimmitSwitch = 1;
 
-	public static final int Spike2 = 1;
-	public static final int Spike1 = 0;
+	public static final int spike2 = 1;
+	public static final int spike1 = 0;
 	// public static final int lifterMotor = 5;
 	// public static final int lowZoneMotor = 8;
 
@@ -40,8 +40,8 @@ public class RobotMap {
 	 * public static final int aimerUp = 0; public static final int aimerDown =
 	 * 1; public static final int brake = 2;
 	 */
-	public static final int shooterLeftPort = 0;
-	public static final int shooterRightPort = 9;
+	public static final int shooterLeftPort = 9;
+	public static final int shooterRightPort = 0;
 	public static final int leftTiltPort = 6;
 	public static final int rightTiltPort = 7;
 

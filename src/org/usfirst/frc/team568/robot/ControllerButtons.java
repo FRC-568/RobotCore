@@ -2,15 +2,32 @@ package org.usfirst.frc.team568.robot;
 
 public class ControllerButtons {
 
-	public static int shootBallButton = 4;
-	public static int obtainBallButton = 5;
-	public static int stopShooterButton = 11;
-	public static int bringShooterDown = 2;
-	public static int bringShooterUp = 3;
-	public static int nudge = 1;
-	public static int safty = 1;
-	public static int armGoUp = 6;
-	public static int armsGoDown = 7;
+	public static int joy1B1 = 1;
+	public static int joy1B2 = 2;
+	public static int joy1B3 = 3;
+	public static int joy1B4 = 4;
+	public static int joy1B5 = 5;
+	public static int joy1B6 = 6;
+	public static int joy1B7 = 7;
+	public static int joy1B8 = 8;
+	public static int joy1B9 = 9;
+	public static int joy1B10 = 10;
+	public static int joy1B11 = 11;
+
+	public static int joy2B1 = 1;
+	public static int joy2B2 = 2;
+	public static int joy2B3 = 3;
+	public static int joy2B4 = 4;
+	public static int joy2B5 = 5;
+	public static int joy2B6 = 6;
+	public static int joy2B7 = 7;
+	public static int joy2B8 = 8;
+	public static int joy2B9 = 9;
+	public static int joy2B10 = 10;
+	public static int joy2B11 = 11;
+
+	public static int joy3B6 = 6;
+	public static int joy3B7 = 7;
 
 	public static int liftFlipper = 5;
 	public static int lowerFlipper = 6;

@@ -2,7 +2,7 @@ package org.usfirst.frc.team568.robot.subsystems;
 
 import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
-import org.usfirst.frc.team568.robot.commands.TankDriveManual;
+import org.usfirst.frc.team568.robot.commands.ArcadeDriveManual;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -11,18 +11,23 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class TankDrive extends Subsystem {
+public class ArcadeDrive extends Subsystem {
 	public final Robot robot;
+
 	protected SpeedController leftFront, leftBack, rightFront, rightBack;
+
 	protected Joystick driveStickL;
 	protected Joystick driveStickR;
+
 	RobotDrive myRobot;
 	RobotDrive myDrive;
+
 	ReferenceFrame2 ref;
+
 	static double sHeading;
 	static double Kp = .002;
 
-	public TankDrive() {
+	public ArcadeDrive() {
 		this.robot = Robot.getInstance();
 		ref = new ReferenceFrame2();
 		sHeading = ref.getHeading();
@@ -43,20 +48,18 @@ public class TankDrive extends Subsystem {
 		rightBack.setInverted(true);
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
-		driveStickL = robot.oi.leftStick;
-		driveStickR = robot.oi.rightStick;
+		driveStickL = robot.oi.joyStick1;
+		driveStickR = robot.oi.joyStick3;
+
 	}
 
 	public void manualDrive() {
-		if (Robot.getInstance().oi.leftTrigger.get()) {
-			myDrive.tankDrive(driveStickL, driveStickR);
-		} else if (Robot.getInstance().oi.rightTrigger.get()) {
-			myDrive.tankDrive(driveStickL, driveStickR);
+		if (robot.oi.trigger.get()) {
+			myDrive.arcadeDrive(driveStickL);
 		} else {
-			myDrive.tankDrive(0, 0);
+			halt();
 		}
 		Timer.delay(0.01);
-
 	}
 
 	public void forwardWithGyro(double speed) {
@@ -119,6 +122,7 @@ public class TankDrive extends Subsystem {
 		leftBack.set(speed * -1);
 		rightFront.set(speed * -1);
 		rightBack.set(speed * -1);
+
 	}
 
 	public void halt() {
@@ -130,7 +134,7 @@ public class TankDrive extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new TankDriveManual());
+		setDefaultCommand(new ArcadeDriveManual());
 	}
 
 }

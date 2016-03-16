@@ -1,10 +1,11 @@
 package org.usfirst.frc.team568.robot;
 
-import org.usfirst.frc.team568.robot.commands.Autonomous;
+import org.usfirst.frc.team568.robot.commands.AutoOne;
+import org.usfirst.frc.team568.robot.commands.AutoTwo;
+import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 import org.usfirst.frc.team568.robot.subsystems.Arms;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
-import org.usfirst.frc.team568.robot.subsystems.TankDrive;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
@@ -12,14 +13,13 @@ import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
-	Encoder encoder;
+
 	int session;
 	Image frame;
 	double Pan;
@@ -49,27 +49,46 @@ public class Robot extends IterativeRobot {
 
 	protected static Robot instance;
 	public OI oi;
-	public Arms arms;
+
+	public ArcadeDrive arcadeDrive;
+
 	public Shooter shooter;
-	public TankDrive tankDrive;
+
+	public Arms arms;
+
 	public ReferenceFrame2 referanceFrame2;
 	Command autonomousCommand;
+
+	/*
+	 * double Pan; double Tilt; double BoxSize;
+	 * 
+	 * double KI; double KP; double KD; double TiltKP; double TiltKD; double
+	 * TiltKI; double ErrSum; double Err2; double Err; double Pow; boolean LL;
+	 * boolean LR;
+	 * 
+	 * double tiltErr; double tiltErr2; double tiltPow;
+	 */
 
 	public Robot() {
 		instance = this;
 		oi = new OI();
-		tankDrive = new TankDrive();
+
+		arcadeDrive = new ArcadeDrive();
 		shooter = new Shooter();
 		arms = new Arms();
+
 		referanceFrame2 = new ReferenceFrame2();
-		// referanceFrame2.start();
-		// referanceFrame2.calabrateGyro();
 
 	}
 
 	@Override
 	public void robotInit() {
-		// encoder.reset();
+
+		System.out.println("Robot Init");
+		referanceFrame2.start();
+		referanceFrame2.calabrateGyro();
+		referanceFrame2.reset();
+
 		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		NIVision.IMAQdxConfigureGrab(session);
@@ -80,8 +99,12 @@ public class Robot extends IterativeRobot {
 		 * 0); SmartDashboard.putNumber("TD", 0);
 		 * SmartDashboard.putNumber("encoderValue", encoder.getDistance());
 		 */
-		// whichOne = SmartDashboard.getNumber("Autonomous #", 0);
-		// over = SmartDashboard.getBoolean("Over or To obstacle", false);
+
+		SmartDashboard.putNumber("How Long?", 12);
+		SmartDashboard.putBoolean("Forward?", true);
+		SmartDashboard.putNumber("Time?", 12);
+		SmartDashboard.putNumber("Speed", .50);
+		SmartDashboard.putNumber("Autonomous #?", 1);
 
 	}
 
@@ -96,12 +119,13 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-		speed = SmartDashboard.getNumber("speed", .75);
-		// double inches = SmartDashboard.getNumber("inches");
-		// whichOne = SmartDashboard.getNumber("Autonomous #");
-		// over = SmartDashboard.getBoolean("Over or To obstacle");
 
-		autonomousCommand = new Autonomous();
+		if (SmartDashboard.getNumber("Autonomous #") == 1) {
+			autonomousCommand = new AutoOne();
+		} else if (SmartDashboard.getNumber("Autonomous #") == 2) {
+			autonomousCommand = new AutoTwo();
+		}
+
 		autonomousCommand.start();
 
 	}
@@ -117,18 +141,17 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
-		// referanceFrame2.reset();
 
 	}
 
 	@Override
 	public void teleopPeriodic() {
 
-		SmartDashboard.putNumber("POS X", referanceFrame2.getPos().x);
-		SmartDashboard.putNumber("POS Y", referanceFrame2.getPos().y);
-		SmartDashboard.putNumber("Heading", referanceFrame2.getHeading());
-		SmartDashboard.putNumber("Acel Y", referanceFrame2.getAcel().y);
-		SmartDashboard.putNumber("Acel X", referanceFrame2.getAcel().x);
+		// SmartDashboard.putNumber("POS X", referanceFrame2.getPos().x);
+		// SmartDashboard.putNumber("POS Y", referanceFrame2.getPos().y);
+		/// SmartDashboard.putNumber("Heading", referanceFrame2.getHeading());
+		// SmartDashboard.putNumber("Acel Y", referanceFrame2.getAcel().y);
+		// SmartDashboard.putNumber("Acel X", referanceFrame2.getAcel().x);
 		// SmartDashboard.putNumber("Encoder", encoder.getDistance());
 		/*
 		 * KP = SmartDashboard.getNumber("P"); KI =
@@ -137,11 +160,30 @@ public class Robot extends IterativeRobot {
 		 * SmartDashboard.getNumber("TI"); TiltKD =
 		 * SmartDashboard.getNumber("TD");
 		 */
+
+		Scheduler.getInstance().run();
+
 		NIVision.IMAQdxStartAcquisition(session);
 		NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
 		NIVision.IMAQdxGrab(session, frame, 1);
 		NIVision.imaqDrawShapeOnImage(frame, frame, rect, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
 		CameraServer.getInstance().setImage(frame);
+
+		/*
+		 * SmartDashboard.putNumber("POS X", referanceFrame2.getPos().x);
+		 * SmartDashboard.putNumber("POS Y", referanceFrame2.getPos().y);
+		 * SmartDashboard.putNumber("Heading", referanceFrame2.getHeading());
+		 * SmartDashboard.putNumber("Acel Y", referanceFrame2.getAcel().y);
+		 * SmartDashboard.putNumber("Acel X", referanceFrame2.getAcel().x);
+		 * SmartDashboard.putNumber("Encoder", encoder.getDistance());
+		 * 
+		 * KP = SmartDashboard.getNumber("P"); KI =
+		 * SmartDashboard.getNumber("I"); KD = SmartDashboard.getNumber("D");
+		 * TiltKP = SmartDashboard.getNumber("TP"); TiltKI =
+		 * SmartDashboard.getNumber("TI"); TiltKD =
+		 * SmartDashboard.getNumber("TD");
+		 */
+
 		/*
 		 * NetworkTable server = NetworkTable.getTable("SmartDashboard"); try {
 		 * System.out.println(server.getNumber("COG_X", 0.0));
@@ -186,6 +228,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void testPeriodic() {
+
 	}
 
 	public static Robot getInstance() {
