@@ -26,14 +26,12 @@ public class TiltUpwards extends Command {
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		if (Robot.getInstance().oi.shootThree.get()) {
+		if (Robot.getInstance().oi.shootThree.get() || Robot.getInstance().shooter.upperLimmitSwitch.get()) {
 			return false;
 		} else {
 			return true;
 		}
-		// } else {
-		// return false;
-		// }
+
 	}
 
 	@Override

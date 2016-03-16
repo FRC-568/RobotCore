@@ -20,6 +20,7 @@ public class TankDrive extends Subsystem {
 	RobotDrive myDrive;
 	ReferenceFrame2 ref;
 	static double sHeading;
+	static double Kp = .002;
 
 	public TankDrive() {
 		this.robot = Robot.getInstance();
@@ -59,21 +60,18 @@ public class TankDrive extends Subsystem {
 	}
 
 	public void forwardWithGyro(double speed) {
+		double error = ref.getAngle() * Kp;
+
 		if (ref.getAngle() <= 5 && ref.getAngle() >= -5) {
 			leftFront.set(speed);
 			leftBack.set(speed);
 			rightFront.set(speed);
 			rightBack.set(speed);
-		} else if (ref.getAngle() > 5) {
-			leftFront.set(-speed);
-			leftBack.set(-speed);
-			rightFront.set(speed);
-			rightBack.set(speed);
-		} else if (ref.getAngle() < -5) {
-			leftFront.set(speed);
-			leftBack.set(speed);
-			rightFront.set(-speed);
-			rightBack.set(-speed);
+		} else {
+			leftFront.set(speed - error);
+			leftBack.set(speed - error);
+			rightFront.set(speed + error);
+			rightBack.set(speed + error);
 		}
 
 	}

@@ -7,8 +7,10 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class GoForwardToObsticles extends Command {
 	Timer timer;
+	double time;
 
-	public GoForwardToObsticles() {
+	public GoForwardToObsticles(double time) {
+		this.time = time;
 		// TODO Auto-generated constructor stub
 
 	}
@@ -29,7 +31,7 @@ public class GoForwardToObsticles extends Command {
 	@Override
 	protected boolean isFinished() {
 		// TODO Auto-generated method stub
-		if (timer.hasPeriodPassed(5) == true) {
+		if (timer.hasPeriodPassed(time) == true) {
 			return true;
 
 		}

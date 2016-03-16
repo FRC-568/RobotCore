@@ -40,17 +40,17 @@ public class Robot extends IterativeRobot {
 	double tiltErr;
 	double tiltErr2;
 	double tiltPow;
-	public int whichOne;
-	public boolean over;
+	// public double whichOne;
+	// public boolean over;
+
+	public double speed;
+
 	// public double EncoderValue;
 
 	protected static Robot instance;
 	public OI oi;
-
 	public Arms arms;
-
 	public Shooter shooter;
-
 	public TankDrive tankDrive;
 	public ReferenceFrame2 referanceFrame2;
 	Command autonomousCommand;
@@ -62,26 +62,26 @@ public class Robot extends IterativeRobot {
 		shooter = new Shooter();
 		arms = new Arms();
 		referanceFrame2 = new ReferenceFrame2();
-		referanceFrame2.start();
-		referanceFrame2.calabrateGyro();
-		whichOne = 0;
+		// referanceFrame2.start();
+		// referanceFrame2.calabrateGyro();
+
 	}
 
 	@Override
 	public void robotInit() {
-		encoder.reset();
+		// encoder.reset();
 		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		NIVision.IMAQdxConfigureGrab(session);
-		SmartDashboard.putNumber("P", 2.00);
-		SmartDashboard.putNumber("I", 0.700);
-		SmartDashboard.putNumber("D", 0);
-		SmartDashboard.putNumber("TP", 5.000);
-		SmartDashboard.putNumber("TI", 0);
-		SmartDashboard.putNumber("TD", 0);
-		SmartDashboard.putNumber("encoderValue", encoder.getDistance());
-
-		SmartDashboard.getNumber("Autonomous #");
+		/*
+		 * SmartDashboard.putNumber("P", 2.00); SmartDashboard.putNumber("I",
+		 * 0.700); SmartDashboard.putNumber("D", 0);
+		 * SmartDashboard.putNumber("TP", 5.000); SmartDashboard.putNumber("TI",
+		 * 0); SmartDashboard.putNumber("TD", 0);
+		 * SmartDashboard.putNumber("encoderValue", encoder.getDistance());
+		 */
+		// whichOne = SmartDashboard.getNumber("Autonomous #", 0);
+		// over = SmartDashboard.getBoolean("Over or To obstacle", false);
 
 	}
 
@@ -96,6 +96,10 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
+		speed = SmartDashboard.getNumber("speed", .75);
+		// double inches = SmartDashboard.getNumber("inches");
+		// whichOne = SmartDashboard.getNumber("Autonomous #");
+		// over = SmartDashboard.getBoolean("Over or To obstacle");
 
 		autonomousCommand = new Autonomous();
 		autonomousCommand.start();
@@ -113,7 +117,7 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
-		referanceFrame2.reset();
+		// referanceFrame2.reset();
 
 	}
 
@@ -125,14 +129,14 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Heading", referanceFrame2.getHeading());
 		SmartDashboard.putNumber("Acel Y", referanceFrame2.getAcel().y);
 		SmartDashboard.putNumber("Acel X", referanceFrame2.getAcel().x);
-		SmartDashboard.putNumber("Encoder", encoder.getDistance());
-
-		KP = SmartDashboard.getNumber("P");
-		KI = SmartDashboard.getNumber("I");
-		KD = SmartDashboard.getNumber("D");
-		TiltKP = SmartDashboard.getNumber("TP");
-		TiltKI = SmartDashboard.getNumber("TI");
-		TiltKD = SmartDashboard.getNumber("TD");
+		// SmartDashboard.putNumber("Encoder", encoder.getDistance());
+		/*
+		 * KP = SmartDashboard.getNumber("P"); KI =
+		 * SmartDashboard.getNumber("I"); KD = SmartDashboard.getNumber("D");
+		 * TiltKP = SmartDashboard.getNumber("TP"); TiltKI =
+		 * SmartDashboard.getNumber("TI"); TiltKD =
+		 * SmartDashboard.getNumber("TD");
+		 */
 		NIVision.IMAQdxStartAcquisition(session);
 		NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
 		NIVision.IMAQdxGrab(session, frame, 1);
