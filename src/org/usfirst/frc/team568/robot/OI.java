@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  */
 public class OI {
 
-	public Joystick leftStick = new Joystick(RobotMap.joy1Pos);
-	public Joystick rightStick = new Joystick(RobotMap.joy3Pos);
-	public Joystick shootStick = new Joystick(RobotMap.joy2Pos);
+	public Joystick joyStick1 = new Joystick(RobotMap.joy1Pos);
+	public Joystick joyStick3 = new Joystick(RobotMap.joy3Pos);
+	public Joystick joyStick2 = new Joystick(RobotMap.joy2Pos);
 
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
@@ -21,28 +21,30 @@ public class OI {
 	// number it is.
 	// Joystick stick = new Joystick(port);
 	// Button button = new JoystickButton(stick, buttonNumber);
-	public Button shootSix = new JoystickButton(shootStick, ControllerButtons.armGoUp);
-	public Button shootSeven = new JoystickButton(shootStick, ControllerButtons.armsGoDown);
-	public Button shootFour = new JoystickButton(shootStick, ControllerButtons.shootBallButton);
-	public Button shootFive = new JoystickButton(shootStick, ControllerButtons.obtainBallButton);
-	public Button shootEleven = new JoystickButton(shootStick, ControllerButtons.stopShooterButton);
-	public Button shootOne = new JoystickButton(shootStick, ControllerButtons.nudge);
-	public Button rightTrigger = new JoystickButton(rightStick, ControllerButtons.safty);
-	public Button leftTrigger = new JoystickButton(leftStick, ControllerButtons.safty);
+	public Button shootSix = new JoystickButton(joyStick2, ControllerButtons.joy2B6);
+	public Button shootSeven = new JoystickButton(joyStick2, ControllerButtons.joy2B7);
+	public Button shootFour = new JoystickButton(joyStick2, ControllerButtons.joy2B4);
+	public Button shootFive = new JoystickButton(joyStick2, ControllerButtons.joy2B5);
+	public Button shootEleven = new JoystickButton(joyStick2, ControllerButtons.joy2B11);
+	public Button shootOne = new JoystickButton(joyStick2, ControllerButtons.joy2B1);
+	public Button shootTwo = new JoystickButton(joyStick2, ControllerButtons.joy2B2);
+	public Button shootThree = new JoystickButton(joyStick2, ControllerButtons.joy2B3);
 
-	public Button shootTwo = new JoystickButton(shootStick, ControllerButtons.bringShooterDown);
-	public Button shootThree = new JoystickButton(shootStick, ControllerButtons.bringShooterUp);
+	public Button armsSix = new JoystickButton(joyStick3, ControllerButtons.joy3B6);
+	public Button armsSeven = new JoystickButton(joyStick3, ControllerButtons.joy3B7);
 
-	public Button liftFlipper = new JoystickButton(leftStick, ControllerButtons.liftFlipper);
-	public Button lowerFlipper = new JoystickButton(leftStick, ControllerButtons.lowerFlipper);
+	public Button trigger = new JoystickButton(joyStick1, ControllerButtons.joy1B1);
 
-	public Button crateOut = new JoystickButton(leftStick, ControllerButtons.crateOut);
-	public Button crateIn = new JoystickButton(leftStick, ControllerButtons.crateIn);
-	public Button liftGo = new JoystickButton(leftStick, ControllerButtons.lifterGo);
-	public Button liftStop = new JoystickButton(leftStick, ControllerButtons.lifterStop);
-	public Button lifterReverse = new JoystickButton(leftStick, ControllerButtons.lifterReverse);
-	public Button Calabrate = new JoystickButton(rightStick, ControllerButtons.calabrateIMU);
-	public Button Reset = new JoystickButton(rightStick, ControllerButtons.resetIMU);
+	public Button liftFlipper = new JoystickButton(joyStick1, ControllerButtons.liftFlipper);
+	public Button lowerFlipper = new JoystickButton(joyStick1, ControllerButtons.lowerFlipper);
+
+	public Button crateOut = new JoystickButton(joyStick1, ControllerButtons.crateOut);
+	public Button crateIn = new JoystickButton(joyStick1, ControllerButtons.crateIn);
+	public Button liftGo = new JoystickButton(joyStick1, ControllerButtons.lifterGo);
+	public Button liftStop = new JoystickButton(joyStick1, ControllerButtons.lifterStop);
+	public Button lifterReverse = new JoystickButton(joyStick1, ControllerButtons.lifterReverse);
+	public Button Calabrate = new JoystickButton(joyStick3, ControllerButtons.calabrateIMU);
+	public Button Reset = new JoystickButton(joyStick3, ControllerButtons.resetIMU);
 
 	// There are a few additional built in buttons you can use. Additionally,
 	// by subclassing Button you can create custom triggers and bind those to

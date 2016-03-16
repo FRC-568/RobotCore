@@ -95,8 +95,8 @@ public class Shooter extends Subsystem {
 
 	public void tiltUp() {
 
-		leftTilt.set(SmartDashboard.getNumber("leftTilt"));
-		rightTilt.set(SmartDashboard.getNumber("rightTilt"));
+		leftTilt.set(.75);
+		rightTilt.set(-.75);
 
 		System.out.println(SmartDashboard.getNumber("leftTilt"));
 		SmartDashboard.putString("Event:", "Tilt Up");

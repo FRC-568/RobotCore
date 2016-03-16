@@ -27,7 +27,7 @@ public class ArmDown extends Command {
 	@Override
 	protected void execute() {
 
-		Robot.getInstance().arms.GoDown();
+		Robot.getInstance().arms.goDown();
 		// TODO Auto-generated method stub
 
 	}
@@ -45,12 +45,12 @@ public class ArmDown extends Command {
 	@Override
 	protected void end() {
 		// TODO Auto-generated method stub
-		Robot.getInstance().arms.Stop();
+		Robot.getInstance().arms.stop();
 	}
 
 	@Override
 	protected void interrupted() {
-		Robot.getInstance().arms.Stop();
+		Robot.getInstance().arms.stop();
 		// TODO Auto-generated method stub
 
 	}

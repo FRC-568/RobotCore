@@ -48,13 +48,13 @@ public class ArcadeDrive extends Subsystem {
 		rightBack.setInverted(true);
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
-		driveStickL = robot.oi.leftStick;
-		driveStickR = robot.oi.rightStick;
+		driveStickL = robot.oi.joyStick1;
+		driveStickR = robot.oi.joyStick3;
 
 	}
 
 	public void manualDrive() {
-		if (robot.oi.leftTrigger.get()) {
+		if (robot.oi.trigger.get()) {
 			myDrive.arcadeDrive(driveStickL);
 		} else {
 			halt();
@@ -122,6 +122,7 @@ public class ArcadeDrive extends Subsystem {
 		leftBack.set(speed * -1);
 		rightFront.set(speed * -1);
 		rightBack.set(speed * -1);
+
 	}
 
 	public void halt() {

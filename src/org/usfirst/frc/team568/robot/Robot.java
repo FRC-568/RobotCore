@@ -1,6 +1,7 @@
 package org.usfirst.frc.team568.robot;
 
-import org.usfirst.frc.team568.robot.commands.Autonomous;
+import org.usfirst.frc.team568.robot.commands.AutoOne;
+import org.usfirst.frc.team568.robot.commands.AutoTwo;
 import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 import org.usfirst.frc.team568.robot.subsystems.Arms;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
@@ -27,10 +28,6 @@ public class Robot extends IterativeRobot {
 	public ReferenceFrame2 referanceFrame2;
 	Command autonomousCommand;
 
-	public double howLong;
-	public boolean forward;
-	public double speed;
-
 	int session;
 	Image frame;
 
@@ -54,11 +51,6 @@ public class Robot extends IterativeRobot {
 
 		referanceFrame2 = new ReferenceFrame2();
 
-		SmartDashboard.putNumber("How Long?", 12);
-		SmartDashboard.putBoolean("Forward?", true);
-		SmartDashboard.putNumber("leftTilt", .5);
-		SmartDashboard.putNumber("rightTilt", -.5);
-
 	}
 
 	@Override
@@ -79,6 +71,12 @@ public class Robot extends IterativeRobot {
 		 * SmartDashboard.putNumber("encoderValue", encoder.getDistance());
 		 */
 
+		SmartDashboard.putNumber("How Long?", 12);
+		SmartDashboard.putBoolean("Forward?", true);
+		SmartDashboard.putNumber("Time?", 12);
+		SmartDashboard.putNumber("Speed", .50);
+		SmartDashboard.putNumber("Autonomous #?", 1);
+
 	}
 
 	@Override
@@ -92,11 +90,12 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
+		if (SmartDashboard.getNumber("Autonomous #") == 1) {
+			autonomousCommand = new AutoOne();
+		} else if (SmartDashboard.getNumber("Autonomous #") == 2) {
+			autonomousCommand = new AutoTwo();
+		}
 
-		speed = SmartDashboard.getNumber("speed", .75);
-		// double inches = SmartDashboard.getNumber("inches");
-
-		autonomousCommand = new Autonomous();
 		autonomousCommand.start();
 
 	}
