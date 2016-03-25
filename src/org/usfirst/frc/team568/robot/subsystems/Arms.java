@@ -23,8 +23,8 @@ public class Arms extends Subsystem {
 		topLimmitSwitch = new DigitalInput(RobotMap.topLimmitSwitch);
 		bottomLimmitSwitch = new DigitalInput(RobotMap.bottomLimmitSwitch);
 
-		Robot.getInstance().oi.armsSix.whenPressed(new ArmUP());
-		Robot.getInstance().oi.armsSeven.whenPressed(new ArmDown());
+		Robot.getInstance().oi.armsUp.whileHeld(new ArmUP());
+		Robot.getInstance().oi.armsDown.whileHeld(new ArmDown());
 
 	}
 

@@ -25,12 +25,12 @@ public class ArcadeDrive extends Subsystem {
 	ReferenceFrame2 ref;
 
 	static double sHeading;
-	static double Kp = .002;
+	double Kp;
 
 	public ArcadeDrive() {
 		this.robot = Robot.getInstance();
-		ref = new ReferenceFrame2();
-		sHeading = ref.getHeading();
+		ref = Robot.getInstance().referanceFrame2;
+		// sHeading = ref.getHeading();
 
 		// leftFront = new Victor(RobotMap.leftFrontMotor);
 		// leftBack = new Victor(RobotMap.leftBackMotor);
@@ -54,6 +54,11 @@ public class ArcadeDrive extends Subsystem {
 	}
 
 	public void manualDrive() {
+		if (!leftFront.getInverted() || !leftBack.getInverted()) {
+			leftFront.setInverted(true);
+			leftBack.setInverted(true);
+		}
+
 		if (robot.oi.trigger.get()) {
 			myDrive.arcadeDrive(driveStickL);
 		} else {
@@ -63,14 +68,22 @@ public class ArcadeDrive extends Subsystem {
 	}
 
 	public void forwardWithGyro(double speed) {
-		double error = ref.getAngle() * Kp;
+		if (leftFront.getInverted() || leftBack.getInverted()) {
+			leftFront.setInverted(false);
+			leftBack.setInverted(false);
+		}
 
-		if (ref.getAngle() <= 5 && ref.getAngle() >= -5) {
+		Kp = .015;
+		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
+
+		if (Robot.getInstance().referanceFrame2.getAngle() <= 5
+				&& Robot.getInstance().referanceFrame2.getAngle() >= -5) {
 			leftFront.set(speed);
 			leftBack.set(speed);
 			rightFront.set(speed);
 			rightBack.set(speed);
 		} else {
+			System.out.println(error);
 			leftFront.set(speed - error);
 			leftBack.set(speed - error);
 			rightFront.set(speed + error);
@@ -79,17 +92,37 @@ public class ArcadeDrive extends Subsystem {
 
 	}
 
-	public void rightWithGyro(double degrees, double speed) {
-		double ra = ref.getAngle() + degrees;
-		if (ref.getAngle() != ra) {
-			leftFront.set(-speed);
-			leftBack.set(-speed);
+	public void reverseWithGyro(double speed) {
+		if (leftFront.getInverted() || leftBack.getInverted()) {
+			leftFront.setInverted(false);
+			leftBack.setInverted(false);
+		}
+
+		Kp = .015;
+		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
+		speed = -speed;
+
+		if (Robot.getInstance().referanceFrame2.getAngle() <= 5
+				&& Robot.getInstance().referanceFrame2.getAngle() >= -5) {
+			leftFront.set(speed);
+			leftBack.set(speed);
 			rightFront.set(speed);
 			rightBack.set(speed);
+		} else {
+			System.out.println(error);
+			leftFront.set(speed - error);
+			leftBack.set(speed - error);
+			rightFront.set(speed + error);
+			rightBack.set(speed + error);
 		}
 	}
 
-	public void leftWithGyro(double degrees, double speed) {
+	public void rightWithGyro(double degrees, double speed) {
+		if (leftFront.getInverted() || leftBack.getInverted()) {
+			leftFront.setInverted(false);
+			leftBack.setInverted(false);
+		}
+
 		double ra = ref.getAngle() + degrees;
 		if (ref.getAngle() != ra) {
 			leftFront.set(speed);
@@ -97,31 +130,73 @@ public class ArcadeDrive extends Subsystem {
 			rightFront.set(-speed);
 			rightBack.set(-speed);
 		}
+	}
+
+	public void leftWithGyro(double degrees, double speed) {
+		if (leftFront.getInverted() || leftBack.getInverted()) {
+			leftFront.setInverted(false);
+			leftBack.setInverted(false);
+		}
+
+		double ra = ref.getAngle() - degrees;
+		if (ref.getAngle() != ra) {
+			leftFront.set(-speed);
+			leftBack.set(-speed);
+			rightFront.set(speed);
+			rightBack.set(speed);
+		}
 
 	}
 
-	public void applyPowerToLeftMotors(double speed) {
-		leftFront.set(speed);
-		leftBack.set(speed);
-	}
+	public void turnLeft(double speed) {
+		if (leftFront.getInverted() || leftBack.getInverted()) {
+			leftFront.setInverted(false);
+			leftBack.setInverted(false);
+		}
 
-	public void applyPowerToRightMotors(double speed) {
-		rightBack.set(speed);
+		leftFront.set(-speed);
+		leftBack.set(-speed);
 		rightFront.set(speed);
+		rightBack.set(speed);
+
+	}
+
+	public void turnRight(double speed) {
+		if (leftFront.getInverted() || leftBack.getInverted()) {
+			leftFront.setInverted(false);
+			leftBack.setInverted(false);
+		}
+
+		leftBack.set(speed);
+		leftFront.set(speed);
+		rightBack.set(-speed);
+		rightFront.set(-speed);
+
 	}
 
 	public void goForwards(double speed) {
-		leftFront.set(speed);
+		if (leftFront.getInverted() || leftBack.getInverted()) {
+			leftFront.setInverted(false);
+			leftBack.setInverted(false);
+		}
+
 		leftBack.set(speed);
-		rightFront.set(speed);
+		leftFront.set(speed);
 		rightBack.set(speed);
+		rightFront.set(speed);
+
 	}
 
 	public void goBackwards(double speed) {
-		leftFront.set(speed * -1);
-		leftBack.set(speed * -1);
-		rightFront.set(speed * -1);
-		rightBack.set(speed * -1);
+		if (leftFront.getInverted() || leftBack.getInverted()) {
+			leftFront.setInverted(false);
+			leftBack.setInverted(false);
+		}
+
+		leftBack.set(-speed);
+		leftFront.set(-speed);
+		rightBack.set(-speed);
+		rightFront.set(-speed);
 
 	}
 

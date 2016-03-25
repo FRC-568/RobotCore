@@ -89,8 +89,8 @@ public class ReferenceFrame2 extends Subsystem {
 		updateThread = new Thread(() -> {
 			while (!Thread.interrupted()) {
 				updateAcel();
-				SmartDashboard.putNumber("Raw Y", acel.getY() - acelBias.y);
-				SmartDashboard.putNumber("Raw X", acel.getX() - acelBias.x);
+				// SmartDashboard.putNumber("Raw Y", acel.getY() - acelBias.y);
+				// SmartDashboard.putNumber("Raw X", acel.getX() - acelBias.x);
 				try {
 					Thread.sleep(calibrationSampleRate);
 				} catch (InterruptedException e) {
@@ -109,7 +109,7 @@ public class ReferenceFrame2 extends Subsystem {
 		acceleration = Vector2.zero;
 		velocity = Vector2.zero;
 		position = Vector2.zero;
-		// gyro.reset();
+		gyro.reset();
 	}
 
 	public Vector2 getVelocity() {
@@ -160,8 +160,8 @@ public class ReferenceFrame2 extends Subsystem {
 		avgY /= calibrationSamples;
 		acelBias = new Vector2(avgX, avgY);
 		lastTimestamp = Timer.getFPGATimestamp();
-		SmartDashboard.putNumber("X Bias", acelBias.x);
-		SmartDashboard.putNumber("Y Bias", acelBias.y);
+		// SmartDashboard.putNumber("X Bias", acelBias.x);
+		// SmartDashboard.putNumber("Y Bias", acelBias.y);
 	}
 
 	public void run() {

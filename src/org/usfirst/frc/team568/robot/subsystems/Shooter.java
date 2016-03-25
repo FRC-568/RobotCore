@@ -2,7 +2,6 @@ package org.usfirst.frc.team568.robot.subsystems;
 
 import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
-import org.usfirst.frc.team568.robot.commands.DoNotShoot;
 import org.usfirst.frc.team568.robot.commands.GetBall;
 import org.usfirst.frc.team568.robot.commands.Shoot;
 import org.usfirst.frc.team568.robot.commands.StopShoot;
@@ -21,10 +20,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends Subsystem {
 	private final Robot robot;
-	SpeedController shooter;
+	public SpeedController shooter;
 
-	SpeedController leftTilt;
-	SpeedController rightTilt;
+	public SpeedController leftTilt;
+	public SpeedController rightTilt;
 	Servo nudge;
 	public DigitalInput upperLimmitSwitch;
 	public DigitalInput lowerLimmitSwitch;
@@ -46,7 +45,7 @@ public class Shooter extends Subsystem {
 		// TODO Auto-generated constructor stub
 		robot.oi.shootFour.whenPressed(new Shoot());
 		robot.oi.shootFive.whenPressed(new GetBall());
-		robot.oi.shootEleven.whenPressed(new DoNotShoot());
+		// robot.oi.shootEleven.whenPressed(new DoNotShoot());
 		robot.oi.shootTwo.whileHeld(new TiltDownwards());
 		robot.oi.shootThree.whileHeld(new TiltUpwards());
 		robot.oi.shootOne.whenPressed(new nudge());
@@ -63,8 +62,9 @@ public class Shooter extends Subsystem {
 
 	public void nudge() {
 		nudge.setAngle(180);
-		SmartDashboard.putString("Event:", "Nudge");
-		Timer.delay(.25);
+		// SmartDashboard.putString("Event:", "Nudge");
+		Timer.delay(.3);
+
 	}
 
 	public void stopnudge() {
@@ -89,7 +89,7 @@ public class Shooter extends Subsystem {
 		leftTilt.set(-0.5);
 		rightTilt.set(0.5);
 
-		SmartDashboard.putString("Event:", "Tilt Down");
+		// SmartDashboard.putString("Event:", "Tilt Down");
 		Timer.delay(.01);
 	}
 
@@ -98,15 +98,15 @@ public class Shooter extends Subsystem {
 		leftTilt.set(.75);
 		rightTilt.set(-.75);
 
-		System.out.println(SmartDashboard.getNumber("leftTilt"));
-		SmartDashboard.putString("Event:", "Tilt Up");
+		// System.out.println(SmartDashboard.getNumber("leftTilt"));
+		// SmartDashboard.putString("Event:", "Tilt Up");
 		Timer.delay(.01);
 	}
 
 	public void stopTilt() {
 		leftTilt.set(0);
 		rightTilt.set(0);
-		SmartDashboard.putString("Event:", "Stop Tilt");
+		// SmartDashboard.putString("Event:", "Stop Tilt");
 	}
 
 	@Override

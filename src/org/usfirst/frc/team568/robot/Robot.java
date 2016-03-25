@@ -14,6 +14,7 @@ import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,6 +41,7 @@ public class Robot extends IterativeRobot {
 	double tiltErr;
 	double tiltErr2;
 	double tiltPow;
+	Timer time;
 	// public double whichOne;
 	// public boolean over;
 
@@ -49,6 +51,8 @@ public class Robot extends IterativeRobot {
 
 	protected static Robot instance;
 	public OI oi;
+
+	// AimingPID aim;
 
 	public ArcadeDrive arcadeDrive;
 
@@ -72,12 +76,14 @@ public class Robot extends IterativeRobot {
 	public Robot() {
 		instance = this;
 		oi = new OI();
+		// aim = new AimingPID(0.001, 0, 0);
 
 		arcadeDrive = new ArcadeDrive();
 		shooter = new Shooter();
 		arms = new Arms();
 
 		referanceFrame2 = new ReferenceFrame2();
+		time = new Timer();
 
 	}
 
@@ -100,11 +106,11 @@ public class Robot extends IterativeRobot {
 		 * SmartDashboard.putNumber("encoderValue", encoder.getDistance());
 		 */
 
-		SmartDashboard.putNumber("How Long?", 12);
 		SmartDashboard.putBoolean("Forward?", true);
-		SmartDashboard.putNumber("Time?", 12);
-		SmartDashboard.putNumber("Speed", .50);
-		SmartDashboard.putNumber("Autonomous #?", 1);
+		SmartDashboard.putNumber("Time?", 10);
+		SmartDashboard.putNumber("Speed", .60);
+		SmartDashboard.putNumber("Autonomous #", 1);
+		SmartDashboard.putString("Event:", "Robot init");
 
 	}
 
@@ -125,6 +131,7 @@ public class Robot extends IterativeRobot {
 		} else if (SmartDashboard.getNumber("Autonomous #") == 2) {
 			autonomousCommand = new AutoTwo();
 		}
+		referanceFrame2.reset();
 
 		autonomousCommand.start();
 
@@ -132,8 +139,24 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousPeriodic() {
+		// SmartDashboard.putNumber("Heading", referanceFrame2.getAngle());
+		/*
+		 * time.reset(); time.start(); if (SmartDashboard.getNumber(
+		 * "Autonomous #") == 1) {
+		 * 
+		 * if (time.get() < .75) { shooter.rightTilt.set(-.5);
+		 * shooter.leftTilt.set(.5); } else { shooter.rightTilt.set(0);
+		 * shooter.leftTilt.set(0); } if (time.get() < 10) {
+		 * 
+		 * arcadeDrive.forwardWithGyro(.6); } else { arcadeDrive.halt(); }
+		 * 
+		 * } else if (SmartDashboard.getNumber("Autonomous #") == 2) { if
+		 * (time.get() < 10) { arcadeDrive.goBackwards(.6); } else {
+		 * arcadeDrive.halt(); }
+		 * 
+		 * }
+		 */
 		Scheduler.getInstance().run();
-
 	}
 
 	@Override

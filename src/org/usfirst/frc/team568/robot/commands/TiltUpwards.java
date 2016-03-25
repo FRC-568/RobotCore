@@ -31,8 +31,10 @@ public class TiltUpwards extends Command {
 
 	@Override
 	protected boolean isFinished() {
-
-		return true;
+		if (Robot.getInstance().oi.shootThree.get())
+			return false;
+		else
+			return true;
 
 	}
 

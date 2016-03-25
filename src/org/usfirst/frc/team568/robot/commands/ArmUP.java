@@ -3,12 +3,10 @@ package org.usfirst.frc.team568.robot.commands;
 import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.subsystems.Arms;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ArmUP extends Command {
 	Arms arms;
-	Timer time;
 
 	public ArmUP() {
 
@@ -17,8 +15,7 @@ public class ArmUP extends Command {
 
 	@Override
 	protected void initialize() {
-		time = new Timer();
-		time.start();
+
 		arms = Robot.getInstance().arms;
 
 	}
@@ -32,11 +29,10 @@ public class ArmUP extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		if (time.get() < 2) {
+		if (Robot.getInstance().oi.armsUp.get())
 			return false;
-		} else {
+		else
 			return true;
-		}
 	}
 
 	@Override
