@@ -7,7 +7,10 @@ import org.usfirst.frc.team568.robot.subsystems.Arms;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
 
-
+import com.ni.vision.NIVision;
+import com.ni.vision.NIVision.DrawMode;
+import com.ni.vision.NIVision.Image;
+import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -18,7 +21,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
-	
+	int session;
+	Image frame;
+	double Pan;
+	double Tilt;
+	double BoxSize;
+	double KI;
+	double KP;
+	double KD;
+	double TiltKP;
+	double TiltKD;
+	double TiltKI;
+	double ErrSum;
+	double Err2;
+	double Err;
+	double Pow;
+	boolean LL;
+	boolean LR;
+	double tiltErr;
+	double tiltErr2;
+	double tiltPow;
 	Timer time;
 	// public double whichOne;
 	// public boolean over;
@@ -73,7 +95,9 @@ public class Robot extends IterativeRobot {
 		referanceFrame2.calabrateGyro();
 		referanceFrame2.reset();
 
-		
+		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+		NIVision.IMAQdxConfigureGrab(session);
 		/*
 		 * SmartDashboard.putNumber("P", 2.00); SmartDashboard.putNumber("I",
 		 * 0.700); SmartDashboard.putNumber("D", 0);
@@ -102,9 +126,9 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 
-		if (SmartDashboard.getNumber("Autonomous #",0) == 1) {
+		if (SmartDashboard.getNumber("Autonomous #") == 1) {
 			autonomousCommand = new AutoOne();
-		} else if (SmartDashboard.getNumber("Autonomous #",0) == 2) {
+		} else if (SmartDashboard.getNumber("Autonomous #") == 2) {
 			autonomousCommand = new AutoTwo();
 		}
 		referanceFrame2.reset();
@@ -162,7 +186,11 @@ public class Robot extends IterativeRobot {
 
 		Scheduler.getInstance().run();
 
-		
+		NIVision.IMAQdxStartAcquisition(session);
+		NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
+		NIVision.IMAQdxGrab(session, frame, 1);
+		NIVision.imaqDrawShapeOnImage(frame, frame, rect, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
+		CameraServer.getInstance().setImage(frame);
 
 		/*
 		 * SmartDashboard.putNumber("POS X", referanceFrame2.getPos().x);
@@ -213,7 +241,7 @@ public class Robot extends IterativeRobot {
 		 * 
 		 * else { bob.set(0); sam.set(0); if (LL) { DarwinsRobot.tankDrive(-.55,
 		 * .55); } if (LR) { DarwinsRobot.tankDrive(.55, -.55); } }
-		 * .
+		 * 
 		 * }
 		 */
 
