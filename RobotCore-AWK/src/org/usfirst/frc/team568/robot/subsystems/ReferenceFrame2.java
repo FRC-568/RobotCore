@@ -4,6 +4,8 @@ import org.usfirst.frc.team568.util.Vector2;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Timer;
@@ -24,7 +26,7 @@ public class ReferenceFrame2 extends Subsystem {
 	protected Vector2 velocity;
 	protected Vector2 position;
 	protected Vector2 acelBias;
-
+	public Encoder motorEncoder;
 	private double lastTimestamp;
 	private Filter xFilter;
 	private Filter yFilter;
@@ -36,7 +38,7 @@ public class ReferenceFrame2 extends Subsystem {
 		velocity = Vector2.zero;
 		position = Vector2.zero;
 		threshold = .03;
-
+		motorEncoder = new Encoder(0, 1, false, EncodingType.k4X);
 		gyro = new ADXRS450_Gyro();
 		acel = new BuiltInAccelerometer(Range.k8G);
 		calibrateAcel();
@@ -111,7 +113,15 @@ public class ReferenceFrame2 extends Subsystem {
 		position = Vector2.zero;
 		gyro.reset();
 	}
-
+	double ticksPerRotation;
+	double wheelDiameterInCM;
+	double currentTicks = motorEncoder.get();
+	public int ConvertCmtoTicks(double Centimeter){
+	double ticks = (currentTicks/ticksPerRotation)*(wheelDiameterInCM*Math.PI);
+		return (int) ticks;
+	}
+	
+	
 	public Vector2 getVelocity() {
 		return velocity;
 	}

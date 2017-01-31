@@ -3,13 +3,13 @@ package org.usfirst.frc.team568.robot.subsystems;
 import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
 import org.usfirst.frc.team568.robot.commands.ArcadeDriveManual;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.command.Subsystem;
+
 
 public class DriveTrain extends Subsystem {
 	public final Robot robot;
@@ -41,6 +41,8 @@ public class DriveTrain extends Subsystem {
 		leftBack = new VictorSP(RobotMap.leftBackMotor);
 		rightFront = new VictorSP(RobotMap.rightFrontMotor);
 		rightBack = new VictorSP(RobotMap.rightBackMotor);
+			
+		
 
 		leftFront.setInverted(true);
 		leftBack.setInverted(true);
@@ -48,11 +50,19 @@ public class DriveTrain extends Subsystem {
 		rightBack.setInverted(true);
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
+
 		driveStick1 = robot.oi.joyStick1;
 		driveStick2 = robot.oi.joyStick2;
 
-	}
 
+		
+		
+
+
+	}
+	
+
+	
 	public void arcadeDrive() {
 		if (!leftFront.getInverted() || !leftBack.getInverted()) {
 			leftFront.setInverted(true);
