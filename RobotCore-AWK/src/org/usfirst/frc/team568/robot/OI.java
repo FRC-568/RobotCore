@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 public class OI {
 
 	public Joystick joyStick1 = new Joystick(RobotMap.joy1Pos);
-	public Joystick joyStick3 = new Joystick(RobotMap.joy3Pos);
+
 	public Joystick joyStick2 = new Joystick(RobotMap.joy2Pos);
 
 	//// CREATING BUTTONS
@@ -43,8 +43,7 @@ public class OI {
 	public Button liftGo = new JoystickButton(joyStick1, ControllerButtons.lifterGo);
 	public Button liftStop = new JoystickButton(joyStick1, ControllerButtons.lifterStop);
 	public Button lifterReverse = new JoystickButton(joyStick1, ControllerButtons.lifterReverse);
-	public Button Calabrate = new JoystickButton(joyStick3, ControllerButtons.calabrateIMU);
-	public Button Reset = new JoystickButton(joyStick3, ControllerButtons.resetIMU);
+	
 
 	// There are a few additional built in buttons you can use. Additionally,
 	// by subclassing Button you can create custom triggers and bind those to

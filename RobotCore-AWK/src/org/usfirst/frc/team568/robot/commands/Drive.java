@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Drive extends Command {
 	DriveTrain drive;
 	Timer timer;
+	
 	double speed;
 	double delay;
 	boolean forward;

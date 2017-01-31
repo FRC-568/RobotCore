@@ -16,8 +16,8 @@ public class DriveTrain extends Subsystem {
 
 	protected SpeedController leftFront, leftBack, rightFront, rightBack;
 
-	protected Joystick driveStickL;
-	protected Joystick driveStickR;
+	protected Joystick driveStick1;
+	protected Joystick driveStick2;
 
 	RobotDrive myRobot;
 	RobotDrive myDrive;
@@ -48,8 +48,8 @@ public class DriveTrain extends Subsystem {
 		rightBack.setInverted(true);
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
-		driveStickL = robot.oi.joyStick1;
-		driveStickR = robot.oi.joyStick3;
+		driveStick1 = robot.oi.joyStick1;
+		driveStick2 = robot.oi.joyStick2;
 
 	}
 
@@ -59,7 +59,7 @@ public class DriveTrain extends Subsystem {
 			leftBack.setInverted(true);
 		}
 
-		myDrive.arcadeDrive(driveStickL.getRawAxis(1), driveStickL.getRawAxis(4));
+		myDrive.arcadeDrive(driveStick1.getRawAxis(1), driveStick1.getRawAxis(4));
 
 		Timer.delay(0.01);
 	}
@@ -69,7 +69,7 @@ public class DriveTrain extends Subsystem {
 			leftFront.setInverted(true);
 			leftBack.setInverted(true);
 		}
-		myDrive.tankDrive(driveStickL.getRawAxis(1), driveStickL.getRawAxis(5));
+		myDrive.tankDrive(driveStick1.getRawAxis(1), driveStick1.getRawAxis(5));
 	}
 
 	public void forwardWithGyro(double speed) {
