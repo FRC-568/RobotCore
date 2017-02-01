@@ -18,7 +18,7 @@ public class Drive extends Command {
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
-		drive = Robot.getInstance().arcadeDrive;
+		drive = Robot.getInstance().driveTrain;
 		timer = new Timer();
 		speed = SmartDashboard.getNumber("Speed", 0);
 		delay = SmartDashboard.getNumber("Time?", 0);

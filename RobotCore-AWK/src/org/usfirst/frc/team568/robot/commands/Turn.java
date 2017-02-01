@@ -14,7 +14,7 @@ public class Turn extends Command {
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
-		drive = Robot.getInstance().arcadeDrive;
+		drive = Robot.getInstance().driveTrain;
 		degrees = SmartDashboard.getNumber("Degrees", 90);
 		ra = Robot.getInstance().referanceFrame2.getAngle() + degrees;
 

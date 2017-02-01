@@ -28,7 +28,8 @@ public class RobotMap {
 	
 	public static final int servo1 = 6;
 	public static final int servo2 = 7;
-	public static final int gearDetector = 1;
+	public static final int gearDetector = 0;
+	public static final int laser1 = 9;
 	
 
 	

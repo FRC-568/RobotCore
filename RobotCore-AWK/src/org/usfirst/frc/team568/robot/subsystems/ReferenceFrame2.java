@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
+
 public class ReferenceFrame2 extends Subsystem {
 	public int calibrationSamples = 500;
 	public int calibrationSampleRate = 20;
