@@ -93,6 +93,7 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
+		referanceFrame2.motorEncoder.reset();
 
 	}
 
@@ -100,7 +101,8 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 
 		Scheduler.getInstance().run();
-
+		
+		SmartDashboard.putNumber("MotorEncoderTicks:", referanceFrame2.motorEncoder.get());
 	}
 
 	@Override

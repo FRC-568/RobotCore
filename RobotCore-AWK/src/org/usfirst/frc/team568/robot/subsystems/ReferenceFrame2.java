@@ -34,13 +34,19 @@ public class ReferenceFrame2 extends Subsystem {
 	private Filter yFilter;
 	public double threshold;
 	private static final int filterPoles = 20;
+	
+	double ticksPerRotation = 270;
+	double wheelDiameterInCM=16;
 
 	public ReferenceFrame2() {
+		
+		
 		acceleration = Vector2.zero;
 		velocity = Vector2.zero;
 		position = Vector2.zero;
 		threshold = .03;
 		motorEncoder = new Encoder(0, 1, false, EncodingType.k4X);
+	
 		gyro = new ADXRS450_Gyro();
 		acel = new BuiltInAccelerometer(Range.k8G);
 		calibrateAcel();
@@ -115,11 +121,10 @@ public class ReferenceFrame2 extends Subsystem {
 		position = Vector2.zero;
 		gyro.reset();
 	}
-	double ticksPerRotation;
-	double wheelDiameterInCM;
-	double currentTicks = motorEncoder.get();
+	
+	//int currentTicks = motorEncoder.getRaw();
 	public int ConvertCmtoTicks(double Centimeter){
-	double ticks = (currentTicks/ticksPerRotation)*(wheelDiameterInCM*Math.PI);
+	double ticks = (motorEncoder.getRaw()/ticksPerRotation)*(wheelDiameterInCM*Math.PI);
 		return (int) ticks;
 	}
 	

@@ -2,6 +2,7 @@ package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
@@ -14,15 +15,16 @@ public class Drive extends Command {
 	double speed;
 	double delay;
 	boolean forward;
+	double CM;
+	ReferenceFrame2 ref;
 
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
 		drive = Robot.getInstance().driveTrain;
 		timer = new Timer();
-		speed = SmartDashboard.getNumber("Speed", 0);
-		delay = SmartDashboard.getNumber("Time?", 0);
-		forward = SmartDashboard.getBoolean("Forward?", true);
+		CM = SmartDashboard.getNumber("Centimeters",0);
+		speed = SmartDashboard.getNumber("speed", 0);
 		timer.reset();
 		timer.start();
 
@@ -31,23 +33,20 @@ public class Drive extends Command {
 	@Override
 	protected void execute() {
 
-		if (forward) {
-
-			drive.forwardWithGyro(speed);
-		} else if (!forward) {
-			drive.reverseWithGyro(speed);
-		}
-
+	
+			drive.forwardWithGyro(speed);		
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected boolean isFinished() {
-		if (timer.get() < delay)
-			return false;
-		else
+		if (ref.ConvertCmtoTicks(CM)>CM){
 			return true;
+		}
+		else{
+			return true;
+	}
 	}
 
 	@Override

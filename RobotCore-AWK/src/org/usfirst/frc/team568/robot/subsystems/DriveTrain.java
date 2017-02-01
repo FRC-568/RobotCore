@@ -182,6 +182,19 @@ public class DriveTrain extends Subsystem {
 
 	}
 
+	public void driveForwardUsingEncoders(double speed, double CM){
+		ref.motorEncoder.reset();
+		while(robot.isEnabled()){
+		if(ref.ConvertCmtoTicks(CM)> CM){
+			goForwards(speed);
+		}
+		else{
+			halt();
+			return;
+		}
+	}
+	}
+	
 	public void goForwards(double speed) {
 		if (leftFront.getInverted() || leftBack.getInverted()) {
 			leftFront.setInverted(false);
