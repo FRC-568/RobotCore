@@ -17,45 +17,20 @@ public class RobotMap {
 	// public static int rangefinderPort = 1;
 	// public static int rangefinderModule = 1;
 
-	public static final int nudge = 8;
+	
 	public static final int leftFrontMotor = 1;
 	public static final int leftBackMotor = 2;
 	public static final int rightFrontMotor = 3;
 	public static final int rightBackMotor = 4;
 
-	public static final int upperLimmitSwitch = 4;
-	public static final int lowerLimmitSwitch = 5;
-	public static final int topLimmitSwitch = 6;
-	public static final int bottomLimmitSwitch = 7;
-
-	public static final int spike2 = 8;
-	public static final int spike1 = 9;
-	// public static final int lifterMotor = 5;
-	// public static final int lowZoneMotor = 8;
-
 	public static final int joy1Pos = 0;
 	public static final int joy2Pos = 1;
-	public static final int joy3Pos = 2;
-	/*
-	 * public static final int aimerUp = 0; public static final int aimerDown =
-	 * 1; public static final int brake = 2;
-	 */
-	public static final int shooterLeftPort = 9;
-	public static final int shooterRightPort = 0;
-	public static final int leftTiltPort = 6;
-	public static final int rightTiltPort = 7;
+	
+	public static final int servo1 = 6;
+	public static final int servo2 = 7;
+	public static final int gearDetector = 1;
+	
 
-	// public static final int rightMidMotor = 5;
-	// public static final int leftMidMotor = 2;
-	public class CrateBot {
-		public static final int leftFront = 0;
-		public static final int leftBack = 1;
-		public static final int rightFront = 2;
-		public static final int rightBack = 4;
-
-		public static final int brake = 2;
-		public static final int lifterMotor = 5;
-		public static final int lowZoneMotor = 8;
-
-	}
+	
+	
 }
