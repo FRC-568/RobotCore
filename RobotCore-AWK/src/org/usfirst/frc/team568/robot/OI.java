@@ -33,7 +33,7 @@ public class OI {
 	public Button armsUp = new JoystickButton(joyStick2, ControllerButtons.joy2B10);
 	public Button armsDown = new JoystickButton(joyStick2, ControllerButtons.joy2B11);
 
-	public Button trigger = new JoystickButton(joyStick1, ControllerButtons.joy1B1);
+	public Button trigger = new JoystickButton(joyStick1, ControllerButtons.A);
 
 	public Button liftFlipper = new JoystickButton(joyStick1, ControllerButtons.liftFlipper);
 	public Button lowerFlipper = new JoystickButton(joyStick1, ControllerButtons.lowerFlipper);
@@ -43,7 +43,6 @@ public class OI {
 	public Button liftGo = new JoystickButton(joyStick1, ControllerButtons.lifterGo);
 	public Button liftStop = new JoystickButton(joyStick1, ControllerButtons.lifterStop);
 	public Button lifterReverse = new JoystickButton(joyStick1, ControllerButtons.lifterReverse);
-	
 
 	// There are a few additional built in buttons you can use. Additionally,
 	// by subclassing Button you can create custom triggers and bind those to

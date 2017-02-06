@@ -15,8 +15,6 @@ import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
-
 public class ReferenceFrame2 extends Subsystem {
 	public int calibrationSamples = 500;
 	public int calibrationSampleRate = 20;
@@ -34,19 +32,18 @@ public class ReferenceFrame2 extends Subsystem {
 	private Filter yFilter;
 	public double threshold;
 	private static final int filterPoles = 20;
-	
+
 	double ticksPerRotation = 270;
-	double wheelDiameterInCM=16;
+	double wheelDiameterInCM = 16;
 
 	public ReferenceFrame2() {
-		
-		
+
 		acceleration = Vector2.zero;
 		velocity = Vector2.zero;
 		position = Vector2.zero;
 		threshold = .03;
 		motorEncoder = new Encoder(0, 1, false, EncodingType.k4X);
-	
+
 		gyro = new ADXRS450_Gyro();
 		acel = new BuiltInAccelerometer(Range.k8G);
 		calibrateAcel();
@@ -121,14 +118,13 @@ public class ReferenceFrame2 extends Subsystem {
 		position = Vector2.zero;
 		gyro.reset();
 	}
-	
-	//int currentTicks = motorEncoder.getRaw();
-	public int ConvertCmtoTicks(double Centimeter){
-	double ticks = (motorEncoder.getRaw()/ticksPerRotation)*(wheelDiameterInCM*Math.PI);
+
+	// int currentTicks = motorEncoder.getRaw();
+	public int ConvertCmtoTicks(double Centimeter) {
+		double ticks = (motorEncoder.getRaw() / ticksPerRotation) * (wheelDiameterInCM * Math.PI);
 		return (int) ticks;
 	}
-	
-	
+
 	public Vector2 getVelocity() {
 		return velocity;
 	}

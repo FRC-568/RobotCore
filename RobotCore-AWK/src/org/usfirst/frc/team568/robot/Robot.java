@@ -3,13 +3,20 @@ package org.usfirst.frc.team568.robot;
 import org.usfirst.frc.team568.robot.commands.ArcadeDriveManual;
 import org.usfirst.frc.team568.robot.commands.AutoOne;
 import org.usfirst.frc.team568.robot.commands.AutoTwo;
+import org.usfirst.frc.team568.robot.commands.Climb;
+import org.usfirst.frc.team568.robot.subsystems.Climber;
 import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,7 +38,12 @@ public class Robot extends IterativeRobot {
 	public ReferenceFrame2 referanceFrame2;
 	public ADIS16448_IMU imu;
 	Command autonomousCommand;
-	
+	public Climber climber;
+	public Compressor compressor;
+	public Joystick controller2;
+	public ControllerButtons buttons;
+	public Climb climb;
+
 	public Robot() {
 		instance = this;
 		oi = new OI();
@@ -39,24 +51,27 @@ public class Robot extends IterativeRobot {
 		referanceFrame2 = new ReferenceFrame2();
 		time = new Timer();
 		imu = new ADIS16448_IMU();
+		climber = new Climber();
 	}
 
 	@Override
 	public void robotInit() {
+		controller2 = new Joystick(1);
 
-		System.out.println("Robot Init");
-		referanceFrame2.reset();
-		referanceFrame2.start();
-		referanceFrame2.calabrateGyro();
-		imu.reset();
-		imu.calibrate();
-		SmartDashboard.putBoolean("Forward?", true);
-		SmartDashboard.putNumber("Time?", 10);
-		SmartDashboard.putNumber("Speed", .60);
-		SmartDashboard.putNumber("Autonomous #", 1);
-		SmartDashboard.putString("Event:", "Robot init");
-		SmartDashboard.putNumber("Degrees", 90);
-		SmartDashboard.putNumber("Count", 0);
+		compressor = new Compressor();
+
+		/*
+		 * //System.out.println("Robot Init"); //referanceFrame2.reset();
+		 * //referanceFrame2.start(); //referanceFrame2.calabrateGyro();
+		 * //imu.reset(); //imu.calibrate();
+		 * //SmartDashboard.putBoolean("Forward?", true);
+		 * //SmartDashboard.putNumber("Time?", 10);
+		 * //SmartDashboard.putNumber("Speed", .60);
+		 * //SmartDashboard.putNumber("Autonomous #", 1);
+		 * //SmartDashboard.putString("Event:", "Robot init");
+		 * //SmartDashboard.putNumber("Degrees", 90);
+		 * //SmartDashboard.putNumber("Count", 0);
+		 */
 	}
 
 	@Override
@@ -66,6 +81,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
+		compressor.stop();
 	}
 
 	@Override
@@ -84,7 +100,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousPeriodic() {
-		
+
 		Scheduler.getInstance().run();
 	}
 
@@ -94,15 +110,19 @@ public class Robot extends IterativeRobot {
 			autonomousCommand.cancel();
 		}
 		referanceFrame2.motorEncoder.reset();
-
+		compressor.enabled();
+		new JoystickButton(controller2,ControllerButtons.leftBumper).whileHeld(new Climb(climber));
 	}
 
 	@Override
 	public void teleopPeriodic() {
 
+	
 		Scheduler.getInstance().run();
-		
-		SmartDashboard.putNumber("MotorEncoderTicks:", referanceFrame2.motorEncoder.get());
+
+		// SmartDashboard.putNumber("MotorEncoderTicks:",
+		// referanceFrame2.motorEncoder.get());
+
 	}
 
 	@Override

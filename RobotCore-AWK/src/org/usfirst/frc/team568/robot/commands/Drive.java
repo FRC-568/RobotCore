@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Drive extends Command {
 	DriveTrain drive;
 	Timer timer;
-	
+
 	double speed;
 	double delay;
 	boolean forward;
@@ -23,7 +23,7 @@ public class Drive extends Command {
 		// TODO Auto-generated method stub
 		drive = Robot.getInstance().driveTrain;
 		timer = new Timer();
-		CM = SmartDashboard.getNumber("Centimeters",0);
+		CM = SmartDashboard.getNumber("Centimeters", 0);
 		speed = SmartDashboard.getNumber("speed", 0);
 		timer.reset();
 		timer.start();
@@ -33,20 +33,18 @@ public class Drive extends Command {
 	@Override
 	protected void execute() {
 
-	
-			drive.forwardWithGyro(speed);		
+		drive.forwardWithGyro(speed);
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected boolean isFinished() {
-		if (ref.ConvertCmtoTicks(CM)>CM){
+		if (ref.ConvertCmtoTicks(CM) > CM) {
+			return true;
+		} else {
 			return true;
 		}
-		else{
-			return true;
-	}
 	}
 
 	@Override
