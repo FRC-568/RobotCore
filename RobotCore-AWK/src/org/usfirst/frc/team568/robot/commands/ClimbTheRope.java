@@ -10,6 +10,7 @@ public class ClimbTheRope extends Command {
 
 	public ClimbTheRope(RopeClimber climber) {
 		this.climber = climber;
+		requires(climber);
 	}
 
 	@Override
