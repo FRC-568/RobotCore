@@ -4,6 +4,7 @@ import org.usfirst.frc.team568.robot.commands.ArcadeDriveManual;
 import org.usfirst.frc.team568.robot.commands.AutoOne;
 import org.usfirst.frc.team568.robot.commands.AutoTwo;
 import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team568.robot.subsystems.GearBox;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
@@ -31,11 +32,15 @@ public class Robot extends IterativeRobot {
 	public ReferenceFrame2 referanceFrame2;
 	public ADIS16448_IMU imu;
 	Command autonomousCommand;
+	GearBox gearBox;
 	
 	public Robot() {
 		instance = this;
 		oi = new OI();
+		
 		driveTrain = new DriveTrain();
+		gearBox =new GearBox();
+		
 		referanceFrame2 = new ReferenceFrame2();
 		time = new Timer();
 		imu = new ADIS16448_IMU();
@@ -72,7 +77,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 
 		if (SmartDashboard.getNumber("Autonomous #", 0) == 1) {
-			autonomousCommand = new AutoOne();
+			autonomousCommand = new AutoOne(gearBox);
 		} else if (SmartDashboard.getNumber("Autonomous #", 0) == 2) {
 			autonomousCommand = new AutoTwo();
 		}
@@ -86,6 +91,8 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		
 		Scheduler.getInstance().run();
+		SmartDashboard.putNumber("MotorEncoderTicks:", referanceFrame2.motorEncoder.get());
+		System.out.println("\n\n\nI AM NEW!!!\n\n\n");
 	}
 
 	@Override

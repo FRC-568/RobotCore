@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-
 public class DriveTrain extends Subsystem {
 	public final Robot robot;
 
@@ -41,8 +40,6 @@ public class DriveTrain extends Subsystem {
 		leftBack = new VictorSP(RobotMap.leftBackMotor);
 		rightFront = new VictorSP(RobotMap.rightFrontMotor);
 		rightBack = new VictorSP(RobotMap.rightBackMotor);
-			
-		
 
 		leftFront.setInverted(true);
 		leftBack.setInverted(true);
@@ -54,45 +51,30 @@ public class DriveTrain extends Subsystem {
 		driveStick1 = robot.oi.joyStick1;
 		driveStick2 = robot.oi.joyStick2;
 
-
-		
-		
-
-
 	}
-	
 
-	
 	public void arcadeDrive() {
-		if (!leftFront.getInverted() || !leftBack.getInverted()) {
-			leftFront.setInverted(true);
-			leftBack.setInverted(true);
-		}
 
-		myDrive.arcadeDrive(driveStick1.getRawAxis(1), driveStick1.getRawAxis(4));
+		myDrive.arcadeDrive((-driveStick1.getRawAxis(1)), driveStick1.getRawAxis(4));
+		System.out.println(driveStick1.getRawAxis(1)+","+ driveStick1.getRawAxis(4));
 
 		Timer.delay(0.01);
 	}
 
 	public void tankDrive() {
-		if (!leftFront.getInverted() || !leftBack.getInverted()) {
-			leftFront.setInverted(true);
-			leftBack.setInverted(true);
-		}
+
 		myDrive.tankDrive(driveStick1.getRawAxis(1), driveStick1.getRawAxis(5));
 	}
 
 	public void forwardWithGyro(double speed) {
-		if (leftFront.getInverted() || leftBack.getInverted()) {
-			leftFront.setInverted(false);
-			leftBack.setInverted(false);
-		}
+
+		System.out.println(speed);
 
 		Kp = .015;
-		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
+		double error = Robot.getInstance().imu.getAngle() * Kp;
 
-		if (Robot.getInstance().referanceFrame2.getAngle() <= 2
-				&& Robot.getInstance().referanceFrame2.getAngle() >= -2) {
+		if (Robot.getInstance().imu.getAngle() <= 2
+				&& Robot.getInstance().imu.getAngle() >= -2) {
 			leftFront.set(speed);
 			leftBack.set(speed);
 			rightFront.set(speed);
@@ -108,10 +90,6 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void reverseWithGyro(double speed) {
-		if (leftFront.getInverted() || leftBack.getInverted()) {
-			leftFront.setInverted(false);
-			leftBack.setInverted(false);
-		}
 
 		Kp = .015;
 		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
@@ -133,10 +111,6 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void turnWithGyro(double degrees) {
-		if (leftFront.getInverted() || leftBack.getInverted()) {
-			leftFront.setInverted(false);
-			leftBack.setInverted(false);
-		}
 
 		double ra = Robot.getInstance().referanceFrame2.getAngle() + degrees;
 
@@ -157,10 +131,6 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void turnLeft(double speed) {
-		if (leftFront.getInverted() || leftBack.getInverted()) {
-			leftFront.setInverted(false);
-			leftBack.setInverted(false);
-		}
 
 		leftFront.set(-speed);
 		leftBack.set(-speed);
@@ -170,10 +140,6 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void turnRight(double speed) {
-		if (leftFront.getInverted() || leftBack.getInverted()) {
-			leftFront.setInverted(false);
-			leftBack.setInverted(false);
-		}
 
 		leftBack.set(speed);
 		leftFront.set(speed);
@@ -182,24 +148,20 @@ public class DriveTrain extends Subsystem {
 
 	}
 
-	public void driveForwardUsingEncoders(double speed, double CM){
-		ref.motorEncoder.reset();
-		while(robot.isEnabled()){
-		if(ref.ConvertCmtoTicks(CM)> CM){
-			goForwards(speed);
-		}
-		else{
-			halt();
-			return;
-		}
-	}
-	}
-	
+	// public void driveForwardUsingEncoders(double speed, double CM){
+	// ref.motorEncoder.reset();
+	// while(robot.isEnabled()){
+	// if(ref.ConvertCmtoTicks(CM)> CM){
+	// goForwards(speed);
+	// }
+	// else{
+	// halt();
+	// return;
+	// }
+	// }
+	// }
+
 	public void goForwards(double speed) {
-		if (leftFront.getInverted() || leftBack.getInverted()) {
-			leftFront.setInverted(false);
-			leftBack.setInverted(false);
-		}
 
 		leftBack.set(speed);
 		leftFront.set(speed);
@@ -209,10 +171,6 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void goBackwards(double speed) {
-		if (leftFront.getInverted() || leftBack.getInverted()) {
-			leftFront.setInverted(false);
-			leftBack.setInverted(false);
-		}
 
 		leftBack.set(-speed);
 		leftFront.set(-speed);

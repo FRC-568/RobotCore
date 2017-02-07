@@ -30,8 +30,7 @@ public class OI {
 	public Button shootTwo = new JoystickButton(joyStick2, ControllerButtons.joy2B2);
 	public Button shootThree = new JoystickButton(joyStick2, ControllerButtons.joy2B3);
 
-	public Button armsUp = new JoystickButton(joyStick2, ControllerButtons.joy2B10);
-	public Button armsDown = new JoystickButton(joyStick2, ControllerButtons.joy2B11);
+
 
 	public Button trigger = new JoystickButton(joyStick1, ControllerButtons.joy1B1);
 
