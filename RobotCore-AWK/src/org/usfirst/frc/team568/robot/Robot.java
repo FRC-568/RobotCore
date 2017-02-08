@@ -112,6 +112,7 @@ public class Robot extends IterativeRobot {
 		referanceFrame2.motorEncoder.reset();
 		compressor.enabled();
 		new JoystickButton(controller2,ControllerButtons.leftBumper).whileHeld(new Climb(climber));
+		
 	}
 
 	@Override

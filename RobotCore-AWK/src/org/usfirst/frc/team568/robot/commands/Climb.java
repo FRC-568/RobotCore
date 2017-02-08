@@ -54,74 +54,56 @@ public class Climb extends Command {
 
 	@Override
 	protected void initialize() {
+		//reacherIn();
+	//	topClampIn();
+	//	bottomClampIn();
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void execute() {
 		switch (climber.currentState) {
 		case RELAXED:
 			bottomClampOut();
-			Timer.delay(.75);
+			Timer.delay(.4);
 			climber.currentState = Climber.State.BOTTOM_CLAMPED;
 			break;
 		case BOTTOM_CLAMPED:
 			topClampIn();
-			Timer.delay(.75);
+			Timer.delay(.4);
 			climber.currentState = Climber.State.TOP_RELEASED;
 			break;
 		case TOP_RELEASED:
 			reacherOut();
-			Timer.delay(.75);
+			Timer.delay(.4);
 			climber.currentState = Climber.State.REACHED;
 			break;
 		case REACHED:
 			topClampOut();
-			Timer.delay(.75);
+			Timer.delay(.4);
 			climber.currentState = Climber.State.TOP_CLAMPED;
 			break;
 		case TOP_CLAMPED:
-			bottomClampIn();
-			Timer.delay(.75);
+		bottomClampIn();
+			Timer.delay(.4);
 			climber.currentState = Climber.State.BOTTOM_RELEASED;
 			break;
 		case BOTTOM_RELEASED:
 			reacherIn();
-			Timer.delay(.75);
+			Timer.delay(.4);
 			climber.currentState = Climber.State.LIFTED;
 			break;
 		case LIFTED:
 			bottomClampOut();
-			Timer.delay(.75);
-			climber.currentState = Climber.State.RELAXED;
+			Timer.delay(.4);
+			climber.currentState = Climber.State.BOTTOM_CLAMPED;
 			break;
 
 		default:
 			break;
 		}
 
-	}
-
-	@Override
-	protected void execute() {
-		bottomClampOut();
-		Timer.delay(.5);
-		reacherOut();
-		Timer.delay(.5);
-		topClampOut();
-		Timer.delay(.5);
-		bottomClampIn();
-		Timer.delay(.5);
-		reacherIn();
-		Timer.delay(.5);
-		bottomClampOut();
-		Timer.delay(.5);
-		topClampIn();
-		Timer.delay(.5);
-		reacherOut();
-		Timer.delay(.5);
-		topClampOut();
-		Timer.delay(.5);
-		bottomClampIn();
-		Timer.delay(.5);
-		reacherIn();
-		Timer.delay(.5);
 
 	}
 
@@ -136,6 +118,7 @@ public class Climb extends Command {
 		topClampOut();
 		bottomClampOut();
 		climber.isClimbing = false;
+		climber.currentState = Climber.State.BOTTOM_CLAMPED;
 		// reacher
 
 	}
@@ -143,6 +126,11 @@ public class Climb extends Command {
 	@Override
 	protected void interrupted() {
 		// TODO Auto-generated method stub
+		topClampOut();
+		bottomClampOut();
+		climber.isClimbing = false;
+		climber.currentState = Climber.State.BOTTOM_CLAMPED;
+		// reacher
 
 	}
 
