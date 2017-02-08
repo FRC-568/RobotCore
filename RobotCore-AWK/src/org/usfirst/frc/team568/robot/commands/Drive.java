@@ -50,7 +50,7 @@ public class Drive extends Command {
 	protected void execute() {
 
 	
-			drive.goForwards(speed);
+			drive.forwardWithGyro(speed);
 			
 		// TODO Auto-generated method stub
 

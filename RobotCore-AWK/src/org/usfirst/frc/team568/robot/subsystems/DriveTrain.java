@@ -56,7 +56,7 @@ public class DriveTrain extends Subsystem {
 	public void arcadeDrive() {
 
 		myDrive.arcadeDrive((-driveStick1.getRawAxis(1)), driveStick1.getRawAxis(4));
-		System.out.println(driveStick1.getRawAxis(1)+","+ driveStick1.getRawAxis(4));
+		
 
 		Timer.delay(0.01);
 	}
@@ -73,6 +73,7 @@ public class DriveTrain extends Subsystem {
 		Kp = .015;
 		double error = Robot.getInstance().imu.getAngle() * Kp;
 
+		
 		if (Robot.getInstance().imu.getAngle() <= 2
 				&& Robot.getInstance().imu.getAngle() >= -2) {
 			leftFront.set(speed);
