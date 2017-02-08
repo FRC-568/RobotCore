@@ -23,7 +23,9 @@ public class ArcadeDriveManual extends Command {
 	@Override
 	protected void initialize() {
 		count.reset();
-		count.setUpSource(RobotMap.laser1);
+
+		//count.setUpSource(RobotMap.laser1);
+
 
 	}
 

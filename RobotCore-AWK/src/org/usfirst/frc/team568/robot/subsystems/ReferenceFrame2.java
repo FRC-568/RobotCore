@@ -1,5 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
+import org.usfirst.frc.team568.robot.RobotMap;
 import org.usfirst.frc.team568.util.Vector2;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -31,10 +32,13 @@ public class ReferenceFrame2 extends Subsystem {
 	private Filter xFilter;
 	private Filter yFilter;
 	public double threshold;
+	public int centimetersTraveled;
 	private static final int filterPoles = 20;
 
-	double ticksPerRotation = 270;
-	double wheelDiameterInCM = 16;
+	
+	double ticksPerRotation = 360;
+	double wheelDiameterInCM=15;
+
 
 	public ReferenceFrame2() {
 
@@ -42,7 +46,10 @@ public class ReferenceFrame2 extends Subsystem {
 		velocity = Vector2.zero;
 		position = Vector2.zero;
 		threshold = .03;
-		motorEncoder = new Encoder(0, 1, false, EncodingType.k4X);
+
+		motorEncoder = new Encoder(RobotMap.encoderYellow, RobotMap.encoderWhite, false, EncodingType.k4X);
+		
+	
 
 		gyro = new ADXRS450_Gyro();
 		acel = new BuiltInAccelerometer(Range.k8G);
@@ -119,10 +126,12 @@ public class ReferenceFrame2 extends Subsystem {
 		gyro.reset();
 	}
 
-	// int currentTicks = motorEncoder.getRaw();
-	public int ConvertCmtoTicks(double Centimeter) {
-		double ticks = (motorEncoder.getRaw() / ticksPerRotation) * (wheelDiameterInCM * Math.PI);
-		return (int) ticks;
+	
+	//int currentTicks = motorEncoder.getRaw();
+	public int DistanceTraveled(){
+	centimetersTraveled = (int) ((motorEncoder.getRaw()/ticksPerRotation)*(wheelDiameterInCM*Math.PI));
+		return (int) centimetersTraveled;
+
 	}
 
 	public Vector2 getVelocity() {
