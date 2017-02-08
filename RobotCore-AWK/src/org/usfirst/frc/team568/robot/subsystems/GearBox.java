@@ -12,22 +12,29 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class GearBox {
+
 	
 	public Servo servoL;
 	public Servo servoR;
 	
+
 	public DigitalInput gearDetector;
+
 	
 	public GearBox(){
 		servoL = new Servo(RobotMap.servoL);
 		servoR = new Servo(RobotMap.servoR);
+
 		gearDetector = new DigitalInput(RobotMap.gearDetector);
 	}
+
 	
 	public void open(){
 		servoL.setAngle(10);
 		servoR.setAngle(10);
+
 	}
+
 	
 	public void close(){
 		servoL.setAngle(50);
@@ -71,12 +78,16 @@ public class GearBox {
 			
 		};
 		
+
+
+
+
 	}
-	
-	public void hasGear(){
-		if(gearDetector.get()){
+
+	public void hasGear() {
+		if (gearDetector.get()) {
 			SmartDashboard.putBoolean("Has Gear", true);
-		}else{
+		} else {
 			SmartDashboard.putBoolean("Has Gear", false);
 		}
 	}

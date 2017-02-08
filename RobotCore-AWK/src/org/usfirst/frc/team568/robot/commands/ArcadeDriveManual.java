@@ -16,25 +16,25 @@ public class ArcadeDriveManual extends Command {
 	public ArcadeDriveManual() {
 		arcadeDrive = Robot.getInstance().driveTrain;
 		requires(arcadeDrive);
-		 count = new Counter();
+		count = new Counter();
 
 	}
 
 	@Override
 	protected void initialize() {
 		count.reset();
+
 		//count.setUpSource(RobotMap.laser1);
-		
+
 
 	}
 
 	@Override
 	protected void execute() {
 		arcadeDrive.arcadeDrive();
-		
+
 		SmartDashboard.putNumber("Count", count.get());
-		
-		
+
 		// lifter.lift();
 	}
 

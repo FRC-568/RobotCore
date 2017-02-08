@@ -1,5 +1,8 @@
 package org.usfirst.frc.team568.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Solenoid;
+
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
@@ -17,7 +20,6 @@ public class RobotMap {
 	// public static int rangefinderPort = 1;
 	// public static int rangefinderModule = 1;
 
-	
 	public static final int leftFrontMotor = 1;
 	public static final int leftBackMotor = 2;
 	public static final int rightFrontMotor = 3;
@@ -34,6 +36,12 @@ public class RobotMap {
 	public static final int encoderWhite = 1;
 	
 
-	
-	
+
+	public static final int topClampIn = 1;
+	public static final int bottomClampIn = 2;
+	public static final int reacherIn = 3;
+	public static final int reacherOut = 4;
+	public static final int bottomClampOut = 5;
+	public static final int topClampOut = 6;
+
 }

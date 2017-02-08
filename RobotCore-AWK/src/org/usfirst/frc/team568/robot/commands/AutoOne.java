@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoOne extends CommandGroup {
 
+
 	public AutoOne(GearBox gearBox) {
 	
 		addSequential(new Drive(100, .2));
@@ -14,6 +15,7 @@ public class AutoOne extends CommandGroup {
 		addSequential(gearBox.openCommand());
 		addSequential(gearBox.closeCommand());
 		
+
 		// TODO Auto-generated constructor stub
 	}
 
