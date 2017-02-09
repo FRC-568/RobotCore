@@ -13,7 +13,10 @@ public class OI {
 	public Joystick joyStick1 = new Joystick(RobotMap.joy1Pos);
 
 	public Joystick joyStick2 = new Joystick(RobotMap.joy2Pos);
-
+	
+	public Button climb = new JoystickButton(joyStick2, ControllerButtons.leftBumper);
+	public Button openGearBox = new JoystickButton(joyStick1, ControllerButtons.A);
+	public Button closeGearBox = new JoystickButton(joyStick1, ControllerButtons.B);
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
 	//// joystick.

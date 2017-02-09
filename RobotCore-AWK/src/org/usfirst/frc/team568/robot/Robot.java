@@ -1,6 +1,5 @@
 package org.usfirst.frc.team568.robot;
 
-import org.usfirst.frc.team568.robot.commands.ArcadeDriveManual;
 import org.usfirst.frc.team568.robot.commands.AutoOne;
 import org.usfirst.frc.team568.robot.commands.AutoTwo;
 import org.usfirst.frc.team568.robot.commands.Climb;
@@ -13,11 +12,7 @@ import com.analog.adis16448.frc.ADIS16448_IMU;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,7 +39,7 @@ public class Robot extends IterativeRobot {
 
 	public Climber climber;
 	public Compressor compressor;
-	public Joystick controller2;
+
 	public ControllerButtons buttons;
 	public Climb climb;
 
@@ -63,9 +58,10 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void robotInit() {
-		controller2 = new Joystick(1);
 
 		compressor = new Compressor();
+		imu.reset();
+		imu.calibrate();
 
 		/*
 		 * //System.out.println("Robot Init"); //referanceFrame2.reset();
@@ -83,18 +79,20 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledInit() {
+		compressor.stop();
 	}
 
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
-		compressor.stop();
 	}
 
 	@Override
 	public void autonomousInit() {
+		referanceFrame2.motorEncoder.reset();
+		imu.reset();
 
-		if (SmartDashboard.getNumber("Autonomous #", 0) == 1) {
+		if (SmartDashboard.getNumber("Autonomous #", 1) == 1) {
 			autonomousCommand = new AutoOne(gearBox);
 		} else if (SmartDashboard.getNumber("Autonomous #", 0) == 2) {
 			autonomousCommand = new AutoTwo();
@@ -107,10 +105,8 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousPeriodic() {
-
 		Scheduler.getInstance().run();
 		SmartDashboard.putNumber("MotorEncoderTicks:", referanceFrame2.motorEncoder.get());
-		System.out.println("\n\n\nI AM NEW!!!\n\n\n");
 	}
 
 	@Override
@@ -120,15 +116,11 @@ public class Robot extends IterativeRobot {
 		}
 		referanceFrame2.motorEncoder.reset();
 		compressor.enabled();
-		new JoystickButton(controller2,ControllerButtons.leftBumper).whileHeld(new Climb(climber));
-		
 
-	
 	}
 
 	@Override
 	public void teleopPeriodic() {
-
 		Scheduler.getInstance().run();
 
 		// SmartDashboard.putNumber("MotorEncoderTicks:",

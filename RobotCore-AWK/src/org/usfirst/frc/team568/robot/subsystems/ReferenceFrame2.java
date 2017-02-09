@@ -124,12 +124,14 @@ public class ReferenceFrame2 extends Subsystem {
 		velocity = Vector2.zero;
 		position = Vector2.zero;
 		gyro.reset();
+		
 	}
 
 	
 	//int currentTicks = motorEncoder.getRaw();
 	public int DistanceTraveled(){
-	centimetersTraveled = (int) ((motorEncoder.getRaw()/ticksPerRotation)*(wheelDiameterInCM*Math.PI));
+	centimetersTraveled = (int) ((Math.abs(motorEncoder.getRaw())/ticksPerRotation)*(wheelDiameterInCM*Math.PI));
+	SmartDashboard.putNumber("DISTANCE", centimetersTraveled);
 		return (int) centimetersTraveled;
 
 	}

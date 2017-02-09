@@ -1,5 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
+import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -26,25 +27,27 @@ public class GearBox {
 		servoR = new Servo(RobotMap.servoR);
 
 		gearDetector = new DigitalInput(RobotMap.gearDetector);
+		
+		Robot.getInstance().oi.openGearBox.whenPressed(this.openCommand());
+		Robot.getInstance().oi.closeGearBox.whenPressed(this.closeCommand());
 	}
 
 	
 	public void open(){
-		servoL.setAngle(10);
-		servoR.setAngle(10);
+		//servoL.setAngle(0);
+		servoR.setAngle(90);
 
 	}
 
 	
 	public void close(){
-		servoL.setAngle(50);
-		servoR.setAngle(50);
+		//servoL.setAngle(0);
+		servoR.setAngle(0);
 		
 	}
 	
 	public Command openCommand(){
-		servoL.setAngle(10);
-		servoR.setAngle(10);
+		
 		return new Command(){
 			@Override
 			public void initialize(){
@@ -62,8 +65,7 @@ public class GearBox {
 	}
 	
 	public Command closeCommand(){
-		servoL.setAngle(10);
-		servoR.setAngle(10);
+		
 		return new Command(){
 			@Override
 			public void initialize(){

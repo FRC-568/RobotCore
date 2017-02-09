@@ -1,7 +1,6 @@
 package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.Robot;
-import org.usfirst.frc.team568.robot.RobotMap;
 import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.Counter;

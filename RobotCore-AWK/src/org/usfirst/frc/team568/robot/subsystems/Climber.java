@@ -1,11 +1,9 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.ControllerButtons;
 import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
+import org.usfirst.frc.team568.robot.commands.Climb;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -19,6 +17,7 @@ public class Climber extends Subsystem {
 	public Solenoid bottomClampOut;
 	public boolean isClimbing = false;
 	public State currentState;
+
 	public Climber() {
 
 		topClampIn = new Solenoid(RobotMap.topClampIn);
@@ -27,25 +26,20 @@ public class Climber extends Subsystem {
 		topClampOut = new Solenoid(RobotMap.topClampOut);
 		bottomClampOut = new Solenoid(RobotMap.bottomClampOut);
 		reacherOut = new Solenoid(RobotMap.reacherOut);
-		
+
 		currentState = State.RELAXED;
+
+		Robot.getInstance().oi.climb.whileHeld(new Climb(this));
 
 	}
 
 	@Override
 	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public static enum State {
-		RELAXED,
-		BOTTOM_CLAMPED,
-		TOP_RELEASED,
-		REACHED,
-		TOP_CLAMPED,
-		BOTTOM_RELEASED,
-		LIFTED
+		RELAXED, BOTTOM_CLAMPED, TOP_RELEASED, REACHED, TOP_CLAMPED, BOTTOM_RELEASED, LIFTED
 	}
 
 }

@@ -6,8 +6,6 @@ import org.usfirst.frc.team568.robot.subsystems.Climber;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.WaitCommand;
 
 public class Climb extends Command {
 	public Climber climber;

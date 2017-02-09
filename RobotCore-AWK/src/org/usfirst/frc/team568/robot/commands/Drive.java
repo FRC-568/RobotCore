@@ -4,8 +4,6 @@ import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,7 +41,7 @@ public class Drive extends Command {
 		//speed = SmartDashboard.getNumber("speed", 0);
 		timer.reset();
 		timer.start();
-	//	ref.motorEncoder.reset();
+		ref.motorEncoder.reset();
 
 	}
 

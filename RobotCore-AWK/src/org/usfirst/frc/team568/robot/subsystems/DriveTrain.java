@@ -16,7 +16,7 @@ public class DriveTrain extends Subsystem {
 	protected SpeedController leftFront, leftBack, rightFront, rightBack;
 
 	protected Joystick driveStick1;
-	protected Joystick driveStick2;
+	//protected Joystick driveStick2;
 
 	RobotDrive myRobot;
 	RobotDrive myDrive;
@@ -48,14 +48,14 @@ public class DriveTrain extends Subsystem {
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 
-		driveStick1 = robot.oi.joyStick1;
-		driveStick2 = robot.oi.joyStick2;
+		driveStick1 = new Joystick(0);
+		
 
 	}
 
 	public void arcadeDrive() {
 
-		myDrive.arcadeDrive((-driveStick1.getRawAxis(1)), driveStick1.getRawAxis(4));
+		myDrive.arcadeDrive((-driveStick1.getRawAxis(1)), .5*(driveStick1.getRawAxis(4)));
 		
 
 		Timer.delay(0.01);
