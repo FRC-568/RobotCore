@@ -4,53 +4,48 @@ import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /* Allen wrote this one
  *
  *
  *
  */
-public class GearBox {
-
-	
-	public Servo servoL;
-	public Servo servoR;
-	
+public class GearBox extends Subsystem {
+	public Solenoid gearPneumatic1;
+	public Solenoid gearPneumatic2;
 
 	public DigitalInput gearDetector;
 
-	
-	public GearBox(){
-		servoL = new Servo(RobotMap.servoL);
-		servoR = new Servo(RobotMap.servoR);
+	public GearBox() {
+		gearPneumatic1 = new Solenoid(RobotMap.gearPneumatic1);
+		gearPneumatic2 = new Solenoid(RobotMap.gearPneumatic2);
 
 		gearDetector = new DigitalInput(RobotMap.gearDetector);
-		
+
 		Robot.getInstance().oi.openGearBox.whenPressed(this.openCommand());
 		Robot.getInstance().oi.closeGearBox.whenPressed(this.closeCommand());
 	}
 
-	
-	public void open(){
-		//servoL.setAngle(0);
-		servoR.setAngle(90);
+	public void open() {
+		gearPneumatic1.set(true);
+		gearPneumatic2.set(false);
 
 	}
 
-	
-	public void close(){
-		//servoL.setAngle(0);
-		servoR.setAngle(0);
-		
+	public void close() {
+		gearPneumatic1.set(false);
+		gearPneumatic2.set(true);
 	}
-	
-	public Command openCommand(){
-		
-		return new Command(){
+
+	public Command openCommand() {
+
+		return new Command() {
 			@Override
-			public void initialize(){
+			public void initialize() {
 				open();
 			}
 
@@ -59,16 +54,16 @@ public class GearBox {
 				// TODO Auto-generated method stub
 				return true;
 			}
-			
+
 		};
-		
+
 	}
-	
-	public Command closeCommand(){
-		
-		return new Command(){
+
+	public Command closeCommand() {
+
+		return new Command() {
 			@Override
-			public void initialize(){
+			public void initialize() {
 				close();
 			}
 
@@ -77,12 +72,8 @@ public class GearBox {
 				// TODO Auto-generated method stub
 				return true;
 			}
-			
+
 		};
-		
-
-
-
 
 	}
 
@@ -92,6 +83,12 @@ public class GearBox {
 		} else {
 			SmartDashboard.putBoolean("Has Gear", false);
 		}
+	}
+
+	@Override
+	protected void initDefaultCommand() {
+		// TODO Auto-generated method stub
+
 	}
 
 }
