@@ -12,7 +12,6 @@ public class Drive extends Command {
 	DriveTrain drive;
 	Timer timer;
 
-	
 	double speed;
 	double delay;
 	boolean forward;
@@ -20,7 +19,7 @@ public class Drive extends Command {
 	ReferenceFrame2 ref;
 
 	public Drive(double distance, double speed) {
-		CM = distance;
+		CM = distance - (10);
 		this.speed = speed;
 		ref = Robot.getInstance().referanceFrame2;
 	}
@@ -35,13 +34,14 @@ public class Drive extends Command {
 	protected void initialize() {
 		// TODO Auto-generated method stub
 		drive = Robot.getInstance().driveTrain;
-		
+
 		timer = new Timer();
-	//	CM = SmartDashboard.getNumber("Centimeters",0);
-		//speed = SmartDashboard.getNumber("speed", 0);
+		// CM = SmartDashboard.getNumber("Centimeters",0);
+		// speed = SmartDashboard.getNumber("speed", 0);
 		timer.reset();
 		timer.start();
 		ref.motorEncoder.reset();
+		ref.reset();
 
 	}
 
@@ -49,6 +49,7 @@ public class Drive extends Command {
 	protected void execute() {
 
 		drive.forwardWithGyro(speed);
+		SmartDashboard.putNumber("GYRO", ref.getAngle());
 
 		// TODO Auto-generated method stub
 

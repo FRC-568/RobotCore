@@ -3,6 +3,7 @@ package org.usfirst.frc.team568.robot.subsystems;
 import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
 import org.usfirst.frc.team568.robot.commands.ArcadeDriveManual;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -16,7 +17,7 @@ public class DriveTrain extends Subsystem {
 	protected SpeedController leftFront, leftBack, rightFront, rightBack;
 
 	protected Joystick driveStick1;
-	//protected Joystick driveStick2;
+	// protected Joystick driveStick2;
 
 	RobotDrive myRobot;
 	RobotDrive myDrive;
@@ -49,14 +50,16 @@ public class DriveTrain extends Subsystem {
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 
 		driveStick1 = new Joystick(0);
-		
 
 	}
 
 	public void arcadeDrive() {
+		leftFront.setInverted(true);
+		leftBack.setInverted(true);
+		rightFront.setInverted(true);
+		rightBack.setInverted(true);
 
-		myDrive.arcadeDrive((-driveStick1.getRawAxis(1)), .5*(driveStick1.getRawAxis(4)));
-		
+		myDrive.arcadeDrive((driveStick1.getRawAxis(1)), (driveStick1.getRawAxis(4)));
 
 		Timer.delay(0.01);
 	}
@@ -67,15 +70,18 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void forwardWithGyro(double speed) {
+		leftFront.setInverted(false);
+		leftBack.setInverted(false);
+		rightFront.setInverted(true);
+		rightBack.setInverted(true);
 
 		System.out.println(speed);
 
 		Kp = .015;
-		double error = Robot.getInstance().imu.getAngle() * Kp;
+		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
 
-		
-		if (Robot.getInstance().imu.getAngle() <= 2
-				&& Robot.getInstance().imu.getAngle() >= -2) {
+		if (Robot.getInstance().referanceFrame2.getAngle() <= 3
+				&& Robot.getInstance().referanceFrame2.getAngle() >= -3) {
 			leftFront.set(speed);
 			leftBack.set(speed);
 			rightFront.set(speed);

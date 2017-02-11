@@ -48,12 +48,12 @@ public class Robot extends IterativeRobot {
 		oi = new OI();
 
 		driveTrain = new DriveTrain();
-		gearBox = new GearBox();
+		// gearBox = new GearBox();
 
 		referanceFrame2 = new ReferenceFrame2();
 		time = new Timer();
 		imu = new ADIS16448_IMU();
-		climber = new Climber();
+		// climber = new Climber();
 	}
 
 	@Override
@@ -62,6 +62,8 @@ public class Robot extends IterativeRobot {
 		compressor = new Compressor();
 		imu.reset();
 		imu.calibrate();
+		referanceFrame2.reset();
+		referanceFrame2.calabrateGyro();
 
 		/*
 		 * //System.out.println("Robot Init"); //referanceFrame2.reset();
@@ -93,7 +95,7 @@ public class Robot extends IterativeRobot {
 		imu.reset();
 
 		if (SmartDashboard.getNumber("Autonomous #", 1) == 1) {
-			autonomousCommand = new AutoOne(gearBox);
+			autonomousCommand = new AutoOne();
 		} else if (SmartDashboard.getNumber("Autonomous #", 0) == 2) {
 			autonomousCommand = new AutoTwo();
 		}
@@ -115,6 +117,8 @@ public class Robot extends IterativeRobot {
 			autonomousCommand.cancel();
 		}
 		referanceFrame2.motorEncoder.reset();
+		imu.reset();
+		referanceFrame2.reset();
 		compressor.enabled();
 
 	}
