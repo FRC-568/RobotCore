@@ -52,11 +52,11 @@ public class Climb extends Command {
 
 	@Override
 	protected void initialize() {
-		//reacherIn();
-	//	topClampIn();
-	//	bottomClampIn();
+		// reacherIn();
+		// topClampIn();
+		// bottomClampIn();
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class Climb extends Command {
 			climber.currentState = Climber.State.TOP_CLAMPED;
 			break;
 		case TOP_CLAMPED:
-		bottomClampIn();
+			bottomClampIn();
 			Timer.delay(.4);
 			climber.currentState = Climber.State.BOTTOM_RELEASED;
 			break;
@@ -101,7 +101,6 @@ public class Climb extends Command {
 		default:
 			break;
 		}
-
 
 	}
 
@@ -126,8 +125,8 @@ public class Climb extends Command {
 		// TODO Auto-generated method stub
 		topClampOut();
 		bottomClampOut();
-		climber.isClimbing = false;
-		climber.currentState = Climber.State.BOTTOM_CLAMPED;
+		// climber.isClimbing = false;
+		// climber.currentState = Climber.State.BOTTOM_CLAMPED;
 		// reacher
 
 	}

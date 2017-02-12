@@ -77,11 +77,12 @@ public class DriveTrain extends Subsystem {
 
 		System.out.println(speed);
 
-		Kp = .015;
+		Kp = .156;
+		// Kp = SmartDashboard.getNumber("Kp", .15);
 		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
 
-		if (Robot.getInstance().referanceFrame2.getAngle() <= 3
-				&& Robot.getInstance().referanceFrame2.getAngle() >= -3) {
+		if (Robot.getInstance().referanceFrame2.getAngle() <= 1
+				&& Robot.getInstance().referanceFrame2.getAngle() >= -1) {
 			leftFront.set(speed);
 			leftBack.set(speed);
 			rightFront.set(speed);

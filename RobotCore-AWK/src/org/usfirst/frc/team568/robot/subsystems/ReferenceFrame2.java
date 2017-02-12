@@ -32,13 +32,11 @@ public class ReferenceFrame2 extends Subsystem {
 	private Filter xFilter;
 	private Filter yFilter;
 	public double threshold;
-	public int centimetersTraveled;
+	public double centimetersTraveled;
 	private static final int filterPoles = 20;
 
-	
 	double ticksPerRotation = 360;
-	double wheelDiameterInCM=15;
-
+	double wheelDiameterInCM = 15;
 
 	public ReferenceFrame2() {
 
@@ -48,8 +46,6 @@ public class ReferenceFrame2 extends Subsystem {
 		threshold = .03;
 
 		motorEncoder = new Encoder(RobotMap.encoderYellow, RobotMap.encoderWhite, false, EncodingType.k4X);
-		
-	
 
 		gyro = new ADXRS450_Gyro();
 		acel = new BuiltInAccelerometer(Range.k8G);
@@ -124,15 +120,16 @@ public class ReferenceFrame2 extends Subsystem {
 		velocity = Vector2.zero;
 		position = Vector2.zero;
 		gyro.reset();
-		
+
 	}
 
-	
-	//int currentTicks = motorEncoder.getRaw();
-	public int DistanceTraveled(){
-	centimetersTraveled = (int) ((Math.abs(motorEncoder.getRaw())/ticksPerRotation)*(wheelDiameterInCM*Math.PI));
-	SmartDashboard.putNumber("DISTANCE", centimetersTraveled);
-		return (int) centimetersTraveled;
+	// int currentTicks = motorEncoder.getRaw();
+	public double DistanceTraveled() {
+		// centimetersTraveled = (int) ((Math.abs(motorEncoder.get()) /
+		// ticksPerRotation) * (wheelDiameterInCM * Math.PI));
+		centimetersTraveled = (Math.abs(motorEncoder.get()) - (Math.abs(motorEncoder.get()) * .3));
+		SmartDashboard.putNumber("DISTANCE", centimetersTraveled);
+		return centimetersTraveled;
 
 	}
 

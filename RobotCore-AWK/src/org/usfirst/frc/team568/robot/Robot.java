@@ -25,6 +25,7 @@ public class Robot extends IterativeRobot {
 	// public boolean over;
 
 	public double speed;
+	public double pressure;
 
 	// public double EncoderValue;
 
@@ -53,7 +54,7 @@ public class Robot extends IterativeRobot {
 		referanceFrame2 = new ReferenceFrame2();
 		time = new Timer();
 		imu = new ADIS16448_IMU();
-		// climber = new Climber();
+		climber = new Climber();
 	}
 
 	@Override
@@ -64,6 +65,8 @@ public class Robot extends IterativeRobot {
 		imu.calibrate();
 		referanceFrame2.reset();
 		referanceFrame2.calabrateGyro();
+
+		// SmartDashboard.putNumber("Kp", .15);
 
 		/*
 		 * //System.out.println("Robot Init"); //referanceFrame2.reset();
@@ -127,8 +130,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 
-		// SmartDashboard.putNumber("MotorEncoderTicks:",
-		// referanceFrame2.motorEncoder.get());
+		SmartDashboard.putNumber("MotorEncoderTicks:", referanceFrame2.motorEncoder.get());
 
 	}
 
