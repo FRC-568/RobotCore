@@ -1,6 +1,7 @@
 package org.usfirst.frc.team568.robot;
 
 import org.usfirst.frc.team568.robot.commands.AutoOne;
+import org.usfirst.frc.team568.robot.commands.AutoThree;
 import org.usfirst.frc.team568.robot.commands.AutoTwo;
 import org.usfirst.frc.team568.robot.commands.Climb;
 import org.usfirst.frc.team568.robot.subsystems.Climber;
@@ -66,6 +67,8 @@ public class Robot extends IterativeRobot {
 		referanceFrame2.reset();
 		referanceFrame2.calabrateGyro();
 
+		SmartDashboard.putNumber("Autonomous #", 1);
+
 		// SmartDashboard.putNumber("Kp", .15);
 
 		/*
@@ -97,10 +100,12 @@ public class Robot extends IterativeRobot {
 		referanceFrame2.motorEncoder.reset();
 		imu.reset();
 
-		if (SmartDashboard.getNumber("Autonomous #", 1) == 1) {
+		if (SmartDashboard.getNumber("Autonomous #", 0) == 1) {
 			autonomousCommand = new AutoOne();
 		} else if (SmartDashboard.getNumber("Autonomous #", 0) == 2) {
 			autonomousCommand = new AutoTwo();
+		} else if (SmartDashboard.getNumber("Autonomous #", 0) == 3) {
+			autonomousCommand = new AutoThree();
 		}
 		referanceFrame2.reset();
 
@@ -131,6 +136,7 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 
 		SmartDashboard.putNumber("MotorEncoderTicks:", referanceFrame2.motorEncoder.get());
+		SmartDashboard.putNumber("GYRO", referanceFrame2.getAngle());
 
 	}
 

@@ -81,6 +81,8 @@ public class DriveTrain extends Subsystem {
 		// Kp = SmartDashboard.getNumber("Kp", .15);
 		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
 
+		// myDrive.drive(.5, error);
+
 		if (Robot.getInstance().referanceFrame2.getAngle() <= 1
 				&& Robot.getInstance().referanceFrame2.getAngle() >= -1) {
 			leftFront.set(speed);
@@ -118,9 +120,7 @@ public class DriveTrain extends Subsystem {
 		}
 	}
 
-	public void turnWithGyro(double degrees) {
-
-		double ra = Robot.getInstance().referanceFrame2.getAngle() + degrees;
+	public void turnWithGyro(double ra) {
 
 		if (ra < (Robot.getInstance().referanceFrame2.getAngle() + 2)
 				|| ra < (Robot.getInstance().referanceFrame2.getAngle() - 2)) {
@@ -139,6 +139,10 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void turnLeft(double speed) {
+		leftFront.setInverted(false);
+		leftBack.setInverted(false);
+		rightFront.setInverted(true);
+		rightBack.setInverted(true);
 
 		leftFront.set(-speed);
 		leftBack.set(-speed);
@@ -148,6 +152,10 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void turnRight(double speed) {
+		leftFront.setInverted(false);
+		leftBack.setInverted(false);
+		rightFront.setInverted(true);
+		rightBack.setInverted(true);
 
 		leftBack.set(speed);
 		leftFront.set(speed);

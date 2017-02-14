@@ -6,8 +6,11 @@ public class AutoTwo extends CommandGroup {
 
 	public AutoTwo() {
 
-		addSequential(new Drive());
-		addSequential(new Turn());
+		addSequential(new Drive(220, .5));
+
+		addSequential(new Turn(-53));
+
+		addSequential(new Drive(150, .5));
 		// TODO Auto-generated constructor stub
 	}
 

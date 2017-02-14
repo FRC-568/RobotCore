@@ -64,37 +64,37 @@ public class Climb extends Command {
 		switch (climber.currentState) {
 		case RELAXED:
 			bottomClampOut();
-			Timer.delay(.4);
+			Timer.delay(1);
 			climber.currentState = Climber.State.BOTTOM_CLAMPED;
 			break;
 		case BOTTOM_CLAMPED:
 			topClampIn();
-			Timer.delay(.4);
+			Timer.delay(1);
 			climber.currentState = Climber.State.TOP_RELEASED;
 			break;
 		case TOP_RELEASED:
 			reacherOut();
-			Timer.delay(.4);
+			Timer.delay(1);
 			climber.currentState = Climber.State.REACHED;
 			break;
 		case REACHED:
 			topClampOut();
-			Timer.delay(.4);
+			Timer.delay(1);
 			climber.currentState = Climber.State.TOP_CLAMPED;
 			break;
 		case TOP_CLAMPED:
 			bottomClampIn();
-			Timer.delay(.4);
+			Timer.delay(1);
 			climber.currentState = Climber.State.BOTTOM_RELEASED;
 			break;
 		case BOTTOM_RELEASED:
 			reacherIn();
-			Timer.delay(.4);
+			Timer.delay(1);
 			climber.currentState = Climber.State.LIFTED;
 			break;
 		case LIFTED:
 			bottomClampOut();
-			Timer.delay(.4);
+			Timer.delay(1);
 			climber.currentState = Climber.State.BOTTOM_CLAMPED;
 			break;
 

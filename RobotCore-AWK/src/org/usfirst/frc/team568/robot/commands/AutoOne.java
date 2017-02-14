@@ -6,7 +6,7 @@ public class AutoOne extends CommandGroup {
 
 	public AutoOne() {
 		// addSequential(gearBox.closeCommand());
-		addSequential(new Drive(100, .5));
+		addSequential(new Drive(240, .5));
 		// addSequential(new Turn(90));
 		//
 		// addSequential(gearBox.openCommand());
