@@ -126,7 +126,6 @@ public class ReferenceFrame2 extends Subsystem {
 
 	// int currentTicks = motorEncoder.getRaw();
 	public double DistanceTraveled() {
-
 		return motorEncoder.getDistance();
 
 	}

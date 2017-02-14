@@ -15,20 +15,21 @@ public class Drive extends Command {
 	double speed;
 	double delay;
 	boolean forward;
-	double motorTicks;
+	double CM;
 	ReferenceFrame2 ref;
 
-	public Drive(double ticksToTravel, double speed) {
-		ref = Robot.getInstance().referanceFrame2;
-		motorTicks = ticksToTravel;
+	public Drive(double distance, double speed) {
+		CM = distance - (15);
 		this.speed = speed;
+
+		ref = Robot.getInstance().referanceFrame2;
 
 	}
 
 	public Drive() {
 		ref = Robot.getInstance().referanceFrame2;
 		SmartDashboard.getNumber("Speed", 0);
-		motorTicks = 0;
+		CM = 0;
 	}
 
 	@Override
@@ -61,7 +62,7 @@ public class Drive extends Command {
 		System.out.println("GotHere");
 		System.out.println(Robot.getInstance().imu.getAngle());
 		ref.DistanceTraveled();
-		if (ref.motorEncoder.get() > motorTicks) {
+		if (ref.motorEncoder.getDistance() > CM) {
 
 			return true;
 		}
