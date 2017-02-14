@@ -46,6 +46,7 @@ public class ReferenceFrame2 extends Subsystem {
 		threshold = .03;
 
 		motorEncoder = new Encoder(RobotMap.encoderYellow, RobotMap.encoderWhite, false, EncodingType.k4X);
+		motorEncoder.setDistancePerPulse(.57);
 
 		gyro = new ADXRS450_Gyro();
 		acel = new BuiltInAccelerometer(Range.k8G);
@@ -125,11 +126,7 @@ public class ReferenceFrame2 extends Subsystem {
 
 	// int currentTicks = motorEncoder.getRaw();
 	public double DistanceTraveled() {
-		// centimetersTraveled = (int) ((Math.abs(motorEncoder.get()) /
-		// ticksPerRotation) * (wheelDiameterInCM * Math.PI));
-		centimetersTraveled = (Math.abs(motorEncoder.get()) - (Math.abs(motorEncoder.get()) * .3));
-		SmartDashboard.putNumber("DISTANCE", centimetersTraveled);
-		return centimetersTraveled;
+		return motorEncoder.getDistance();
 
 	}
 

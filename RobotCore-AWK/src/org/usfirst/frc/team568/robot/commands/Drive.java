@@ -19,7 +19,7 @@ public class Drive extends Command {
 	ReferenceFrame2 ref;
 
 	public Drive(double distance, double speed) {
-		CM = distance - (5);
+		CM = distance - (15);
 		this.speed = speed;
 		ref = Robot.getInstance().referanceFrame2;
 	}
