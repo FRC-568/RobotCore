@@ -1,24 +1,24 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.RobotMap;
+import org.usfirst.frc.team568.robot.PortMapper;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class RopeClimber extends Subsystem {
+public class PistonRopeClimber extends Subsystem {
 	public State currentState;
-	public Clamp topClamp;
-	public Clamp bottomClamp;
+	public final Clamp topClamp;
+	public final Clamp bottomClamp;
 
-	private Solenoid reacherExtender;
-	private Solenoid reacherRetractor;
+	private final Solenoid reacherExtender;
+	private final Solenoid reacherRetractor;
 	private boolean _isReaching;
 
-	public RopeClimber() {
-		topClamp = new Clamp(RobotMap.topClampOut, RobotMap.topClampIn);
-		bottomClamp = new Clamp(RobotMap.bottomClampOut, RobotMap.bottomClampIn);
-		reacherExtender = new Solenoid(RobotMap.reacherOut);
-		reacherRetractor = new Solenoid(RobotMap.reacherIn);
+	public PistonRopeClimber(PortMapper map) {
+		topClamp = new Clamp(map.getPort("topClampOut"), map.getPort("topClampIn"));
+		bottomClamp = new Clamp(map.getPort("bottomClampOut"), map.getPort("bottomClampIn"));
+		reacherExtender = new Solenoid(map.getPort("reacherOut"));
+		reacherRetractor = new Solenoid(map.getPort("reacherIn"));
 
 		bottomClamp.release();
 		topClamp.release();

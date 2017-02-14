@@ -1,5 +1,8 @@
 package org.usfirst.frc.team568.robot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.usfirst.frc.team568.robot.commands.AutoOne;
 import org.usfirst.frc.team568.robot.commands.AutoThree;
 import org.usfirst.frc.team568.robot.commands.AutoTwo;
@@ -18,7 +21,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Robot extends IterativeRobot {
+public class Robot extends IterativeRobot implements PortMapper {
+	private final Map<String, Integer> _portMap;
 
 	int session;
 	Timer time;
@@ -56,6 +60,26 @@ public class Robot extends IterativeRobot {
 		time = new Timer();
 		imu = new ADIS16448_IMU();
 		climber = new Climber();
+
+		_portMap = new HashMap<String, Integer>(20);
+		definePort("leftFrontMotor", 1);
+		definePort("leftBackMotor", 2);
+		definePort("rightFrontMotor", 3);
+		definePort("rightBackMotor", 4);
+		definePort("joy1Pos", 0);
+		definePort("joy2Pos", 1);
+		definePort("gearPneumatic1", 7);
+		definePort("gearPneumatic2", 8);
+		definePort("gearDetector", 7);
+		definePort("laser1", 5);
+		definePort("encoderYellow", 0);
+		definePort("encoderWhite", 1);
+		definePort("topClampIn", 1);
+		definePort("bottomClampIn", 2);
+		definePort("reacherIn", 3);
+		definePort("reacherOut", 4);
+		definePort("bottomClampOut", 5);
+		definePort("topClampOut", 6);
 	}
 
 	@Override
@@ -147,5 +171,15 @@ public class Robot extends IterativeRobot {
 
 	public static Robot getInstance() {
 		return instance;
+	}
+
+	public int getPort(String name) {
+		if (_portMap.containsKey(name) == false)
+			throw new RuntimeException("Port \"" + name + "\" is not mapped for " + this.getClass().getName() + ".");
+		return _portMap.get(name);
+	}
+
+	protected void definePort(String name, int number) {
+		_portMap.put(name, number);
 	}
 }
