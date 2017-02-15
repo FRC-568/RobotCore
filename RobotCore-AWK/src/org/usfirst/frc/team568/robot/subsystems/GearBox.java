@@ -9,11 +9,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/* Allen wrote this one
- *
- *
- *
- */
 public class GearBox extends Subsystem {
 	public Solenoid gearPneumatic1;
 	public Solenoid gearPneumatic2;

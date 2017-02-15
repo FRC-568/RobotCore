@@ -39,4 +39,7 @@ public class RobotMap {
 	public static final int bottomClampOut = 5;
 	public static final int topClampOut = 6;
 
+	public static final int shooter = 5;
+	public static final int climber = 6;
+
 }

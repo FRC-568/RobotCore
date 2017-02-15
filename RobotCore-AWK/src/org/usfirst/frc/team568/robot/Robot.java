@@ -3,11 +3,11 @@ package org.usfirst.frc.team568.robot;
 import org.usfirst.frc.team568.robot.commands.AutoOne;
 import org.usfirst.frc.team568.robot.commands.AutoThree;
 import org.usfirst.frc.team568.robot.commands.AutoTwo;
-import org.usfirst.frc.team568.robot.commands.Climb;
-import org.usfirst.frc.team568.robot.subsystems.Climber;
 import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team568.robot.subsystems.GearBox;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
+import org.usfirst.frc.team568.robot.subsystems.Shooter;
+import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
 
@@ -39,23 +39,27 @@ public class Robot extends IterativeRobot {
 
 	GearBox gearBox;
 
-	public Climber climber;
+	// public Climber climber;
+	public WinchClimber winchClimber;
+	public Shooter shooter;
 	public Compressor compressor;
 
 	public ControllerButtons buttons;
-	public Climb climb;
+	// public Climb climb;
 
 	public Robot() {
 		instance = this;
 		oi = new OI();
 
 		driveTrain = new DriveTrain();
+		winchClimber = new WinchClimber();
+		shooter = new Shooter();
 		// gearBox = new GearBox();
 
 		referanceFrame2 = new ReferenceFrame2();
 		time = new Timer();
 		imu = new ADIS16448_IMU();
-		climber = new Climber();
+		// climber = new Climber();
 	}
 
 	@Override

@@ -13,8 +13,11 @@ public class OI {
 	public Joystick joyStick1 = new Joystick(RobotMap.joy1Pos);
 
 	public Joystick joyStick2 = new Joystick(RobotMap.joy2Pos);
-	
+
 	public Button climb = new JoystickButton(joyStick2, ControllerButtons.leftBumper);
+	public Button inverseClimb = new JoystickButton(joyStick2, ControllerButtons.RightBumper);
+	public Button shoot = new JoystickButton(joyStick2, ControllerButtons.RightStickIn);
+	public Button stopShooting = new JoystickButton(joyStick2, ControllerButtons.LeftStickIn);
 	public Button openGearBox = new JoystickButton(joyStick1, ControllerButtons.A);
 	public Button closeGearBox = new JoystickButton(joyStick1, ControllerButtons.B);
 	//// CREATING BUTTONS
@@ -25,11 +28,9 @@ public class OI {
 	// Joystick stick = new Joystick(port);
 	// Button button = new JoystickButton(stick, buttonNumber);
 
-	
-	//example
-	//public Button trigger = new JoystickButton(joyStick1, ControllerButtons.A);
-
-
+	// example
+	// public Button trigger = new JoystickButton(joyStick1,
+	// ControllerButtons.A);
 
 	// There are a few additional built in buttons you can use. Additionally,
 	// by subclassing Button you can create custom triggers and bind those to
