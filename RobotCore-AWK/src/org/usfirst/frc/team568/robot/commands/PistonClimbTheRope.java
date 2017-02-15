@@ -1,14 +1,14 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.subsystems.RopeClimber;
+import org.usfirst.frc.team568.robot.subsystems.PistonRopeClimber;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ClimbTheRope extends Command {
-	protected final RopeClimber climber;
+public class PistonClimbTheRope extends Command {
+	protected final PistonRopeClimber climber;
 
-	public ClimbTheRope(RopeClimber climber) {
+	public PistonClimbTheRope(PistonRopeClimber climber) {
 		this.climber = climber;
 		requires(climber);
 	}
@@ -19,37 +19,37 @@ public class ClimbTheRope extends Command {
 		case RELAXED:
 			climber.bottomClamp.grip();
 			Timer.delay(.75);
-			climber.currentState = RopeClimber.State.BOTTOM_CLAMPED;
+			climber.currentState = PistonRopeClimber.State.BOTTOM_CLAMPED;
 			break;
 		case BOTTOM_CLAMPED:
 			climber.topClamp.release();
 			Timer.delay(.75);
-			climber.currentState = RopeClimber.State.TOP_RELEASED;
+			climber.currentState = PistonRopeClimber.State.TOP_RELEASED;
 			break;
 		case TOP_RELEASED:
 			climber.extendReacher();
 			Timer.delay(.75);
-			climber.currentState = RopeClimber.State.REACHED;
+			climber.currentState = PistonRopeClimber.State.REACHED;
 			break;
 		case REACHED:
 			climber.topClamp.grip();
 			Timer.delay(.75);
-			climber.currentState = RopeClimber.State.TOP_CLAMPED;
+			climber.currentState = PistonRopeClimber.State.TOP_CLAMPED;
 			break;
 		case TOP_CLAMPED:
 			climber.bottomClamp.release();
 			Timer.delay(.75);
-			climber.currentState = RopeClimber.State.BOTTOM_RELEASED;
+			climber.currentState = PistonRopeClimber.State.BOTTOM_RELEASED;
 			break;
 		case BOTTOM_RELEASED:
 			climber.retractReacher();
 			Timer.delay(.75);
-			climber.currentState = RopeClimber.State.LIFTED;
+			climber.currentState = PistonRopeClimber.State.LIFTED;
 			break;
 		case LIFTED:
 			climber.bottomClamp.grip();
 			Timer.delay(.75);
-			climber.currentState = RopeClimber.State.BOTTOM_CLAMPED;
+			climber.currentState = PistonRopeClimber.State.BOTTOM_CLAMPED;
 			break;
 		default:
 			break;
@@ -71,7 +71,7 @@ public class ClimbTheRope extends Command {
 	protected void end() {
 		climber.topClamp.grip();
 		climber.bottomClamp.grip();
-		climber.currentState = RopeClimber.State.BOTTOM_CLAMPED;
+		climber.currentState = PistonRopeClimber.State.BOTTOM_CLAMPED;
 	}
 
 	@Override
