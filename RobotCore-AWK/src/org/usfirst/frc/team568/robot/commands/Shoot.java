@@ -2,6 +2,7 @@ package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class Shoot extends Command {
@@ -18,6 +19,8 @@ public class Shoot extends Command {
 	@Override
 	protected void execute() {
 		shooter.shooter.set(-1);
+		Timer.delay(.5);
+		shooter.gate.set(1);
 
 	}
 
@@ -29,12 +32,14 @@ public class Shoot extends Command {
 	@Override
 	protected void end() {
 		shooter.shooter.set(0);
+		shooter.gate.set(0);
 
 	}
 
 	@Override
 	protected void interrupted() {
 		shooter.shooter.set(0);
+		shooter.gate.set(0);
 
 	}
 
