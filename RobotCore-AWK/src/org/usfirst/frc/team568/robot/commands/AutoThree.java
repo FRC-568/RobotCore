@@ -6,11 +6,11 @@ public class AutoThree extends CommandGroup {
 
 	public AutoThree() {
 
-		addSequential(new Drive(209, .3));
+		addSequential(new Drive(206, .4));
 
-		addSequential(new Turn(53));
+		addSequential(new Turn(56));
 
-		addSequential(new Drive(105, .3));
+		addSequential(new Drive(110, .4));
 		// TODO Auto-generated constructor stub
 	}
 
