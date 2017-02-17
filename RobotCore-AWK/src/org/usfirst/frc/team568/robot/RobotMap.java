@@ -25,8 +25,8 @@ public class RobotMap {
 	public static final int joy1Pos = 0;
 	public static final int joy2Pos = 1;
 
-	public static final int gearPneumatic1 = 7;
-	public static final int gearPneumatic2 = 8;
+	public static final int gearPneumatic1 = 0;
+	public static final int gearPneumatic2 = 1;
 	public static final int gearDetector = 7;
 	public static final int laser1 = 5;
 	public static final int encoderYellow = 0;
