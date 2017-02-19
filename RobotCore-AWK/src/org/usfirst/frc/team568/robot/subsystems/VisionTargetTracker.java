@@ -11,45 +11,46 @@ import org.usfirst.frc.team568.grip.GearLifterTarget;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class VisionTargetTracker extends Subsystem {
+public final class VisionTargetTracker extends Subsystem {
+	public static final double OFFSET_TO_FRONT = 0;
+	public static final double CAMERA_WIDTH = 640;
+	public static final double DISTANCE_CONSTANT = 5760; // 5738;
+	public static final double WIDTH_BETWEEN_TARGET = 8.5;
+
+	private final String cameraUrl;
+	private final int cameraUsbPort;
+	private GearLifterTarget pipeline;
+	private VideoCapture videoCapture;
+	private Mat matOriginal;
+	private double lengthBetweenContours;
+	private double distanceFromTarget;
+	private double[] centerX;
 
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
 	}
-	// Process for GRIP
-	GearLifterTarget pipeline;
-	public VideoCapture videoCapture;
-	// Constants for known variables
-	Mat matOriginal;
-	public static final double OFFSET_TO_FRONT = 0;
-	public static final double CAMERA_WIDTH = 640;
-	// public static final double DISTANCE_CONSTANT= 5738;
-	public static final double DISTANCE_CONSTANT = 5760;
-	public static final double WIDTH_BETWEEN_TARGET = 8.5;
-	public boolean shouldRun = true;
-	// static NetworkTable table;
 
-	double lengthBetweenContours;
-	double distanceFromTarget;
-	double lengthError;
-	double[] centerX;
+	public VisionTargetTracker() {
+		this(0);
+	}
+
+	public VisionTargetTracker(final int cameraUsbPort) {
+		this.cameraUsbPort = cameraUsbPort;
+		this.cameraUrl = null;
+	}
+
+	public VisionTargetTracker(String cameraUrl) {
+		this.cameraUsbPort = -1;
+		this.cameraUrl = cameraUrl;
+	}
 
 	public void processImage() {
-		System.out.println("Processing Started");
 		matOriginal = new Mat();
 
-		// only run for the specified time
 		while (true) {
-			// System.out.println("Hey I'm Processing Something!");
 			videoCapture.read(matOriginal);
 			pipeline.process(matOriginal);
 			returnCenterX();
-			System.out.println(getAngle());
-			// System.out.println(lengthBetweenContours);
-			// table.putDouble("distanceFromTarget", distanceFromTarget());
-			// table.putDouble("angleFromGoal", getAngle());
-			// table.putNumberArray("centerX", centerX);
 			videoCapture.read(matOriginal);
 		}
 
@@ -105,41 +106,40 @@ public class VisionTargetTracker extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		this.setDefaultCommand(new FrameProcessor());
-		// TODO Auto-generated method stub
-
-	}
-
-	private class FrameProcessor extends Command {
-		@Override
-		protected void initialize() {
-			videoCapture = new VideoCapture();
-			pipeline = new GearLifterTarget();
-			// videoCapture.open("http://roborio-1806-frc.local:1181/?action=stream");
-			videoCapture.open(0);
-		}
-
-		@Override
-		protected void execute() {
-			if (videoCapture.isOpened()) {
-				processImage();
+		this.setDefaultCommand(new Command() {
+			@Override
+			protected void initialize() {
+				videoCapture = new VideoCapture();
+				pipeline = new GearLifterTarget();
+				// URL should be in format
+				// http://roborio-XXXX-frc.local:1181/?action=stream
+				if (cameraUrl != null)
+					videoCapture.open(cameraUrl);
+				else
+					videoCapture.open(cameraUsbPort);
 			}
-		}
 
-		@Override
-		protected boolean isFinished() {
-			return false;
-		}
+			@Override
+			protected void execute() {
+				if (videoCapture.isOpened())
+					processImage();
+			}
 
-		@Override
-		protected void end() {
-			videoCapture.release();
-		}
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
 
-		@Override
-		protected void interrupted() {
-			end();
-		}
+			@Override
+			protected void end() {
+				videoCapture.release();
+			}
 
+			@Override
+			protected void interrupted() {
+				end();
+			}
+		});
 	}
+
 }
