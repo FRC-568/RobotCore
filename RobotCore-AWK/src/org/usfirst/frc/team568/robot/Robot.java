@@ -52,7 +52,7 @@ public class Robot extends IterativeRobot {
 		oi = new OI();
 
 		driveTrain = new DriveTrain();
-		// winchClimber = new WinchClimber();
+		winchClimber = new WinchClimber();
 		// shooter = new Shooter();
 		gearBox = new GearBox();
 

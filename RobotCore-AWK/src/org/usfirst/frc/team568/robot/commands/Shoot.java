@@ -13,33 +13,33 @@ public class Shoot extends Command {
 
 	@Override
 	protected void initialize() {
-
+		shooter.shootMotor.set(-(7 / 12));
 	}
 
 	@Override
 	protected void execute() {
-		shooter.shooter.set(-1);
+
+		shooter.gate.setAngle(170);
 		Timer.delay(.5);
-		shooter.gate.set(1);
+		shooter.gate.setAngle(180);
+		Timer.delay(.5);
 
 	}
 
 	@Override
 	protected boolean isFinished() {
-		return false;
+		return true;
 	}
 
 	@Override
 	protected void end() {
-		shooter.shooter.set(0);
-		shooter.gate.set(0);
+		shooter.shootMotor.set(0);
 
 	}
 
 	@Override
 	protected void interrupted() {
-		shooter.shooter.set(0);
-		shooter.gate.set(0);
+		shooter.shootMotor.set(0);
 
 	}
 
