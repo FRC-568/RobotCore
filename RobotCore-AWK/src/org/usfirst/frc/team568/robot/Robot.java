@@ -7,6 +7,7 @@ import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team568.robot.subsystems.GearBox;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
+import org.usfirst.frc.team568.robot.subsystems.VisionTargetTracker;
 import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
@@ -37,20 +38,20 @@ public class Robot extends IterativeRobot {
 	public ADIS16448_IMU imu;
 	Command autonomousCommand;
 
-	GearBox gearBox;
+	public GearBox gearBox;
 
 	// public Climber climber;
 	public WinchClimber winchClimber;
 	public Shooter shooter;
 	public Compressor compressor;
-
+	public VisionTargetTracker gearTracker;
 	public ControllerButtons buttons;
 	// public Climb climb;
 
 	public Robot() {
 		instance = this;
 		oi = new OI();
-
+		gearTracker = new VisionTargetTracker(0); // Camera 0
 		driveTrain = new DriveTrain();
 		winchClimber = new WinchClimber();
 		// shooter = new Shooter();
