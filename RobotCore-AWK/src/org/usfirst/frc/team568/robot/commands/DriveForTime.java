@@ -16,11 +16,8 @@ public class DriveForTime extends TimedCommand {
 
 	}
 
-	protected void initialize() {
-		driveTrain.leftBack.set(speed);
-		driveTrain.leftFront.set(speed);
-		driveTrain.rightBack.set(speed);
-		driveTrain.rightFront.set(speed);
+	protected void execute() {
+		driveTrain.setSpeed(speed, speed);
 	}
 
 	@Override
@@ -30,10 +27,7 @@ public class DriveForTime extends TimedCommand {
 
 	@Override
 	protected void end() {
-		driveTrain.leftBack.set(0);
-		driveTrain.leftFront.set(0);
-		driveTrain.rightBack.set(0);
-		driveTrain.rightFront.set(0);
+		driveTrain.halt();
 	}
 
 	@Override
