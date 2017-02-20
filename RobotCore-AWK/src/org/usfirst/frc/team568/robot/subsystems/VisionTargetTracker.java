@@ -39,9 +39,9 @@ public final class VisionTargetTracker extends Subsystem {
 	}
 
 	public void processImage() {
-		CameraServer.getInstance().getVideo(cameraName).grabFrame(matOriginal);
-		pipeline.process(matOriginal);
-		returnCenterX();
+		// CameraServer.getInstance().getVideo(cameraName).grabFrame(matOriginal);
+		// pipeline.process(matOriginal);
+		// returnCenterX();
 	}
 
 	public double returnCenterX() {
@@ -93,7 +93,11 @@ public final class VisionTargetTracker extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new Command() {
+		class ImageProcessor extends Command {
+			public ImageProcessor() {
+				requires(VisionTargetTracker.this);
+			}
+
 			@Override
 			protected void execute() {
 				processImage();
@@ -103,7 +107,8 @@ public final class VisionTargetTracker extends Subsystem {
 			protected boolean isFinished() {
 				return false;
 			}
-		});
+		}
+		setDefaultCommand(new ImageProcessor());
 	}
 
 }

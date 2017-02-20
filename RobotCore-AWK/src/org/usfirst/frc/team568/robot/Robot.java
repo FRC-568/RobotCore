@@ -3,9 +3,12 @@ package org.usfirst.frc.team568.robot;
 import org.usfirst.frc.team568.robot.commands.AutoOne;
 import org.usfirst.frc.team568.robot.commands.AutoThree;
 import org.usfirst.frc.team568.robot.commands.AutoTwo;
+import org.usfirst.frc.team568.robot.commands.ClimbWithWinch;
+import org.usfirst.frc.team568.robot.commands.Shoot;
 import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team568.robot.subsystems.GearBox;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
+import org.usfirst.frc.team568.robot.subsystems.RopeCollector;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
 import org.usfirst.frc.team568.robot.subsystems.VisionTargetTracker;
 import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
@@ -30,6 +33,7 @@ public class Robot extends IterativeRobot {
 	public double pressure;
 
 	// public double EncoderValue;
+	Command autonomousCommand;
 
 	protected static Robot instance;
 	public OI oi;
@@ -37,30 +41,25 @@ public class Robot extends IterativeRobot {
 	public ReferenceFrame2 referanceFrame2;
 	public ADIS16448_IMU imu;
 	public VisionTargetTracker gearLiftTracker;
-	Command autonomousCommand;
-
 	public GearBox gearBox;
-
-	// public Climber climber;
+	public RopeCollector ropeCollector;
 	public WinchClimber winchClimber;
 	public Shooter shooter;
 	public Compressor compressor;
 	public VisionTargetTracker gearTracker;
 	public ControllerButtons buttons;
-	// public Climb climb;
 
 	public Robot() {
 
 		instance = this;
 		oi = new OI();
-		gearTracker = new VisionTargetTracker(0); // Camera 0
+		gearTracker = new VisionTargetTracker(1); // Camera 0
 		driveTrain = new DriveTrain();
 		winchClimber = new WinchClimber();
-		// shooter = new Shooter();
+		shooter = new Shooter();
 		gearBox = new GearBox();
-
+		ropeCollector = new RopeCollector();
 		gearLiftTracker = new VisionTargetTracker();
-
 		referanceFrame2 = new ReferenceFrame2();
 		time = new Timer();
 		imu = new ADIS16448_IMU();
@@ -77,6 +76,10 @@ public class Robot extends IterativeRobot {
 		referanceFrame2.calabrateGyro();
 
 		SmartDashboard.putNumber("Autonomous #", 1);
+
+		oi.shoot.whileHeld(new Shoot());
+
+		oi.climb.whileHeld(new ClimbWithWinch());
 
 		// SmartDashboard.putNumber("Kp", .15);
 
@@ -132,6 +135,7 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
+
 		referanceFrame2.motorEncoder.reset();
 		imu.reset();
 		referanceFrame2.reset();

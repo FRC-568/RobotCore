@@ -7,7 +7,6 @@ import org.usfirst.frc.team568.robot.commands.ArcadeDriveManual;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -55,19 +54,19 @@ public class DriveTrain extends Subsystem {
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 
-		driveStick1 = new Joystick(0);
+		driveStick1 = new Joystick(RobotMap.joy1Pos);
 
 	}
 
 	public void arcadeDrive() {
 		leftFront.setInverted(true);
 		leftBack.setInverted(true);
-		rightFront.setInverted(true);
-		rightBack.setInverted(true);
+		rightFront.setInverted(false);
+		rightBack.setInverted(false);
 
-		myDrive.arcadeDrive((driveStick1.getRawAxis(1)), (driveStick1.getRawAxis(4)));
+		myDrive.arcadeDrive(-(driveStick1.getRawAxis(1)), (driveStick1.getRawAxis(4) * .5));
 
-		Timer.delay(0.01);
+		// Timer.delay(0.01);
 	}
 
 	public void tankDrive() {
@@ -76,8 +75,8 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void forwardWithGyro(double speed) {
-		leftFront.setInverted(false);
-		leftBack.setInverted(false);
+		leftFront.setInverted(true);
+		leftBack.setInverted(true);
 		rightFront.setInverted(true);
 		rightBack.setInverted(true);
 
@@ -145,8 +144,8 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void turnLeft(double speed) {
-		leftFront.setInverted(false);
-		leftBack.setInverted(false);
+		leftFront.setInverted(true);
+		leftBack.setInverted(true);
 		rightFront.setInverted(true);
 		rightBack.setInverted(true);
 
@@ -158,8 +157,8 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void turnRight(double speed) {
-		leftFront.setInverted(false);
-		leftBack.setInverted(false);
+		leftFront.setInverted(true);
+		leftBack.setInverted(true);
 		rightFront.setInverted(true);
 		rightBack.setInverted(true);
 
