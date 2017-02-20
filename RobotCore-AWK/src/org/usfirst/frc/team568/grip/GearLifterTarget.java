@@ -1,3 +1,6 @@
+/*
+ * This is auto-generated code from GRIP - do not edit.
+ */
 package org.usfirst.frc.team568.grip;
 
 import java.util.ArrayList;

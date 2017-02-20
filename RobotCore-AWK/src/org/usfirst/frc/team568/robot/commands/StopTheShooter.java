@@ -17,7 +17,7 @@ public class StopTheShooter extends Command {
 
 	@Override
 	protected void execute() {
-		shooter.shooter.set(0);
+		shooter.shootMotor.set(0);
 
 	}
 
@@ -28,13 +28,13 @@ public class StopTheShooter extends Command {
 
 	@Override
 	protected void end() {
-		shooter.shooter.set(0);
+		shooter.shootMotor.set(0);
 
 	}
 
 	@Override
 	protected void interrupted() {
-		shooter.shooter.set(0);
+		shooter.shootMotor.set(0);
 
 	}
 

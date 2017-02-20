@@ -1,62 +1,50 @@
+/**
+ * Based on code from https://github.com/TheGuyWhoCodes/LiftTracker
+ */
+
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.videoio.VideoCapture;
 import org.usfirst.frc.team568.grip.GearLifterTarget;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class VisionTargetTracker extends Subsystem {
-
-	static {
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
-	}
-	// Process for GRIP
-	GearLifterTarget pipeline;
-	public VideoCapture videoCapture;
-	// Constants for known variables
-	Mat matOriginal;
+public final class VisionTargetTracker extends Subsystem {
 	public static final double OFFSET_TO_FRONT = 0;
 	public static final double CAMERA_WIDTH = 640;
-	// public static final double DISTANCE_CONSTANT= 5738;
-	public static final double DISTANCE_CONSTANT = 5760;
+	public static final double DISTANCE_CONSTANT = 5760; // 5738;
 	public static final double WIDTH_BETWEEN_TARGET = 8.5;
-	public boolean shouldRun = true;
-	// static NetworkTable table;
 
-	double lengthBetweenContours;
-	double distanceFromTarget;
-	double lengthError;
-	double[] centerX;
+	public final String cameraName;
+
+	private GearLifterTarget pipeline;
+	private Mat matOriginal;
+	private double lengthBetweenContours;
+	private double distanceFromTarget;
+	private double[] centerX;
+
+	public VisionTargetTracker() {
+		this(0);
+	}
+
+	public VisionTargetTracker(final int cameraUsbPort) {
+		matOriginal = new Mat();
+		pipeline = new GearLifterTarget();
+		cameraName = CameraServer.getInstance().startAutomaticCapture(cameraUsbPort).getName();
+	}
 
 	public void processImage() {
-		System.out.println("Processing Started");
-		matOriginal = new Mat();
-
-		// only run for the specified time
-		while (true) {
-			// System.out.println("Hey I'm Processing Something!");
-			videoCapture.read(matOriginal);
-			pipeline.process(matOriginal);
-			returnCenterX();
-			System.out.println(getAngle());
-			// System.out.println(lengthBetweenContours);
-			// table.putDouble("distanceFromTarget", distanceFromTarget());
-			// table.putDouble("angleFromGoal", getAngle());
-			// table.putNumberArray("centerX", centerX);
-			videoCapture.read(matOriginal);
-		}
-
+		CameraServer.getInstance().getVideo(cameraName).grabFrame(matOriginal);
+		pipeline.process(matOriginal);
+		returnCenterX();
 	}
 
 	public double returnCenterX() {
-		double[] defaultValue = new double[0];
 		// This is the center value returned by GRIP thank WPI
 		if (!pipeline.filterContoursOutput.isEmpty() && pipeline.filterContoursOutput.size() >= 2) {
 			Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput.get(1));
@@ -105,41 +93,17 @@ public class VisionTargetTracker extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		this.setDefaultCommand(new FrameProcessor());
-		// TODO Auto-generated method stub
-
-	}
-
-	private class FrameProcessor extends Command {
-		@Override
-		protected void initialize() {
-			videoCapture = new VideoCapture();
-			pipeline = new GearLifterTarget();
-			// videoCapture.open("http://roborio-1806-frc.local:1181/?action=stream");
-			videoCapture.open(0);
-		}
-
-		@Override
-		protected void execute() {
-			if (videoCapture.isOpened()) {
+		setDefaultCommand(new Command() {
+			@Override
+			protected void execute() {
 				processImage();
 			}
-		}
 
-		@Override
-		protected boolean isFinished() {
-			return false;
-		}
-
-		@Override
-		protected void end() {
-			videoCapture.release();
-		}
-
-		@Override
-		protected void interrupted() {
-			end();
-		}
-
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+		});
 	}
+
 }

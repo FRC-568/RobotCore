@@ -39,13 +39,13 @@ public class Robot extends IterativeRobot {
 	public VisionTargetTracker gearLiftTracker;
 	Command autonomousCommand;
 
-	GearBox gearBox;
+	public GearBox gearBox;
 
 	// public Climber climber;
 	public WinchClimber winchClimber;
 	public Shooter shooter;
 	public Compressor compressor;
-
+	public VisionTargetTracker gearTracker;
 	public ControllerButtons buttons;
 	// public Climb climb;
 
@@ -53,9 +53,9 @@ public class Robot extends IterativeRobot {
 
 		instance = this;
 		oi = new OI();
-
+		gearTracker = new VisionTargetTracker(0); // Camera 0
 		driveTrain = new DriveTrain();
-		// winchClimber = new WinchClimber();
+		winchClimber = new WinchClimber();
 		// shooter = new Shooter();
 		gearBox = new GearBox();
 

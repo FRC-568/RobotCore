@@ -9,15 +9,14 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 
 public class Shooter {
-	public SpeedController shooter;
+	public SpeedController shootMotor;
 	public Servo gate;
 
 	public Shooter() {
-		shooter = new Victor(RobotMap.shooter);
+		shootMotor = new Victor(RobotMap.shooter);
 		gate = new Servo(RobotMap.gateServo);
 
-		Robot.getInstance().oi.stopShooting.whenPressed(new Shoot());
-		Robot.getInstance().oi.shoot.cancelWhenPressed(new Shoot());
+		Robot.getInstance().oi.shoot.whileHeld(new Shoot());
 
 	}
 
