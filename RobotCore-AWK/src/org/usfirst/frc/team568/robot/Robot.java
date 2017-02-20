@@ -7,6 +7,7 @@ import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team568.robot.subsystems.GearBox;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
+import org.usfirst.frc.team568.robot.subsystems.VisionTargetTracker;
 import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
@@ -35,6 +36,7 @@ public class Robot extends IterativeRobot {
 	public DriveTrain driveTrain;
 	public ReferenceFrame2 referanceFrame2;
 	public ADIS16448_IMU imu;
+	public VisionTargetTracker gearLiftTracker;
 	Command autonomousCommand;
 
 	GearBox gearBox;
@@ -48,6 +50,7 @@ public class Robot extends IterativeRobot {
 	// public Climb climb;
 
 	public Robot() {
+
 		instance = this;
 		oi = new OI();
 
@@ -55,6 +58,8 @@ public class Robot extends IterativeRobot {
 		// winchClimber = new WinchClimber();
 		// shooter = new Shooter();
 		gearBox = new GearBox();
+
+		gearLiftTracker = new VisionTargetTracker();
 
 		referanceFrame2 = new ReferenceFrame2();
 		time = new Timer();
@@ -81,10 +86,9 @@ public class Robot extends IterativeRobot {
 		 * //imu.reset(); //imu.calibrate();
 		 * //SmartDashboard.putBoolean("Forward?", true);
 		 * //SmartDashboard.putNumber("Time?", 10);
-		 * //SmartDashboard.putNumber("Speed", .60);
-		 * //SmartDashboard.putNumber("Autonomous #", 1);
-		 * //SmartDashboard.putString("Event:", "Robot init");
-		 * //SmartDashboard.putNumber("Degrees", 90);
+		 * //SmartDashboard.putNumber("Speed", .60); //SmartDashboard.putNumber(
+		 * "Autonomous #", 1); //SmartDashboard.putString("Event:", "Robot init"
+		 * ); //SmartDashboard.putNumber("Degrees", 90);
 		 * //SmartDashboard.putNumber("Count", 0);
 		 */
 	}

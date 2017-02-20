@@ -32,12 +32,12 @@ public class RobotMap {
 	public static final int encoderYellow = 0;
 	public static final int encoderWhite = 1;
 
-	public static final int topClampIn = 1;
-	public static final int bottomClampIn = 2;
+	public static final int ropeClampIn = 2;
+	public static final int ropeClampOut = 6;
+	// public static final int bottomClampIn = 2;
 	public static final int reacherIn = 3;
 	public static final int reacherOut = 4;
 	public static final int bottomClampOut = 5;
-	public static final int topClampOut = 6;
 
 	public static final int shooter = 5;
 	public static final int gateServo = 7;

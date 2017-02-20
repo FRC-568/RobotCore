@@ -20,11 +20,11 @@ public class Climber extends Subsystem {
 
 	public Climber() {
 
-		topClampIn = new Solenoid(RobotMap.topClampIn);
-		bottomClampIn = new Solenoid(RobotMap.bottomClampIn);
-		reacherIn = new Solenoid(RobotMap.reacherIn);
-		topClampOut = new Solenoid(RobotMap.topClampOut);
-		bottomClampOut = new Solenoid(RobotMap.bottomClampOut);
+		// topClampIn = new Solenoid(RobotMap.topClampIn);
+		// bottomClampIn = new Solenoid(RobotMap.bottomClampIn);
+		// reacherIn = new Solenoid(RobotMap.reacherIn);
+		// topClampOut = new Solenoid(RobotMap.topClampOut);
+		// bottomClampOut = new Solenoid(RobotMap.bottomClampOut);
 		reacherOut = new Solenoid(RobotMap.reacherOut);
 
 		currentState = State.RELAXED;
