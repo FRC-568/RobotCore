@@ -31,10 +31,10 @@ public class DriveTrain extends Subsystem {
 		rightFront = new VictorSP(RobotMap.rightFrontMotor);
 		rightBack = new VictorSP(RobotMap.rightBackMotor);
 
-		leftFront.setInverted(true);
-		leftBack.setInverted(true);
-		rightFront.setInverted(true);
-		rightBack.setInverted(true);
+		leftFront.setInverted(false);
+		leftBack.setInverted(false);
+		rightFront.setInverted(false);
+		rightBack.setInverted(false);
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 
@@ -44,7 +44,7 @@ public class DriveTrain extends Subsystem {
 
 	public void arcadeDrive() {
 
-		myDrive.arcadeDrive((driveStick1.getRawAxis(1)), (driveStick1.getRawAxis(4)));
+		myDrive.arcadeDrive((driveStick1.getRawAxis(1)), (-driveStick1.getRawAxis(4) * .5));
 
 	}
 

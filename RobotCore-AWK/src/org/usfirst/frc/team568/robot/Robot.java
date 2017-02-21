@@ -5,6 +5,7 @@ import org.usfirst.frc.team568.robot.commands.AutoThree;
 import org.usfirst.frc.team568.robot.commands.AutoTwo;
 import org.usfirst.frc.team568.robot.commands.ClimbWithWinch;
 import org.usfirst.frc.team568.robot.commands.Shoot;
+import org.usfirst.frc.team568.robot.commands.UnClimb;
 import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team568.robot.subsystems.GearBox;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
@@ -63,13 +64,13 @@ public class Robot extends IterativeRobot {
 		referanceFrame2 = new ReferenceFrame2();
 		time = new Timer();
 		imu = new ADIS16448_IMU();
+		compressor = new Compressor();
 		// climber = new Climber();
 	}
 
 	@Override
 	public void robotInit() {
 
-		compressor = new Compressor();
 		imu.reset();
 		imu.calibrate();
 		referanceFrame2.reset();
@@ -78,8 +79,14 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Autonomous #", 1);
 
 		oi.shoot.whileHeld(new Shoot());
-
 		oi.climb.whileHeld(new ClimbWithWinch());
+		oi.inverseClimb.whileHeld(new UnClimb());
+		oi.openGearBox.whenPressed(gearBox.openCommand());
+		oi.closeGearBox.whenPressed(gearBox.closeCommand());
+		oi.openRopeClamp.whenPressed(ropeCollector.openCommand());
+		oi.closeRopeClamp.whenPressed(ropeCollector.closeCommand());
+
+		compressor.start();
 
 		// SmartDashboard.putNumber("Kp", .15);
 

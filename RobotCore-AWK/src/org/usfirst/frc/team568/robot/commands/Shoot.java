@@ -10,38 +10,38 @@ public class Shoot extends Command {
 	public Shooter shooter;
 	private boolean gateState;
 	private double timeStamp;
+	private boolean rampedUp;
 
 	public Shoot() {
 		shooter = Robot.getInstance().shooter;
-		System.out.println("Shoot() has been called");
+
 	}
 
 	@Override
 	protected void initialize() {
-		System.out.println("initialized() has been called");
-		shooter.shootMotor.set(-(7 / 12));
-
+		shooter.shootMotor.set(-(1.0));
+		gateState = false;
 		timeStamp = Timer.getFPGATimestamp();
 
 	}
 
 	@Override
 	protected void execute() {
-		System.out.println("execute() has been called");
 
-		shooter.shootMotor.set(-(7 / 12));
-		if ((Timer.getFPGATimestamp() - timeStamp) >= .5) {
+		shooter.shootMotor.set(-(7.5 / 12.0));
+		if (!rampedUp) {
+			if ((Timer.getFPGATimestamp() - timeStamp) >= 1)
+				rampedUp = true;
+		} else if ((Timer.getFPGATimestamp() - timeStamp) >= .5) {
 			if (gateState) {
 				shooter.gate.setAngle(0);
 				gateState = false;
 			} else {
-				shooter.gate.setAngle(20);
+				shooter.gate.setAngle(50);
 				gateState = true;
 			}
 			timeStamp = Timer.getFPGATimestamp();
-
 		}
-
 	}
 
 	@Override
@@ -52,15 +52,12 @@ public class Shoot extends Command {
 	@Override
 	protected void end() {
 		shooter.shootMotor.set(0);
-		System.out.println("end() has been called");
-
+		shooter.gate.setAngle(0);
+		gateState = false;
 	}
 
 	@Override
 	protected void interrupted() {
-		shooter.shootMotor.set(0);
-		System.out.println("interupted() has been called");
-
+		end();
 	}
-
 }

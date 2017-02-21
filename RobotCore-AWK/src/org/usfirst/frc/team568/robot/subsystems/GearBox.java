@@ -1,6 +1,5 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -21,8 +20,6 @@ public class GearBox extends Subsystem {
 
 		gearDetector = new DigitalInput(RobotMap.gearDetector);
 
-		Robot.getInstance().oi.openGearBox.whenPressed(this.openCommand());
-		Robot.getInstance().oi.closeGearBox.whenPressed(this.closeCommand());
 	}
 
 	public void open() {

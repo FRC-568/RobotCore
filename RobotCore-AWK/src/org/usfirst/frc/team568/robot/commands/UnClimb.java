@@ -5,10 +5,10 @@ import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ClimbWithWinch extends Command {
+public class UnClimb extends Command {
 	public WinchClimber winchClimber;
 
-	public ClimbWithWinch() {
+	public UnClimb() {
 		winchClimber = Robot.getInstance().winchClimber;
 
 	}
@@ -20,7 +20,7 @@ public class ClimbWithWinch extends Command {
 
 	@Override
 	protected void execute() {
-		winchClimber.climber.set(-1);
+		winchClimber.climber.set(1);
 
 	}
 
