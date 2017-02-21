@@ -51,7 +51,6 @@ public class Robot extends IterativeRobot {
 	public ControllerButtons buttons;
 
 	public Robot() {
-
 		instance = this;
 		oi = new OI();
 		gearTracker = new VisionTargetTracker(1); // Camera 0
@@ -105,7 +104,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledInit() {
-		compressor.stop();
+
 	}
 
 	@Override
@@ -146,8 +145,6 @@ public class Robot extends IterativeRobot {
 		referanceFrame2.motorEncoder.reset();
 		imu.reset();
 		referanceFrame2.reset();
-		compressor.enabled();
-
 	}
 
 	@Override

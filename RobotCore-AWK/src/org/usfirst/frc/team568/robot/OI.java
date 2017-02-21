@@ -17,11 +17,12 @@ public class OI {
 	public Button climb = new JoystickButton(joyStick2, ControllerButtons.leftBumper);
 	public Button inverseClimb = new JoystickButton(joyStick2, ControllerButtons.RightBumper);
 	public Button shoot = new JoystickButton(joyStick2, ControllerButtons.RightStickIn);
-	public Button stopShooting = new JoystickButton(joyStick2, ControllerButtons.LeftStickIn);
+	// public Button stopShooting = new JoystickButton(joyStick2,
+	// ControllerButtons.LeftStickIn);
 	public Button openGearBox = new JoystickButton(joyStick1, ControllerButtons.A);
 	public Button closeGearBox = new JoystickButton(joyStick1, ControllerButtons.B);
-	public Button openRopeClamp = new JoystickButton(joyStick1, ControllerButtons.X);
-	public Button closeRopeClamp = new JoystickButton(joyStick1, ControllerButtons.Y);
+	public Button openRopeClamp = new JoystickButton(joyStick2, ControllerButtons.X);
+	public Button closeRopeClamp = new JoystickButton(joyStick2, ControllerButtons.Y);
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
 	//// joystick.

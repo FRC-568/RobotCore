@@ -6,7 +6,6 @@ package org.usfirst.frc.team568.robot.subsystems;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.usfirst.frc.team568.grip.GearLifterTarget;
 
@@ -39,9 +38,9 @@ public final class VisionTargetTracker extends Subsystem {
 	}
 
 	public void processImage() {
-		// CameraServer.getInstance().getVideo(cameraName).grabFrame(matOriginal);
-		// pipeline.process(matOriginal);
-		// returnCenterX();
+		CameraServer.getInstance().getVideo(cameraName).grabFrame(matOriginal);
+		pipeline.process(matOriginal);
+		returnCenterX();
 	}
 
 	public double returnCenterX() {
@@ -50,7 +49,6 @@ public final class VisionTargetTracker extends Subsystem {
 			Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput.get(1));
 			Rect r1 = Imgproc.boundingRect(pipeline.filterContoursOutput.get(0));
 			centerX = new double[] { r1.x + (r1.width / 2), r.x + (r.width / 2) };
-			Imgcodecs.imwrite("output.png", matOriginal);
 			// System.out.println(centerX.length); //testing
 			// this again checks for the 2 shapes on the target
 			if (centerX.length == 2) {
