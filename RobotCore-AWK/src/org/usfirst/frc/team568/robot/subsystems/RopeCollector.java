@@ -1,36 +1,33 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
+import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.RobotMap;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class GearBox extends Subsystem {
-	public Solenoid gearPneumatic1;
-	public Solenoid gearPneumatic2;
+public class RopeCollector {
 
-	public DigitalInput gearDetector;
+	public Solenoid ropeClampIn;
+	public Solenoid ropeClampOut;
 
-	public GearBox() {
-		gearPneumatic1 = new Solenoid(RobotMap.gearPneumatic1);
-		gearPneumatic2 = new Solenoid(RobotMap.gearPneumatic2);
+	public RopeCollector() {
+		ropeClampIn = new Solenoid(RobotMap.ropeClampIn);
+		ropeClampOut = new Solenoid(RobotMap.ropeClampOut);
 
-		gearDetector = new DigitalInput(RobotMap.gearDetector);
-
+		Robot.getInstance().oi.openRopeClamp.whenPressed(this.openCommand());
+		Robot.getInstance().oi.closeRopeClamp.whenPressed(this.closeCommand());
 	}
 
 	public void open() {
-		gearPneumatic1.set(false);
-		gearPneumatic2.set(true);
+		ropeClampIn.set(true);
+		ropeClampOut.set(false);
 
 	}
 
 	public void close() {
-		gearPneumatic1.set(true);
-		gearPneumatic2.set(false);
+		ropeClampIn.set(false);
+		ropeClampOut.set(true);
 	}
 
 	public Command openCommand() {
@@ -69,15 +66,6 @@ public class GearBox extends Subsystem {
 
 	}
 
-	public void hasGear() {
-		if (gearDetector.get()) {
-			SmartDashboard.putBoolean("Has Gear", true);
-		} else {
-			SmartDashboard.putBoolean("Has Gear", false);
-		}
-	}
-
-	@Override
 	protected void initDefaultCommand() {
 		// TODO Auto-generated method stub
 

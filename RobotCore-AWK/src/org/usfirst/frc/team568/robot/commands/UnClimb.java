@@ -1,13 +1,16 @@
 package org.usfirst.frc.team568.robot.commands;
 
+import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class BringTheRobotDown extends Command {
+public class UnClimb extends Command {
 	public WinchClimber winchClimber;
 
-	public BringTheRobotDown() {
+	public UnClimb() {
+		winchClimber = Robot.getInstance().winchClimber;
+
 	}
 
 	@Override
@@ -17,7 +20,8 @@ public class BringTheRobotDown extends Command {
 
 	@Override
 	protected void execute() {
-		winchClimber.climber.set(-1);
+		winchClimber.climber.set(1);
+
 	}
 
 	@Override
@@ -33,7 +37,8 @@ public class BringTheRobotDown extends Command {
 
 	@Override
 	protected void interrupted() {
-		winchClimber.climber.set(0);
+		end();
 
 	}
+
 }

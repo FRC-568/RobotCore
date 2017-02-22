@@ -3,10 +3,15 @@ package org.usfirst.frc.team568.robot;
 import org.usfirst.frc.team568.robot.commands.AutoOne;
 import org.usfirst.frc.team568.robot.commands.AutoThree;
 import org.usfirst.frc.team568.robot.commands.AutoTwo;
+import org.usfirst.frc.team568.robot.commands.ClimbWithWinch;
+import org.usfirst.frc.team568.robot.commands.Shoot;
+import org.usfirst.frc.team568.robot.commands.UnClimb;
 import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team568.robot.subsystems.GearBox;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
+import org.usfirst.frc.team568.robot.subsystems.RopeCollector;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
+import org.usfirst.frc.team568.robot.subsystems.VisionTargetTracker;
 import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
@@ -29,49 +34,58 @@ public class Robot extends IterativeRobot {
 	public double pressure;
 
 	// public double EncoderValue;
+	Command autonomousCommand;
 
 	protected static Robot instance;
 	public OI oi;
 	public DriveTrain driveTrain;
 	public ReferenceFrame2 referanceFrame2;
 	public ADIS16448_IMU imu;
-	Command autonomousCommand;
-
-	GearBox gearBox;
-
-	// public Climber climber;
+	public VisionTargetTracker gearLiftTracker;
+	public GearBox gearBox;
+	public RopeCollector ropeCollector;
 	public WinchClimber winchClimber;
 	public Shooter shooter;
 	public Compressor compressor;
-
+	public VisionTargetTracker gearTracker;
 	public ControllerButtons buttons;
-	// public Climb climb;
 
 	public Robot() {
 		instance = this;
 		oi = new OI();
-
+		gearTracker = new VisionTargetTracker(1); // Camera 0
 		driveTrain = new DriveTrain();
-		// winchClimber = new WinchClimber();
-		// shooter = new Shooter();
+		winchClimber = new WinchClimber();
+		shooter = new Shooter();
 		gearBox = new GearBox();
-
+		ropeCollector = new RopeCollector();
+		gearLiftTracker = new VisionTargetTracker();
 		referanceFrame2 = new ReferenceFrame2();
 		time = new Timer();
 		imu = new ADIS16448_IMU();
+		compressor = new Compressor();
 		// climber = new Climber();
 	}
 
 	@Override
 	public void robotInit() {
 
-		compressor = new Compressor();
 		imu.reset();
 		imu.calibrate();
 		referanceFrame2.reset();
 		referanceFrame2.calabrateGyro();
 
 		SmartDashboard.putNumber("Autonomous #", 1);
+
+		oi.shoot.whileHeld(new Shoot());
+		oi.climb.whileHeld(new ClimbWithWinch());
+		oi.inverseClimb.whileHeld(new UnClimb());
+		oi.openGearBox.whenPressed(gearBox.openCommand());
+		oi.closeGearBox.whenPressed(gearBox.closeCommand());
+		oi.openRopeClamp.whenPressed(ropeCollector.openCommand());
+		oi.closeRopeClamp.whenPressed(ropeCollector.closeCommand());
+
+		compressor.start();
 
 		// SmartDashboard.putNumber("Kp", .15);
 
@@ -81,17 +95,16 @@ public class Robot extends IterativeRobot {
 		 * //imu.reset(); //imu.calibrate();
 		 * //SmartDashboard.putBoolean("Forward?", true);
 		 * //SmartDashboard.putNumber("Time?", 10);
-		 * //SmartDashboard.putNumber("Speed", .60);
-		 * //SmartDashboard.putNumber("Autonomous #", 1);
-		 * //SmartDashboard.putString("Event:", "Robot init");
-		 * //SmartDashboard.putNumber("Degrees", 90);
+		 * //SmartDashboard.putNumber("Speed", .60); //SmartDashboard.putNumber(
+		 * "Autonomous #", 1); //SmartDashboard.putString("Event:", "Robot init"
+		 * ); //SmartDashboard.putNumber("Degrees", 90);
 		 * //SmartDashboard.putNumber("Count", 0);
 		 */
 	}
 
 	@Override
 	public void disabledInit() {
-		compressor.stop();
+
 	}
 
 	@Override
@@ -128,11 +141,10 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
+
 		referanceFrame2.motorEncoder.reset();
 		imu.reset();
 		referanceFrame2.reset();
-		compressor.enabled();
-
 	}
 
 	@Override

@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ReferenceFrame2 extends Subsystem {
-	public int calibrationSamples = 500;
+	public int calibrationSamples = 250;
 	public int calibrationSampleRate = 20;
 
 	protected ADXRS450_Gyro gyro;
@@ -46,7 +46,7 @@ public class ReferenceFrame2 extends Subsystem {
 		threshold = .03;
 
 		motorEncoder = new Encoder(RobotMap.encoderYellow, RobotMap.encoderWhite, false, EncodingType.k4X);
-		motorEncoder.setDistancePerPulse(.57);
+		motorEncoder.setDistancePerPulse(.1324678765);
 
 		gyro = new ADXRS450_Gyro();
 		acel = new BuiltInAccelerometer(Range.k8G);
