@@ -43,6 +43,10 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void arcadeDrive() {
+		leftFront.setInverted(false);
+		leftBack.setInverted(false);
+		rightFront.setInverted(false);
+		rightBack.setInverted(false);
 
 		myDrive.arcadeDrive((driveStick1.getRawAxis(1)), (-driveStick1.getRawAxis(4) * .5));
 
@@ -53,11 +57,16 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void forwardWithGyro(double speed) {
+		leftFront.setInverted(true);
+		leftBack.setInverted(true);
+		rightFront.setInverted(true);
+		rightBack.setInverted(true);
+
 		final double Kp = .156;
 
 		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
 
-		if (Robot.getInstance().referanceFrame2.getAngle() <= 1 && Robot.getInstance().referanceFrame2.getAngle() >= -1)
+		if (Robot.getInstance().referanceFrame2.getAngle() <= 3 && Robot.getInstance().referanceFrame2.getAngle() >= -3)
 			myDrive.tankDrive(speed, speed, false);
 		else
 			myDrive.tankDrive(speed - error, speed + error, false);
@@ -77,6 +86,11 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void turnWithGyro(double ra) {
+		leftFront.setInverted(true);
+		leftBack.setInverted(true);
+		rightFront.setInverted(true);
+		rightBack.setInverted(true);
+
 		final double speed = 0.25;
 		if (ra < (Robot.getInstance().referanceFrame2.getAngle() + 2)
 				|| ra < (Robot.getInstance().referanceFrame2.getAngle() - 2)) {
@@ -97,6 +111,11 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void turnRight(double speed) {
+		leftFront.setInverted(true);
+		leftBack.setInverted(true);
+		rightFront.setInverted(true);
+		rightBack.setInverted(true);
+
 		myDrive.tankDrive(speed, -speed, false);
 	}
 

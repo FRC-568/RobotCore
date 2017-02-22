@@ -30,7 +30,7 @@ public class Shoot extends Command {
 
 		shooter.shootMotor.set(-(7.5 / 12.0));
 		if (!rampedUp) {
-			if ((Timer.getFPGATimestamp() - timeStamp) >= 1.5)
+			if ((Timer.getFPGATimestamp() - timeStamp) >= 2.5)
 				rampedUp = true;
 		} else if ((Timer.getFPGATimestamp() - timeStamp) >= .5) {
 			if (gateState) {
