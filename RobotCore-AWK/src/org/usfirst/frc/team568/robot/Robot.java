@@ -141,6 +141,7 @@ public class Robot extends IterativeRobot {
 
 		SmartDashboard.putNumber("MotorEncoderTicks:", referanceFrame2.motorEncoder.get());
 		SmartDashboard.putNumber("GYRO", referanceFrame2.getAngle());
+		// SmartDashboard.putNumber("MotorAmpage", driveTrain.leftFront.)
 
 	}
 

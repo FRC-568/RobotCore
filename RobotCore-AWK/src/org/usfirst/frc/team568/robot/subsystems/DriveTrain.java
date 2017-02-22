@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class DriveTrain extends Subsystem {
 	public final Robot robot;
 
-	protected SpeedController leftFront, leftBack, rightFront, rightBack;
+	public SpeedController leftFront, leftBack, rightFront, rightBack;
 
 	protected Joystick driveStick1;
 	// protected Joystick driveStick2;
