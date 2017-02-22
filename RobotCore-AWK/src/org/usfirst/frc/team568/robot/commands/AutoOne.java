@@ -1,15 +1,17 @@
 package org.usfirst.frc.team568.robot.commands;
 
+import org.usfirst.frc.team568.robot.Robot;
+
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoOne extends CommandGroup {
 
 	public AutoOne() {
-		// addSequential(gearBox.closeCommand());
-		addSequential(new Drive(210, .4));
+		addSequential(Robot.getInstance().gearBox.closeCommand());
+		addSequential(new Drive(100, .4));
 		// addSequential(new Turn(90));
 		//
-		// addSequential(gearBox.openCommand());
+		addSequential(Robot.getInstance().gearBox.openCommand());
 	}
 
 }

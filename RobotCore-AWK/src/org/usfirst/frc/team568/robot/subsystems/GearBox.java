@@ -23,14 +23,14 @@ public class GearBox extends Subsystem {
 	}
 
 	public void open() {
-		gearPneumatic1.set(true);
-		gearPneumatic2.set(false);
+		gearPneumatic1.set(false);
+		gearPneumatic2.set(true);
 
 	}
 
 	public void close() {
-		gearPneumatic1.set(false);
-		gearPneumatic2.set(true);
+		gearPneumatic1.set(true);
+		gearPneumatic2.set(false);
 	}
 
 	public Command openCommand() {

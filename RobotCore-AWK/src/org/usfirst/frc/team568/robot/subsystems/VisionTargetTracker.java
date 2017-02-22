@@ -102,7 +102,7 @@ public final class VisionTargetTracker extends Subsystem {
 
 			@Override
 			protected void execute() {
-				processImage();
+				// processImage();
 			}
 
 			@Override
