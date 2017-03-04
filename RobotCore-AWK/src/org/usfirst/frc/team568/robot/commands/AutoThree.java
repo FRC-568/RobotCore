@@ -19,6 +19,7 @@ public class AutoThree extends CommandGroup {
 		addSequential(Robot.getInstance().gearBox.openCommand());
 		addSequential(new DriveForTime(1, .4, Robot.getInstance().driveTrain));
 		addSequential(Robot.getInstance().gearBox.closeCommand());
+		addSequential(new BallShooterandMixer());
 	}
 
 }

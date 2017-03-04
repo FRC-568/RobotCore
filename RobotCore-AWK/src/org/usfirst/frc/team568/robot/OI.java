@@ -14,8 +14,8 @@ public class OI {
 
 	public Joystick joyStick2 = new Joystick(RobotMap.joy2Pos);
 
-	public Button climb = new JoystickButton(joyStick2, ControllerButtons.leftBumper);
-	public Button inverseClimb = new JoystickButton(joyStick2, ControllerButtons.RightBumper);
+	public Button climb = new JoystickButton(joyStick2, ControllerButtons.RightBumper);
+	public Button inverseClimb = new JoystickButton(joyStick2, ControllerButtons.leftBumper);
 	public Button shoot = new JoystickButton(joyStick2, ControllerButtons.RightStickIn);
 	// public Button stopShooting = new JoystickButton(joyStick2,
 	// ControllerButtons.LeftStickIn);

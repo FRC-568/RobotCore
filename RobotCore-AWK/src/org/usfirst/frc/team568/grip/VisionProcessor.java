@@ -49,12 +49,14 @@ public class VisionProcessor {
 		if (thread == null || !thread.isAlive()) {
 			thread = new ProcessThread();
 			thread.start();
+			_isRunning = true;
 		}
-		_isRunning = true;
 	}
 
 	public void stop() {
-		if (thread != null && thread.isAlive()) {
+
+		if (thread != null && !thread.isAlive()) {
+
 			_isRunning = false;
 			thread.interrupt();
 		}
