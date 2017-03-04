@@ -28,7 +28,7 @@ public class Shoot extends Command {
 	@Override
 	protected void execute() {
 
-		shooter.shootMotor.set(-(7.5 / 12.0));
+		shooter.shootMotor.set(-(8.5 / 12.0));
 		if (!rampedUp) {
 			if ((Timer.getFPGATimestamp() - timeStamp) >= 2.5)
 				rampedUp = true;
