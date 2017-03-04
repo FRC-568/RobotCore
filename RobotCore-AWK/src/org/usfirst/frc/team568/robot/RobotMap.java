@@ -40,7 +40,9 @@ public class RobotMap {
 	public static final int bottomClampOut = 5;
 
 	public static final int shooter = 5;
-	public static final int gateServo = 7;
+	public static final int gateServo = 9;
 	public static final int climber = 6;
+	public static final int ballWranglerIn = 3;
+	public static final int ballWranglerOut = 4;
 
 }

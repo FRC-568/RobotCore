@@ -54,7 +54,7 @@ public class VisionProcessor {
 	}
 
 	public void stop() {
-		if (!thread.isAlive()) {
+		if (thread != null && thread.isAlive()) {
 			_isRunning = false;
 			thread.interrupt();
 		}
