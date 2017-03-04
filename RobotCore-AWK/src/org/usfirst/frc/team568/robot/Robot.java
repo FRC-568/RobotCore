@@ -1,5 +1,6 @@
 package org.usfirst.frc.team568.robot;
 
+import org.usfirst.frc.team568.grip.VisionProcessor;
 import org.usfirst.frc.team568.robot.commands.AutoOne;
 import org.usfirst.frc.team568.robot.commands.AutoThree;
 import org.usfirst.frc.team568.robot.commands.AutoTwo;
@@ -47,13 +48,15 @@ public class Robot extends IterativeRobot {
 	public WinchClimber winchClimber;
 	public Shooter shooter;
 	public Compressor compressor;
-	public VisionTargetTracker gearTracker;
+	// public VisionTargetTracker gearTracker;
 	public ControllerButtons buttons;
+	public VisionProcessor visionProcessor;
 
 	public Robot() {
 		instance = this;
 		oi = new OI();
-		gearTracker = new VisionTargetTracker(1); // Camera 0
+		// gearTracker = new VisionTargetTracker(1); // Camera 1
+		visionProcessor = new VisionProcessor(1); // Camera 1
 		driveTrain = new DriveTrain();
 		winchClimber = new WinchClimber();
 		shooter = new Shooter();
@@ -104,7 +107,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledInit() {
-
+		visionProcessor.stop();
 	}
 
 	@Override
@@ -125,7 +128,7 @@ public class Robot extends IterativeRobot {
 			autonomousCommand = new AutoThree();
 		}
 		referanceFrame2.reset();
-
+		visionProcessor.start();
 		autonomousCommand.start();
 
 	}
@@ -134,6 +137,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		SmartDashboard.putNumber("MotorEncoderTicks:", referanceFrame2.motorEncoder.get());
+		SmartDashboard.putNumber("Frames", visionProcessor.processingTime);
 	}
 
 	@Override
@@ -145,6 +149,7 @@ public class Robot extends IterativeRobot {
 		referanceFrame2.motorEncoder.reset();
 		imu.reset();
 		referanceFrame2.reset();
+		visionProcessor.stop();
 	}
 
 	@Override
@@ -153,6 +158,7 @@ public class Robot extends IterativeRobot {
 
 		SmartDashboard.putNumber("MotorEncoderTicks:", referanceFrame2.motorEncoder.get());
 		SmartDashboard.putNumber("GYRO", referanceFrame2.getAngle());
+		// SmartDashboard.putNumber("MotorAmpage", driveTrain.leftFront.)
 
 	}
 
