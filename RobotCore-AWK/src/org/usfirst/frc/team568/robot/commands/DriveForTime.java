@@ -2,17 +2,22 @@ package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.TimedCommand;
 
 public class DriveForTime extends TimedCommand {
 
 	private final double speed;
+	private final double time;
 	private final DriveTrain driveTrain;
+	private double timeStamp;
 
 	public DriveForTime(double time, double speed, DriveTrain driveTrain) {
 		super(time);
+		this.time = time;
 		this.speed = speed;
 		this.driveTrain = driveTrain;
+		timeStamp = Timer.getFPGATimestamp();
 
 	}
 
@@ -22,6 +27,10 @@ public class DriveForTime extends TimedCommand {
 
 	@Override
 	protected boolean isFinished() {
+		if (Timer.getFPGATimestamp() - timeStamp > time) {
+			return true;
+		}
+
 		return false;
 	}
 
@@ -32,7 +41,8 @@ public class DriveForTime extends TimedCommand {
 
 	@Override
 	protected void interrupted() {
-		end();
+
+		driveTrain.halt();// end();
 	}
 
 }
