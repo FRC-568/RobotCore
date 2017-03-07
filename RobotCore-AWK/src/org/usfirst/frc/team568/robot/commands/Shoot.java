@@ -28,16 +28,16 @@ public class Shoot extends Command {
 	@Override
 	protected void execute() {
 
-		shooter.shootMotor.set(-(8.5 / 12.0));
+		shooter.shootMotor.set(-(1));
 		if (!rampedUp) {
-			if ((Timer.getFPGATimestamp() - timeStamp) >= 2.5)
+			if ((Timer.getFPGATimestamp() - timeStamp) >= 1.75)
 				rampedUp = true;
-		} else if ((Timer.getFPGATimestamp() - timeStamp) >= .5) {
+		} else if ((Timer.getFPGATimestamp() - timeStamp) >= .75) {
 			if (gateState) {
 				shooter.gate.setAngle(0);
 				gateState = false;
 			} else {
-				shooter.gate.setAngle(50);
+				shooter.gate.setAngle(100);
 				gateState = true;
 			}
 			timeStamp = Timer.getFPGATimestamp();
@@ -54,6 +54,7 @@ public class Shoot extends Command {
 		shooter.shootMotor.set(0);
 		shooter.gate.setAngle(0);
 		gateState = false;
+		rampedUp = false;
 	}
 
 	@Override

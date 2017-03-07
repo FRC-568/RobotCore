@@ -8,7 +8,7 @@ public class AutoThree extends CommandGroup {
 
 	public AutoThree() {
 		addSequential(Robot.getInstance().gearBox.closeCommand());
-		addSequential(new Drive(206, .4));
+		addSequential(new Drive(300, .4));
 
 		addSequential(new Turn(56));
 

@@ -17,12 +17,12 @@ public class DriveForTime extends TimedCommand {
 		this.time = time;
 		this.speed = speed;
 		this.driveTrain = driveTrain;
-		timeStamp = Timer.getFPGATimestamp();
 
 	}
 
 	protected void execute() {
 		driveTrain.setSpeed(speed, speed);
+		timeStamp = Timer.getFPGATimestamp();
 	}
 
 	@Override

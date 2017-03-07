@@ -1,6 +1,7 @@
 package org.usfirst.frc.team568.robot;
 
 import org.usfirst.frc.team568.grip.VisionProcessor;
+import org.usfirst.frc.team568.robot.commands.AutoFour;
 import org.usfirst.frc.team568.robot.commands.AutoOne;
 import org.usfirst.frc.team568.robot.commands.AutoThree;
 import org.usfirst.frc.team568.robot.commands.AutoTwo;
@@ -48,14 +49,14 @@ public class Robot extends IterativeRobot {
 	public WinchClimber winchClimber;
 	public Shooter shooter;
 	public Compressor compressor;
-	// public VisionTargetTracker gearTracker;
+	public VisionTargetTracker gearTracker;
 	public ControllerButtons buttons;
 	public VisionProcessor visionProcessor;
 
 	public Robot() {
 		instance = this;
 		oi = new OI();
-		// gearTracker = new VisionTargetTracker(1); // Camera 1
+		gearTracker = new VisionTargetTracker(1); // Camera 1
 		visionProcessor = new VisionProcessor(1); // Camera 1
 		driveTrain = new DriveTrain();
 		winchClimber = new WinchClimber();
@@ -67,7 +68,7 @@ public class Robot extends IterativeRobot {
 		time = new Timer();
 		imu = new ADIS16448_IMU();
 		compressor = new Compressor();
-		// climber = new Climber();
+
 	}
 
 	@Override
@@ -126,6 +127,8 @@ public class Robot extends IterativeRobot {
 			autonomousCommand = new AutoTwo();
 		} else if (SmartDashboard.getNumber("Autonomous #", 0) == 3) {
 			autonomousCommand = new AutoThree();
+		} else if (SmartDashboard.getNumber("Autonomous #", 0) == 4) {
+			autonomousCommand = new AutoFour();
 		}
 		referanceFrame2.reset();
 		visionProcessor.start();
@@ -155,6 +158,14 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		if (oi.joyStick2.getRawButton(ControllerButtons.A)) {
+			shooter.ballWranglerIn.set(true);
+			shooter.ballWranglerOut.set(false);
+		} else {
+			shooter.ballWranglerIn.set(false);
+			shooter.ballWranglerOut.set(true);
+
+		}
 
 		SmartDashboard.putNumber("MotorEncoderTicks:", referanceFrame2.motorEncoder.get());
 		SmartDashboard.putNumber("GYRO", referanceFrame2.getAngle());

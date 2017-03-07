@@ -9,7 +9,7 @@ public class MoveToVisionTarget extends Command {
 	private final DriveTrain driveTrain;
 	private final VisionTargetTracker vision;
 	private static final double MAX_SPEED = .4;
-	private static final double MAX_DISTANCE = 72; // inches
+	private static final double MAX_DISTANCE = 112; // inches
 
 	public MoveToVisionTarget(final DriveTrain driveTrain, final VisionTargetTracker vision) {
 		this.driveTrain = driveTrain;
@@ -18,7 +18,7 @@ public class MoveToVisionTarget extends Command {
 
 	@Override
 	protected void execute() {
-		final double Kp = .156;
+		final double Kp = .02;
 
 		double speed = MAX_SPEED * vision.distanceFromTarget() / MAX_DISTANCE;
 		if (speed > MAX_SPEED)

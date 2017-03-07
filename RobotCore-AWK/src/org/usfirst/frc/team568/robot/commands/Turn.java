@@ -36,9 +36,9 @@ public class Turn extends Command {
 	protected void execute() {
 		SmartDashboard.putNumber("GYRO", ref.getAngle());
 		if (degrees > 0) {
-			drive.turnRight(.9);
+			drive.turnRight(.3);
 		} else if (degrees < 0) {
-			drive.turnLeft(.9);
+			drive.turnLeft(.3);
 
 		} else {
 			drive.halt();

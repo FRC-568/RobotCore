@@ -48,7 +48,7 @@ public class DriveTrain extends Subsystem {
 		rightFront.setInverted(false);
 		rightBack.setInverted(false);
 
-		myDrive.arcadeDrive((driveStick1.getRawAxis(1)), (-driveStick1.getRawAxis(4) * .5));
+		myDrive.arcadeDrive((driveStick1.getRawAxis(1) * 1), (-driveStick1.getRawAxis(4) * .6));
 
 	}
 
@@ -62,7 +62,7 @@ public class DriveTrain extends Subsystem {
 		rightFront.setInverted(true);
 		rightBack.setInverted(true);
 
-		final double Kp = .0156;
+		final double Kp = .02;
 
 		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
 

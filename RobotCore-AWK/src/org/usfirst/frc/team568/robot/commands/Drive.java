@@ -19,7 +19,7 @@ public class Drive extends Command {
 	ReferenceFrame2 ref;
 
 	public Drive(double distance, double speed) {
-		CM = distance - (15);
+		CM = ref.motorEncoder.getDistance() + (distance);
 		this.speed = speed;
 
 		ref = Robot.getInstance().referanceFrame2;
@@ -34,12 +34,9 @@ public class Drive extends Command {
 
 	@Override
 	protected void initialize() {
-		// TODO Auto-generated method stub
 		drive = Robot.getInstance().driveTrain;
 
 		timer = new Timer();
-		// CM = SmartDashboard.getNumber("Centimeters",0);
-		// speed = SmartDashboard.getNumber("speed", 0);
 		timer.reset();
 		timer.start();
 		ref.motorEncoder.reset();
@@ -53,8 +50,6 @@ public class Drive extends Command {
 		drive.forwardWithGyro(speed);
 		SmartDashboard.putNumber("GYRO", ref.getAngle());
 
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -62,7 +57,7 @@ public class Drive extends Command {
 		System.out.println("GotHere");
 		System.out.println(Robot.getInstance().imu.getAngle());
 		ref.DistanceTraveled();
-		if (ref.motorEncoder.getDistance() > CM) {
+		if (Math.abs(ref.motorEncoder.getDistance()) > CM) {
 
 			return true;
 		}
@@ -75,7 +70,7 @@ public class Drive extends Command {
 	@Override
 	protected void end() {
 		drive.halt();
-		Timer.delay(1);
+		Timer.delay(2);
 		// TODO Auto-generated method stub
 
 	}
