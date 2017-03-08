@@ -24,8 +24,10 @@ public class MoveToVisionTarget extends Command {
 		if (speed > MAX_SPEED)
 			speed = MAX_SPEED;
 
-		if (vision.getAngle() <= 1 && vision.getAngle() >= -1)
-			driveTrain.setSpeed(speed, speed);
+		if (vision.getAngle() <= 2 && vision.getAngle() >= -2) {
+			// driveTrain.setSpeed(speed, speed);
+		}
+
 		else {
 			double error = vision.getAngle() * Kp;
 			driveTrain.setSpeed(speed - error, speed + error);
@@ -35,7 +37,12 @@ public class MoveToVisionTarget extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		return false;
+		if (vision.getAngle() <= 2 && vision.getAngle() >= -2) {
+			return true;
+		} else {
+			return false;
+		}
+
 	}
 
 }

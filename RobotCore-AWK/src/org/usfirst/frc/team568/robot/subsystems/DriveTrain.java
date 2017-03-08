@@ -62,7 +62,7 @@ public class DriveTrain extends Subsystem {
 		rightFront.setInverted(true);
 		rightBack.setInverted(true);
 
-		final double Kp = .02;
+		final double Kp = .015;
 
 		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
 

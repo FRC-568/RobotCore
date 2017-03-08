@@ -13,6 +13,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public final class VisionTargetTracker extends Subsystem {
 	public static final double OFFSET_TO_FRONT = 0;
@@ -90,6 +91,7 @@ public final class VisionTargetTracker extends Subsystem {
 				// System.out.println("Angle: " + angleToGoal);
 			}
 		}
+		SmartDashboard.putNumber("angleToGoal", angleToGoal);
 		return angleToGoal;
 	}
 

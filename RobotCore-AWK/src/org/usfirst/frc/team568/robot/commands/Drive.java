@@ -19,10 +19,9 @@ public class Drive extends Command {
 	ReferenceFrame2 ref;
 
 	public Drive(double distance, double speed) {
+		ref = Robot.getInstance().referanceFrame2;
 		CM = ref.motorEncoder.getDistance() + (distance);
 		this.speed = speed;
-
-		ref = Robot.getInstance().referanceFrame2;
 
 	}
 
@@ -57,7 +56,7 @@ public class Drive extends Command {
 		System.out.println("GotHere");
 		System.out.println(Robot.getInstance().imu.getAngle());
 		ref.DistanceTraveled();
-		if (Math.abs(ref.motorEncoder.getDistance()) > CM) {
+		if (ref.motorEncoder.getDistance() > CM) {
 
 			return true;
 		}
