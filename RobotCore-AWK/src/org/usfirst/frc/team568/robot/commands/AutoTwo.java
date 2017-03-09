@@ -4,6 +4,7 @@ import org.usfirst.frc.team568.robot.Robot;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 
 public class AutoTwo extends CommandGroup {
 	Shooter shooter;
@@ -15,11 +16,9 @@ public class AutoTwo extends CommandGroup {
 		addSequential(new MoveToVisionTarget(Robot.getInstance().driveTrain, Robot.getInstance().gearTracker));
 		addSequential(new Drive(135, .4));
 		addSequential(Robot.getInstance().gearBox.openCommand());
+		addSequential(new WaitCommand(1));
 		addSequential(new Drive(-50, -.2));
-		// addSequential(new DriveForTime(1, -.4,
-		// Robot.getInstance().driveTrain));
 		addSequential(Robot.getInstance().gearBox.closeCommand());
-		// addSequential(new BallShooterandMixer());
 
 	}
 

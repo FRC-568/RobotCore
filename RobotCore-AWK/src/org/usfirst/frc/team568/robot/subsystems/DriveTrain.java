@@ -69,7 +69,7 @@ public class DriveTrain extends Subsystem {
 		if (Robot.getInstance().referanceFrame2.getAngle() <= 3 && Robot.getInstance().referanceFrame2.getAngle() >= -3)
 			myDrive.tankDrive(speed, speed, false);
 		else
-			myDrive.tankDrive(speed - error, speed + error, false);
+			myDrive.tankDrive(speed + error, speed - error, false);
 	}
 
 	public void reverseWithGyro(double speed) {
@@ -107,14 +107,11 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void turnLeft(double speed) {
+
 		myDrive.tankDrive(-speed, speed, false);
 	}
 
 	public void turnRight(double speed) {
-		leftFront.setInverted(true);
-		leftBack.setInverted(true);
-		rightFront.setInverted(true);
-		rightBack.setInverted(true);
 
 		myDrive.tankDrive(speed, -speed, false);
 	}

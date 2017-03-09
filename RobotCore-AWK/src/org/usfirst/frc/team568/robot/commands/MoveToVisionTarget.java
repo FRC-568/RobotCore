@@ -25,7 +25,7 @@ public class MoveToVisionTarget extends Command {
 			speed = MAX_SPEED;
 
 		if (vision.getAngle() <= 2 && vision.getAngle() >= -2) {
-			// driveTrain.setSpeed(speed, speed);
+			driveTrain.setSpeed(speed, speed);
 		}
 
 		else {

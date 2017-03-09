@@ -17,11 +17,13 @@ public class Drive extends Command {
 	boolean forward;
 	double CM;
 	ReferenceFrame2 ref;
+	double sign;
 
 	public Drive(double distance, double speed) {
 		ref = Robot.getInstance().referanceFrame2;
 		CM = ref.motorEncoder.getDistance() + (distance);
 		this.speed = speed;
+		sign = distance;
 
 	}
 
@@ -53,16 +55,16 @@ public class Drive extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		System.out.println("GotHere");
-		System.out.println(Robot.getInstance().imu.getAngle());
-		ref.DistanceTraveled();
-		if (ref.motorEncoder.getDistance() > CM) {
-
-			return true;
-		}
-
-		else {
-			return false;
+		if (sign > 0) {
+			if (ref.motorEncoder.getDistance() > CM)
+				return true;
+			else
+				return false;
+		} else {
+			if (ref.motorEncoder.getDistance() < CM)
+				return true;
+			else
+				return false;
 		}
 	}
 
