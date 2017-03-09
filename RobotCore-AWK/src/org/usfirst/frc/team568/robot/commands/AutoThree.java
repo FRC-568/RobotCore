@@ -12,8 +12,7 @@ public class AutoThree extends CommandGroup {
 
 		addSequential(new Turn(56));
 
-		// addSequential(new MoveToVisionTarget(Robot.getInstance().driveTrain,
-		// Robot.getInstance().gearTracker));
+		addSequential(new MoveToVisionTarget(Robot.getInstance().driveTrain, Robot.getInstance().gearTracker));
 
 		addSequential(new Drive(135, .4));
 		addSequential(Robot.getInstance().gearBox.openCommand());

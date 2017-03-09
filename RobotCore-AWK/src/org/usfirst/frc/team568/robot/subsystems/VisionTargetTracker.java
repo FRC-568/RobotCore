@@ -20,7 +20,7 @@ public final class VisionTargetTracker extends Subsystem {
 	public static final int CAMERA_WIDTH = 320; // 640;
 	public static final int CAMERA_HEIGHT = 240; // 480;
 	public static final double DISTANCE_CONSTANT = 5760; // 5738;
-	public static final double WIDTH_BETWEEN_TARGET = 8.5;
+	public static final double WIDTH_BETWEEN_TARGET = 8.5; // inches
 
 	public final String cameraName;
 	public final UsbCamera camera;
@@ -104,7 +104,7 @@ public final class VisionTargetTracker extends Subsystem {
 
 			@Override
 			protected void execute() {
-				// processImage();
+				processImage();
 			}
 
 			@Override
