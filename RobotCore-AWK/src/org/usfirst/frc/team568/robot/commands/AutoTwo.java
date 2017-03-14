@@ -11,13 +11,13 @@ public class AutoTwo extends CommandGroup {
 
 	public AutoTwo() {
 		addSequential(Robot.getInstance().gearBox.closeCommand());
-		addSequential(new Drive(300, .4));
-		addSequential(new Turn(-30));
+		addSequential(new Drive(79, .3));
+		addSequential(new Turn(-40));
 		addSequential(new MoveToVisionTarget(Robot.getInstance().driveTrain, Robot.getInstance().gearTracker));
-		addSequential(new Drive(135, .4));
+		addSequential(new Drive(48, .3));
 		addSequential(Robot.getInstance().gearBox.openCommand());
-		addSequential(new WaitCommand(1));
-		addSequential(new Drive(-50, -.2));
+		addSequential(new WaitCommand(2));
+		addSequential(new Drive(-24, -.2));
 		addSequential(Robot.getInstance().gearBox.closeCommand());
 
 	}

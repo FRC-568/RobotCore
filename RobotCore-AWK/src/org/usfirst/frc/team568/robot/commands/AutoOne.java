@@ -9,10 +9,10 @@ public class AutoOne extends CommandGroup {
 
 	public AutoOne() {
 		addSequential(Robot.getInstance().gearBox.closeCommand());
-		addSequential(new Drive(320, .2));
+		addSequential(new Drive(110 - 24, .3));
 		addSequential(Robot.getInstance().gearBox.openCommand());
-		addSequential(new WaitCommand(1));
-		addSequential(new Drive(-100, -.2));
+		addSequential(new WaitCommand(1.5));
+		addSequential(new Drive(-10, -.2));
 		addSequential(Robot.getInstance().gearBox.closeCommand());
 	}
 

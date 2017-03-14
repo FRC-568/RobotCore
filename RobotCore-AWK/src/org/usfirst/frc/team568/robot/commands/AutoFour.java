@@ -8,7 +8,7 @@ public class AutoFour extends CommandGroup {
 
 	public AutoFour() {
 		addSequential(Robot.getInstance().gearBox.closeCommand());
-		addSequential(new Drive(340, .4));
+		addSequential(new Drive(70, .3));
 
 		// I added 20 extra ticks to go forward so get rid of them when you back
 		// to gear center auto

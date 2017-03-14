@@ -15,13 +15,13 @@ public class Drive extends Command {
 	double speed;
 	double delay;
 	boolean forward;
-	double CM;
+	double inch;
 	ReferenceFrame2 ref;
 	double sign;
 
 	public Drive(double distance, double speed) {
 		ref = Robot.getInstance().referanceFrame2;
-		CM = ref.motorEncoder.getDistance() + (distance);
+		inch = ref.motorEncoder.getDistance() + (distance);
 		this.speed = speed;
 		sign = distance;
 
@@ -30,7 +30,7 @@ public class Drive extends Command {
 	public Drive() {
 		ref = Robot.getInstance().referanceFrame2;
 		SmartDashboard.getNumber("Speed", 0);
-		CM = 0;
+		inch = 0;
 	}
 
 	@Override
@@ -42,6 +42,7 @@ public class Drive extends Command {
 		timer.start();
 		ref.motorEncoder.reset();
 		ref.reset();
+		// CM = SmartDashboard.getNumber("Centimeters", 0);
 
 	}
 
@@ -56,12 +57,12 @@ public class Drive extends Command {
 	@Override
 	protected boolean isFinished() {
 		if (sign > 0) {
-			if (ref.motorEncoder.getDistance() > CM)
+			if (ref.motorEncoder.getDistance() > inch)
 				return true;
 			else
 				return false;
 		} else {
-			if (ref.motorEncoder.getDistance() < CM)
+			if (ref.motorEncoder.getDistance() < inch)
 				return true;
 			else
 				return false;
@@ -71,7 +72,7 @@ public class Drive extends Command {
 	@Override
 	protected void end() {
 		drive.halt();
-		Timer.delay(2);
+		Timer.delay(.5);
 		// TODO Auto-generated method stub
 
 	}

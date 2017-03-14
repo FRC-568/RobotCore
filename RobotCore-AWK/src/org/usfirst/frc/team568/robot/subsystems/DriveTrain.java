@@ -62,11 +62,11 @@ public class DriveTrain extends Subsystem {
 		rightFront.setInverted(true);
 		rightBack.setInverted(true);
 
-		final double Kp = .015;
+		final double Kp = .135;
 
 		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
 
-		if (Robot.getInstance().referanceFrame2.getAngle() <= 3 && Robot.getInstance().referanceFrame2.getAngle() >= -3)
+		if (Robot.getInstance().referanceFrame2.getAngle() <= 1 && Robot.getInstance().referanceFrame2.getAngle() >= -1)
 			myDrive.tankDrive(speed, speed, false);
 		else
 			myDrive.tankDrive(speed + error, speed - error, false);

@@ -46,7 +46,7 @@ public class ReferenceFrame2 extends Subsystem {
 		threshold = .03;
 
 		motorEncoder = new Encoder(RobotMap.encoderYellow, RobotMap.encoderWhite, false, EncodingType.k4X);
-		motorEncoder.setDistancePerPulse(.04);
+		motorEncoder.setDistancePerPulse(.01);
 
 		gyro = new ADXRS450_Gyro();
 		acel = new BuiltInAccelerometer(Range.k8G);

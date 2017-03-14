@@ -11,6 +11,7 @@ import org.opencv.imgproc.Imgproc;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VisionProcessor {
 	public static final double OFFSET_TO_FRONT = 0;
@@ -113,9 +114,11 @@ public class VisionProcessor {
 				angleToGoal = Math.atan(distanceFromCenterInch / distanceFromTarget());
 				angleToGoal = Math.toDegrees(angleToGoal);
 				// prints angle
-				// System.out.println("Angle: " + angleToGoal);
+				System.out.println("Angle: " + angleToGoal);
+				SmartDashboard.putNumber("GearAngle", angleToGoal);
 			}
 		}
+
 		return angleToGoal;
 	}
 

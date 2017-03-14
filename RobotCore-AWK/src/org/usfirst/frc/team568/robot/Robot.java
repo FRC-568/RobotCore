@@ -153,6 +153,7 @@ public class Robot extends IterativeRobot {
 		imu.reset();
 		referanceFrame2.reset();
 		visionProcessor.stop();
+		gearBox.close();
 	}
 
 	@Override
