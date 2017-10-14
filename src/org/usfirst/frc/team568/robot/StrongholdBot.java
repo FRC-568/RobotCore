@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Robot extends IterativeRobot {
+public class StrongholdBot extends IterativeRobot {
 
 	int session;
 	Image frame;
@@ -49,8 +49,8 @@ public class Robot extends IterativeRobot {
 
 	// public double EncoderValue;
 
-	protected static Robot instance;
-	public OI oi;
+	protected static StrongholdBot instance;
+	public StrongholdOI oi;
 
 	// AimingPID aim;
 
@@ -73,9 +73,9 @@ public class Robot extends IterativeRobot {
 	 * double tiltErr; double tiltErr2; double tiltPow;
 	 */
 
-	public Robot() {
+	public StrongholdBot() {
 		instance = this;
-		oi = new OI();
+		oi = new StrongholdOI();
 		// aim = new AimingPID(0.001, 0, 0);
 
 		arcadeDrive = new ArcadeDrive();
@@ -95,9 +95,12 @@ public class Robot extends IterativeRobot {
 		referanceFrame2.calabrateGyro();
 		referanceFrame2.reset();
 
+		/* NIVision is now an external dependency - re-enable if needed.
 		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		NIVision.IMAQdxConfigureGrab(session);
+		*/
+		
 		/*
 		 * SmartDashboard.putNumber("P", 2.00); SmartDashboard.putNumber("I",
 		 * 0.700); SmartDashboard.putNumber("D", 0);
@@ -186,11 +189,13 @@ public class Robot extends IterativeRobot {
 
 		Scheduler.getInstance().run();
 
+		/* NIVision is now an external dependency - will rework if needed in the future
 		NIVision.IMAQdxStartAcquisition(session);
 		NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
 		NIVision.IMAQdxGrab(session, frame, 1);
 		NIVision.imaqDrawShapeOnImage(frame, frame, rect, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
 		CameraServer.getInstance().setImage(frame);
+		*/
 
 		/*
 		 * SmartDashboard.putNumber("POS X", referanceFrame2.getPos().x);
@@ -254,7 +259,7 @@ public class Robot extends IterativeRobot {
 
 	}
 
-	public static Robot getInstance() {
+	public static StrongholdBot getInstance() {
 		return instance;
 	}
 }

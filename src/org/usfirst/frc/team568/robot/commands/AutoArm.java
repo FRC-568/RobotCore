@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.StrongholdBot;
 import org.usfirst.frc.team568.robot.subsystems.Arms;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -12,7 +12,7 @@ public class AutoArm extends Command {
 
 	@Override
 	protected void initialize() {
-		arm = Robot.getInstance().arms;
+		arm = StrongholdBot.getInstance().arms;
 		timer = new Timer();
 		timer.reset();
 		timer.start();

@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.StrongholdBot;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -15,7 +15,7 @@ public class Shoot extends Command {
 
 	@Override
 	protected void initialize() {
-		shooter = Robot.getInstance().shooter;
+		shooter = StrongholdBot.getInstance().shooter;
 
 		// TODO Auto-generated method stub
 

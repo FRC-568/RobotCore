@@ -1,7 +1,7 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.Robot;
-import org.usfirst.frc.team568.robot.RobotMap;
+import org.usfirst.frc.team568.robot.StrongholdBot;
+import org.usfirst.frc.team568.robot.StrongholdBotMap;
 import org.usfirst.frc.team568.robot.commands.ArmDown;
 import org.usfirst.frc.team568.robot.commands.ArmUP;
 
@@ -18,13 +18,13 @@ public class Arms extends Subsystem {
 
 	public Arms() {
 
-		leftarm = new Relay(RobotMap.spike1);
-		rightarm = new Relay(RobotMap.spike2);
-		topLimmitSwitch = new DigitalInput(RobotMap.topLimmitSwitch);
-		bottomLimmitSwitch = new DigitalInput(RobotMap.bottomLimmitSwitch);
+		leftarm = new Relay(StrongholdBotMap.spike1);
+		rightarm = new Relay(StrongholdBotMap.spike2);
+		topLimmitSwitch = new DigitalInput(StrongholdBotMap.topLimmitSwitch);
+		bottomLimmitSwitch = new DigitalInput(StrongholdBotMap.bottomLimmitSwitch);
 
-		Robot.getInstance().oi.armsUp.whileHeld(new ArmUP());
-		Robot.getInstance().oi.armsDown.whileHeld(new ArmDown());
+		StrongholdBot.getInstance().oi.armsUp.whileHeld(new ArmUP());
+		StrongholdBot.getInstance().oi.armsDown.whileHeld(new ArmDown());
 
 	}
 

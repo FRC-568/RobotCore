@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.StrongholdBot;
 import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -10,7 +10,7 @@ public class ArcadeDriveManual extends Command {
 	// CrateLifter lifter = Robot.getInstance().crateLifter;
 
 	public ArcadeDriveManual() {
-		arcadeDrive = Robot.getInstance().arcadeDrive;
+		arcadeDrive = StrongholdBot.getInstance().arcadeDrive;
 		requires(arcadeDrive);
 
 	}

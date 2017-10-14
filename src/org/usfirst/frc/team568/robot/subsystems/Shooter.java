@@ -1,7 +1,7 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.Robot;
-import org.usfirst.frc.team568.robot.RobotMap;
+import org.usfirst.frc.team568.robot.StrongholdBot;
+import org.usfirst.frc.team568.robot.StrongholdBotMap;
 import org.usfirst.frc.team568.robot.commands.GetBall;
 import org.usfirst.frc.team568.robot.commands.Shoot;
 import org.usfirst.frc.team568.robot.commands.StopShoot;
@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends Subsystem {
-	private final Robot robot;
+	private final StrongholdBot robot;
 	public SpeedController shooter;
 
 	public SpeedController leftTilt;
@@ -29,19 +29,19 @@ public class Shooter extends Subsystem {
 	public DigitalInput lowerLimmitSwitch;
 
 	public Shooter() {
-		robot = Robot.getInstance();
+		robot = StrongholdBot.getInstance();
 
-		shooter = new Victor(RobotMap.shooterLeftPort);
+		shooter = new Victor(StrongholdBotMap.shooterLeftPort);
 		shooter.setInverted(true);
 
-		leftTilt = new Talon(RobotMap.leftTiltPort);
-		rightTilt = new Talon(RobotMap.rightTiltPort);
+		leftTilt = new Talon(StrongholdBotMap.leftTiltPort);
+		rightTilt = new Talon(StrongholdBotMap.rightTiltPort);
 		leftTilt.setInverted(true);
 
-		nudge = new Servo(RobotMap.nudge);
+		nudge = new Servo(StrongholdBotMap.nudge);
 
-		upperLimmitSwitch = new DigitalInput(RobotMap.upperLimmitSwitch);
-		lowerLimmitSwitch = new DigitalInput(RobotMap.lowerLimmitSwitch);
+		upperLimmitSwitch = new DigitalInput(StrongholdBotMap.upperLimmitSwitch);
+		lowerLimmitSwitch = new DigitalInput(StrongholdBotMap.lowerLimmitSwitch);
 		// TODO Auto-generated constructor stub
 		robot.oi.shootFour.whenPressed(new Shoot());
 		robot.oi.shootFive.whenPressed(new GetBall());

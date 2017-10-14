@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.StrongholdBot;
 import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -17,7 +17,7 @@ public class Drive extends Command {
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
-		drive = Robot.getInstance().arcadeDrive;
+		drive = StrongholdBot.getInstance().arcadeDrive;
 		timer = new Timer();
 		speed = SmartDashboard.getNumber("Speed");
 		delay = SmartDashboard.getNumber("Time?");

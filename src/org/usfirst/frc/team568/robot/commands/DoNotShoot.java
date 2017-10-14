@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.Robot;
+import org.usfirst.frc.team568.robot.StrongholdBot;
 import org.usfirst.frc.team568.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -9,7 +9,7 @@ public class DoNotShoot extends Command {
 	Shooter shooter;
 
 	public DoNotShoot() {
-		shooter = Robot.getInstance().shooter;
+		shooter = StrongholdBot.getInstance().shooter;
 		// requires(shooter);
 		// TODO Auto-generated constructor stub
 	}

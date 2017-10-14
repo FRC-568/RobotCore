@@ -1,7 +1,7 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.Robot;
-import org.usfirst.frc.team568.robot.RobotMap;
+import org.usfirst.frc.team568.robot.StrongholdBot;
+import org.usfirst.frc.team568.robot.StrongholdBotMap;
 import org.usfirst.frc.team568.robot.commands.ArcadeDriveManual;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class ArcadeDrive extends Subsystem {
-	public final Robot robot;
+	public final StrongholdBot robot;
 
 	protected SpeedController leftFront, leftBack, rightFront, rightBack;
 
@@ -28,8 +28,8 @@ public class ArcadeDrive extends Subsystem {
 	double Kp;
 
 	public ArcadeDrive() {
-		this.robot = Robot.getInstance();
-		ref = Robot.getInstance().referanceFrame2;
+		this.robot = StrongholdBot.getInstance();
+		ref = StrongholdBot.getInstance().referanceFrame2;
 		// sHeading = ref.getHeading();
 
 		// leftFront = new Victor(RobotMap.leftFrontMotor);
@@ -37,10 +37,10 @@ public class ArcadeDrive extends Subsystem {
 		// rightFront = new Victor(RobotMap.rightFrontMotor);
 		// rightBack = new Victor(RobotMap.rightBackMotor);
 
-		leftFront = new VictorSP(RobotMap.leftFrontMotor);
-		leftBack = new VictorSP(RobotMap.leftBackMotor);
-		rightFront = new VictorSP(RobotMap.rightFrontMotor);
-		rightBack = new VictorSP(RobotMap.rightBackMotor);
+		leftFront = new VictorSP(StrongholdBotMap.leftFrontMotor);
+		leftBack = new VictorSP(StrongholdBotMap.leftBackMotor);
+		rightFront = new VictorSP(StrongholdBotMap.rightFrontMotor);
+		rightBack = new VictorSP(StrongholdBotMap.rightBackMotor);
 
 		leftFront.setInverted(true);
 		leftBack.setInverted(true);
@@ -74,10 +74,10 @@ public class ArcadeDrive extends Subsystem {
 		}
 
 		Kp = .015;
-		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
+		double error = StrongholdBot.getInstance().referanceFrame2.getAngle() * Kp;
 
-		if (Robot.getInstance().referanceFrame2.getAngle() <= 5
-				&& Robot.getInstance().referanceFrame2.getAngle() >= -5) {
+		if (StrongholdBot.getInstance().referanceFrame2.getAngle() <= 5
+				&& StrongholdBot.getInstance().referanceFrame2.getAngle() >= -5) {
 			leftFront.set(speed);
 			leftBack.set(speed);
 			rightFront.set(speed);
@@ -99,11 +99,11 @@ public class ArcadeDrive extends Subsystem {
 		}
 
 		Kp = .015;
-		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
+		double error = StrongholdBot.getInstance().referanceFrame2.getAngle() * Kp;
 		speed = -speed;
 
-		if (Robot.getInstance().referanceFrame2.getAngle() <= 5
-				&& Robot.getInstance().referanceFrame2.getAngle() >= -5) {
+		if (StrongholdBot.getInstance().referanceFrame2.getAngle() <= 5
+				&& StrongholdBot.getInstance().referanceFrame2.getAngle() >= -5) {
 			leftFront.set(speed);
 			leftBack.set(speed);
 			rightFront.set(speed);

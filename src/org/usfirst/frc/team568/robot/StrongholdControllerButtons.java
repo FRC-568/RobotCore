@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot;
 
-public class ControllerButtons {
+public class StrongholdControllerButtons {
 
 	public static int joy1B1 = 1;
 	public static int joy1B2 = 2;
