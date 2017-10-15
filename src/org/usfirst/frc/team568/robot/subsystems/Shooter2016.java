@@ -1,5 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
+import org.usfirst.frc.team568.robot.PortMapper;
 import org.usfirst.frc.team568.robot.commands.GetBall;
 import org.usfirst.frc.team568.robot.commands.Shoot2016;
 import org.usfirst.frc.team568.robot.commands.StopShoot;
@@ -7,7 +8,6 @@ import org.usfirst.frc.team568.robot.commands.TiltDownwards;
 import org.usfirst.frc.team568.robot.commands.TiltUpwards;
 import org.usfirst.frc.team568.robot.commands.Nudge;
 import org.usfirst.frc.team568.robot.stronghold.Robot;
-import org.usfirst.frc.team568.robot.stronghold.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
@@ -15,10 +15,9 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Shooter2016 extends Subsystem {
+public class Shooter2016 extends SubsystemBase {
 	private final Robot robot;
 	public SpeedController shooter;
 
@@ -28,20 +27,21 @@ public class Shooter2016 extends Subsystem {
 	public DigitalInput upperLimmitSwitch;
 	public DigitalInput lowerLimmitSwitch;
 
-	public Shooter2016() {
+	public Shooter2016(PortMapper ports) {
+		super(ports);
 		robot = Robot.getInstance();
 
-		shooter = new Victor(RobotMap.shooterLeftPort);
+		shooter = new Victor(port("shooterLeftPort"));
 		shooter.setInverted(true);
 
-		leftTilt = new Talon(RobotMap.leftTiltPort);
-		rightTilt = new Talon(RobotMap.rightTiltPort);
+		leftTilt = new Talon(port("leftTiltPort"));
+		rightTilt = new Talon(port("rightTiltPort"));
 		leftTilt.setInverted(true);
 
-		nudge = new Servo(RobotMap.nudge);
+		nudge = new Servo(port("nudge"));
 
-		upperLimmitSwitch = new DigitalInput(RobotMap.upperLimmitSwitch);
-		lowerLimmitSwitch = new DigitalInput(RobotMap.lowerLimmitSwitch);
+		upperLimmitSwitch = new DigitalInput(port("upperLimmitSwitch"));
+		lowerLimmitSwitch = new DigitalInput(port("lowerLimmitSwitch"));
 		// TODO Auto-generated constructor stub
 		robot.oi.shootFour.whenPressed(new Shoot2016());
 		robot.oi.shootFive.whenPressed(new GetBall());

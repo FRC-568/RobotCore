@@ -8,9 +8,8 @@ import edu.wpi.first.wpilibj.command.Command;
 public class BallShooterandMixer extends Command {
 	Shooter2017 shooter;
 
-	public BallShooterandMixer() {
-		// TODO Auto-generated constructor stub
-		shooter = new Shooter2017();
+	public BallShooterandMixer(Shooter2017 shooter) {
+		this.shooter = shooter;
 	}
 
 	@Override
@@ -43,13 +42,6 @@ public class BallShooterandMixer extends Command {
 	@Override
 	protected void end() {
 		shooter.shootMotor.set(0);
-	}
-
-	@Override
-	protected void interrupted() {
-
-		// TODO Auto-generated method stub
-
 	}
 
 }

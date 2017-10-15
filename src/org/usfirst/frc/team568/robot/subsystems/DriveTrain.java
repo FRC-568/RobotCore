@@ -1,16 +1,15 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
+import org.usfirst.frc.team568.robot.PortMapper;
 import org.usfirst.frc.team568.robot.commands.ArcadeDriveManual2017;
 import org.usfirst.frc.team568.robot.steamworks.Robot;
-import org.usfirst.frc.team568.robot.steamworks.RobotMap;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.VictorSP;
-import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class DriveTrain extends Subsystem {
+public class DriveTrain extends SubsystemBase {
 	public final Robot robot;
 
 	protected SpeedController leftFront;
@@ -22,14 +21,16 @@ public class DriveTrain extends Subsystem {
 	protected Joystick driveStick1;
 	ReferenceFrame2017 ref;
 
-	public DriveTrain() {
+	public DriveTrain(PortMapper ports) {
+		super(ports);
+		
 		this.robot = Robot.getInstance();
 		ref = Robot.getInstance().referanceFrame2;
 
-		leftFront = new VictorSP(RobotMap.leftFrontMotor);
-		leftBack = new VictorSP(RobotMap.leftBackMotor);
-		rightFront = new VictorSP(RobotMap.rightFrontMotor);
-		rightBack = new VictorSP(RobotMap.rightBackMotor);
+		leftFront = new VictorSP(port("leftFrontMotor"));
+		leftBack = new VictorSP(port("leftBackMotor"));
+		rightFront = new VictorSP(port("rightFrontMotor"));
+		rightBack = new VictorSP(port("rightBackMotor"));
 
 		leftFront.setInverted(false);
 		leftBack.setInverted(false);
@@ -38,7 +39,7 @@ public class DriveTrain extends Subsystem {
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 
-		driveStick1 = new Joystick(RobotMap.joy1Pos);
+		driveStick1 = new Joystick(0);
 
 	}
 

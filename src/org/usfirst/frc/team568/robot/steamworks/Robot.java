@@ -1,6 +1,7 @@
 package org.usfirst.frc.team568.robot.steamworks;
 
 import org.usfirst.frc.team568.grip.VisionProcessor;
+import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.robot.commands.ClimbWithWinch;
 import org.usfirst.frc.team568.robot.commands.Shoot2017;
 import org.usfirst.frc.team568.robot.commands.UnClimb;
@@ -17,13 +18,12 @@ import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 import com.analog.adis16448.frc.ADIS16448_IMU;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Robot extends IterativeRobot {
+public class Robot extends RobotBase {
 
 	int session;
 	Timer time;
@@ -53,16 +53,45 @@ public class Robot extends IterativeRobot {
 
 	public Robot() {
 		instance = this;
+
+		port("leftFrontMotor", 1);
+		port("leftBackMotor", 2);
+		port("rightFrontMotor", 3);
+		port("rightBackMotor", 4);
+
+		port("joy1Pos", 0);
+		port("joy2Pos", 1);
+
+		port("gearPneumatic1", 0);
+		port("gearPneumatic2", 1);
+		port("gearDetector", 7);
+		port("laser1", 5);
+		port("encoderYellow", 0);
+		port("encoderWhite", 1);
+
+		port("ropeClampIn", 2);
+		port("ropeClampOut", 6);
+		//port("bottomClampIn", 2);
+		port("reacherIn", 3);
+		port("reacherOut", 4);
+		port("bottomClampOut", 5);
+
+		port("shooter", 6);
+		port("gateServo", 7);
+		port("climber", 5);
+		port("ballWranglerIn", 3);
+		port("ballWranglerOut", 4);
+		
 		oi = new OI();
 		gearTracker = new VisionTargetTracker(1); // Camera 1
 		visionProcessor = new VisionProcessor(1); // Camera 1
-		driveTrain = new DriveTrain();
-		winchClimber = new WinchClimber();
-		shooter = new Shooter2017();
-		gearBox = new GearBox();
-		ropeCollector = new RopeCollector();
+		driveTrain = new DriveTrain(this);
+		winchClimber = new WinchClimber(this);
+		shooter = new Shooter2017(this);
+		gearBox = new GearBox(this);
+		ropeCollector = new RopeCollector(this);
 		gearLiftTracker = new VisionTargetTracker();
-		referanceFrame2 = new ReferenceFrame2017();
+		referanceFrame2 = new ReferenceFrame2017(this);
 		time = new Timer();
 		imu = new ADIS16448_IMU();
 		compressor = new Compressor();

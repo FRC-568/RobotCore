@@ -1,19 +1,21 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
+import org.usfirst.frc.team568.robot.PortMapper;
 import org.usfirst.frc.team568.robot.steamworks.Robot;
-import org.usfirst.frc.team568.robot.steamworks.RobotMap;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class RopeCollector {
+public class RopeCollector extends SubsystemBase {
 
 	public Solenoid ropeClampIn;
 	public Solenoid ropeClampOut;
 
-	public RopeCollector() {
-		ropeClampIn = new Solenoid(RobotMap.ropeClampIn);
-		ropeClampOut = new Solenoid(RobotMap.ropeClampOut);
+	public RopeCollector(PortMapper ports) {
+		super(ports);
+		
+		ropeClampIn = new Solenoid(port("ropeClampIn"));
+		ropeClampOut = new Solenoid(port("ropeClampOut"));
 
 		Robot.getInstance().oi.openRopeClamp.whenPressed(this.openCommand());
 		Robot.getInstance().oi.closeRopeClamp.whenPressed(this.closeCommand());

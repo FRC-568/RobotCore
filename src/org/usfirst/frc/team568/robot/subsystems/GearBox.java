@@ -1,31 +1,29 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.steamworks.RobotMap;
+import org.usfirst.frc.team568.robot.PortMapper;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class GearBox extends Subsystem {
+public class GearBox extends SubsystemBase {
 	public Solenoid gearPneumatic1;
 	public Solenoid gearPneumatic2;
 
 	public DigitalInput gearDetector;
 
-	public GearBox() {
-		gearPneumatic1 = new Solenoid(RobotMap.gearPneumatic1);
-		gearPneumatic2 = new Solenoid(RobotMap.gearPneumatic2);
-
-		gearDetector = new DigitalInput(RobotMap.gearDetector);
-
+	public GearBox(PortMapper ports) {
+		super(ports);
+		
+		gearPneumatic1 = new Solenoid(port("gearPneumatic1"));
+		gearPneumatic2 = new Solenoid(port("gearPneumatic2"));
+		gearDetector = new DigitalInput(port("gearDetector"));
 	}
 
 	public void open() {
 		gearPneumatic1.set(false);
 		gearPneumatic2.set(true);
-
 	}
 
 	public void close() {

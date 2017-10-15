@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.steamworks.RobotMap;
+import org.usfirst.frc.team568.robot.PortMapper;
 import org.usfirst.frc.team568.util.Vector2;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -10,13 +10,12 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.filters.Filter;
 import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ReferenceFrame2017 extends Subsystem {
+public class ReferenceFrame2017 extends SubsystemBase {
 	public int calibrationSamples = 250;
 	public int calibrationSampleRate = 20;
 
@@ -38,14 +37,15 @@ public class ReferenceFrame2017 extends Subsystem {
 	double ticksPerRotation = 360;
 	double wheelDiameterInCM = 15;
 
-	public ReferenceFrame2017() {
+	public ReferenceFrame2017(PortMapper ports) {
+		super(ports);
 
 		acceleration = Vector2.zero;
 		velocity = Vector2.zero;
 		position = Vector2.zero;
 		threshold = .03;
 
-		motorEncoder = new Encoder(RobotMap.encoderYellow, RobotMap.encoderWhite, false, EncodingType.k4X);
+		motorEncoder = new Encoder(port("encoderYellow"), port("encoderWhite"), false, EncodingType.k4X);
 		motorEncoder.setDistancePerPulse(.01);
 
 		gyro = new ADXRS450_Gyro();

@@ -1,27 +1,27 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
+import org.usfirst.frc.team568.robot.PortMapper;
 import org.usfirst.frc.team568.robot.commands.ArmDown;
 import org.usfirst.frc.team568.robot.commands.ArmUP;
 import org.usfirst.frc.team568.robot.stronghold.Robot;
-import org.usfirst.frc.team568.robot.stronghold.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class Arms extends Subsystem {
+public class Arms extends SubsystemBase {
 
 	Relay leftarm;
 	Relay rightarm;
 	public DigitalInput topLimmitSwitch;
 	public DigitalInput bottomLimmitSwitch;
 
-	public Arms() {
-
-		leftarm = new Relay(RobotMap.spike1);
-		rightarm = new Relay(RobotMap.spike2);
-		topLimmitSwitch = new DigitalInput(RobotMap.topLimmitSwitch);
-		bottomLimmitSwitch = new DigitalInput(RobotMap.bottomLimmitSwitch);
+	public Arms(PortMapper ports) {
+		super(ports);
+		
+		leftarm = new Relay(port("spike1"));
+		rightarm = new Relay(port("spike2"));
+		topLimmitSwitch = new DigitalInput(port("topLimmitSwitch"));
+		bottomLimmitSwitch = new DigitalInput(port("bottomLimmitSwitch"));
 
 		Robot.getInstance().oi.armsUp.whileHeld(new ArmUP());
 		Robot.getInstance().oi.armsDown.whileHeld(new ArmDown());

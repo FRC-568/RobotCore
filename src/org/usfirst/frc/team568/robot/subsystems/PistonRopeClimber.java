@@ -3,9 +3,8 @@ package org.usfirst.frc.team568.robot.subsystems;
 import org.usfirst.frc.team568.robot.PortMapper;
 
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class PistonRopeClimber extends Subsystem {
+public class PistonRopeClimber extends SubsystemBase {
 	public State currentState;
 	public final Clamp topClamp;
 	public final Clamp bottomClamp;
@@ -14,11 +13,12 @@ public class PistonRopeClimber extends Subsystem {
 	private final Solenoid reacherRetractor;
 	private boolean _isReaching;
 
-	public PistonRopeClimber(PortMapper map) {
-		topClamp = new Clamp(map.getPort("topClampOut"), map.getPort("topClampIn"));
-		bottomClamp = new Clamp(map.getPort("bottomClampOut"), map.getPort("bottomClampIn"));
-		reacherExtender = new Solenoid(map.getPort("reacherOut"));
-		reacherRetractor = new Solenoid(map.getPort("reacherIn"));
+	public PistonRopeClimber(PortMapper ports) {
+		super(ports);
+		topClamp = new Clamp(port("topClampOut"), port("topClampIn"));
+		bottomClamp = new Clamp(port("bottomClampOut"), port("bottomClampIn"));
+		reacherExtender = new Solenoid(port("reacherOut"));
+		reacherRetractor = new Solenoid(port("reacherIn"));
 
 		bottomClamp.release();
 		topClamp.release();

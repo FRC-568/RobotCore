@@ -1,13 +1,12 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
+import org.usfirst.frc.team568.robot.PortMapper;
 import org.usfirst.frc.team568.robot.commands.Climb;
 import org.usfirst.frc.team568.robot.steamworks.Robot;
-import org.usfirst.frc.team568.robot.steamworks.RobotMap;
 
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class Climber extends Subsystem {
+public class Climber extends SubsystemBase {
 
 	public Solenoid reacherIn;
 	public Solenoid reacherOut;
@@ -18,14 +17,14 @@ public class Climber extends Subsystem {
 	public boolean isClimbing = false;
 	public State currentState;
 
-	public Climber() {
-
+	public Climber(PortMapper ports) {
+		super(ports);
 		// topClampIn = new Solenoid(RobotMap.topClampIn);
 		// bottomClampIn = new Solenoid(RobotMap.bottomClampIn);
 		// reacherIn = new Solenoid(RobotMap.reacherIn);
 		// topClampOut = new Solenoid(RobotMap.topClampOut);
 		// bottomClampOut = new Solenoid(RobotMap.bottomClampOut);
-		reacherOut = new Solenoid(RobotMap.reacherOut);
+		reacherOut = new Solenoid(port("reacherOut"));
 
 		currentState = State.RELAXED;
 

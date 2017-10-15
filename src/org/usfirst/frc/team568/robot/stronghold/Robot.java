@@ -1,5 +1,6 @@
 package org.usfirst.frc.team568.robot.stronghold;
 
+import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 import org.usfirst.frc.team568.robot.subsystems.Arms;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2016;
@@ -12,14 +13,13 @@ import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
 */
 
-//import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.IterativeRobot;
+//import edu.wpi.first.wpilibj.CameraServer;]
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Robot extends IterativeRobot {
+public class Robot extends RobotBase {
 
 	int session;
 	//Image frame;
@@ -75,12 +75,40 @@ public class Robot extends IterativeRobot {
 
 	public Robot() {
 		instance = this;
+		
+		port("nudge", 8);
+		port("leftFrontMotor", 4);
+		port("leftBackMotor", 5);
+		port("rightFrontMotor", 1);
+		port("rightBackMotor", 2);
+
+		port("upperLimmitSwitch", 3);
+		port("lowerLimmitSwitch", 2);
+		port("topLimmitSwitch", 0);
+		port("bottomLimmitSwitch", 1);
+
+		port("spike2", 1);
+		port("spike1", 0);
+
+		port("joy1Pos", 0);
+		port("joy2Pos", 1);
+		port("joy3Pos", 2);
+		
+		port("CrateBot.leftFront", 0);
+		port("CrateBot.leftBack", 1);
+		port("CrateBot.rightFront", 2);
+		port("CrateBot.rightBack", 4);
+
+		port("CrateBot.brake", 2);
+		port("CrateBot.lifterMotor", 5);
+		port("CrateBot.lowZoneMotor", 8);
+		
 		oi = new OI();
 		// aim = new AimingPID(0.001, 0, 0);
 
-		arcadeDrive = new ArcadeDrive();
-		shooter = new Shooter2016();
-		arms = new Arms();
+		arcadeDrive = new ArcadeDrive(this);
+		shooter = new Shooter2016(this);
+		arms = new Arms(this);
 
 		referanceFrame2 = new ReferenceFrame2016();
 		time = new Timer();
