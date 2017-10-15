@@ -1,28 +1,28 @@
-package org.usfirst.frc.team568.robot;
+package org.usfirst.frc.team568.robot.stronghold;
 
-import org.usfirst.frc.team568.robot.commands.AutoOne;
-import org.usfirst.frc.team568.robot.commands.AutoTwo;
 import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 import org.usfirst.frc.team568.robot.subsystems.Arms;
-import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2;
-import org.usfirst.frc.team568.robot.subsystems.Shooter;
+import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2016;
+import org.usfirst.frc.team568.robot.subsystems.Shooter2016;
 
+/* TODO: replace with OpenCV
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
+*/
 
-import edu.wpi.first.wpilibj.CameraServer;
+//import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class StrongholdBot extends IterativeRobot {
+public class Robot extends IterativeRobot {
 
 	int session;
-	Image frame;
+	//Image frame;
 	double Pan;
 	double Tilt;
 	double BoxSize;
@@ -49,18 +49,18 @@ public class StrongholdBot extends IterativeRobot {
 
 	// public double EncoderValue;
 
-	protected static StrongholdBot instance;
-	public StrongholdOI oi;
+	protected static Robot instance;
+	public OI oi;
 
 	// AimingPID aim;
 
 	public ArcadeDrive arcadeDrive;
 
-	public Shooter shooter;
+	public Shooter2016 shooter;
 
 	public Arms arms;
 
-	public ReferenceFrame2 referanceFrame2;
+	public ReferenceFrame2016 referanceFrame2;
 	Command autonomousCommand;
 
 	/*
@@ -73,16 +73,16 @@ public class StrongholdBot extends IterativeRobot {
 	 * double tiltErr; double tiltErr2; double tiltPow;
 	 */
 
-	public StrongholdBot() {
+	public Robot() {
 		instance = this;
-		oi = new StrongholdOI();
+		oi = new OI();
 		// aim = new AimingPID(0.001, 0, 0);
 
 		arcadeDrive = new ArcadeDrive();
-		shooter = new Shooter();
+		shooter = new Shooter2016();
 		arms = new Arms();
 
-		referanceFrame2 = new ReferenceFrame2();
+		referanceFrame2 = new ReferenceFrame2016();
 		time = new Timer();
 
 	}
@@ -128,37 +128,23 @@ public class StrongholdBot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-
-		if (SmartDashboard.getNumber("Autonomous #") == 1) {
+		int autonomousNumber = (int) SmartDashboard.getNumber("Autonomous #", 1.0);
+		switch(autonomousNumber) {
+		case 1:
 			autonomousCommand = new AutoOne();
-		} else if (SmartDashboard.getNumber("Autonomous #") == 2) {
+			break;
+		case 2:
 			autonomousCommand = new AutoTwo();
+			break;
+		default:
+			return;
 		}
 		referanceFrame2.reset();
-
 		autonomousCommand.start();
-
 	}
 
 	@Override
 	public void autonomousPeriodic() {
-		// SmartDashboard.putNumber("Heading", referanceFrame2.getAngle());
-		/*
-		 * time.reset(); time.start(); if (SmartDashboard.getNumber(
-		 * "Autonomous #") == 1) {
-		 * 
-		 * if (time.get() < .75) { shooter.rightTilt.set(-.5);
-		 * shooter.leftTilt.set(.5); } else { shooter.rightTilt.set(0);
-		 * shooter.leftTilt.set(0); } if (time.get() < 10) {
-		 * 
-		 * arcadeDrive.forwardWithGyro(.6); } else { arcadeDrive.halt(); }
-		 * 
-		 * } else if (SmartDashboard.getNumber("Autonomous #") == 2) { if
-		 * (time.get() < 10) { arcadeDrive.goBackwards(.6); } else {
-		 * arcadeDrive.halt(); }
-		 * 
-		 * }
-		 */
 		Scheduler.getInstance().run();
 	}
 
@@ -167,7 +153,6 @@ public class StrongholdBot extends IterativeRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
-
 	}
 
 	@Override
@@ -252,14 +237,12 @@ public class StrongholdBot extends IterativeRobot {
 
 	}
 
-	// NIVision.IMAQdxStopAcquisition(session);
-
 	@Override
 	public void testPeriodic() {
 
 	}
 
-	public static StrongholdBot getInstance() {
+	public static Robot getInstance() {
 		return instance;
 	}
 }

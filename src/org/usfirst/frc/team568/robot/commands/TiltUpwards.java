@@ -1,12 +1,12 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.StrongholdBot;
-import org.usfirst.frc.team568.robot.subsystems.Shooter;
+import org.usfirst.frc.team568.robot.stronghold.Robot;
+import org.usfirst.frc.team568.robot.subsystems.Shooter2016;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class TiltUpwards extends Command {
-	Shooter shooter;
+	Shooter2016 shooter;
 
 	public TiltUpwards() {
 
@@ -16,7 +16,7 @@ public class TiltUpwards extends Command {
 
 	@Override
 	protected void initialize() {
-		shooter = StrongholdBot.getInstance().shooter;
+		shooter = Robot.getInstance().shooter;
 		// TODO Auto-generated method stub
 
 	}
@@ -31,7 +31,7 @@ public class TiltUpwards extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		if (StrongholdBot.getInstance().oi.shootThree.get())
+		if (Robot.getInstance().oi.shootThree.get())
 			return false;
 		else
 			return true;

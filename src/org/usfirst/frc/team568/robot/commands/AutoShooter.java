@@ -1,25 +1,25 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.StrongholdBot;
-import org.usfirst.frc.team568.robot.subsystems.Shooter;
+import org.usfirst.frc.team568.robot.stronghold.Robot;
+import org.usfirst.frc.team568.robot.subsystems.Shooter2016;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoShooter extends Command {
-	Shooter shooter;
+	Shooter2016 shooter;
 
 	@Override
 	protected void initialize() {
-		shooter = StrongholdBot.getInstance().shooter;
+		shooter = Robot.getInstance().shooter;
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected void execute() {
-		if (SmartDashboard.getBoolean("Forward?")) {
+		if (SmartDashboard.getBoolean("Forward?", true)) {
 			shooter.tiltUp();
 			Timer.delay(.75);
 			shooter.stopTilt();

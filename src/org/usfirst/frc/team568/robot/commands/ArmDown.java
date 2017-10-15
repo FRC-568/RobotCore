@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.StrongholdBot;
+import org.usfirst.frc.team568.robot.stronghold.Robot;
 import org.usfirst.frc.team568.robot.subsystems.Arms;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -16,7 +16,7 @@ public class ArmDown extends Command {
 	@Override
 	protected void initialize() {
 
-		arms = StrongholdBot.getInstance().arms;
+		arms = Robot.getInstance().arms;
 		// TODO Auto-generated method stub
 
 	}
@@ -24,14 +24,14 @@ public class ArmDown extends Command {
 	@Override
 	protected void execute() {
 
-		StrongholdBot.getInstance().arms.goDown();
+		Robot.getInstance().arms.goDown();
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected boolean isFinished() {
-		if (StrongholdBot.getInstance().oi.armsDown.get())
+		if (Robot.getInstance().oi.armsDown.get())
 			return false;
 		else
 			return true;
@@ -41,12 +41,12 @@ public class ArmDown extends Command {
 	@Override
 	protected void end() {
 		// TODO Auto-generated method stub
-		StrongholdBot.getInstance().arms.stop();
+		Robot.getInstance().arms.stop();
 	}
 
 	@Override
 	protected void interrupted() {
-		StrongholdBot.getInstance().arms.stop();
+		Robot.getInstance().arms.stop();
 		// TODO Auto-generated method stub
 
 	}

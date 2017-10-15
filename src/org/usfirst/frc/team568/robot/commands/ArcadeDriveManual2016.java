@@ -1,54 +1,44 @@
 package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.stronghold.Robot;
-import org.usfirst.frc.team568.robot.subsystems.Arms;
+import org.usfirst.frc.team568.robot.subsystems.ArcadeDrive;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class AutoArm extends Command {
-	Arms arm;
-	Timer timer;
+public class ArcadeDriveManual2016 extends Command {
+	public final ArcadeDrive arcadeDrive;
+	// CrateLifter lifter = Robot.getInstance().crateLifter;
+
+	public ArcadeDriveManual2016() {
+		arcadeDrive = Robot.getInstance().arcadeDrive;
+		requires(arcadeDrive);
+
+	}
 
 	@Override
 	protected void initialize() {
-		arm = Robot.getInstance().arms;
-		timer = new Timer();
-		timer.reset();
-		timer.start();
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected void execute() {
-		arm.goDown();
-
-		// TODO Auto-generated method stub
-
+		arcadeDrive.manualDrive();
+		// lifter.lift();
 	}
 
 	@Override
 	protected boolean isFinished() {
-		if (timer.get() < 2)
-			return false;
-		else
-			return true;
-		// TODO Auto-generated method stub
-
+		return false;
 	}
 
 	@Override
 	protected void end() {
-		arm.stop();
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	protected void interrupted() {
 		// TODO Auto-generated method stub
-
 	}
 
 }

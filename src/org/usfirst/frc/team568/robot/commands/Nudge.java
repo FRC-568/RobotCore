@@ -1,54 +1,51 @@
 package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.stronghold.Robot;
-import org.usfirst.frc.team568.robot.subsystems.Arms;
+import org.usfirst.frc.team568.robot.subsystems.Shooter2016;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class AutoArm extends Command {
-	Arms arm;
-	Timer timer;
+public class Nudge extends Command {
+	Shooter2016 shooter;
+
+	public Nudge() {
+
+		// requires(shooter);
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	protected void initialize() {
-		arm = Robot.getInstance().arms;
-		timer = new Timer();
-		timer.reset();
-		timer.start();
+		shooter = Robot.getInstance().shooter;
+
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected void execute() {
-		arm.goDown();
-
+		shooter.nudge();
+		System.out.println("Nudge");
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	protected boolean isFinished() {
-		if (timer.get() < 2)
-			return false;
-		else
-			return true;
-		// TODO Auto-generated method stub
 
+		return true;
 	}
 
 	@Override
 	protected void end() {
-		arm.stop();
 		// TODO Auto-generated method stub
-
+		shooter.stopnudge();
 	}
 
 	@Override
 	protected void interrupted() {
 		// TODO Auto-generated method stub
-
+		Robot.getInstance().shooter.stopnudge();
 	}
 
 }
