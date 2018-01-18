@@ -9,6 +9,7 @@ import org.opencv.videoio.VideoCapture;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
+@SuppressWarnings("deprecation")
 public class Processing {
 
 	static {

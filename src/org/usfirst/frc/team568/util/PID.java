@@ -3,11 +3,9 @@ package org.usfirst.frc.team568.util;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.tables.TableKeyNotDefinedException;
 
+@SuppressWarnings("deprecation")
 public class PID {
-
-	
 	double Pan;
 	double Tilt;
 	double BoxSize;
@@ -54,7 +52,7 @@ public void pidtest(){
 		SmartDashboard.putNumber("TD", 0);
 	}
 	
-	catch(TableKeyNotDefinedException ex)
+	catch(Exception ex)
 	{
 		
 	}
