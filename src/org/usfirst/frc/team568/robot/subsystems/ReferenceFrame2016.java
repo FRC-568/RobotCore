@@ -1,5 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
+import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.util.Vector2;
 
 import edu.wpi.first.wpilibj.ADXL362;
@@ -11,9 +12,10 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.filters.Filter;
 import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ReferenceFrame2016 extends Subsystem {
+public class ReferenceFrame2016 extends Subsystem implements Gyro {
 	public int calibrationSamples = 500;
 	public int calibrationSampleRate = 20;
 
@@ -31,7 +33,7 @@ public class ReferenceFrame2016 extends Subsystem {
 	public double threshold;
 	private static final int filterPoles = 20;
 
-	public ReferenceFrame2016() {
+	public ReferenceFrame2016(final RobotBase robot) {
 		acceleration = Vector2.zero;
 		velocity = Vector2.zero;
 		position = Vector2.zero;
@@ -89,8 +91,6 @@ public class ReferenceFrame2016 extends Subsystem {
 		updateThread = new Thread(() -> {
 			while (!Thread.interrupted()) {
 				updateAcel();
-				// SmartDashboard.putNumber("Raw Y", acel.getY() - acelBias.y);
-				// SmartDashboard.putNumber("Raw X", acel.getX() - acelBias.x);
 				try {
 					Thread.sleep(calibrationSampleRate);
 				} catch (InterruptedException e) {
@@ -140,7 +140,6 @@ public class ReferenceFrame2016 extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-
 	}
 
 	public void calabrateGyro() {
@@ -193,6 +192,21 @@ public class ReferenceFrame2016 extends Subsystem {
 		velocity = Vector2.add(velocity, Vector2.rotate(Vector2.scale(acceleration, deltaTime), -getHeading()));
 		position = Vector2.add(position, Vector2.scale(velocity, deltaTime));
 		lastTimestamp = timestamp;
+	}
+
+	@Override
+	public void calibrate() {
+		gyro.calibrate();
+	}
+
+	@Override
+	public double getRate() {
+		return gyro.getRate();
+	}
+
+	@Override
+	public void free() {
+		gyro.free();
 	}
 
 }

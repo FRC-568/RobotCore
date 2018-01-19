@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.PortMapper;
+import org.usfirst.frc.team568.robot.RobotBase;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -13,8 +13,8 @@ public class GearBox extends SubsystemBase {
 
 	public DigitalInput gearDetector;
 
-	public GearBox(PortMapper ports) {
-		super(ports);
+	public GearBox(final RobotBase robot) {
+		super(robot);
 		
 		gearPneumatic1 = new Solenoid(port("gearPneumatic1"));
 		gearPneumatic2 = new Solenoid(port("gearPneumatic2"));
@@ -32,7 +32,6 @@ public class GearBox extends SubsystemBase {
 	}
 
 	public Command openCommand() {
-
 		return new Command() {
 			@Override
 			public void initialize() {
@@ -41,16 +40,12 @@ public class GearBox extends SubsystemBase {
 
 			@Override
 			protected boolean isFinished() {
-				// TODO Auto-generated method stub
 				return true;
 			}
-
 		};
-
 	}
 
 	public Command closeCommand() {
-
 		return new Command() {
 			@Override
 			public void initialize() {
@@ -59,26 +54,13 @@ public class GearBox extends SubsystemBase {
 
 			@Override
 			protected boolean isFinished() {
-				// TODO Auto-generated method stub
 				return true;
 			}
-
 		};
-
 	}
 
 	public void hasGear() {
-		if (gearDetector.get()) {
-			SmartDashboard.putBoolean("Has Gear", true);
-		} else {
-			SmartDashboard.putBoolean("Has Gear", false);
-		}
-	}
-
-	@Override
-	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-
+		SmartDashboard.putBoolean("Has Gear", gearDetector.get());
 	}
 
 }

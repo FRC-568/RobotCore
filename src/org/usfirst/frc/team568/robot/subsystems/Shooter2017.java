@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.PortMapper;
+import org.usfirst.frc.team568.robot.RobotBase;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -13,8 +13,8 @@ public class Shooter2017 extends SubsystemBase {
 	public Solenoid ballWranglerIn;
 	public Solenoid ballWranglerOut;
 
-	public Shooter2017(PortMapper ports) {
-		super(ports);
+	public Shooter2017(final RobotBase robot) {
+		super(robot);
 		
 		shootMotor = new Spark(port("shooter"));
 		gate = new Servo(port("gateServo"));

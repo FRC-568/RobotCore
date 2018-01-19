@@ -5,8 +5,6 @@ import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.robot.commands.ClimbWithWinch;
 import org.usfirst.frc.team568.robot.commands.Shoot2017;
 import org.usfirst.frc.team568.robot.commands.UnClimb;
-import org.usfirst.frc.team568.robot.stronghold.AutoOne;
-import org.usfirst.frc.team568.robot.stronghold.AutoTwo;
 import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team568.robot.subsystems.GearBox;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2017;
@@ -24,22 +22,18 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends RobotBase {
-
 	int session;
 	Timer time;
 	// public double whichOne;
 	// public boolean over;
-
 	public double speed;
 	public double pressure;
-
 	// public double EncoderValue;
 	Command autonomousCommand;
-
 	protected static Robot instance;
 	public OI oi;
 	public DriveTrain driveTrain;
-	public ReferenceFrame2017 referanceFrame2;
+	public ReferenceFrame2017 referenceFrame;
 	public ADIS16448_IMU imu;
 	public VisionTargetTracker gearLiftTracker;
 	public GearBox gearBox;
@@ -85,26 +79,24 @@ public class Robot extends RobotBase {
 		oi = new OI();
 		gearTracker = new VisionTargetTracker(1); // Camera 1
 		visionProcessor = new VisionProcessor(1); // Camera 1
-		driveTrain = new DriveTrain(this);
+		referenceFrame = new ReferenceFrame2017(this);
+		driveTrain = new DriveTrain(this, referenceFrame);
 		winchClimber = new WinchClimber(this);
 		shooter = new Shooter2017(this);
 		gearBox = new GearBox(this);
 		ropeCollector = new RopeCollector(this);
 		gearLiftTracker = new VisionTargetTracker();
-		referanceFrame2 = new ReferenceFrame2017(this);
 		time = new Timer();
 		imu = new ADIS16448_IMU();
 		compressor = new Compressor();
-
 	}
 
 	@Override
 	public void robotInit() {
-
 		imu.reset();
 		imu.calibrate();
-		referanceFrame2.reset();
-		referanceFrame2.calabrateGyro();
+		referenceFrame.reset();
+		referenceFrame.calabrateGyro();
 
 		SmartDashboard.putNumber("Autonomous #", 1);
 
@@ -145,7 +137,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousInit() {
-		referanceFrame2.motorEncoder.reset();
+		referenceFrame.motorEncoder.reset();
 		imu.reset();
 
 		if (SmartDashboard.getNumber("Autonomous #", 0) == 1) {
@@ -157,7 +149,7 @@ public class Robot extends RobotBase {
 		} else if (SmartDashboard.getNumber("Autonomous #", 0) == 4) {
 			autonomousCommand = new AutoFour();
 		}
-		referanceFrame2.reset();
+		referenceFrame.reset();
 		visionProcessor.start();
 		autonomousCommand.start();
 
@@ -166,7 +158,7 @@ public class Robot extends RobotBase {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		SmartDashboard.putNumber("MotorEncoderTicks:", referanceFrame2.motorEncoder.get());
+		SmartDashboard.putNumber("MotorEncoderTicks:", referenceFrame.motorEncoder.get());
 		SmartDashboard.putNumber("Frames", visionProcessor.processingTime);
 	}
 
@@ -176,9 +168,9 @@ public class Robot extends RobotBase {
 			autonomousCommand.cancel();
 		}
 
-		referanceFrame2.motorEncoder.reset();
+		referenceFrame.motorEncoder.reset();
 		imu.reset();
-		referanceFrame2.reset();
+		referenceFrame.reset();
 		visionProcessor.stop();
 		gearBox.close();
 	}
@@ -195,15 +187,13 @@ public class Robot extends RobotBase {
 
 		}
 
-		SmartDashboard.putNumber("MotorEncoderTicks:", referanceFrame2.motorEncoder.get());
-		SmartDashboard.putNumber("GYRO", referanceFrame2.getAngle());
+		SmartDashboard.putNumber("MotorEncoderTicks:", referenceFrame.motorEncoder.get());
+		SmartDashboard.putNumber("GYRO", referenceFrame.getAngle());
 		// SmartDashboard.putNumber("MotorAmpage", driveTrain.leftFront.)
-
 	}
 
 	@Override
 	public void testPeriodic() {
-
 	}
 
 	public static Robot getInstance() {

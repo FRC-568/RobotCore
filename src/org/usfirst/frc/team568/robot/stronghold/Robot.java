@@ -13,14 +13,13 @@ import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
 */
 
-//import edu.wpi.first.wpilibj.CameraServer;]
+//import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends RobotBase {
-
 	int session;
 	//Image frame;
 	double Pan;
@@ -44,23 +43,15 @@ public class Robot extends RobotBase {
 	Timer time;
 	// public double whichOne;
 	// public boolean over;
-
 	public double speed;
-
 	// public double EncoderValue;
-
 	protected static Robot instance;
 	public OI oi;
-
 	// AimingPID aim;
-
 	public ArcadeDrive arcadeDrive;
-
 	public Shooter2016 shooter;
-
 	public Arms arms;
-
-	public ReferenceFrame2016 referanceFrame2;
+	public ReferenceFrame2016 referenceFrame;
 	Command autonomousCommand;
 
 	/*
@@ -105,23 +96,19 @@ public class Robot extends RobotBase {
 		
 		oi = new OI();
 		// aim = new AimingPID(0.001, 0, 0);
-
-		arcadeDrive = new ArcadeDrive(this);
-		shooter = new Shooter2016(this);
-		arms = new Arms(this);
-
-		referanceFrame2 = new ReferenceFrame2016();
+		arcadeDrive = addSubsystem(ArcadeDrive::new);
+		shooter = addSubsystem(Shooter2016::new);
+		arms = addSubsystem(Arms::new);
+		referenceFrame = addSubsystem(ReferenceFrame2016::new);
 		time = new Timer();
-
 	}
 
 	@Override
 	public void robotInit() {
-
 		System.out.println("Robot Init");
-		referanceFrame2.start();
-		referanceFrame2.calabrateGyro();
-		referanceFrame2.reset();
+		referenceFrame.start();
+		referenceFrame.calabrateGyro();
+		referenceFrame.reset();
 
 		/* NIVision is now an external dependency - re-enable if needed.
 		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
@@ -142,7 +129,6 @@ public class Robot extends RobotBase {
 		SmartDashboard.putNumber("Speed", .60);
 		SmartDashboard.putNumber("Autonomous #", 1);
 		SmartDashboard.putString("Event:", "Robot init");
-
 	}
 
 	@Override
@@ -162,12 +148,12 @@ public class Robot extends RobotBase {
 			autonomousCommand = new AutoOne();
 			break;
 		case 2:
-			autonomousCommand = new AutoTwo();
+			autonomousCommand = new AutoTwo(arms);
 			break;
 		default:
 			return;
 		}
-		referanceFrame2.reset();
+		referenceFrame.reset();
 		autonomousCommand.start();
 	}
 
@@ -185,7 +171,6 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void teleopPeriodic() {
-
 		// SmartDashboard.putNumber("POS X", referanceFrame2.getPos().x);
 		// SmartDashboard.putNumber("POS Y", referanceFrame2.getPos().y);
 		/// SmartDashboard.putNumber("Heading", referanceFrame2.getHeading());
@@ -262,12 +247,6 @@ public class Robot extends RobotBase {
 		 * 
 		 * }
 		 */
-
-	}
-
-	@Override
-	public void testPeriodic() {
-
 	}
 
 	public static Robot getInstance() {
