@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.PortMapper;
+import org.usfirst.frc.team568.robot.RobotBase;
 
 import edu.wpi.first.wpilibj.Solenoid;
 
@@ -13,8 +13,8 @@ public class PistonRopeClimber extends SubsystemBase {
 	private final Solenoid reacherRetractor;
 	private boolean _isReaching;
 
-	public PistonRopeClimber(PortMapper ports) {
-		super(ports);
+	public PistonRopeClimber(final RobotBase robot) {
+		super(robot);
 		topClamp = new Clamp(port("topClampOut"), port("topClampIn"));
 		bottomClamp = new Clamp(port("bottomClampOut"), port("bottomClampIn"));
 		reacherExtender = new Solenoid(port("reacherOut"));
@@ -24,11 +24,6 @@ public class PistonRopeClimber extends SubsystemBase {
 		topClamp.release();
 		retractReacher();
 		currentState = State.RELAXED;
-	}
-
-	@Override
-	protected void initDefaultCommand() {
-
 	}
 
 	public void extendReacher() {

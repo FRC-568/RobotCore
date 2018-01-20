@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.PortMapper;
+import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.robot.commands.Climb;
 import org.usfirst.frc.team568.robot.steamworks.Robot;
 
@@ -17,8 +17,8 @@ public class Climber extends SubsystemBase {
 	public boolean isClimbing = false;
 	public State currentState;
 
-	public Climber(PortMapper ports) {
-		super(ports);
+	public Climber(RobotBase robot) {
+		super(robot);
 		// topClampIn = new Solenoid(RobotMap.topClampIn);
 		// bottomClampIn = new Solenoid(RobotMap.bottomClampIn);
 		// reacherIn = new Solenoid(RobotMap.reacherIn);

@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.PortMapper;
+import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.robot.commands.GetBall;
 import org.usfirst.frc.team568.robot.commands.Shoot2016;
 import org.usfirst.frc.team568.robot.commands.StopShoot;
@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter2016 extends SubsystemBase {
-	private final Robot robot;
+	private final Robot myrobot;
 	public SpeedController shooter;
 
 	public SpeedController leftTilt;
@@ -27,9 +27,9 @@ public class Shooter2016 extends SubsystemBase {
 	public DigitalInput upperLimmitSwitch;
 	public DigitalInput lowerLimmitSwitch;
 
-	public Shooter2016(PortMapper ports) {
-		super(ports);
-		robot = Robot.getInstance();
+	public Shooter2016(final RobotBase robot) {
+		super(robot);
+		this.myrobot = Robot.getInstance();
 
 		shooter = new Victor(port("shooterLeftPort"));
 		shooter.setInverted(true);
@@ -42,29 +42,23 @@ public class Shooter2016 extends SubsystemBase {
 
 		upperLimmitSwitch = new DigitalInput(port("upperLimmitSwitch"));
 		lowerLimmitSwitch = new DigitalInput(port("lowerLimmitSwitch"));
-		// TODO Auto-generated constructor stub
-		robot.oi.shootFour.whenPressed(new Shoot2016());
-		robot.oi.shootFive.whenPressed(new GetBall());
-		// robot.oi.shootEleven.whenPressed(new DoNotShoot());
-		robot.oi.shootTwo.whileHeld(new TiltDownwards());
-		robot.oi.shootThree.whileHeld(new TiltUpwards());
-		robot.oi.shootOne.whenPressed(new Nudge());
-		robot.oi.shootSix.whenPressed(new StopShoot());
-
+		this.myrobot.oi.shootFour.whenPressed(new Shoot2016());
+		this.myrobot.oi.shootFive.whenPressed(new GetBall());
+		this.myrobot.oi.shootTwo.whileHeld(new TiltDownwards());
+		this.myrobot.oi.shootThree.whileHeld(new TiltUpwards());
+		this.myrobot.oi.shootOne.whenPressed(new Nudge());
+		this.myrobot.oi.shootSix.whenPressed(new StopShoot());
 	}
 
 	public void shoot() {
-
 		shooter.set(0.65);
 		SmartDashboard.putString("Event:", "Shoot");
-
 	}
 
 	public void nudge() {
 		nudge.setAngle(180);
 		// SmartDashboard.putString("Event:", "Nudge");
 		Timer.delay(.3);
-
 	}
 
 	public void stopnudge() {
@@ -73,32 +67,25 @@ public class Shooter2016 extends SubsystemBase {
 	}
 
 	public void obtainBall() {
-
 		shooter.set(-0.325);
 		SmartDashboard.putString("Event:", "Get Ball");
 	}
 
 	public void stopShooter() {
-
 		shooter.set(0);
 		SmartDashboard.putString("Event:", " Stop Shoot");
 	}
 
 	public void tiltDown() {
-
 		leftTilt.set(-0.5);
 		rightTilt.set(0.5);
-
 		// SmartDashboard.putString("Event:", "Tilt Down");
 		Timer.delay(.01);
 	}
 
 	public void tiltUp() {
-
 		leftTilt.set(.75);
 		rightTilt.set(-.75);
-
-		// System.out.println(SmartDashboard.getNumber("leftTilt"));
 		// SmartDashboard.putString("Event:", "Tilt Up");
 		Timer.delay(.01);
 	}
@@ -107,12 +94,6 @@ public class Shooter2016 extends SubsystemBase {
 		leftTilt.set(0);
 		rightTilt.set(0);
 		// SmartDashboard.putString("Event:", "Stop Tilt");
-	}
-
-	@Override
-	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

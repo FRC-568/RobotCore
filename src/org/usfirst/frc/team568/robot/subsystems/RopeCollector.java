@@ -1,18 +1,17 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.PortMapper;
+import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.robot.steamworks.Robot;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class RopeCollector extends SubsystemBase {
-
 	public Solenoid ropeClampIn;
 	public Solenoid ropeClampOut;
 
-	public RopeCollector(PortMapper ports) {
-		super(ports);
+	public RopeCollector(final RobotBase robot) {
+		super(robot);
 		
 		ropeClampIn = new Solenoid(port("ropeClampIn"));
 		ropeClampOut = new Solenoid(port("ropeClampOut"));
@@ -24,7 +23,6 @@ public class RopeCollector extends SubsystemBase {
 	public void open() {
 		ropeClampIn.set(true);
 		ropeClampOut.set(false);
-
 	}
 
 	public void close() {
@@ -33,7 +31,6 @@ public class RopeCollector extends SubsystemBase {
 	}
 
 	public Command openCommand() {
-
 		return new Command() {
 			@Override
 			public void initialize() {
@@ -42,16 +39,12 @@ public class RopeCollector extends SubsystemBase {
 
 			@Override
 			protected boolean isFinished() {
-				// TODO Auto-generated method stub
 				return true;
 			}
-
 		};
-
 	}
 
 	public Command closeCommand() {
-
 		return new Command() {
 			@Override
 			public void initialize() {
@@ -60,17 +53,9 @@ public class RopeCollector extends SubsystemBase {
 
 			@Override
 			protected boolean isFinished() {
-				// TODO Auto-generated method stub
 				return true;
 			}
-
 		};
-
-	}
-
-	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

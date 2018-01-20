@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.PortMapper;
+import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.util.Vector2;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -13,9 +13,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.filters.Filter;
 import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ReferenceFrame2017 extends SubsystemBase {
+public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 	public int calibrationSamples = 250;
 	public int calibrationSampleRate = 20;
 
@@ -37,8 +38,8 @@ public class ReferenceFrame2017 extends SubsystemBase {
 	double ticksPerRotation = 360;
 	double wheelDiameterInCM = 15;
 
-	public ReferenceFrame2017(PortMapper ports) {
-		super(ports);
+	public ReferenceFrame2017(final RobotBase robot) {
+		super(robot);
 
 		acceleration = Vector2.zero;
 		velocity = Vector2.zero;
@@ -121,13 +122,11 @@ public class ReferenceFrame2017 extends SubsystemBase {
 		velocity = Vector2.zero;
 		position = Vector2.zero;
 		gyro.reset();
-
 	}
 
 	// int currentTicks = motorEncoder.getRaw();
 	public double DistanceTraveled() {
 		return motorEncoder.getDistance();
-
 	}
 
 	public Vector2 getVelocity() {
@@ -143,13 +142,13 @@ public class ReferenceFrame2017 extends SubsystemBase {
 			return clip;
 	}
 
+	@Override
 	public double getAngle() {
 		return gyro.getAngle();
 	}
 
 	public Vector2 getAcel() {
 		return acceleration;
-
 	}
 
 	public Vector2 getPos() {
@@ -211,6 +210,21 @@ public class ReferenceFrame2017 extends SubsystemBase {
 		velocity = Vector2.add(velocity, Vector2.rotate(Vector2.scale(acceleration, deltaTime), -getHeading()));
 		position = Vector2.add(position, Vector2.scale(velocity, deltaTime));
 		lastTimestamp = timestamp;
+	}
+
+	@Override
+	public void calibrate() {
+		gyro.calibrate();
+	}
+
+	@Override
+	public double getRate() {
+		return gyro.getRate();
+	}
+
+	@Override
+	public void free() {
+		gyro.free();
 	}
 
 }

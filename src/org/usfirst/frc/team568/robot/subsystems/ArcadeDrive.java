@@ -1,7 +1,6 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.PortMapper;
-import org.usfirst.frc.team568.robot.commands.ArcadeDriveManual2016;
+import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.robot.stronghold.Robot;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -9,7 +8,10 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 
+@SuppressWarnings("deprecation")
 public class ArcadeDrive extends SubsystemBase {
 	public final Robot robot;
 
@@ -21,21 +23,15 @@ public class ArcadeDrive extends SubsystemBase {
 	RobotDrive myRobot;
 	RobotDrive myDrive;
 
-	ReferenceFrame2016 ref;
+	private final Gyro gyro;
 
 	static double sHeading;
 	double Kp;
 
-	public ArcadeDrive(PortMapper ports) {
-		super(ports);
+	public ArcadeDrive(final RobotBase robot) {
+		super(robot);
+		this.gyro = robot.getSubsystem(ReferenceFrame2016.class);
 		this.robot = Robot.getInstance();
-		ref = Robot.getInstance().referanceFrame2;
-		// sHeading = ref.getHeading();
-
-		// leftFront = new Victor(RobotMap.leftFrontMotor);
-		// leftBack = new Victor(RobotMap.leftBackMotor);
-		// rightFront = new Victor(RobotMap.rightFrontMotor);
-		// rightBack = new Victor(RobotMap.rightBackMotor);
 
 		leftFront = new VictorSP(port("leftFrontMotor"));
 		leftBack = new VictorSP(port("leftBackMotor"));
@@ -48,8 +44,8 @@ public class ArcadeDrive extends SubsystemBase {
 		rightBack.setInverted(true);
 
 		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
-		driveStickL = robot.oi.joyStick1;
-		driveStickR = robot.oi.joyStick3;
+		driveStickL = this.robot.oi.joyStick1;
+		driveStickR = this.robot.oi.joyStick3;
 
 	}
 
@@ -74,10 +70,10 @@ public class ArcadeDrive extends SubsystemBase {
 		}
 
 		Kp = .015;
-		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
+		double error = Robot.getInstance().referenceFrame.getAngle() * Kp;
 
-		if (Robot.getInstance().referanceFrame2.getAngle() <= 5
-				&& Robot.getInstance().referanceFrame2.getAngle() >= -5) {
+		if (Robot.getInstance().referenceFrame.getAngle() <= 5
+				&& Robot.getInstance().referenceFrame.getAngle() >= -5) {
 			leftFront.set(speed);
 			leftBack.set(speed);
 			rightFront.set(speed);
@@ -99,11 +95,11 @@ public class ArcadeDrive extends SubsystemBase {
 		}
 
 		Kp = .015;
-		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
+		double error = Robot.getInstance().referenceFrame.getAngle() * Kp;
 		speed = -speed;
 
-		if (Robot.getInstance().referanceFrame2.getAngle() <= 5
-				&& Robot.getInstance().referanceFrame2.getAngle() >= -5) {
+		if (Robot.getInstance().referenceFrame.getAngle() <= 5
+				&& Robot.getInstance().referenceFrame.getAngle() >= -5) {
 			leftFront.set(speed);
 			leftBack.set(speed);
 			rightFront.set(speed);
@@ -123,8 +119,8 @@ public class ArcadeDrive extends SubsystemBase {
 			leftBack.setInverted(false);
 		}
 
-		double ra = ref.getAngle() + degrees;
-		if (ref.getAngle() != ra) {
+		double ra = gyro.getAngle() + degrees;
+		if (gyro.getAngle() != ra) {
 			leftFront.set(speed);
 			leftBack.set(speed);
 			rightFront.set(-speed);
@@ -138,8 +134,8 @@ public class ArcadeDrive extends SubsystemBase {
 			leftBack.setInverted(false);
 		}
 
-		double ra = ref.getAngle() - degrees;
-		if (ref.getAngle() != ra) {
+		double ra = gyro.getAngle() - degrees;
+		if (gyro.getAngle() != ra) {
 			leftFront.set(-speed);
 			leftBack.set(-speed);
 			rightFront.set(speed);
@@ -209,7 +205,21 @@ public class ArcadeDrive extends SubsystemBase {
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new ArcadeDriveManual2016());
+		setDefaultCommand(new Command() {
+			{
+				requires(ArcadeDrive.this);
+			}
+
+			@Override
+			protected void execute() {
+				manualDrive();
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+		});
 	}
 
 }

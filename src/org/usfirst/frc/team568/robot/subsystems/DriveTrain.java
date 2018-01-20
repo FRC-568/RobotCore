@@ -1,17 +1,16 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.PortMapper;
-import org.usfirst.frc.team568.robot.commands.ArcadeDriveManual2017;
-import org.usfirst.frc.team568.robot.steamworks.Robot;
+import org.usfirst.frc.team568.robot.RobotBase;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 
+@SuppressWarnings("deprecation")
 public class DriveTrain extends SubsystemBase {
-	public final Robot robot;
-
 	protected SpeedController leftFront;
 	protected SpeedController leftBack;
 	protected SpeedController rightFront;
@@ -19,13 +18,12 @@ public class DriveTrain extends SubsystemBase {
 	protected RobotDrive myDrive;
 
 	protected Joystick driveStick1;
-	ReferenceFrame2017 ref;
+	private Gyro gyro;
+	
 
-	public DriveTrain(PortMapper ports) {
-		super(ports);
-		
-		this.robot = Robot.getInstance();
-		ref = Robot.getInstance().referanceFrame2;
+	public DriveTrain(RobotBase robot, Gyro gyro) {
+		super(robot);
+		this.gyro = gyro;
 
 		leftFront = new VictorSP(port("leftFrontMotor"));
 		leftBack = new VictorSP(port("leftBackMotor"));
@@ -65,9 +63,9 @@ public class DriveTrain extends SubsystemBase {
 
 		final double Kp = .135;
 
-		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
+		double error = gyro.getAngle() * Kp;
 
-		if (Robot.getInstance().referanceFrame2.getAngle() <= 1 && Robot.getInstance().referanceFrame2.getAngle() >= -1)
+		if (gyro.getAngle() <= 1 && gyro.getAngle() >= -1)
 			myDrive.tankDrive(speed, speed, false);
 		else
 			myDrive.tankDrive(speed + error, speed - error, false);
@@ -75,11 +73,11 @@ public class DriveTrain extends SubsystemBase {
 
 	public void reverseWithGyro(double speed) {
 		final double Kp = .015;
-		double error = Robot.getInstance().referanceFrame2.getAngle() * Kp;
+		double error = gyro.getAngle() * Kp;
 		speed = -speed;
 
-		if (Robot.getInstance().referanceFrame2.getAngle() <= 5
-				&& Robot.getInstance().referanceFrame2.getAngle() >= -5) {
+		if (gyro.getAngle() <= 5
+				&& gyro.getAngle() >= -5) {
 			myDrive.tankDrive(speed, speed, false);
 		} else {
 			myDrive.tankDrive(speed - error, speed + error, false);
@@ -93,11 +91,11 @@ public class DriveTrain extends SubsystemBase {
 		rightBack.setInverted(true);
 
 		final double speed = 0.25;
-		if (ra < (Robot.getInstance().referanceFrame2.getAngle() + 2)
-				|| ra < (Robot.getInstance().referanceFrame2.getAngle() - 2)) {
+		if (ra < (gyro.getAngle() + 2)
+				|| ra < (gyro.getAngle() - 2)) {
 			myDrive.tankDrive(speed, -speed, false);
-		} else if (ra > (Robot.getInstance().referanceFrame2.getAngle() + 2)
-				|| ra > (Robot.getInstance().referanceFrame2.getAngle() - 2)) {
+		} else if (ra > (gyro.getAngle() + 2)
+				|| ra > (gyro.getAngle() - 2)) {
 			myDrive.tankDrive(-speed, speed, false);
 		} else
 			halt();
@@ -131,7 +129,21 @@ public class DriveTrain extends SubsystemBase {
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new ArcadeDriveManual2017());
+		setDefaultCommand(new Command() {
+			{
+				requires(DriveTrain.this);
+			}
+		
+			@Override
+			protected void execute() {
+				arcadeDrive();
+			}
+		
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+		});
 	}
 
 }

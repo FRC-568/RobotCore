@@ -20,7 +20,7 @@ public class Drive2017 extends Command {
 	double sign;
 
 	public Drive2017(double distance, double speed) {
-		ref = Robot.getInstance().referanceFrame2;
+		ref = Robot.getInstance().referenceFrame;
 		inch = ref.motorEncoder.getDistance() + (distance);
 		this.speed = speed;
 		sign = distance;
@@ -28,7 +28,7 @@ public class Drive2017 extends Command {
 	}
 
 	public Drive2017() {
-		ref = Robot.getInstance().referanceFrame2;
+		ref = Robot.getInstance().referenceFrame;
 		SmartDashboard.getNumber("Speed", 0);
 		inch = 0;
 	}
@@ -36,51 +36,32 @@ public class Drive2017 extends Command {
 	@Override
 	protected void initialize() {
 		drive = Robot.getInstance().driveTrain;
-
 		timer = new Timer();
 		timer.reset();
 		timer.start();
 		ref.motorEncoder.reset();
 		ref.reset();
 		// CM = SmartDashboard.getNumber("Centimeters", 0);
-
 	}
 
 	@Override
 	protected void execute() {
-
 		drive.forwardWithGyro(speed);
 		SmartDashboard.putNumber("GYRO", ref.getAngle());
-
 	}
 
 	@Override
 	protected boolean isFinished() {
-		if (sign > 0) {
-			if (ref.motorEncoder.getDistance() > inch)
-				return true;
-			else
-				return false;
-		} else {
-			if (ref.motorEncoder.getDistance() < inch)
-				return true;
-			else
-				return false;
-		}
+		if (sign > 0)
+			return ref.motorEncoder.getDistance() > inch;
+		else
+			return ref.motorEncoder.getDistance() < inch;
 	}
 
 	@Override
 	protected void end() {
 		drive.halt();
 		Timer.delay(.5);
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void interrupted() {
-		// TODO Auto-generated method stub
-
 	}
 
 }
