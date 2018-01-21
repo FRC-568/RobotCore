@@ -1,17 +1,23 @@
 package org.usfirst.frc.team568.robot.powerup;
 
 import org.usfirst.frc.team568.robot.RobotBase;
-import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
+
+import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class Robot extends RobotBase {
-	public DriveTrain driveTrain;
+	public WestCoastDrive driveTrain;
 	
 	public Robot() {
-		port("leftFrontMotor", 1);
-		port("leftBackMotor", 2);
-		port("rightFrontMotor", 3);
-		port("rightBackMotor", 4);
+		port("leftFrontMotor", 0);
+		port("leftBackMotor", 1);
+		port("rightFrontMotor", 2);
+		port("rightBackMotor", 3);
 		
-		driveTrain = new DriveTrain(this);
+		driveTrain = new WestCoastDrive(this);
+	}
+	
+	@Override
+	public void teleopPeriodic() {
+		Scheduler.getInstance().run();
 	}
 }

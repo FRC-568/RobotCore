@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.powerup;
 
-import org.usfirst.frc.team568.robot.PortMapper;
+import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.robot.steamworks.ControllerButtons;
 import org.usfirst.frc.team568.robot.subsystems.SubsystemBase;
 
@@ -15,7 +15,7 @@ public class WestCoastDrive extends SubsystemBase {
 	private DifferentialDrive drive;
 	private Joystick joystick; 
 
-	public WestCoastDrive(PortMapper source) {
+	public WestCoastDrive(RobotBase source) {
 		super(source);
 		
 		SpeedController fl = new Talon(port("leftFrontMotor"));
@@ -30,21 +30,19 @@ public class WestCoastDrive extends SubsystemBase {
 	@Override
 	protected void initDefaultCommand() {
 		setDefaultCommand(new Command() {
-			
 			{
 				requires(WestCoastDrive.this);
 			}
 			
 			@Override
 			protected void execute() {
-				drive.curvatureDrive(joystick.getY(), joystick.getX(), joystick.getRawButton(ControllerButtons.leftBumper));
+				drive.curvatureDrive(-joystick.getRawAxis(1), joystick.getRawAxis(4), joystick.getRawButton(ControllerButtons.leftBumper));
 			}
 
 			@Override
 			protected boolean isFinished() {
 				return false;
 			}
-			
 		});
 	}	
 

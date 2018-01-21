@@ -1,12 +1,11 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
-import org.usfirst.frc.team568.robot.PortMapper;
+import org.usfirst.frc.team568.robot.RobotBase;
 
 public class Locator extends SubsystemBase {
 
-	public Locator(PortMapper source) {
+	public Locator(RobotBase source) {
 		super(source);
-		// TODO Auto-generated constructor stub
 	}
 
 }
