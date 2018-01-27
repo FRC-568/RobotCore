@@ -1,5 +1,7 @@
 package org.usfirst.frc.team568.robot.powerup;
 
+import java.util.function.IntFunction;
+
 import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.robot.steamworks.ControllerButtons;
 import org.usfirst.frc.team568.robot.subsystems.SubsystemBase;
@@ -15,13 +17,13 @@ public class WestCoastDrive extends SubsystemBase {
 	private DifferentialDrive drive;
 	private Joystick joystick; 
 
-	public WestCoastDrive(RobotBase source) {
-		super(source);
+	public WestCoastDrive(RobotBase robot, IntFunction<SpeedController> motorProvider) {
+		super(robot);
 		
-		SpeedController fl = new Talon(port("leftFrontMotor"));
-		SpeedController bl = new Talon(port("leftBackMotor"));
-		SpeedController fr = new Talon(port("rightFrontMotor"));
-		SpeedController br = new Talon(port("rightBackMotor"));
+		SpeedController fl = motorProvider.apply(port("leftFrontMotor"));
+		SpeedController bl = motorProvider.apply(port("leftBackMotor"));
+		SpeedController fr = motorProvider.apply(port("rightFrontMotor"));
+		SpeedController br = motorProvider.apply(port("rightBackMotor"));
 		
 		drive = new DifferentialDrive(new SpeedControllerGroup(fl, bl), new SpeedControllerGroup(fr, br));
 		joystick = new Joystick(0);

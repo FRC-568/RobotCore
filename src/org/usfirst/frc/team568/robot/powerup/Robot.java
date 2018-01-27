@@ -2,6 +2,7 @@ package org.usfirst.frc.team568.robot.powerup;
 
 import org.usfirst.frc.team568.robot.RobotBase;
 
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class Robot extends RobotBase {
@@ -13,7 +14,7 @@ public class Robot extends RobotBase {
 		port("rightFrontMotor", 2);
 		port("rightBackMotor", 3);
 		
-		driveTrain = new WestCoastDrive(this);
+		driveTrain = new WestCoastDrive(this, Talon::new);
 	}
 	
 	@Override
