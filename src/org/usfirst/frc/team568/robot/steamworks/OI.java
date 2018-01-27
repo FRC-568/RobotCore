@@ -14,7 +14,8 @@ public class OI {
 
 	public Button climb = new JoystickButton(joyStick2, ControllerButtons.RightBumper);
 	public Button inverseClimb = new JoystickButton(joyStick2, ControllerButtons.leftBumper);
-	public Button shoot = new JoystickButton(joyStick2, ControllerButtons.RightStickIn);
+	public Button intake = new JoystickButton(joyStick1, ControllerButtons.RightStickIn);
+	public Button outtake = new JoystickButton(joyStick1, ControllerButtons.LeftStickIn);
 	// public Button stopShooting = new JoystickButton(joyStick2,
 	// ControllerButtons.LeftStickIn);
 	public Button openGearBox = new JoystickButton(joyStick1, ControllerButtons.A);
