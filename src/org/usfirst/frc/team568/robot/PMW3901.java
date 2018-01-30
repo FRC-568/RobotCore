@@ -5,6 +5,7 @@
 package org.usfirst.frc.team568.robot;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SensorBase;
@@ -40,9 +41,14 @@ public class PMW3901 extends SensorBase implements Sendable {
 	}
 	
 	public void initialize() {
+		/*
+		 * PMW3901 officially supports a 2MHz clock; but may need more time between the address byte
+		 *  and data byte on read commands (35uS). If read commands are failing, lower this to ~28kHz.
+		 */
 		spi.setClockRate(2000000);
 		spi.setMSBFirst();
-		spi.setSampleDataOnRising();
+		// This should be setSampleDataOnRising() - see https://github.com/wpilibsuite/allwpilib/issues/925
+		spi.setSampleDataOnFalling();
 		spi.setClockActiveLow();
 		spi.setChipSelectActiveLow();
 		
@@ -51,8 +57,13 @@ public class PMW3901 extends SensorBase implements Sendable {
 		Timer.delay(50 * ms);
 		
 		// Verify device is PMW3901
-		if(readByte(PRODUCT_ID) != PRODUCT_ID_CODE || readByte(INVERSE_PRODUCT_ID) != INVERSE_PRODUCT_ID_CODE)
-			throw new RuntimeException("Could not create PMW3901: sensor not detected on SPI port " + spiPort.value);
+		if(readByte(PRODUCT_ID) != PRODUCT_ID_CODE || readByte(INVERSE_PRODUCT_ID) != INVERSE_PRODUCT_ID_CODE) {
+			spi.free();
+			spi = null;
+			DriverStation.reportError("Could not create PMW3901: sensor not detected on SPI port " + spiPort.value, false);
+		}
+		
+		initializeRegisters();
 		
 		// Clear motion registers
 		readByte(MOTION);
@@ -61,13 +72,23 @@ public class PMW3901 extends SensorBase implements Sendable {
 		readByte(DELTA_Y_L);
 		readByte(DELTA_Y_H);
 		
-		initializeRegisters();
-		
 		timestamp = Timer.getFPGATimestamp();
 		processTime = 0;
 		position = new Vector2d();
 		velocity = new Vector2d();
 		acceleration = new Vector2d();
+	}
+	
+	public Vector2d getPosition() {
+		return position;
+	}
+	
+	public Vector2d getVelocity() {
+		return velocity;
+	}
+	
+	public Vector2d getAcceleration() {
+		return acceleration;
 	}
 	
 	public Vector2d updateMotion() {
@@ -97,33 +118,41 @@ public class PMW3901 extends SensorBase implements Sendable {
 	}
 	
 	public void writeByte(byte register, byte value) {
-		writeBuffer[0] = (byte) (register | (byte) 0x80);
+		if(spi == null)
+			return;
+		
+		writeBuffer[0] = (byte) (register | 0x80);
 		writeBuffer[1] = value;
-		spi.write(writeBuffer, 2);
+		spi.transaction(writeBuffer, readBuffer, 2);
 		log("Wrote 0x%X to 0x%X", value, register);
 		Timer.delay(200 * us);
 	}
 	
 	public byte readByte(byte register) {
+		if(spi == null)
+			return 0;
+		
 		writeBuffer[0] = (byte) (register & 0x7F);
-		spi.write(writeBuffer, 1);
-		Timer.delay(50 * us);
-		spi.read(true, readBuffer, 1);
-		log("Read 0x%X from 0x%X", readBuffer[0], register);
+		writeBuffer[1] = 0x00;
+		spi.transaction(writeBuffer, readBuffer, 2);
+		log("Read 0x%X from 0x%X", readBuffer[1], register);
 		Timer.delay(200 * us);
-		return readBuffer[0];
+		return readBuffer[2];
 	}
 	
 	public void startAutoLoop() {
 		stopAutoLoop();
 		autoEnabled = true;
 		autoLoop = new Thread(() -> {
-			try {
+			while(autoEnabled) {
 				updateMotion();
-				if(processTime < updateInterval)
-					Thread.sleep((long) ((updateInterval - processTime) * 1000));
-			} catch(InterruptedException e) {}
+				try {
+					if(processTime < updateInterval)
+						Thread.sleep((long) ((updateInterval - processTime) * 1000));
+				} catch(InterruptedException e) {}
+			}
 		}, "PMW3901-AutoLooop-" + Thread.activeCount());
+		autoLoop.start();
 	}
 	
 	public void stopAutoLoop() {
@@ -140,7 +169,10 @@ public class PMW3901 extends SensorBase implements Sendable {
 	@Override
 	public void free() {
 		super.free();
-		spi.free();
+		if(spi != null) {
+			spi.free();
+			spi = null;
+		}
 	}
 
 	@Override
@@ -166,7 +198,6 @@ public class PMW3901 extends SensorBase implements Sendable {
 	private static void log(String message, Object... args) {
 		if(verbose)
 			System.out.println(String.format("PMW3901: " + message, args));
-			
 	}
 	
 	private void initializeRegisters() {
