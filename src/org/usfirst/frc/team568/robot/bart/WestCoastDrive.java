@@ -37,7 +37,12 @@ public class WestCoastDrive extends SubsystemBase {
 			
 			@Override
 			protected void execute() {
-				drive.curvatureDrive(-joystick.getRawAxis(1), joystick.getRawAxis(4), joystick.getRawButton(ControllerButtons.leftBumper));
+				double x = -joystick.getRawAxis(1);
+				double y =  joystick.getRawAxis(4);
+				x = x * x * Math.signum(x);
+				y = y * y * Math.signum(y);
+				drive.curvatureDrive(x, y,
+						joystick.getRawButton(ControllerButtons.leftBumper));
 			}
 
 			@Override
