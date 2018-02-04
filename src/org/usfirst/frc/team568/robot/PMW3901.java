@@ -45,7 +45,7 @@ public class PMW3901 extends SensorBase implements Sendable {
 		 * PMW3901 officially supports a 2MHz clock; but may need more time between the address byte
 		 *  and data byte on read commands (35uS). If read commands are failing, lower this to ~28kHz.
 		 */
-		spi.setClockRate(2000000);
+		spi.setClockRate(14000);
 		spi.setMSBFirst();
 		// This should be setSampleDataOnRising() - see https://github.com/wpilibsuite/allwpilib/issues/925
 		spi.setSampleDataOnFalling();
@@ -137,7 +137,7 @@ public class PMW3901 extends SensorBase implements Sendable {
 		spi.transaction(writeBuffer, readBuffer, 2);
 		log("Read 0x%X from 0x%X", readBuffer[1], register);
 		Timer.delay(200 * us);
-		return readBuffer[2];
+		return readBuffer[1];
 	}
 	
 	public void startAutoLoop() {
