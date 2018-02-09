@@ -9,5 +9,11 @@
 	<classpathentry kind="var" path="wpiutil" sourcepath="wpiutil.sources"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/CTRE_Phoenix-sources.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/CTRE_Phoenix.jar" sourcepath="/CTRE_Phoenix.sources"/>
+	<classpathentry kind="var" path="USERLIBS_DIR/jna.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://java-native-access.github.io/jna/4.5.1/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="USERLIBS_DIR/niVisionWPI.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

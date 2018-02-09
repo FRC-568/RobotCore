@@ -4,6 +4,12 @@
 
 package org.usfirst.frc.team568.robot;
 
+import com.sun.jna.Library;
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.Structure;
+
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
@@ -14,24 +20,34 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 import static org.usfirst.frc.team568.robot.PMW3901.Register.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static org.usfirst.frc.team568.robot.PMW3901.Magic.*;
 
 public class PMW3901 extends SensorBase implements Sendable {
-	protected SPI spi;
-	protected SPI.Port spiPort;
+	private static final CLibrary c = CLibrary.INSTANCE;
+	private static final HalLibrary hal = HalLibrary.INSTANCE;
+	private static final int SPI_CLOCK = 2000000;
+	private static final double ms = 1.0E-3; //milliseconds
+	private static final double us = 1.0E-6; //microseconds
+	private SPI spi;
+	private SPI.Port spiPort;
+	private Spi_Ioc_Transfer[] iocStruct;
+	private Memory txBuffer;
+	private Thread autoLoop;
+	private boolean autoEnabled;
+	
 	protected Vector2d position;
 	protected Vector2d velocity;
 	protected Vector2d acceleration;
 	protected double timestamp;
 	protected double processTime;
-	private Thread autoLoop;
-	private boolean autoEnabled;
-	private byte[] readBuffer = new byte[2];
-	private byte[] writeBuffer = new byte[2];
-	private static final double ms = 1.0E-3; //milliseconds
-	private static final double us = 1.0E-6; //microseconds
+	
 	public static boolean verbose = false;
 	public double updateInterval = 20 * ms;
+	
 	
 	public PMW3901(SPI.Port port) {
 		spiPort = port;
@@ -43,14 +59,37 @@ public class PMW3901 extends SensorBase implements Sendable {
 	public void initialize() {
 		/*
 		 * PMW3901 officially supports a 2MHz clock; but may need more time between the address byte
-		 *  and data byte on read commands (35uS). If read commands are failing, lower this to ~28kHz.
+		 *  and data byte on read commands (35uS). If read commands are failing, lower this to ~14kHz.
 		 */
-		spi.setClockRate(14000);
+		spi.setClockRate(SPI_CLOCK);
 		spi.setMSBFirst();
 		// This should be setSampleDataOnRising() - see https://github.com/wpilibsuite/allwpilib/issues/925
 		spi.setSampleDataOnFalling();
 		spi.setClockActiveLow();
 		spi.setChipSelectActiveLow();
+		
+		txBuffer = new Memory(2);
+		txBuffer.clear();
+		
+		iocStruct = (Spi_Ioc_Transfer[]) new Spi_Ioc_Transfer().toArray(2);
+		
+		iocStruct[0].clear();
+		iocStruct[0].speed_hz = SPI_CLOCK;
+		iocStruct[0].bits_per_word = 8;
+		iocStruct[0].delay_usecs = 50;
+		iocStruct[0].tx_buf = Pointer.nativeValue(txBuffer);
+		iocStruct[0].rx_buf = Pointer.nativeValue(txBuffer);
+		iocStruct[0].len = 1;
+		iocStruct[0].write();
+		
+		iocStruct[1].clear();
+		iocStruct[1].speed_hz = SPI_CLOCK;
+		iocStruct[1].bits_per_word = 8;
+		iocStruct[1].delay_usecs = 50;
+		iocStruct[1].tx_buf = Pointer.nativeValue(txBuffer);
+		iocStruct[1].rx_buf = Pointer.nativeValue(txBuffer);
+		iocStruct[1].len = 1;
+		iocStruct[1].write();
 		
 		// Reset state - power-up delay is 50ms
 		writeByte(POWER_UP_RESET, POWER_UP_RESET_CODE);
@@ -64,7 +103,10 @@ public class PMW3901 extends SensorBase implements Sendable {
 		}
 		
 		initializeRegisters();
-		
+		reset();
+	}
+	
+	public void reset() {
 		// Clear motion registers
 		readByte(MOTION);
 		readByte(DELTA_X_L);
@@ -91,9 +133,7 @@ public class PMW3901 extends SensorBase implements Sendable {
 		return acceleration;
 	}
 	
-	public Vector2d updateMotion() {
-		double currentTime = Timer.getFPGATimestamp();
-		double deltaTime = currentTime - timestamp;
+	public Vector2d readMotion() {
 		readByte(MOTION);
 		short xValue = readByte(DELTA_X_H);
 		xValue <<= 8;
@@ -103,7 +143,14 @@ public class PMW3901 extends SensorBase implements Sendable {
 		yValue <<= 8;
 		yValue |= readByte(DELTA_Y_L);
 
-		Vector2d motion = new Vector2d(xValue, yValue);
+		return new Vector2d(xValue, yValue);
+	}
+	
+	public Vector2d updateMotion() {
+		double currentTime = Timer.getFPGATimestamp();
+		double deltaTime = currentTime - timestamp;
+		Vector2d motion = readMotion();
+		
 		position.x = position.x + motion.x;
 		position.y = position.y + motion.y;
 		
@@ -121,9 +168,11 @@ public class PMW3901 extends SensorBase implements Sendable {
 		if(spi == null)
 			return;
 		
-		writeBuffer[0] = (byte) (register | 0x80);
-		writeBuffer[1] = value;
-		spi.transaction(writeBuffer, readBuffer, 2);
+		txBuffer.setByte(0, (byte) (register | 0x80));
+		txBuffer.setByte(1, value);
+		iocStruct[0].writeField("len", 2);
+		c.ioctl(hal.HAL_GetSPIHandle(spiPort.value), CLibrary.Spi_Ioc_Message(1), iocStruct[0].getPointer());
+		
 		log("Wrote 0x%X to 0x%X", value, register);
 		Timer.delay(200 * us);
 	}
@@ -132,12 +181,15 @@ public class PMW3901 extends SensorBase implements Sendable {
 		if(spi == null)
 			return 0;
 		
-		writeBuffer[0] = (byte) (register & 0x7F);
-		writeBuffer[1] = 0x00;
-		spi.transaction(writeBuffer, readBuffer, 2);
-		log("Read 0x%X from 0x%X", readBuffer[1], register);
+		txBuffer.setByte(0, (byte) (register & 0x7F));
+		iocStruct[0].writeField("len", 1);
+		c.ioctl(hal.HAL_GetSPIHandle(spiPort.value), CLibrary.Spi_Ioc_Message(2), iocStruct[0].getPointer());
+		
+		byte value = txBuffer.getByte(0);
+		
+		log("Read 0x%X from 0x%X", value, register);
 		Timer.delay(200 * us);
-		return readBuffer[1];
+		return value;
 	}
 	
 	public void startAutoLoop() {
@@ -201,81 +253,41 @@ public class PMW3901 extends SensorBase implements Sendable {
 	}
 	
 	private void initializeRegisters() {
-		  writeByte((byte) 0x7F, (byte) 0x00);
-		  writeByte((byte) 0x61, (byte) 0xAD);
-		  writeByte((byte) 0x7F, (byte) 0x03);
-		  writeByte((byte) 0x40, (byte) 0x00);
-		  writeByte((byte) 0x7F, (byte) 0x05);
-		  writeByte((byte) 0x41, (byte) 0xB3);
-		  writeByte((byte) 0x43, (byte) 0xF1);
-		  writeByte((byte) 0x45, (byte) 0x14);
-		  writeByte((byte) 0x5B, (byte) 0x32);
-		  writeByte((byte) 0x5F, (byte) 0x34);
-		  writeByte((byte) 0x7B, (byte) 0x08);
-		  writeByte((byte) 0x7F, (byte) 0x06);
-		  writeByte((byte) 0x44, (byte) 0x1B);
-		  writeByte((byte) 0x40, (byte) 0xBF);
-		  writeByte((byte) 0x4E, (byte) 0x3F);
-		  writeByte((byte) 0x7F, (byte) 0x08);
-		  writeByte((byte) 0x65, (byte) 0x20);
-		  writeByte((byte) 0x6A, (byte) 0x18);
-		  writeByte((byte) 0x7F, (byte) 0x09);
-		  writeByte((byte) 0x4F, (byte) 0xAF);
-		  writeByte((byte) 0x5F, (byte) 0x40);
-		  writeByte((byte) 0x48, (byte) 0x80);
-		  writeByte((byte) 0x49, (byte) 0x80);
-		  writeByte((byte) 0x57, (byte) 0x77);
-		  writeByte((byte) 0x60, (byte) 0x78);
-		  writeByte((byte) 0x61, (byte) 0x78);
-		  writeByte((byte) 0x62, (byte) 0x08);
-		  writeByte((byte) 0x63, (byte) 0x50);
-		  writeByte((byte) 0x7F, (byte) 0x0A);
-		  writeByte((byte) 0x45, (byte) 0x60);
-		  writeByte((byte) 0x7F, (byte) 0x00);
-		  writeByte((byte) 0x4D, (byte) 0x11);
-		  writeByte((byte) 0x55, (byte) 0x80);
-		  writeByte((byte) 0x74, (byte) 0x1F);
-		  writeByte((byte) 0x75, (byte) 0x1F);
-		  writeByte((byte) 0x4A, (byte) 0x78);
-		  writeByte((byte) 0x4B, (byte) 0x78);
-		  writeByte((byte) 0x44, (byte) 0x08);
-		  writeByte((byte) 0x45, (byte) 0x50);
-		  writeByte((byte) 0x64, (byte) 0xFF);
-		  writeByte((byte) 0x65, (byte) 0x1F);
-		  writeByte((byte) 0x7F, (byte) 0x14);
-		  writeByte((byte) 0x65, (byte) 0x60);
-		  writeByte((byte) 0x66, (byte) 0x08);
-		  writeByte((byte) 0x63, (byte) 0x78);
-		  writeByte((byte) 0x7F, (byte) 0x15);
-		  writeByte((byte) 0x48, (byte) 0x58);
-		  writeByte((byte) 0x7F, (byte) 0x07);
-		  writeByte((byte) 0x41, (byte) 0x0D);
-		  writeByte((byte) 0x43, (byte) 0x14);
-		  writeByte((byte) 0x4B, (byte) 0x0E);
-		  writeByte((byte) 0x45, (byte) 0x0F);
-		  writeByte((byte) 0x44, (byte) 0x42);
-		  writeByte((byte) 0x4C, (byte) 0x80);
-		  writeByte((byte) 0x7F, (byte) 0x10);
-		  writeByte((byte) 0x5B, (byte) 0x02);
-		  writeByte((byte) 0x7F, (byte) 0x07);
-		  writeByte((byte) 0x40, (byte) 0x41);
-		  writeByte((byte) 0x70, (byte) 0x00);
+		final byte[] optReg1 = {
+			0x7F, 0x61, 0x7F, 0x40, 0x7F, 0x41, 0x43, 0x45,
+			0x5B, 0x5F, 0x7B, 0x7F, 0x44, 0x40, 0x4E, 0x7F,
+			0x65, 0x6A, 0x7F, 0x4F, 0x5F, 0x48, 0x49, 0x57,
+			0x60, 0x61, 0x62, 0x63, 0x7F, 0x45, 0x7F, 0x4D,
+			0x55, 0x74, 0x75, 0x4A, 0x4B, 0x44, 0x45, 0x64,
+			0x65, 0x7F, 0x65, 0x66, 0x63, 0x7F, 0x48, 0x7F,
+			0x41, 0x43, 0x4B, 0x45, 0x44, 0x4C, 0x7F, 0x5B,
+			0x7F, 0x40, 0x70
+		};
+		final byte[] optVal1 = {
+			0x00, (byte) 0xAD, 0x03, 0x00, 0x05, (byte) 0xB3, (byte) 0xF1, 0x14,
+			0x32, 0x34, 0x08, 0x06, 0x1B, (byte) 0xBF, 0x3F, 0x08,
+			0x20, 0x18, 0x09, (byte) 0xAF, 0x40, (byte) 0x80, (byte) 0x80, 0x77,
+			0x78, 0x78, 0x08, 0x50, 0x0A, 0x60, 0x00, 0x11,
+			(byte) 0x80, 0x1F, 0x1F, 0x78, 0x78, 0x08, 0x50, (byte) 0xFF,
+			0x1F, 0x14, 0x60, 0x08, 0x78, 0x15, 0x58, 0x07,
+			0x0D, 0x14, 0x0E, 0x0F, 0x42, (byte) 0x80, 0x10, 0x02,
+			0x07, 0x41, 0x00
+		};
+		for(int i = 0; i < optReg1.length; i++)
+			writeByte(optReg1[i], optVal1[i]);
 
-		 Timer.delay(1);
-		  writeByte((byte) 0x32, (byte) 0x44);
-		  writeByte((byte) 0x7F, (byte) 0x07);
-		  writeByte((byte) 0x40, (byte) 0x40);
-		  writeByte((byte) 0x7F, (byte) 0x06);
-		  writeByte((byte) 0x62, (byte) 0xf0);
-		  writeByte((byte) 0x63, (byte) 0x00);
-		  writeByte((byte) 0x7F, (byte) 0x0D);
-		  writeByte((byte) 0x48, (byte) 0xC0);
-		  writeByte((byte) 0x6F, (byte) 0xd5);
-		  writeByte((byte) 0x7F, (byte) 0x00);
-		  writeByte((byte) 0x5B, (byte) 0xa0);
-		  writeByte((byte) 0x4E, (byte) 0xA8);
-		  writeByte((byte) 0x5A, (byte) 0x50);
-		  writeByte((byte) 0x40, (byte) 0x80);
+		Timer.delay(1);
+		
+		final byte[] optReg2 = {
+			0x32, 0x7F, 0x40, 0x7F, 0x62, 0x63, 0x7F, 0x48,
+			0x6F, 0x7F, 0x5B, 0x4E, 0x5A, 0x40
+		};
+		final byte[] optVal2 = {
+			0x44, 0x07, 0x40, 0x06, (byte) 0xf0, 0x00, 0x0D, (byte) 0xC0,
+			(byte) 0xd5, 0x00, (byte) 0xa0, (byte) 0xA8, 0x50, (byte) 0x80
+		};
+		for(int i = 0; i < optReg2.length; i++)
+			writeByte(optReg1[i], optVal2[i]);
 	}
 	
 	public static final class Register {
@@ -307,7 +319,54 @@ public class PMW3901 extends SensorBase implements Sendable {
 	protected static final class Magic {
 		public static final byte POWER_UP_RESET_CODE     = 0x5A; // write to 0x3A to restart
 		public static final byte PRODUCT_ID_CODE         = 0x49; // should match register 0x00
-		public static final byte INVERSE_PRODUCT_ID_CODE = (byte) 0xB6; // ~0x49 - should match register 0x5F; but sample code uses 0xB8
+		public static final byte INVERSE_PRODUCT_ID_CODE = (byte) 0xB6; // ~0x49
+	}
+	
+	protected interface CLibrary extends Library {
+		CLibrary INSTANCE = (CLibrary) Native.loadLibrary("c", CLibrary.class);
+		
+		public static int Spi_Ioc_Message(int size) {
+			final int _IOC_SIZEBITS = 14;
+			final int SPI_IOC_MAGIC = 0x6B; // ASCII 'k'
+			final int MSG_SIZE = 32; // sizeof(struct spi_ioc_transfer) in bytes
+			
+			int spi_msgsize = (((size * MSG_SIZE) < (1 << _IOC_SIZEBITS)) ? (size * MSG_SIZE) : 0);
+			return (1 << 30) | (SPI_IOC_MAGIC << 8) | (spi_msgsize << 16);
+		}
+		
+		public int ioctl(int fd, int cmd, Pointer arg);
+		public int open(String path, int flags);
+		public int close(int fd);
+	}
+	
+	protected interface HalLibrary extends Library {
+		HalLibrary INSTANCE = (HalLibrary) Native.loadLibrary("wpiHal", HalLibrary.class);
+		
+		public int HAL_GetSPIHandle(int port);
+	}
+	
+	public static class Spi_Ioc_Transfer extends Structure {
+		public long tx_buf;
+		public long rx_buf;
+		public int len;
+		public int speed_hz;
+		public short delay_usecs;
+		public byte bits_per_word;
+		public byte cs_change;
+		public int pad;
+		
+		public Spi_Ioc_Transfer() {
+			super(ALIGN_NONE);
+		}
+
+		@Override
+		protected List<String> getFieldOrder() {
+			return Arrays.asList("tx_buf", "rx_buf", "len", "speed_hz",
+					"delay_usecs", "bits_per_word", "cs_change", "pad");
+		}
+		
+		public static class ByReference extends Spi_Ioc_Transfer implements Structure.ByReference {}
+		public static class ByValue extends Spi_Ioc_Transfer implements Structure.ByValue {}
 	}
 
 }
