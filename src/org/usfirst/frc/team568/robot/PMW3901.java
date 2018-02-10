@@ -61,7 +61,11 @@ public class PMW3901 extends SensorBase implements Sendable {
 		 * PMW3901 officially supports a 2MHz clock; but may need more time between the address byte
 		 *  and data byte on read commands (35uS). If read commands are failing, lower this to ~14kHz.
 		 */
+<<<<<<< Upstream, based on origin/master
 		spi.setClockRate(SPI_CLOCK);
+=======
+		spi.setClockRate(14000);
+>>>>>>> 8c580a9 Changed the ClockRate to 2000000 in PMW3901 Class. Added calibrate,reset,getAngle,getRate,getPosition,update,and Vector2d methods in Locator Class.
 		spi.setMSBFirst();
 		// This should be setSampleDataOnRising() - see https://github.com/wpilibsuite/allwpilib/issues/925
 		spi.setSampleDataOnFalling();
