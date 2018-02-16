@@ -20,7 +20,7 @@ public class UnClimb extends Command {
 
 	@Override
 	protected void execute() {
-		winchClimber.climber.set(1);
+		winchClimber.lift_m.set(1);
 
 	}
 
@@ -31,7 +31,7 @@ public class UnClimb extends Command {
 
 	@Override
 	protected void end() {
-		winchClimber.climber.set(0);
+		winchClimber.lift_m.set(0);
 
 	}
 

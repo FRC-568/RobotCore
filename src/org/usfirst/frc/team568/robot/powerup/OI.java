@@ -12,7 +12,9 @@ public class OI {
 	public Joystick joyStick1 = new Joystick(0);
 	public Joystick joyStick2 = new Joystick(1);
 
-	public Button intake = new JoystickButton(joyStick1, ControllerButtons.RightStickIn);
-	public Button outtake = new JoystickButton(joyStick1, ControllerButtons.LeftStickIn);
+	public Button intake = new JoystickButton(joyStick1, ControllerButtons.RightBumper);
+	public Button outtake = new JoystickButton(joyStick1, ControllerButtons.LeftBumper);
 
+	public Button liftUp = new JoystickButton(joyStick1, ControllerButtons.B);
+	public Button liftDown = new JoystickButton(joyStick1, ControllerButtons.A);
 }

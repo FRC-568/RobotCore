@@ -2,7 +2,8 @@ package org.usfirst.frc.team568.robot.subsystems;
 
 import org.usfirst.frc.team568.robot.RobotBase;
 
-import edu.wpi.first.wpilibj.Spark;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.SpeedController;
 
 public class BlockIntake extends SubsystemBase {
@@ -12,8 +13,10 @@ public class BlockIntake extends SubsystemBase {
 	public BlockIntake(final RobotBase robot) {
 		super(robot);
 
-		intakeOne = new Spark(port("intakeOne"));
-		intakeTwo = new Spark(port("intakeTwo"));
+		intakeOne = new WPI_TalonSRX(port("intakeOne"));
+		intakeTwo = new WPI_TalonSRX(port("intakeTwo"));
+
+		intakeOne.setInverted(true);
 	}
 
 }

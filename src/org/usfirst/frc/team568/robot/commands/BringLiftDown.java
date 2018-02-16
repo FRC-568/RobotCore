@@ -1,15 +1,15 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.steamworks.Robot;
-import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
+import org.usfirst.frc.team568.robot.powerup.Robot;
+import org.usfirst.frc.team568.robot.subsystems.BlockLift2018;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ClimbWithWinch extends Command {
-	public WinchClimber winchClimber;
+public class BringLiftDown extends Command {
+	public BlockLift2018 blockLift;
 
-	public ClimbWithWinch() {
-		winchClimber = Robot.getInstance().winchClimber;
+	public BringLiftDown() {
+		blockLift = Robot.getInstance().blockLift;
 
 	}
 
@@ -20,7 +20,7 @@ public class ClimbWithWinch extends Command {
 
 	@Override
 	protected void execute() {
-		winchClimber.lift_m.set(-1);
+		blockLift.lift_m.set(1);
 
 	}
 
@@ -31,7 +31,7 @@ public class ClimbWithWinch extends Command {
 
 	@Override
 	protected void end() {
-		winchClimber.lift_m.set(0);
+		blockLift.lift_m.set(0);
 
 	}
 

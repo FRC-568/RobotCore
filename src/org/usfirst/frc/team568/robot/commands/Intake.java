@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.steamworks.Robot;
+import org.usfirst.frc.team568.robot.powerup.Robot;
 import org.usfirst.frc.team568.robot.subsystems.BlockIntake;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -18,8 +18,8 @@ public class Intake extends Command {
 	}
 
 	protected void execute() {
-		blockIntake.intakeOne.set(1);
-		blockIntake.intakeTwo.set(-1);
+		blockIntake.intakeOne.set(.5);
+		blockIntake.intakeTwo.set(.5);
 		Timer.delay(.5);
 	}
 
