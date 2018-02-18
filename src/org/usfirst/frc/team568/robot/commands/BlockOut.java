@@ -1,15 +1,15 @@
 package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.powerup.Robot;
-import org.usfirst.frc.team568.robot.subsystems.BlockIntake;
+import org.usfirst.frc.team568.robot.subsystems.BlockHandler;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class Outtake extends Command {
-	BlockIntake blockIntake;
+public class BlockOut extends Command {
+	BlockHandler blockIntake;
 
-	public Outtake() {
+	public BlockOut() {
 
 	}
 

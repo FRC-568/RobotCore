@@ -2,9 +2,9 @@ package org.usfirst.frc.team568.robot.steamworks;
 
 import org.usfirst.frc.team568.grip.VisionProcessor;
 import org.usfirst.frc.team568.robot.RobotBase;
-import org.usfirst.frc.team568.robot.commands.Intake;
-import org.usfirst.frc.team568.robot.commands.Outtake;
-import org.usfirst.frc.team568.robot.subsystems.BlockIntake;
+import org.usfirst.frc.team568.robot.commands.BlockIn;
+import org.usfirst.frc.team568.robot.commands.BlockOut;
+import org.usfirst.frc.team568.robot.subsystems.BlockHandler;
 import org.usfirst.frc.team568.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team568.robot.subsystems.GearBox;
 import org.usfirst.frc.team568.robot.subsystems.ReferenceFrame2017;
@@ -42,7 +42,7 @@ public class Robot extends RobotBase {
 	public VisionTargetTracker gearTracker;
 	public ControllerButtons buttons;
 	public VisionProcessor visionProcessor;
-	public BlockIntake blockIntake;
+	public BlockHandler blockIntake;
 
 	public Robot() {
 		instance = this;
@@ -71,7 +71,7 @@ public class Robot extends RobotBase {
 		imu = new ADIS16448_IMU();
 		compressor = new Compressor();
 
-		blockIntake = new BlockIntake(this);
+		blockIntake = new BlockHandler(this);
 	}
 
 	@Override
@@ -84,8 +84,8 @@ public class Robot extends RobotBase {
 		SmartDashboard.putNumber("Autonomous #", 1);
 		SmartDashboard.putNumber("Speed Multiplier", 1);
 
-		oi.intake.whileHeld(new Intake());
-		oi.outtake.whileHeld(new Outtake());
+		oi.intake.whileHeld(new BlockIn());
+		oi.outtake.whileHeld(new BlockOut());
 
 		compressor.start();
 

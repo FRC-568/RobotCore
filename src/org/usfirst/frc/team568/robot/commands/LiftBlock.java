@@ -20,7 +20,7 @@ public class LiftBlock extends Command {
 
 	@Override
 	protected void execute() {
-		blockLift.lift_m.set(-1);
+		blockLift.lift_m.set(-.5);
 
 	}
 

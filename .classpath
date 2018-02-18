@@ -14,6 +14,5 @@
 			<attribute name="javadoc_location" value="http://java-native-access.github.io/jna/4.5.1/javadoc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="USERLIBS_DIR/niVisionWPI.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

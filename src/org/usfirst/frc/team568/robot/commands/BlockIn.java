@@ -1,15 +1,15 @@
 package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.powerup.Robot;
-import org.usfirst.frc.team568.robot.subsystems.BlockIntake;
+import org.usfirst.frc.team568.robot.subsystems.BlockHandler;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class Intake extends Command {
-	BlockIntake blockIntake;
+public class BlockIn extends Command {
+	BlockHandler blockIntake;
 
-	public Intake() {
+	public BlockIn() {
 
 	}
 
@@ -18,9 +18,9 @@ public class Intake extends Command {
 	}
 
 	protected void execute() {
-		blockIntake.intakeOne.set(.5);
-		blockIntake.intakeTwo.set(.5);
-		Timer.delay(.5);
+		blockIntake.blockLiftIn();
+		blockIntake.blockArmIn();
+		Timer.delay(.1);
 	}
 
 	@Override
@@ -30,8 +30,7 @@ public class Intake extends Command {
 	}
 
 	protected void end() {
-		blockIntake.intakeOne.set(0);
-		blockIntake.intakeTwo.set(0);
+		blockIntake.allStop();
 	}
 
 }
