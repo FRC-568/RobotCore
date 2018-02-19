@@ -4,23 +4,27 @@ import org.usfirst.frc.team568.robot.RobotBase;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Talon;
+
 public class BlockHandler extends SubsystemBase {
-	public WPI_TalonSRX intakeOne;
-	public WPI_TalonSRX intakeTwo;
-	public WPI_TalonSRX intakeArmL;
-	public WPI_TalonSRX intakeArmR;
-	public WPI_TalonSRX armMotorL;
-	public WPI_TalonSRX armMotorR;
+	public SpeedController intakeOne;
+	public SpeedController intakeTwo;
+	public SpeedController intakeArmL;
+	public SpeedController intakeArmR;
+	public SpeedController armMotorL;
+	public SpeedController armMotorR;
 
 	public BlockHandler(final RobotBase robot) {
 		super(robot);
 
 		intakeOne = new WPI_TalonSRX(port("intakeOne"));
 		intakeTwo = new WPI_TalonSRX(port("intakeTwo"));
-		intakeArmL = new WPI_TalonSRX(port("intakeArmL"));
-		intakeArmR = new WPI_TalonSRX(port("intakeArmR"));
-		armMotorL = new WPI_TalonSRX(port("armMotorL"));
-		armMotorR = new WPI_TalonSRX(port("armMotorR"));
+		intakeArmL = new Spark(port("intakeArmL"));
+		intakeArmR = new Spark(port("intakeArmR"));
+		armMotorL = new Talon(port("armMotorL"));
+		armMotorR = new Talon(port("armMotorR"));
 
 		intakeOne.setInverted(true);
 		intakeArmL.setInverted(true);

@@ -1,13 +1,19 @@
 package org.usfirst.frc.team568.robot.powerup;
 
 import org.usfirst.frc.team568.robot.RobotBase;
+import org.usfirst.frc.team568.robot.commands.ArmGrab;
+import org.usfirst.frc.team568.robot.commands.ArmOpen;
 import org.usfirst.frc.team568.robot.commands.BlockIn;
 import org.usfirst.frc.team568.robot.commands.BlockOut;
 import org.usfirst.frc.team568.robot.commands.BringLiftDown;
+import org.usfirst.frc.team568.robot.commands.ClimbWithWinch;
 import org.usfirst.frc.team568.robot.commands.LiftBlock;
+import org.usfirst.frc.team568.robot.commands.UnClimb;
 import org.usfirst.frc.team568.robot.subsystems.BlockHandler;
 import org.usfirst.frc.team568.robot.subsystems.BlockLift2018;
+import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
@@ -16,7 +22,9 @@ public class Robot extends RobotBase {
 	public DriveTrain2018 driveTrain;
 	public BlockLift2018 blockLift;
 	public BlockHandler blockIntake;
+	public WinchClimber climber;
 	public OI oi;
+
 	protected static Robot instance;
 
 	public Robot() {
@@ -29,10 +37,12 @@ public class Robot extends RobotBase {
 
 		port("intakeOne", 6);
 		port("intakeTwo", 7);
-		port("intakeArmL", 0);
-		port("intakeArmR", 1);
-		port("armMotorL", 2);
-		port("armMotorR", 3);
+		port("intakeArmL", 2);
+		port("intakeArmR", 3);
+		port("armMotorL", 0);
+		port("armMotorR", 1);
+
+		port("climber", 8);
 
 		instance = this;
 		oi = new OI();
@@ -40,6 +50,7 @@ public class Robot extends RobotBase {
 		addSubsystem(DriveTrain2018.class, driveTrain);
 		blockLift = new BlockLift2018(this);
 		blockIntake = new BlockHandler(this);
+		climber = new WinchClimber(this);
 
 	}
 
@@ -49,8 +60,13 @@ public class Robot extends RobotBase {
 
 		oi.liftUp.whileHeld(new LiftBlock());
 		oi.liftDown.whileHeld(new BringLiftDown());
-		oi.intake.whileHeld(new BlockIn());
-		oi.outtake.whileHeld(new BlockOut());
+		oi.blockIn.whileHeld(new BlockIn());
+		oi.blockOut.whileHeld(new BlockOut());
+		oi.blockOut2.whileHeld(new BlockOut());
+		oi.armGrab.whileHeld(new ArmGrab());
+		oi.armOpen.whileHeld(new ArmOpen());
+		oi.climb.whileHeld(new ClimbWithWinch());
+		oi.unClimb.whileHeld(new UnClimb());
 	}
 
 	@Override
@@ -65,7 +81,16 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = new AutoOne(this);
+
+		String gameData;
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		if (gameData.length() > 0) {
+			if (gameData.charAt(1) == 'L') {
+				autonomousCommand = new AutoTwo(this);
+			} else {
+				autonomousCommand = new AutoOne(this);
+			}
+		}
 
 		autonomousCommand.start();
 

@@ -6,11 +6,11 @@ import org.usfirst.frc.team568.robot.subsystems.BlockHandler;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ArmGrab extends Command {
+public class ArmOpen extends Command {
 
 	BlockHandler blockIntake;
 
-	public ArmGrab() {
+	public ArmOpen() {
 
 	}
 
@@ -19,7 +19,7 @@ public class ArmGrab extends Command {
 	}
 
 	protected void execute() {
-		blockIntake.armIn();
+		blockIntake.armOut();
 		Timer.delay(.1);
 	}
 

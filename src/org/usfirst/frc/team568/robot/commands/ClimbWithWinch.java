@@ -1,6 +1,6 @@
 package org.usfirst.frc.team568.robot.commands;
 
-import org.usfirst.frc.team568.robot.steamworks.Robot;
+import org.usfirst.frc.team568.robot.powerup.Robot;
 import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -9,7 +9,7 @@ public class ClimbWithWinch extends Command {
 	public WinchClimber winchClimber;
 
 	public ClimbWithWinch() {
-		winchClimber = Robot.getInstance().winchClimber;
+		winchClimber = Robot.getInstance().climber;
 
 	}
 
