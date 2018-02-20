@@ -36,7 +36,9 @@ public class Robot extends RobotBase {
 		port("rightFrontMotor", 3);
 		port("rightBackMotor", 4);
 
-		port("lift", 5);
+		port("liftMotor", 5);
+		port("liftEncoderA", 0);
+		port("liftEncoderB", 1);
 
 		port("intakeOne", 6);
 		port("intakeTwo", 7);
@@ -49,11 +51,10 @@ public class Robot extends RobotBase {
 
 		instance = this;
 		oi = new OI();
-		driveTrain = new DriveTrain2018(this);
-		addSubsystem(DriveTrain2018.class, driveTrain);
-		blockLift = new BlockLift2018(this);
-		blockIntake = new BlockHandler(this);
-		climber = new WinchClimber(this);
+		driveTrain = addSubsystem(DriveTrain2018::new);
+		blockLift = addSubsystem(BlockLift2018::new);
+		blockIntake = addSubsystem(BlockHandler::new);
+		climber = addSubsystem(WinchClimber::new);
 
 	}
 
@@ -62,8 +63,8 @@ public class Robot extends RobotBase {
 		SmartDashboard.putNumber("Robot Position: ", 0);
 		driveTrain.calGyro();
 
-		oi.liftUp.whileHeld(new LiftBlock());
-		oi.liftDown.whileHeld(new BringLiftDown());
+		oi.liftUp.whileHeld(blockLift.getCommandRaise());
+		oi.liftDown.whileHeld(blockLift.getCommandLower());
 		oi.blockIn.whileHeld(new BlockIn());
 		oi.blockOut.whileHeld(new BlockOut2());
 		oi.blockOut2.whileHeld(new BlockOut());
