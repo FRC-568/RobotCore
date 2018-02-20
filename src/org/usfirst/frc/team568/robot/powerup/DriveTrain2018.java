@@ -96,14 +96,19 @@ public class DriveTrain2018 extends SubsystemBase {
 		joystick = new Joystick(0);
 	}
 
-	public double getDist() {
+	public void resetDist() {
 		fl.setSelectedSensorPosition(0, 0, 10);
 		fr.setSelectedSensorPosition(0, 0, 10);
+	}
+
+	public double getDist() {
+
 		return (fl.getSelectedSensorPosition(0) + fr.getSelectedSensorPosition(0)) / 2;
 	}
 
 	public void resetGyro() {
 		gyro.reset();
+
 	}
 
 	public void calGyro() {
@@ -128,15 +133,15 @@ public class DriveTrain2018 extends SubsystemBase {
 	}
 
 	public void driveDist(double speed, double dist) {
-		double Kp = .76;
+		double Kp = .135;
 
 		double distTarget = (dist - getDist());
 		double error = gyro.getAngle() * Kp;
 
 		double targetPercent = distTarget / dist;
 
-		if (targetPercent >= .75)
-			speed = speed * (1 - targetPercent);
+		// if (targetPercent >= .75)
+		// speed = speed * (1 - targetPercent);
 
 		if (gyro.getAngle() <= 1 && gyro.getAngle() >= -1) {
 			fl.set(ControlMode.PercentOutput, speed);
@@ -145,7 +150,7 @@ public class DriveTrain2018 extends SubsystemBase {
 			fl.set(ControlMode.PercentOutput, speed - error);
 			fr.set(ControlMode.PercentOutput, speed + error);
 		}
-		System.out.println(gyro.getAngle());
+		// System.out.println(gyro.getAngle());
 	}
 
 	public void driveExecute() {
@@ -217,8 +222,8 @@ public class DriveTrain2018 extends SubsystemBase {
 
 		fl.set(limit(leftMotorOutput));
 		fr.set(limit(rightMotorOutput));
-		System.out.println("POS L" + fl.getSelectedSensorPosition(0));
-		System.out.println("POS R" + fr.getSelectedSensorPosition(0));
+		// System.out.println("POS L" + fl.getSelectedSensorPosition(0));
+		// System.out.println("POS R" + fr.getSelectedSensorPosition(0));
 
 		// m_safetyHelper.feed();
 	}

@@ -20,7 +20,10 @@ public class Drive2018 extends Command {
 	private static final double TO_TICKS = TPR / CIRCUMFERENCE;
 
 	public Drive2018(DriveTrain2018 dt, double inch, double speed) {
+
 		this.dt = dt;
+		requires(dt);
+		// dt.resetGyro();
 		dist = inch * TO_TICKS;
 		this.speed = speed;
 
@@ -28,6 +31,9 @@ public class Drive2018 extends Command {
 
 	@Override
 	protected void initialize() {
+		System.out.println("DRIVING " + dist + " TICKS");
+
+		dt.resetDist();
 		dt.resetGyro();
 		distToTravel = dt.getDist() + dist;
 
@@ -40,7 +46,7 @@ public class Drive2018 extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		return dt.getDist() >= inch;
+		return dt.getDist() >= distToTravel;
 
 	}
 
