@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.command.Command;
 
 public class BlockHandler extends SubsystemBase {
 	public SpeedController intakeOne;
@@ -31,14 +33,14 @@ public class BlockHandler extends SubsystemBase {
 		armMotorL.setInverted(true);
 	}
 
-	public void armOut() {
-		intakeArmL.set(.25);
-		intakeArmR.set(.25);
-	}
-
 	public void armIn() {
 		intakeArmL.set(-.25);
 		intakeArmR.set(-.25);
+	}
+
+	public void armOut() {
+		intakeArmL.set(.25);
+		intakeArmR.set(.25);
 	}
 
 	public void blockLiftIn() {
@@ -68,5 +70,107 @@ public class BlockHandler extends SubsystemBase {
 		intakeTwo.set(0);
 		armMotorL.set(0);
 		armMotorR.set(0);
+	}
+
+	public Command getCommandArmIn() {
+		return new Command() {
+			@Override
+			protected void execute() {
+				armIn();
+				Timer.delay(.1);
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+
+			@Override
+			protected void end() {
+				allStop();
+			}
+		};
+	}
+
+	public Command getCommandArmOut() {
+		return new Command() {
+			@Override
+			protected void execute() {
+				armOut();
+				Timer.delay(.1);
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+
+			@Override
+			protected void end() {
+				allStop();
+			}
+		};
+	}
+
+	public Command getCommandBlockLiftIn() {
+		return new Command() {
+			@Override
+			protected void execute() {
+				blockLiftIn();
+				blockArmIn();
+				Timer.delay(.1);
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+
+			@Override
+			protected void end() {
+				allStop();
+			}
+		};
+	}
+
+	public Command getCommandBlockLiftOut() {
+		return new Command() {
+			@Override
+			protected void execute() {
+				blockLiftOut();
+				Timer.delay(.5);
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+
+			@Override
+			protected void end() {
+				allStop();
+			}
+		};
+	}
+
+	public Command getCommandBlockLiftOut2() {
+		return new Command() {
+			@Override
+			protected void execute() {
+				blockArmOut();
+				blockLiftOut();
+				Timer.delay(.5);
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+
+			@Override
+			protected void end() {
+				allStop();
+			}
+		};
 	}
 }

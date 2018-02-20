@@ -1,11 +1,6 @@
 package org.usfirst.frc.team568.robot.powerup;
 
 import org.usfirst.frc.team568.robot.RobotBase;
-import org.usfirst.frc.team568.robot.commands.ArmGrab;
-import org.usfirst.frc.team568.robot.commands.ArmOpen;
-import org.usfirst.frc.team568.robot.commands.BlockIn;
-import org.usfirst.frc.team568.robot.commands.BlockOut;
-import org.usfirst.frc.team568.robot.commands.BlockOut2;
 import org.usfirst.frc.team568.robot.commands.ClimbWithWinch;
 import org.usfirst.frc.team568.robot.commands.UnClimb;
 import org.usfirst.frc.team568.robot.subsystems.BlockHandler;
@@ -63,11 +58,11 @@ public class Robot extends RobotBase {
 
 		oi.liftUp.whileHeld(blockLift.getCommandRaise());
 		oi.liftDown.whileHeld(blockLift.getCommandLower());
-		oi.blockIn.whileHeld(new BlockIn());
-		oi.blockOut.whileHeld(new BlockOut2());
-		oi.blockOut2.whileHeld(new BlockOut());
-		oi.armGrab.whileHeld(new ArmGrab());
-		oi.armOpen.whileHeld(new ArmOpen());
+		oi.blockIn.whileHeld(blockIntake.getCommandBlockLiftIn());
+		oi.blockOut.whileHeld(blockIntake.getCommandBlockLiftOut());
+		oi.blockOut2.whileHeld(blockIntake.getCommandBlockLiftOut2());
+		oi.armGrab.whileHeld(blockIntake.getCommandArmIn());
+		oi.armOpen.whileHeld(blockIntake.getCommandArmOut());
 		oi.climb.whileHeld(new ClimbWithWinch());
 		oi.unClimb.whileHeld(new UnClimb());
 	}
