@@ -5,6 +5,7 @@ import org.usfirst.frc.team568.robot.commands.ArmGrab;
 import org.usfirst.frc.team568.robot.commands.ArmOpen;
 import org.usfirst.frc.team568.robot.commands.BlockIn;
 import org.usfirst.frc.team568.robot.commands.BlockOut;
+import org.usfirst.frc.team568.robot.commands.BlockOut2;
 import org.usfirst.frc.team568.robot.commands.BringLiftDown;
 import org.usfirst.frc.team568.robot.commands.ClimbWithWinch;
 import org.usfirst.frc.team568.robot.commands.LiftBlock;
@@ -16,6 +17,7 @@ import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends RobotBase {
 	Command autonomousCommand;
@@ -23,6 +25,7 @@ public class Robot extends RobotBase {
 	public BlockLift2018 blockLift;
 	public BlockHandler blockIntake;
 	public WinchClimber climber;
+
 	public OI oi;
 
 	protected static Robot instance;
@@ -56,12 +59,13 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void robotInit() {
+		SmartDashboard.putNumber("Robot Position: ", 0);
 		driveTrain.calGyro();
 
 		oi.liftUp.whileHeld(new LiftBlock());
 		oi.liftDown.whileHeld(new BringLiftDown());
 		oi.blockIn.whileHeld(new BlockIn());
-		oi.blockOut.whileHeld(new BlockOut());
+		oi.blockOut.whileHeld(new BlockOut2());
 		oi.blockOut2.whileHeld(new BlockOut());
 		oi.armGrab.whileHeld(new ArmGrab());
 		oi.armOpen.whileHeld(new ArmOpen());
@@ -84,15 +88,21 @@ public class Robot extends RobotBase {
 
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		int robotPos = (int) SmartDashboard.getNumber("Robot Position: ", 0);
+		int scalePos = 0;
+
 		if (gameData.length() > 0) {
 			if (gameData.charAt(1) == 'L') {
-				autonomousCommand = new AutoTwo(this);
+				scalePos = 1;
 			} else {
-				autonomousCommand = new AutoOne(this);
+				scalePos = 2;
 			}
 		}
-
-		autonomousCommand.start();
+		if (robotPos != 0 && scalePos != 0) {
+			autonomousCommand = new AutoOne(this, scalePos, robotPos);
+		}
+		if (autonomousCommand != null)
+			autonomousCommand.start();
 
 	}
 

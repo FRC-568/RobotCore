@@ -6,10 +6,10 @@ import org.usfirst.frc.team568.robot.subsystems.BlockHandler;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class BlockOut extends Command {
+public class BlockOut2 extends Command {
 	BlockHandler blockIntake;
 
-	public BlockOut() {
+	public BlockOut2() {
 
 	}
 
@@ -18,8 +18,8 @@ public class BlockOut extends Command {
 	}
 
 	protected void execute() {
+		blockIntake.blockArmOut();
 		blockIntake.blockLiftOut();
-
 		Timer.delay(.5);
 	}
 

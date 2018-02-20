@@ -27,7 +27,7 @@ public class BlockHandler extends SubsystemBase {
 		armMotorR = new Talon(port("armMotorR"));
 
 		intakeOne.setInverted(true);
-		intakeArmL.setInverted(true);
+		intakeArmR.setInverted(true);
 		armMotorL.setInverted(true);
 	}
 
@@ -52,8 +52,8 @@ public class BlockHandler extends SubsystemBase {
 	}
 
 	public void blockArmIn() {
-		armMotorL.set(.5);
-		armMotorR.set(.5);
+		armMotorL.set(.75);
+		armMotorR.set(.75);
 	}
 
 	public void blockArmOut() {
