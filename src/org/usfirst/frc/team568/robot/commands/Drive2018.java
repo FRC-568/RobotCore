@@ -12,12 +12,8 @@ public class Drive2018 extends Command {
 	double distToTravel;
 
 	private static final double CIRCUMFERENCE = 18.8496;
-	// GEAR RATIO
-	private static final double GEARING_FACTOR = 1 / 10.71;
-	// Ticks per revolution
-	private static final double TPR = 4096;
-	// To Ticks from inches
-	private static final double TO_TICKS = TPR / CIRCUMFERENCE;
+	private static final double TPR = 4096; // Ticks per revolution
+	private static final double TO_TICKS = TPR / CIRCUMFERENCE; // To Ticks from inches
 
 	public Drive2018(DriveTrain2018 dt, double inch, double speed) {
 

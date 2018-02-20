@@ -9,23 +9,15 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveTrain2018 extends SubsystemBase {
-
-	private DifferentialDrive drive;
-	private SpeedControllerGroup left;
-	private SpeedControllerGroup right;
 	private Joystick joystick;
 
 	private ADXRS450_Gyro gyro;
 
 	// INCHES
 	private static final double CIRCUMFERENCE = 18.8496;
-	// GEAR RATIO
-	private static final double GEARING_FACTOR = 1 / 10.71;
 	// Ticks per revolution
 	private static final double TPR = 4096;
 	// To Ticks from inches
@@ -163,7 +155,8 @@ public class DriveTrain2018 extends SubsystemBase {
 
 	public boolean driveisFinished() {
 		// abs??? overshoot
-		boolean isfin = (fl.getClosedLoopError(0) < 10 && fr.getClosedLoopError(0) < 10);
+		// boolean isfin = (fl.getClosedLoopError(0) < 10 && fr.getClosedLoopError(0) <
+		// 10);
 		// boolean isfin = ((driveTargetL -
 		// fl.getSensorCollection().getQuadraturePosition()) < 10 && (driveTargetR -
 		// fr.getSensorCollection().getQuadraturePosition()) < 10);
@@ -178,7 +171,6 @@ public class DriveTrain2018 extends SubsystemBase {
 		fr.set(ControlMode.PercentOutput, 0);
 	}
 
-	@SuppressWarnings("ParameterName")
 	public void arcadeDrive(double xSpeed, double zRotation, boolean squaredInputs) {
 		final double m_deadband = 0.2;
 
