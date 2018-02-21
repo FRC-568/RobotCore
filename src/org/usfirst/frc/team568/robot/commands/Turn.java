@@ -15,6 +15,8 @@ public class Turn extends Command {
 
 	public Turn(double degrees) {
 		this.degrees = degrees;
+		ra = drive.getAngle() + degrees;
+		System.out.println("Ref ANGLE: " + ra);
 	}
 
 	public Turn() {
@@ -23,14 +25,14 @@ public class Turn extends Command {
 	@Override
 	protected void initialize() {
 		drive = Robot.getInstance().driveTrain;
-		drive.resetGyro();
-
+		ra = drive.getAngle() + degrees;
+		System.out.println("Ref ANGLE: " + ra);
 		// ref = Robot.getInstance().referenceFrame;
 	}
 
 	@Override
 	protected void execute() {
-		// SmartDashboard.putNumber("GYRO", ref.getAngle());
+		// SmartDashboard.putNumber("GYRO", drive.getAngle());
 		if (degrees > 0)
 			drive.turnRight(.3);
 		else if (degrees < 0)
@@ -42,9 +44,9 @@ public class Turn extends Command {
 	@Override
 	protected boolean isFinished() {
 		if (degrees < 0) {
-			return drive.getAngle() < (degrees - 5);
+			return drive.getAngle() < (ra);
 		} else if (degrees > 0) {
-			return drive.getAngle() > (degrees + 5);
+			return drive.getAngle() > (ra);
 		} else
 			return true;
 

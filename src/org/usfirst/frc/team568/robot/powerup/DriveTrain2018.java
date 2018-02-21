@@ -269,7 +269,7 @@ public class DriveTrain2018 extends SubsystemBase {
 	public void turnRight(double speed) {
 		fl.set(ControlMode.PercentOutput, speed);
 		fr.set(ControlMode.PercentOutput, -speed);
-
+		System.out.println(getAngle());
 	}
 
 	public void turnLeft(double speed) {

@@ -9,6 +9,10 @@ public class AutoOne extends CommandGroup {
 	public int scalePos;
 	public int robotPos;
 
+	AutoOne(RobotBase robot) {
+		// addSequential(new Turn2018(robot.getSubsystem(DriveTrain2018.class), 90));
+	}
+
 	public AutoOne(RobotBase robot, int scalePos, int robotPos) {
 		this.scalePos = scalePos;
 		this.robotPos = robotPos;

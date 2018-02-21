@@ -15,6 +15,9 @@ public class OI {
 
 	public Button blockIn = new JoystickButton(joyStick1, ControllerButtons.X);
 	public Button blockOut = new JoystickButton(joyStick1, ControllerButtons.Y);
+	public Button blockSpinL = new JoystickButton(joyStick1, ControllerButtons.A);
+	public Button blockSpinR = new JoystickButton(joyStick1, ControllerButtons.B);
+
 	public Button blockOut2 = new JoystickButton(joyStick2, ControllerButtons.B);
 
 	public Button armGrab = new JoystickButton(joyStick1, ControllerButtons.RightBumper);

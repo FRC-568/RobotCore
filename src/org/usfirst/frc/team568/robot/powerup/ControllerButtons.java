@@ -12,4 +12,5 @@ public class ControllerButtons {
 	public static int Start = 8;
 	public static int LeftStickIn = 9;
 	public static int RightStickIn = 10;
+
 }

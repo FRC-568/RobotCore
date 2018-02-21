@@ -2,6 +2,8 @@ package org.usfirst.frc.team568.robot.powerup;
 
 import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.robot.commands.ClimbWithWinch;
+import org.usfirst.frc.team568.robot.commands.SpinBlockL;
+import org.usfirst.frc.team568.robot.commands.SpinBlockR;
 import org.usfirst.frc.team568.robot.commands.UnClimb;
 import org.usfirst.frc.team568.robot.subsystems.BlockHandler;
 import org.usfirst.frc.team568.robot.subsystems.BlockLift2018;
@@ -63,6 +65,8 @@ public class Robot extends RobotBase {
 		oi.blockOut2.whileHeld(blockIntake.getCommandBlockLiftOut2());
 		oi.armGrab.whileHeld(blockIntake.getCommandArmIn());
 		oi.armOpen.whileHeld(blockIntake.getCommandArmOut());
+		oi.blockSpinL.whileHeld(new SpinBlockL());
+		oi.blockSpinR.whileHeld(new SpinBlockR());
 		oi.climb.whileHeld(new ClimbWithWinch());
 		oi.unClimb.whileHeld(new UnClimb());
 	}

@@ -12,6 +12,7 @@ import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
@@ -77,6 +78,8 @@ public class Robot extends RobotBase {
 		imu.calibrate();
 		referenceFrame.reset();
 		referenceFrame.calabrateGyro();
+
+		CameraServer.getInstance().startAutomaticCapture(0);
 
 		SmartDashboard.putNumber("Autonomous #", 1);
 		SmartDashboard.putNumber("Speed Multiplier", 1);

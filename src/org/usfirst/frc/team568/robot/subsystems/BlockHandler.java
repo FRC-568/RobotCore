@@ -30,17 +30,29 @@ public class BlockHandler extends SubsystemBase {
 
 		intakeOne.setInverted(true);
 		intakeArmR.setInverted(true);
-		armMotorL.setInverted(true);
-	}
-
-	public void armIn() {
-		intakeArmL.set(-.25);
-		intakeArmR.set(-.25);
+		intakeArmL.setInverted(false);
+		armMotorR.setInverted(true);
 	}
 
 	public void armOut() {
-		intakeArmL.set(.25);
-		intakeArmR.set(.25);
+		intakeArmL.set(.75);
+		intakeArmR.set(.75);
+	}
+
+	public void blockSpinL() {
+		armMotorL.set(.75);
+		armMotorR.set(-.75);
+	}
+
+	public void blockSpinR() {
+		armMotorL.set(-.75);
+		armMotorR.set(.75);
+	}
+
+
+	public void armIn() {
+		intakeArmL.set(-.75);
+		intakeArmR.set(-.75);
 	}
 
 	public void blockLiftIn() {
@@ -54,13 +66,13 @@ public class BlockHandler extends SubsystemBase {
 	}
 
 	public void blockArmIn() {
-		armMotorL.set(.75);
-		armMotorR.set(.75);
+		armMotorL.set(1);
+		armMotorR.set(1);
 	}
 
 	public void blockArmOut() {
-		armMotorL.set(-.5);
-		armMotorR.set(-.5);
+		armMotorL.set(1);
+		armMotorR.set(1);
 	}
 
 	public void allStop() {

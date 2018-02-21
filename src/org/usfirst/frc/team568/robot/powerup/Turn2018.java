@@ -21,6 +21,9 @@ public class Turn2018 extends Command {
 	@Override
 	protected void initialize() {
 		System.out.println("TURNING " + degrees);
+
+		ra = dt.getAngle() + degrees;
+		System.out.println("Ref ANGLE: " + ra);
 		// ref = Robot.getInstance().referenceFrame;
 	}
 
@@ -38,9 +41,9 @@ public class Turn2018 extends Command {
 	@Override
 	protected boolean isFinished() {
 		if (degrees < 0) {
-			return dt.getAngle() < degrees;
+			return dt.getAngle() < ra;
 		} else if (degrees > 0) {
-			return dt.getAngle() > degrees;
+			return dt.getAngle() > ra;
 		} else
 			return true;
 
