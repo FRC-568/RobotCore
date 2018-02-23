@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class WestCoastDrive extends SubsystemBase {
 	private DifferentialDrive drive;
-	private Joystick joystick; 
+	private Joystick joystick;
 
 	public WestCoastDrive(RobotBase robot, IntFunction<SpeedController> motorProvider) {
 		super(robot);
@@ -26,6 +26,15 @@ public class WestCoastDrive extends SubsystemBase {
 		
 		drive = new DifferentialDrive(new SpeedControllerGroup(fl, bl), new SpeedControllerGroup(fr, br));
 		joystick = new Joystick(0);
+
+	}
+	
+	public void stop() {
+		drive.stopMotor();
+	}
+	
+	public void driveForward() {
+		 drive.curvatureDrive(0.5, 0, false);
 	}
 	
 	@Override
