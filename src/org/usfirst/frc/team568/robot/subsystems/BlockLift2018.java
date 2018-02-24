@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Command;
 
+import static org.usfirst.frc.team568.util.Utilities.*;
+
 public class BlockLift2018 extends SubsystemBase {
 	private static final int PPR = 2048; // Encoder set for 2048 pulses per rotation
 	private static final double RAISE_SPEED = 1.0;
@@ -79,10 +81,6 @@ public class BlockLift2018 extends SubsystemBase {
 
 	public void reset() {
 		liftEncoder.reset();
-	}
-
-	protected double clamp(double value, double min, double max) {
-		return (value > max) ? max : ((value < min) ? min : value);
 	}
 
 	public Command getCommandMoveLiftTo(final double position) {

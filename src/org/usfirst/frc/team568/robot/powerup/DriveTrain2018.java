@@ -1,5 +1,7 @@
 package org.usfirst.frc.team568.robot.powerup;
 
+import static org.usfirst.frc.team568.util.Utilities.*;
+
 import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.robot.subsystems.SubsystemBase;
 
@@ -9,7 +11,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.PIDCommand;
 
 public class DriveTrain2018 extends SubsystemBase {
 	private Joystick joystick;
@@ -171,13 +175,17 @@ public class DriveTrain2018 extends SubsystemBase {
 		fr.set(ControlMode.PercentOutput, 0);
 	}
 
+	public void arcadeDrive(double xSpeed, double zRotation) {
+		arcadeDrive(xSpeed, zRotation, false);
+	}
+
 	public void arcadeDrive(double xSpeed, double zRotation, boolean squaredInputs) {
 		final double m_deadband = 0.2;
 
-		xSpeed = limit(xSpeed);
+		xSpeed = clamp(xSpeed, -1, 1);
 		xSpeed = applyDeadband(xSpeed, m_deadband);
 
-		zRotation = limit(zRotation);
+		zRotation = clamp(zRotation, -1, 1);
 		zRotation = applyDeadband(zRotation, m_deadband);
 
 		// Square the inputs (while preserving the sign) to increase fine control
@@ -212,34 +220,12 @@ public class DriveTrain2018 extends SubsystemBase {
 			}
 		}
 
-		fl.set(limit(leftMotorOutput));
-		fr.set(limit(rightMotorOutput));
+		fl.set(clamp(leftMotorOutput, -1, 1));
+		fr.set(clamp(rightMotorOutput, -1, 1));
 		// System.out.println("POS L" + fl.getSelectedSensorPosition(0));
 		// System.out.println("POS R" + fr.getSelectedSensorPosition(0));
 
 		// m_safetyHelper.feed();
-	}
-
-	protected double limit(double value) {
-		if (value > 1.0) {
-			return 1.0;
-		}
-		if (value < -1.0) {
-			return -1.0;
-		}
-		return value;
-	}
-
-	protected double applyDeadband(double value, double deadband) {
-		if (Math.abs(value) > deadband) {
-			if (value > 0.0) {
-				return (value - deadband) / (1.0 - deadband);
-			} else {
-				return (value + deadband) / (1.0 - deadband);
-			}
-		} else {
-			return 0.0;
-		}
 	}
 
 	@Override
@@ -247,7 +233,6 @@ public class DriveTrain2018 extends SubsystemBase {
 		setDefaultCommand(new Command() {
 			{
 				requires(DriveTrain2018.this);
-
 			}
 
 			@Override
@@ -269,17 +254,74 @@ public class DriveTrain2018 extends SubsystemBase {
 	public void turnRight(double speed) {
 		fl.set(ControlMode.PercentOutput, speed);
 		fr.set(ControlMode.PercentOutput, -speed);
-		System.out.println(getAngle());
 	}
 
 	public void turnLeft(double speed) {
 		fl.set(ControlMode.PercentOutput, -speed);
 		fr.set(ControlMode.PercentOutput, speed);
-
 	}
 
 	public double getAngle() {
-
 		return gyro.getAngle();
+	}
+
+	public Command getCommandTurnBy(double degrees) {
+		return new PIDCommand(0.1, 0, 0) {
+			double targetAngle;
+			double ra;
+
+			{
+				requires(DriveTrain2018.this);
+			}
+
+			@Override
+			protected void initialize() {
+				resetGyro();
+				targetAngle = getAngle() + degrees;
+				setSetpoint(targetAngle);
+			}
+
+			@Override
+			protected void execute() {
+				// SmartDashboard.putNumber("GYRO", ref.getAngle());
+				if (degrees > 0)
+					turnRight(.3);
+				else if (degrees < 0)
+					turnLeft(.3);
+				else
+					stop();
+			}
+
+			@Override
+			protected boolean isFinished() {
+				if (degrees < 0) {
+					return getAngle() < (degrees - 5);
+				} else if (degrees > 0) {
+					return getAngle() > (degrees + 5);
+				} else
+					return true;
+			}
+
+			@Override
+			protected void end() {
+				stop();
+				Timer.delay(1);
+			}
+
+			@Override
+			protected double returnPIDInput() {
+				return getAngle();
+			}
+
+			@Override
+			protected void usePIDOutput(double output) {
+				if (degrees > 0)
+					turnRight(.3);
+				else if (degrees < 0)
+					turnLeft(.3);
+				else
+					stop();
+			}
+		};
 	}
 }
