@@ -130,11 +130,7 @@ public class DriveTrain2018 extends SubsystemBase {
 
 	public void driveDist(double speed, double dist) {
 		double Kp = .135;
-
-		double distTarget = (dist - getDist());
 		double error = gyro.getAngle() * Kp;
-
-		double targetPercent = distTarget / dist;
 
 		// if (targetPercent >= .75)
 		// speed = speed * (1 - targetPercent);
@@ -268,7 +264,6 @@ public class DriveTrain2018 extends SubsystemBase {
 	public Command getCommandTurnBy(double degrees) {
 		return new PIDCommand(0.1, 0, 0) {
 			double targetAngle;
-			double ra;
 
 			{
 				requires(DriveTrain2018.this);
