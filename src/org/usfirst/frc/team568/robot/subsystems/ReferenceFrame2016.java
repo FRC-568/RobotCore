@@ -105,6 +105,7 @@ public class ReferenceFrame2016 extends Subsystem implements Gyro {
 		updateThread.interrupt();
 	}
 
+	@Override
 	public void reset() {
 		acceleration = Vector2.zero;
 		velocity = Vector2.zero;
@@ -125,6 +126,7 @@ public class ReferenceFrame2016 extends Subsystem implements Gyro {
 			return clip;
 	}
 
+	@Override
 	public double getAngle() {
 		return gyro.getAngle();
 	}
@@ -157,7 +159,7 @@ public class ReferenceFrame2016 extends Subsystem implements Gyro {
 		}
 		avgX /= calibrationSamples;
 		avgY /= calibrationSamples;
-		acelBias = new Vector2(avgX, avgY);
+		acelBias = Vector2.of(avgX, avgY);
 		lastTimestamp = Timer.getFPGATimestamp();
 		// SmartDashboard.putNumber("X Bias", acelBias.x);
 		// SmartDashboard.putNumber("Y Bias", acelBias.y);
@@ -172,9 +174,9 @@ public class ReferenceFrame2016 extends Subsystem implements Gyro {
 		while (!Thread.interrupted()) {
 			time = Timer.getFPGATimestamp();
 			deltaTime = time - lastTime;
-			acceleration = new Vector2(xFilter.pidGet(), yFilter.pidGet());
-			velocity = Vector2.add(velocity, Vector2.scale(acceleration, deltaTime));
-			position = Vector2.add(position, Vector2.rotate(Vector2.scale(velocity, deltaTime), -getHeading()));
+			acceleration = Vector2.of(xFilter.pidGet(), yFilter.pidGet());
+			velocity = acceleration.scale(deltaTime).add(velocity);
+			position = velocity.scale(deltaTime).rotate(-getHeading()).add(position);
 
 			lastTime = time;
 			try {
@@ -188,9 +190,9 @@ public class ReferenceFrame2016 extends Subsystem implements Gyro {
 	public void updateAcel() {
 		double timestamp = Timer.getFPGATimestamp();
 		double deltaTime = timestamp - lastTimestamp;
-		acceleration = new Vector2(xFilter.pidGet(), yFilter.pidGet());
-		velocity = Vector2.add(velocity, Vector2.rotate(Vector2.scale(acceleration, deltaTime), -getHeading()));
-		position = Vector2.add(position, Vector2.scale(velocity, deltaTime));
+		acceleration = Vector2.of(xFilter.pidGet(), yFilter.pidGet());
+		velocity = acceleration.scale(deltaTime).rotate(-getHeading()).add(velocity);
+		position = velocity.scale(deltaTime).add(position);
 		lastTimestamp = timestamp;
 	}
 

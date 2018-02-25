@@ -3,15 +3,15 @@ package org.usfirst.frc.team568.robot.bart;
 import org.usfirst.frc.team568.robot.PMW3901;
 import org.usfirst.frc.team568.robot.RobotBase;
 import org.usfirst.frc.team568.robot.subsystems.Locator;
+import org.usfirst.frc.team568.util.Vector2;
 
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.drive.Vector2d;
 
 public class Robot extends RobotBase {
 	public WestCoastDrive driveTrain;
-	public PMW3901 godseye;
+	public PMW3901 flow;
 	public Locator locator;
 	private Command autonomousCommand;
 
@@ -31,20 +31,20 @@ public class Robot extends RobotBase {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
-		godseye.startAutoLoop();
+		flow.startAutoLoop();
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		locator.update();
 		Scheduler.getInstance().run();
-		Vector2d postition = godseye.getPosition();
+		Vector2 postition = flow.getPosition();
 		System.out.println("X " + postition.x + " Y " + postition.y);
 	}
 
 	@Override
 	public void disabledInit() {
-		godseye.stopAutoLoop();
+		flow.stopAutoLoop();
 
 	}
 

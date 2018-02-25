@@ -10,6 +10,8 @@ import static org.usfirst.frc.team568.robot.PMW3901.Register.*;
 import java.util.Arrays;
 import java.util.List;
 
+import org.usfirst.frc.team568.util.Vector2;
+
 import com.sun.jna.Library;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
@@ -22,7 +24,6 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SensorBase;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 public class PMW3901 extends SensorBase implements Sendable {
@@ -38,9 +39,9 @@ public class PMW3901 extends SensorBase implements Sendable {
 	private Thread autoLoop;
 	private boolean autoEnabled;
 
-	protected Vector2d position;
-	protected Vector2d velocity;
-	protected Vector2d acceleration;
+	protected Vector2 position;
+	protected Vector2 velocity;
+	protected Vector2 acceleration;
 	protected double timestamp;
 	protected double processTime;
 
@@ -117,24 +118,24 @@ public class PMW3901 extends SensorBase implements Sendable {
 
 		timestamp = Timer.getFPGATimestamp();
 		processTime = 0;
-		position = new Vector2d();
-		velocity = new Vector2d();
-		acceleration = new Vector2d();
+		position = Vector2.zero;
+		velocity = Vector2.zero;
+		acceleration = Vector2.zero;
 	}
 
-	public Vector2d getPosition() {
+	public Vector2 getPosition() {
 		return position;
 	}
 
-	public Vector2d getVelocity() {
+	public Vector2 getVelocity() {
 		return velocity;
 	}
 
-	public Vector2d getAcceleration() {
+	public Vector2 getAcceleration() {
 		return acceleration;
 	}
 
-	public Vector2d readMotion() {
+	public Vector2 readMotion() {
 		readByte(MOTION);
 		short xValue = readByte(DELTA_X_H);
 		xValue <<= 8;
@@ -144,20 +145,18 @@ public class PMW3901 extends SensorBase implements Sendable {
 		yValue <<= 8;
 		yValue |= readByte(DELTA_Y_L);
 
-		return new Vector2d(xValue, yValue);
+		return Vector2.of(xValue, yValue);
 	}
 
-	public Vector2d updateMotion() {
+	public Vector2 updateMotion() {
 		double currentTime = Timer.getFPGATimestamp();
 		double deltaTime = currentTime - timestamp;
-		Vector2d motion = readMotion();
+		Vector2 motion = readMotion();
 
-		position.x = position.x + motion.x;
-		position.y = position.y + motion.y;
+		position = position.add(motion);
 
-		Vector2d currentVelocity = new Vector2d(motion.x / deltaTime, motion.y / deltaTime);
-		acceleration.x = (currentVelocity.x - velocity.x) / deltaTime;
-		acceleration.y = (currentVelocity.y - velocity.y) / deltaTime;
+		Vector2 currentVelocity = motion.scale(1 / deltaTime);
+		acceleration = currentVelocity.subtract(velocity).scale(1 / deltaTime);
 		velocity = currentVelocity;
 		timestamp = currentTime;
 		processTime = Timer.getFPGATimestamp() - currentTime;
@@ -303,7 +302,7 @@ public class PMW3901 extends SensorBase implements Sendable {
 		public static final byte INVERSE_PRODUCT_ID = 0x5F; // RO - initial 0xB6
 	}
 
-	protected static final class Magic {
+	public static final class Magic {
 		public static final byte POWER_UP_RESET_CODE = 0x5A; // write to 0x3A to restart
 		public static final byte PRODUCT_ID_CODE = 0x49; // should match register 0x00
 		public static final byte INVERSE_PRODUCT_ID_CODE = (byte) 0xB6; // ~0x49
