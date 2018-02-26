@@ -9,6 +9,7 @@ import org.usfirst.frc.team568.robot.subsystems.BlockHandler;
 import org.usfirst.frc.team568.robot.subsystems.BlockLift2018;
 import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -20,6 +21,7 @@ public class Robot extends RobotBase {
 	public BlockLift2018 blockLift;
 	public BlockHandler blockIntake;
 	public WinchClimber climber;
+	public UsbCamera cam;
 
 	public OI oi;
 
@@ -55,6 +57,10 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void robotInit() {
+		// cam = CameraServer.getInstance().startAutomaticCapture();
+		// cam.setResolution(160, 120);
+		// cam.setFPS(15);
+
 		SmartDashboard.putNumber("Robot Position: ", 0);
 		driveTrain.calGyro();
 
@@ -73,7 +79,10 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void disabledInit() {
-
+		if (autonomousCommand != null) {
+			autonomousCommand.cancel();
+			autonomousCommand = null;
+		}
 	}
 
 	@Override

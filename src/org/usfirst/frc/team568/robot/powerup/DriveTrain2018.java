@@ -12,13 +12,17 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 
 public class DriveTrain2018 extends SubsystemBase {
 	private Joystick joystick;
-
+	public PIDController drivePID;
 	private ADXRS450_Gyro gyro;
+	private double drivePidOutput;
 
 	// INCHES
 	private static final double CIRCUMFERENCE = 18.8496;
@@ -45,6 +49,27 @@ public class DriveTrain2018 extends SubsystemBase {
 		bl = new WPI_TalonSRX(port("leftBackMotor"));
 		fr = new WPI_TalonSRX(port("rightFrontMotor"));
 		br = new WPI_TalonSRX(port("rightBackMotor"));
+
+		drivePID = new PIDController(.135, 0, .1, new PIDSource() {
+
+			@Override
+			public void setPIDSourceType(PIDSourceType pidSource) {
+
+			}
+
+			@Override
+			public PIDSourceType getPIDSourceType() {
+				return PIDSourceType.kDisplacement;
+
+			}
+
+			@Override
+			public double pidGet() {
+
+				return gyro.getAngle();
+			}
+
+		}, (output) -> drivePidOutput = output);
 
 		/*
 		 * right = new SpeedControllerGroup(fr, br); left = new SpeedControllerGroup(fl,
@@ -129,19 +154,16 @@ public class DriveTrain2018 extends SubsystemBase {
 	}
 
 	public void driveDist(double speed, double dist) {
-		double Kp = .135;
 		double error = gyro.getAngle() * Kp;
+
+		double speedScale = drivePidOutput;
 
 		// if (targetPercent >= .75)
 		// speed = speed * (1 - targetPercent);
+		fl.set(ControlMode.PercentOutput, speed + (speedScale * speed));
+		fr.set(ControlMode.PercentOutput, speed + (-speedScale * speed));
+		
 
-		if (gyro.getAngle() <= 1 && gyro.getAngle() >= -1) {
-			fl.set(ControlMode.PercentOutput, speed);
-			fr.set(ControlMode.PercentOutput, speed);
-		} else {
-			fl.set(ControlMode.PercentOutput, speed - error);
-			fr.set(ControlMode.PercentOutput, speed + error);
-		}
 		// System.out.println(gyro.getAngle());
 	}
 
@@ -169,10 +191,6 @@ public class DriveTrain2018 extends SubsystemBase {
 	public void stop() {
 		fl.set(ControlMode.PercentOutput, 0);
 		fr.set(ControlMode.PercentOutput, 0);
-	}
-
-	public void arcadeDrive(double xSpeed, double zRotation) {
-		arcadeDrive(xSpeed, zRotation, false);
 	}
 
 	public void arcadeDrive(double xSpeed, double zRotation, boolean squaredInputs) {
