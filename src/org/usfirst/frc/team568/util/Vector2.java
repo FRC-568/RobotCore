@@ -44,6 +44,11 @@ public class Vector2 {
 		return (o instanceof Vector2) ? (this.x == ((Vector2) o).x && this.y == ((Vector2) o).y) : false;
 	}
 
+	@Override
+	public String toString() {
+		return x + "," + y;
+	}
+
 	public static Vector2 add(Vector2 v1, Vector2 v2) {
 		return new Vector2(v1.x + v2.x, v1.y + v2.y);
 	}
