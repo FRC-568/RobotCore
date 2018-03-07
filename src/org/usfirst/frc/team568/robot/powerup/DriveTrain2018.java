@@ -11,11 +11,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 
@@ -159,7 +159,6 @@ public class DriveTrain2018 extends SubsystemBase {
 	}
 
 	public void driveDist(double speed, double dist) {
-		double error = gyro.getAngle() * Kp;
 
 		double speedScale = drivePidOutput;
 
@@ -167,7 +166,6 @@ public class DriveTrain2018 extends SubsystemBase {
 		// speed = speed * (1 - targetPercent);
 		fl.set(ControlMode.PercentOutput, speed + (speedScale * speed));
 		fr.set(ControlMode.PercentOutput, speed + (-speedScale * speed));
-		
 
 		// System.out.println(gyro.getAngle());
 	}
