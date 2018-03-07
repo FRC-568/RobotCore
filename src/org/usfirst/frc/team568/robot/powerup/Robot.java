@@ -1,12 +1,14 @@
 package org.usfirst.frc.team568.robot.powerup;
 
 import org.usfirst.frc.team568.robot.RobotBase;
-import org.usfirst.frc.team568.robot.commands.Drive2018;
+import org.usfirst.frc.team568.robot.commands.ClimbWithWinch;
+import org.usfirst.frc.team568.robot.commands.UnClimb;
 import org.usfirst.frc.team568.robot.subsystems.BlockHandler;
 import org.usfirst.frc.team568.robot.subsystems.BlockLift2018;
 import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
@@ -56,54 +58,47 @@ public class Robot extends RobotBase {
 		instance = this;
 		oi = new OI();
 		driveTrain = addSubsystem(DriveTrain2018::new);
-		// blockLift = addSubsystem(BlockLift2018::new);
-		// blockIntake = addSubsystem(BlockHandler::new);
-		// climber = addSubsystem(WinchClimber::new);
-		// compressor = new Compressor();
+		blockLift = addSubsystem(BlockLift2018::new);
+		blockIntake = addSubsystem(BlockHandler::new);
+		climber = addSubsystem(WinchClimber::new);
+		compressor = new Compressor();
 
-		// color = DriverStation.getInstance().getAlliance();
+		color = DriverStation.getInstance().getAlliance();
 
 	}
 
 	@Override
 	public void robotInit() {
-		// compressor.start();
-		// cam = CameraServer.getInstance().startAutomaticCapture();
+		compressor.start();
+		cam = CameraServer.getInstance().startAutomaticCapture();
 
-		// driveTrain.blinkin.set(-.99);
+		driveTrain.blinkin.set(-.99);
 
-		// SmartDashboard.putNumber("Robot Position: ", 0);
-		SmartDashboard.putNumber("Alliance", 0);
-		SmartDashboard.putNumber("Turn", 90);
 		driveTrain.calGyro();
 
 		SmartDashboard.setPersistent("Robot Position: ");
-		/*
-		 * oi.liftUp.whileHeld(blockLift.getCommandRaise());
-		 * oi.liftDown.whileHeld(blockLift.getCommandLower());
-		 * oi.blockIn.whileHeld(blockIntake.getCommandBlockLiftIn());
-		 * oi.blockOut.whileHeld(blockIntake.getCommandBlockLiftOut());
-		 * oi.blockOut2.whileHeld(blockIntake.getCommandBlockLiftOut2());
-		 * oi.blockGrab.whileHeld(blockIntake.blockGrabCommand());
-		 * oi.armIn.whileHeld(blockIntake.getCommandArmIn());
-		 * oi.armOut.whileHeld(blockIntake.getCommandArmOut()); oi.climb.whileHeld(new
-		 * ClimbWithWinch()); oi.unClimb.whileHeld(new UnClimb()); //
-		 * oi.armIn.whenPressed(blockIntake.getCommandArmIn());
-		 */
+
+		oi.liftUp.whileHeld(blockLift.getCommandRaise());
+		oi.liftDown.whileHeld(blockLift.getCommandLower());
+		oi.blockIn.whileHeld(blockIntake.getCommandBlockLiftIn());
+		oi.blockOut.whileHeld(blockIntake.getCommandBlockLiftOut());
+		oi.blockOut2.whileHeld(blockIntake.getCommandBlockLiftOut2());
+		oi.blockGrab.whileHeld(blockIntake.blockGrabCommand());
+		oi.armIn.whileHeld(blockIntake.getCommandArmIn());
+		oi.armOut.whileHeld(blockIntake.getCommandArmOut());
+		oi.climb.whileHeld(new ClimbWithWinch());
+		oi.unClimb.whileHeld(new UnClimb());
+
 	}
 
 	@Override
 	public void testInit() {
-		turnAngle = SmartDashboard.getNumber("Turn", 90);
 
-		testCommand = new Turn2018(driveTrain, 90);
-		SmartDashboard.putData(testCommand);
-		testCommand.start();
 	}
 
 	@Override
 	public void testPeriodic() {
-		turnAngle = SmartDashboard.getNumber("Turn", 90);
+
 		Scheduler.getInstance().run();
 	}
 
@@ -123,11 +118,15 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousInit() {
-		/*
-		 * if (color == DriverStation.Alliance.Blue)
-		 *
-		 * { driveTrain.blinkin.set(.87); } else { driveTrain.blinkin.set(.61); }
-		 */
+
+		if (color == DriverStation.Alliance.Blue)
+
+		{
+			driveTrain.blinkin.set(.87);
+		} else {
+			driveTrain.blinkin.set(.61);
+		}
+
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		int robotPos = (int) SmartDashboard.getNumber("Robot Position: ", 0);
@@ -161,13 +160,15 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void teleopInit() {
-		SmartDashboard.putData("drive for", new Drive2018(driveTrain, 72, .5));
-		SmartDashboard.putData("drive rev", new Drive2018(driveTrain, -72, .5));
-		/*
-		 * if (color == DriverStation.Alliance.Blue)
-		 *
-		 * { driveTrain.blinkin.set(.87); } else { driveTrain.blinkin.set(.61); }
-		 */
+
+		if (color == DriverStation.Alliance.Blue)
+
+		{
+			driveTrain.blinkin.set(.87);
+		} else {
+			driveTrain.blinkin.set(.61);
+		}
+
 	}
 
 	@Override

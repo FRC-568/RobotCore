@@ -21,7 +21,7 @@ public class Drive2018 extends PIDCommand {
 	private static final double TO_TICKS = TPR / CIRCUMFERENCE; // To Ticks from inches
 
 	public Drive2018(DriveTrain2018 dt, double inch, double speed) {
-		super(.001, 0, 0);
+		super(.01, 0, 0);
 		this.dt = dt;
 		requires(dt);
 		// dt.resetGyro();
