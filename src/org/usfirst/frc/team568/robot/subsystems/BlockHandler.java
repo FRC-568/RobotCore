@@ -4,55 +4,43 @@ import org.usfirst.frc.team568.robot.RobotBase;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class BlockHandler extends SubsystemBase {
 	public SpeedController intakeOne;
 	public SpeedController intakeTwo;
-	public SpeedController intakeArmL;
-	public SpeedController intakeArmR;
-	public SpeedController armMotorL;
-	public SpeedController armMotorR;
+
+	public Solenoid extensionO;
+	public Solenoid extensionI;
+	public Solenoid grabberO;
+	public Solenoid grabberI;
 
 	public BlockHandler(final RobotBase robot) {
 		super(robot);
 
+		extensionO = new Solenoid(port("extensionO"));
+		extensionI = new Solenoid(port("extensionI"));
+		grabberO = new Solenoid(port("grabberO"));
+		grabberI = new Solenoid(port("grabberI"));
+
 		intakeOne = new WPI_TalonSRX(port("intakeOne"));
 		intakeTwo = new WPI_TalonSRX(port("intakeTwo"));
-		intakeArmL = new Spark(port("intakeArmL"));
-		intakeArmR = new Spark(port("intakeArmR"));
-		armMotorL = new Talon(port("armMotorL"));
-		armMotorR = new Talon(port("armMotorR"));
 
 		intakeOne.setInverted(true);
-		intakeArmR.setInverted(true);
-		intakeArmL.setInverted(false);
-		armMotorR.setInverted(true);
+
 	}
 
 	public void armOut() {
-		intakeArmL.set(.75);
-		intakeArmR.set(.75);
+		extensionI.set(false);
+		extensionO.set(true);
 	}
-
-	public void blockSpinL() {
-		armMotorL.set(.75);
-		armMotorR.set(-.75);
-	}
-
-	public void blockSpinR() {
-		armMotorL.set(-.75);
-		armMotorR.set(.75);
-	}
-
 
 	public void armIn() {
-		intakeArmL.set(-.75);
-		intakeArmR.set(-.75);
+		extensionO.set(false);
+		extensionI.set(true);
 	}
 
 	public void blockLiftIn() {
@@ -65,23 +53,20 @@ public class BlockHandler extends SubsystemBase {
 		intakeTwo.set(-1);
 	}
 
-	public void blockArmIn() {
-		armMotorL.set(1);
-		armMotorR.set(1);
+	public void blockGrab() {
+		grabberO.set(false);
+		grabberI.set(true);
 	}
 
-	public void blockArmOut() {
-		armMotorL.set(1);
-		armMotorR.set(1);
+	public void blockRelease() {
+		grabberI.set(false);
+		grabberO.set(true);
 	}
 
 	public void allStop() {
-		intakeArmL.set(0);
-		intakeArmR.set(0);
 		intakeOne.set(0);
 		intakeTwo.set(0);
-		armMotorL.set(0);
-		armMotorR.set(0);
+
 	}
 
 	public Command getCommandArmIn() {
@@ -94,12 +79,12 @@ public class BlockHandler extends SubsystemBase {
 
 			@Override
 			protected boolean isFinished() {
-				return false;
+				return true;
 			}
 
 			@Override
 			protected void end() {
-				allStop();
+
 			}
 		};
 	}
@@ -114,12 +99,12 @@ public class BlockHandler extends SubsystemBase {
 
 			@Override
 			protected boolean isFinished() {
-				return false;
+				return true;
 			}
 
 			@Override
 			protected void end() {
-				allStop();
+
 			}
 		};
 	}
@@ -129,7 +114,7 @@ public class BlockHandler extends SubsystemBase {
 			@Override
 			protected void execute() {
 				blockLiftIn();
-				blockArmIn();
+				// blockGrab();
 				Timer.delay(.1);
 			}
 
@@ -169,7 +154,7 @@ public class BlockHandler extends SubsystemBase {
 		return new Command() {
 			@Override
 			protected void execute() {
-				blockArmOut();
+				blockRelease();
 				blockLiftOut();
 				Timer.delay(.5);
 			}
@@ -182,6 +167,26 @@ public class BlockHandler extends SubsystemBase {
 			@Override
 			protected void end() {
 				allStop();
+			}
+		};
+	}
+
+	public Command blockGrabCommand() {
+		return new Command() {
+			@Override
+			protected void execute() {
+				blockGrab();
+				Timer.delay(.5);
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+
+			@Override
+			protected void end() {
+				blockRelease();
 			}
 		};
 	}

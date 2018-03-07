@@ -34,7 +34,7 @@ public class AutoOne extends CommandGroup {
 			}
 		} else if (robotPos == 2) {
 			if (scalePos == 1) {
-				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 55, .25));
+				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 55, .5));
 				addSequential(new Turn2018(robot.getSubsystem(DriveTrain2018.class), -90));
 				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 130, .25));
 				addSequential(new Turn2018(robot.getSubsystem(DriveTrain2018.class), 90));

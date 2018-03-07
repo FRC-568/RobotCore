@@ -1,15 +1,12 @@
 package org.usfirst.frc.team568.robot.powerup;
 
 import org.usfirst.frc.team568.robot.RobotBase;
-import org.usfirst.frc.team568.robot.commands.ClimbWithWinch;
-import org.usfirst.frc.team568.robot.commands.SpinBlockL;
-import org.usfirst.frc.team568.robot.commands.SpinBlockR;
-import org.usfirst.frc.team568.robot.commands.UnClimb;
 import org.usfirst.frc.team568.robot.subsystems.BlockHandler;
 import org.usfirst.frc.team568.robot.subsystems.BlockLift2018;
 import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -22,6 +19,12 @@ public class Robot extends RobotBase {
 	public BlockHandler blockIntake;
 	public WinchClimber climber;
 	public UsbCamera cam;
+	public Compressor compressor;
+
+	public Command testCommand;
+	public double turnAngle;
+
+	public DriverStation.Alliance color;
 
 	public OI oi;
 
@@ -39,42 +42,66 @@ public class Robot extends RobotBase {
 
 		port("intakeOne", 6);
 		port("intakeTwo", 7);
-		port("intakeArmL", 2);
-		port("intakeArmR", 3);
-		port("armMotorL", 0);
-		port("armMotorR", 1);
 
 		port("climber", 8);
+
+		port("extensionO", 1);
+		port("extensionI", 0);
+		port("grabberO", 2);
+		port("grabberI", 3);
+
+		port("blinkin", 9);
 
 		instance = this;
 		oi = new OI();
 		driveTrain = addSubsystem(DriveTrain2018::new);
-		blockLift = addSubsystem(BlockLift2018::new);
-		blockIntake = addSubsystem(BlockHandler::new);
-		climber = addSubsystem(WinchClimber::new);
+		// blockLift = addSubsystem(BlockLift2018::new);
+		// blockIntake = addSubsystem(BlockHandler::new);
+		// climber = addSubsystem(WinchClimber::new);
+		// compressor = new Compressor();
+
+		// color = DriverStation.getInstance().getAlliance();
 
 	}
 
 	@Override
 	public void robotInit() {
+		// compressor.start();
 		// cam = CameraServer.getInstance().startAutomaticCapture();
-		// cam.setResolution(160, 120);
-		// cam.setFPS(15);
+
+		// driveTrain.blinkin.set(-.99);
 
 		SmartDashboard.putNumber("Robot Position: ", 0);
+		SmartDashboard.putNumber("Alliance", 0);
+		SmartDashboard.putNumber("Turn", 90);
 		driveTrain.calGyro();
+		/*
+		 * oi.liftUp.whileHeld(blockLift.getCommandRaise());
+		 * oi.liftDown.whileHeld(blockLift.getCommandLower());
+		 * oi.blockIn.whileHeld(blockIntake.getCommandBlockLiftIn());
+		 * oi.blockOut.whileHeld(blockIntake.getCommandBlockLiftOut());
+		 * oi.blockOut2.whileHeld(blockIntake.getCommandBlockLiftOut2());
+		 * oi.blockGrab.whileHeld(blockIntake.blockGrabCommand());
+		 * oi.armIn.whileHeld(blockIntake.getCommandArmIn());
+		 * oi.armOut.whileHeld(blockIntake.getCommandArmOut()); oi.climb.whileHeld(new
+		 * ClimbWithWinch()); oi.unClimb.whileHeld(new UnClimb()); //
+		 * oi.armIn.whenPressed(blockIntake.getCommandArmIn());
+		 */
+	}
 
-		oi.liftUp.whileHeld(blockLift.getCommandRaise());
-		oi.liftDown.whileHeld(blockLift.getCommandLower());
-		oi.blockIn.whileHeld(blockIntake.getCommandBlockLiftIn());
-		oi.blockOut.whileHeld(blockIntake.getCommandBlockLiftOut());
-		oi.blockOut2.whileHeld(blockIntake.getCommandBlockLiftOut2());
-		oi.armGrab.whileHeld(blockIntake.getCommandArmIn());
-		oi.armOpen.whileHeld(blockIntake.getCommandArmOut());
-		oi.blockSpinL.whileHeld(new SpinBlockL());
-		oi.blockSpinR.whileHeld(new SpinBlockR());
-		oi.climb.whileHeld(new ClimbWithWinch());
-		oi.unClimb.whileHeld(new UnClimb());
+	@Override
+	public void testInit() {
+		turnAngle = SmartDashboard.getNumber("Turn", 90);
+
+		testCommand = new Turn2018(driveTrain, 90);
+		SmartDashboard.putData(testCommand);
+		testCommand.start();
+	}
+
+	@Override
+	public void testPeriodic() {
+		turnAngle = SmartDashboard.getNumber("Turn", 90);
+		Scheduler.getInstance().run();
 	}
 
 	@Override
@@ -83,6 +110,7 @@ public class Robot extends RobotBase {
 			autonomousCommand.cancel();
 			autonomousCommand = null;
 		}
+
 	}
 
 	@Override
@@ -92,7 +120,11 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousInit() {
-
+		/*
+		 * if (color == DriverStation.Alliance.Blue)
+		 *
+		 * { driveTrain.blinkin.set(.87); } else { driveTrain.blinkin.set(.61); }
+		 */
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		int robotPos = (int) SmartDashboard.getNumber("Robot Position: ", 0);
@@ -121,10 +153,11 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void teleopInit() {
-		if (autonomousCommand != null) {
-			autonomousCommand.cancel();
-		}
-
+		/*
+		 * if (color == DriverStation.Alliance.Blue)
+		 *
+		 * { driveTrain.blinkin.set(.87); } else { driveTrain.blinkin.set(.61); }
+		 */
 	}
 
 	@Override
@@ -133,11 +166,8 @@ public class Robot extends RobotBase {
 
 	}
 
-	@Override
-	public void testPeriodic() {
-	}
-
 	public static Robot getInstance() {
 		return instance;
 	}
+
 }

@@ -16,7 +16,7 @@ public class BlockLift2018 extends SubsystemBase {
 	private static final double RAISE_SPEED = 1.0;
 	private static final double LOWER_SPEED = -0.5;
 	private static final double BOTTOM_POSITION = 0;
-	private static final double TOP_POSITION = 23;
+	private static final double TOP_POSITION = 25;
 
 	private SpeedController liftMotor;
 	private Encoder liftEncoder;

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 
@@ -36,6 +37,8 @@ public class DriveTrain2018 extends SubsystemBase {
 	WPI_TalonSRX fr;
 	WPI_TalonSRX br;
 
+	Spark blinkin;
+
 	int kTimeoutMs;
 	int driveTargetL;
 	int driveTargetR;
@@ -49,6 +52,8 @@ public class DriveTrain2018 extends SubsystemBase {
 		bl = new WPI_TalonSRX(port("leftBackMotor"));
 		fr = new WPI_TalonSRX(port("rightFrontMotor"));
 		br = new WPI_TalonSRX(port("rightBackMotor"));
+
+		// blinkin = new Spark(port("blinkin"));
 
 		drivePID = new PIDController(.135, 0, .1, new PIDSource() {
 
@@ -124,7 +129,7 @@ public class DriveTrain2018 extends SubsystemBase {
 
 	public double getDist() {
 
-		return (fl.getSelectedSensorPosition(0) + fr.getSelectedSensorPosition(0)) / 2;
+		return fl.getSelectedSensorPosition(0);
 	}
 
 	public void resetGyro() {
@@ -255,7 +260,8 @@ public class DriveTrain2018 extends SubsystemBase {
 				 * drive.curvatureDrive((joystick.getRawAxis(1) * 1), (-joystick.getRawAxis(4) *
 				 * .6), joystick.getRawButton(ControllerButtons.RightBumper));
 				 */
-				arcadeDrive(-joystick.getRawAxis(1) * .75, joystick.getRawAxis(4) * .5, false);
+
+				arcadeDrive(-joystick.getRawAxis(1), joystick.getRawAxis(4) * .75, false);
 			}
 
 			@Override
