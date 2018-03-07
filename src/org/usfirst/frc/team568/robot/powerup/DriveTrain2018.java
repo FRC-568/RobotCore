@@ -164,9 +164,13 @@ public class DriveTrain2018 extends SubsystemBase {
 
 		// if (targetPercent >= .75)
 		// speed = speed * (1 - targetPercent);
-		fl.set(ControlMode.PercentOutput, speed + (speedScale * speed));
-		fr.set(ControlMode.PercentOutput, speed + (-speedScale * speed));
-
+		if (speed > 0) {
+			fl.set(ControlMode.PercentOutput, speed + (speedScale * speed));
+			fr.set(ControlMode.PercentOutput, speed + (-speedScale * speed));
+		} else if (speed < 0) {
+			fl.set(ControlMode.PercentOutput, speed + (-speedScale * speed));
+			fr.set(ControlMode.PercentOutput, speed + (speedScale * speed));
+		}
 		// System.out.println(gyro.getAngle());
 	}
 

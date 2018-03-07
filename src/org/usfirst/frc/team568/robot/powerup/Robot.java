@@ -1,6 +1,7 @@
 package org.usfirst.frc.team568.robot.powerup;
 
 import org.usfirst.frc.team568.robot.RobotBase;
+import org.usfirst.frc.team568.robot.commands.Drive2018;
 import org.usfirst.frc.team568.robot.subsystems.BlockHandler;
 import org.usfirst.frc.team568.robot.subsystems.BlockLift2018;
 import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
@@ -71,10 +72,12 @@ public class Robot extends RobotBase {
 
 		// driveTrain.blinkin.set(-.99);
 
-		SmartDashboard.putNumber("Robot Position: ", 0);
+		// SmartDashboard.putNumber("Robot Position: ", 0);
 		SmartDashboard.putNumber("Alliance", 0);
 		SmartDashboard.putNumber("Turn", 90);
 		driveTrain.calGyro();
+
+		SmartDashboard.setPersistent("Robot Position: ");
 		/*
 		 * oi.liftUp.whileHeld(blockLift.getCommandRaise());
 		 * oi.liftDown.whileHeld(blockLift.getCommandLower());
@@ -146,6 +149,11 @@ public class Robot extends RobotBase {
 	}
 
 	@Override
+	public void robotPeriodic() {
+		SmartDashboard.getNumber("Robot Position: ", 0);
+	}
+
+	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 
@@ -153,6 +161,8 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void teleopInit() {
+		SmartDashboard.putData("drive for", new Drive2018(driveTrain, 72, .5));
+		SmartDashboard.putData("drive rev", new Drive2018(driveTrain, -72, .5));
 		/*
 		 * if (color == DriverStation.Alliance.Blue)
 		 *

@@ -2,6 +2,7 @@ package org.usfirst.frc.team568.robot.commands;
 
 import org.usfirst.frc.team568.robot.powerup.DriveTrain2018;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 
 public class Drive2018 extends PIDCommand {
@@ -11,13 +12,16 @@ public class Drive2018 extends PIDCommand {
 	double inch;
 	double distToTravel;
 	double speedScale;
+	boolean atTarget;
+	double timeStamp;
+	private static final double TimeToCheck = .5;
 
 	private static final double CIRCUMFERENCE = 18.8496;
 	private static final double TPR = 4096; // Ticks per revolution
 	private static final double TO_TICKS = TPR / CIRCUMFERENCE; // To Ticks from inches
 
 	public Drive2018(DriveTrain2018 dt, double inch, double speed) {
-		super(.135, 0, 0);
+		super(.001, 0, 0);
 		this.dt = dt;
 		requires(dt);
 		// dt.resetGyro();
@@ -47,8 +51,20 @@ public class Drive2018 extends PIDCommand {
 
 	@Override
 	protected boolean isFinished() {
-		return dt.getDist() >= distToTravel;
 
+		if (Math.abs(dt.getDist() - distToTravel) <= .5) {
+			if (atTarget) {
+				if ((Timer.getFPGATimestamp() - timeStamp) >= TimeToCheck) {
+					return true;
+				}
+			} else {
+				atTarget = true;
+				timeStamp = Timer.getFPGATimestamp();
+			}
+		} else {
+			atTarget = false;
+		}
+		return false;
 	}
 
 	@Override
