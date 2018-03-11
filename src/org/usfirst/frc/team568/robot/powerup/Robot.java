@@ -61,7 +61,7 @@ public class Robot extends RobotBase {
 		blockLift = addSubsystem(BlockLift2018::new);
 		blockIntake = addSubsystem(BlockHandler::new);
 		climber = addSubsystem(WinchClimber::new);
-		compressor = new Compressor();
+		// compressor = new Compressor();
 
 		color = DriverStation.getInstance().getAlliance();
 
@@ -69,13 +69,14 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void robotInit() {
-		compressor.start();
+		// compressor.start();
 		cam = CameraServer.getInstance().startAutomaticCapture();
-
-		driveTrain.blinkin.set(-.99);
-
+		cam.setResolution(360, 720);
+		// cam.setFPS(7);
 		driveTrain.calGyro();
 
+		driveTrain.blinkin.set(-.99);
+		SmartDashboard.putNumber("Robot Position: ", 0);
 		SmartDashboard.setPersistent("Robot Position: ");
 
 		oi.liftUp.whileHeld(blockLift.getCommandRaise());
@@ -83,9 +84,11 @@ public class Robot extends RobotBase {
 		oi.blockIn.whileHeld(blockIntake.getCommandBlockLiftIn());
 		oi.blockOut.whileHeld(blockIntake.getCommandBlockLiftOut());
 		oi.blockOut2.whileHeld(blockIntake.getCommandBlockLiftOut2());
-		oi.blockGrab.whileHeld(blockIntake.blockGrabCommand());
-		oi.armIn.whileHeld(blockIntake.getCommandArmIn());
-		oi.armOut.whileHeld(blockIntake.getCommandArmOut());
+		/*
+		 * oi.blockGrab.whileHeld(blockIntake.blockGrabCommand());
+		 * oi.armIn.whileHeld(blockIntake.getCommandArmIn());
+		 * oi.armOut.whileHeld(blockIntake.getCommandArmOut());
+		 */
 		oi.climb.whileHeld(new ClimbWithWinch());
 		oi.unClimb.whileHeld(new UnClimb());
 
@@ -100,6 +103,7 @@ public class Robot extends RobotBase {
 	public void testPeriodic() {
 
 		Scheduler.getInstance().run();
+
 	}
 
 	@Override
@@ -131,7 +135,15 @@ public class Robot extends RobotBase {
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		int robotPos = (int) SmartDashboard.getNumber("Robot Position: ", 0);
 		int scalePos = 0;
+		int switchPos = 0;
 
+		if (gameData.length() > 0) {
+			if (gameData.charAt(0) == 'L') {
+				scalePos = 1;
+			} else {
+				scalePos = 2;
+			}
+		}
 		if (gameData.length() > 0) {
 			if (gameData.charAt(1) == 'L') {
 				scalePos = 1;
@@ -140,7 +152,9 @@ public class Robot extends RobotBase {
 			}
 		}
 		if (robotPos != 0 && scalePos != 0) {
-			autonomousCommand = new AutoOne(this, scalePos, robotPos);
+			autonomousCommand = new AutoOne(this, scalePos, switchPos, robotPos);
+		} else {
+			autonomousCommand = new AutoTwo(this);
 		}
 		if (autonomousCommand != null)
 			autonomousCommand.start();

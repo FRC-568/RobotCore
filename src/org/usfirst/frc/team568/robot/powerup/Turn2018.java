@@ -14,7 +14,7 @@ public class Turn2018 extends PIDCommand {
 	// ReferenceFrame2017 ref;
 
 	public Turn2018(DriveTrain2018 dt, double degrees) {
-		super(.05, 0.05, 0);
+		super(.1, 0.01, 0);
 		this.dt = dt;
 		requires(dt);
 		this.degrees = degrees;
@@ -43,7 +43,7 @@ public class Turn2018 extends PIDCommand {
 	@Override
 	protected boolean isFinished() {
 
-		if (Math.abs(getPIDController().getSetpoint() - dt.getAngle()) <= .5) {
+		if (Math.abs(getPIDController().getSetpoint() - dt.getAngle()) <= 2) {
 			if (atTarget) {
 				if ((Timer.getFPGATimestamp() - timeStamp) >= TimeToCheck) {
 					return true;
@@ -60,6 +60,7 @@ public class Turn2018 extends PIDCommand {
 
 	@Override
 	protected void end() {
+		System.out.println("turn Finished");
 		dt.stop();
 		Timer.delay(1);
 	}

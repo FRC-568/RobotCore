@@ -1,5 +1,7 @@
 package org.usfirst.frc.team568.robot.subsystems;
 
+import static org.usfirst.frc.team568.util.Utilities.*;
+
 import org.usfirst.frc.team568.robot.RobotBase;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -9,13 +11,11 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Command;
 
-import static org.usfirst.frc.team568.util.Utilities.*;
-
 public class BlockLift2018 extends SubsystemBase {
 	private static final int PPR = 2048; // Encoder set for 2048 pulses per rotation
 	private static final double RAISE_SPEED = 1.0;
-	private static final double LOWER_SPEED = -0.5;
-	private static final double BOTTOM_POSITION = 0;
+	private static final double LOWER_SPEED = -1.0;
+	private static final double BOTTOM_POSITION = -10;
 	private static final double TOP_POSITION = 25;
 
 	private SpeedController liftMotor;
@@ -130,6 +130,7 @@ public class BlockLift2018 extends SubsystemBase {
 			@Override
 			protected void execute() {
 				setSpeed(RAISE_SPEED);
+				// System.out.println(getPositionRaw());
 			}
 
 			@Override
