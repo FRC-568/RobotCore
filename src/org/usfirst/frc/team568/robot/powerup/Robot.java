@@ -69,6 +69,9 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void robotInit() {
+		SmartDashboard.putNumber("Drive.P", 0.004);
+		SmartDashboard.putNumber("Drive.I", 0.001);
+		SmartDashboard.putNumber("Drive.D", 0.004);
 		// compressor.start();
 		cam = CameraServer.getInstance().startAutomaticCapture();
 		cam.setResolution(360, 720);

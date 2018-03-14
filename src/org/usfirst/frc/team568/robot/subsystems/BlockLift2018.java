@@ -26,6 +26,8 @@ public class BlockLift2018 extends SubsystemBase {
 	public static final double BOTTOM = 0;
 	public static final double TOP = 1;
 
+	public double shootHeight = 22;
+
 	public BlockLift2018(final RobotBase robot) {
 		super(robot);
 

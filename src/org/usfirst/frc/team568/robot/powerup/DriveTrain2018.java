@@ -53,7 +53,12 @@ public class DriveTrain2018 extends SubsystemBase {
 		fr = new WPI_TalonSRX(port("rightFrontMotor"));
 		br = new WPI_TalonSRX(port("rightBackMotor"));
 
-		blinkin = new Spark(port("blinkin"));
+		// blinkin = new Spark(port("blinkin"));
+		addChild("FL Motor", fl);
+		addChild("BL Motor", bl);
+		addChild("FR Motor", fr);
+		addChild("BR Motor", br);
+
 
 		drivePID = new PIDController(.135, 0, .1, new PIDSource() {
 
@@ -65,12 +70,10 @@ public class DriveTrain2018 extends SubsystemBase {
 			@Override
 			public PIDSourceType getPIDSourceType() {
 				return PIDSourceType.kDisplacement;
-
 			}
 
 			@Override
 			public double pidGet() {
-
 				return gyro.getAngle();
 			}
 
@@ -155,11 +158,9 @@ public class DriveTrain2018 extends SubsystemBase {
 
 		fl.configMotionAcceleration(accel, 10);
 		fr.configMotionAcceleration(accel, 10);
-
 	}
 
 	public void driveDist(double speed, double dist) {
-
 		double speedScale = drivePidOutput;
 
 		// if (targetPercent >= .75)

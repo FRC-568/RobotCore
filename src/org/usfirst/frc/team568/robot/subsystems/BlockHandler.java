@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 
 public class BlockHandler extends SubsystemBase {
 	public SpeedController intakeOne;
@@ -98,6 +99,21 @@ public class BlockHandler extends SubsystemBase {
 		};
 	}
 
+	public Command getCommandBlockLiftIn(final double seconds) {
+		return new TimedCommand(seconds) {
+			@Override
+			protected void execute() {
+				blockLiftIn();
+				// blockGrab();
+			}
+
+			@Override
+			protected void end() {
+				allStop();
+			}
+		};
+	}
+
 	public Command getCommandBlockLiftOut() {
 		return new Command() {
 			@Override
@@ -118,11 +134,25 @@ public class BlockHandler extends SubsystemBase {
 		};
 	}
 
+	public Command getCommandBlockLiftOut(final double seconds) {
+		return new TimedCommand(seconds) {
+			@Override
+			protected void execute() {
+				blockLiftOut();
+				Timer.delay(.5);
+			}
+
+			@Override
+			protected void end() {
+				allStop();
+			}
+		};
+	}
+
 	public Command getCommandBlockLiftOut2() {
 		return new Command() {
 			@Override
 			protected void execute() {
-
 				blockLiftOut();
 				Timer.delay(.5);
 			}
