@@ -2,6 +2,7 @@ package org.usfirst.frc.team568.robot.powerup;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.PIDCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Turn2018 extends PIDCommand {
 	DriveTrain2018 dt;
@@ -14,7 +15,8 @@ public class Turn2018 extends PIDCommand {
 	// ReferenceFrame2017 ref;
 
 	public Turn2018(DriveTrain2018 dt, double degrees) {
-		super(.1, 0.01, 0);
+		super(SmartDashboard.getNumber("Turn.P", 0.1), SmartDashboard.getNumber("Turn.I", 0.01),
+				SmartDashboard.getNumber("Turn.D", 0.0));
 		this.dt = dt;
 		requires(dt);
 		this.degrees = degrees;

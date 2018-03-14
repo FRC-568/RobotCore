@@ -53,12 +53,11 @@ public class DriveTrain2018 extends SubsystemBase {
 		fr = new WPI_TalonSRX(port("rightFrontMotor"));
 		br = new WPI_TalonSRX(port("rightBackMotor"));
 
-		// blinkin = new Spark(port("blinkin"));
+		blinkin = new Spark(port("blinkin"));
 		addChild("FL Motor", fl);
 		addChild("BL Motor", bl);
 		addChild("FR Motor", fr);
 		addChild("BR Motor", br);
-
 
 		drivePID = new PIDController(.135, 0, .1, new PIDSource() {
 

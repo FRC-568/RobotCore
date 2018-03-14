@@ -73,10 +73,10 @@ public class AutoOne extends CommandGroup {
 
 			} else {
 
-				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 195, .3));
+				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 195, .5));
 				addSequential(new Turn2018(robot.getSubsystem(DriveTrain2018.class), -20));
-				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 65, .3));
-				addSequential(robot.getSubsystem(BlockLift2018.class).getCommandMoveLiftTo(22));
+				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 40, .4));
+				addSequential(robot.getSubsystem(BlockLift2018.class).getCommandMoveLiftTo(20));
 				addSequential(robot.getSubsystem(BlockHandler.class).getCommandBlockLiftOut(2));
 			}
 

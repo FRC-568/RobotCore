@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoTwo extends CommandGroup {
 	AutoTwo(Robot robot) {
-		addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 120, .3));
-		// addSequential(new Turn2018(robot.getSubsystem(DriveTrain2018.class), 90));
+		addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 60, .6));
+		// addSequential(new Turn2018(robot.getSubsystem(DriveTrain2018.class), 45));
 	}
 }
