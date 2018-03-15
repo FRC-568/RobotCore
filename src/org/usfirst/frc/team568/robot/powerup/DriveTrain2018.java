@@ -24,6 +24,7 @@ public class DriveTrain2018 extends SubsystemBase {
 	public PIDController drivePID;
 	private ADXRS450_Gyro gyro;
 	private double drivePidOutput;
+	private boolean _headingLocked = false;
 
 	// INCHES
 	private static final double CIRCUMFERENCE = 18.8496;
@@ -144,6 +145,21 @@ public class DriveTrain2018 extends SubsystemBase {
 		gyro.calibrate();
 	}
 
+	public boolean isHeadingLocked() {
+		return _headingLocked;
+	}
+
+	public void lockHeading() {
+		drivePID.setSetpoint(getAngle());
+		drivePID.enable();
+		_headingLocked = true;
+	}
+
+	public void releaseHeading() {
+		drivePID.disable();
+		_headingLocked = false;
+	}
+
 	public void driveDist(double dist, int speed, int accel) {
 		int ticks = (int) (dist * TO_TICKS);
 		int flCurrPos = fl.getSensorCollection().getQuadraturePosition();
@@ -258,11 +274,6 @@ public class DriveTrain2018 extends SubsystemBase {
 
 			@Override
 			protected void execute() {
-				/*
-				 * drive.curvatureDrive((joystick.getRawAxis(1) * 1), (-joystick.getRawAxis(4) *
-				 * .6), joystick.getRawButton(ControllerButtons.RightBumper));
-				 */
-
 				arcadeDrive(-joystick.getRawAxis(1), joystick.getRawAxis(4) * .75, false);
 			}
 
