@@ -15,8 +15,8 @@ public class Turn2018 extends PIDCommand {
 	// ReferenceFrame2017 ref;
 
 	public Turn2018(DriveTrain2018 dt, double degrees) {
-		super(SmartDashboard.getNumber("Turn.P", 0.1), SmartDashboard.getNumber("Turn.I", 0.01),
-				SmartDashboard.getNumber("Turn.D", 0.0));
+		super(SmartDashboard.getNumber("Turn.P", 0.04), SmartDashboard.getNumber("Turn.I", 0.01),
+				SmartDashboard.getNumber("Turn.D", 0.02));
 		this.dt = dt;
 		requires(dt);
 		this.degrees = degrees;

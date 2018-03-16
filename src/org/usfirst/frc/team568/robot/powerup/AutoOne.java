@@ -63,20 +63,20 @@ public class AutoOne extends CommandGroup {
 		} else {
 			if (scalePos == 1) {
 
-				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 195, .25));
+				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 195, .4));
 				addSequential(new Turn2018(robot.getSubsystem(DriveTrain2018.class), -90));
-				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 160, .25));
+				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 215, .4));
 				addSequential(new Turn2018(robot.getSubsystem(DriveTrain2018.class), 90));
-				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 62, .3));
-				addSequential(robot.getSubsystem(BlockLift2018.class).getCommandMoveLiftTo(22));
+				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 38, .3));
+				addSequential(robot.getSubsystem(BlockLift2018.class).getCommandMoveLiftTo(17));
 				addSequential(robot.getSubsystem(BlockHandler.class).getCommandBlockLiftOut(2));
 
 			} else {
 
 				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 195, .5));
-				addSequential(new Turn2018(robot.getSubsystem(DriveTrain2018.class), -20));
-				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 40, .4));
-				addSequential(robot.getSubsystem(BlockLift2018.class).getCommandMoveLiftTo(20));
+				addSequential(new Turn2018(robot.getSubsystem(DriveTrain2018.class), -35));
+				addSequential(new Drive2018(robot.getSubsystem(DriveTrain2018.class), 62, .4));
+				addSequential(robot.getSubsystem(BlockLift2018.class).getCommandMoveLiftTo(17));
 				addSequential(robot.getSubsystem(BlockHandler.class).getCommandBlockLiftOut(2));
 			}
 

@@ -15,8 +15,8 @@ public class BlockLift2018 extends SubsystemBase {
 	private static final int PPR = 2048; // Encoder set for 2048 pulses per rotation
 	private static final double RAISE_SPEED = 1.0;
 	private static final double LOWER_SPEED = -1.0;
-	private static final double BOTTOM_POSITION = -10;
-	private static final double TOP_POSITION = 25;
+	private static final double BOTTOM_POSITION = -6;
+	private static final double TOP_POSITION = 19;
 
 	private SpeedController liftMotor;
 	private Encoder liftEncoder;

@@ -10,9 +10,9 @@ public class Drive2018 extends Command {
 	private static final double CIRCUMFERENCE = 18.8496;
 	private static final double TPR = 4096; // Ticks per revolution
 	private static final double TO_TICKS = TPR / CIRCUMFERENCE; // To Ticks from inches
-	private static final double RAMP_UP = 1.0 * TPR;
+	private static final double RAMP_UP = .5 * TPR;
 	private static final double RAMP_DOWN = 1.0 * TPR;
-	private static final double MIN_SPEED = 0.05;
+	private static final double MIN_SPEED = 0.2;
 	private static final double TARGET_DEADZONE = 2 * (TPR / CIRCUMFERENCE); // inches * convert_to_ticks
 
 	DriveTrain2018 dt;
@@ -50,6 +50,7 @@ public class Drive2018 extends Command {
 	@Override
 	protected void execute() {
 		dt.driveDist(linearSpeedRamp(), targetTicks);
+		System.out.println(linearSpeedRamp());
 	}
 
 	@Override
@@ -69,11 +70,16 @@ public class Drive2018 extends Command {
 			return 0;
 
 		double speedFactor = 1.0;
-		if (dt.getDist() >= targetTicks - RAMP_DOWN)
+		if (dt.getDist() >= targetTicks - RAMP_DOWN) {
 			speedFactor = (targetTicks - dt.getDist()) / RAMP_DOWN;
-		else if (dt.getDist() < startingTicks + RAMP_UP)
+			System.out.println("Ramp Down");
+		} else if (dt.getDist() < startingTicks + RAMP_UP) {
 			speedFactor = (dt.getDist() - startingTicks) / RAMP_UP;
+			System.out.println("Ramp Up");
+		}
 
+		if (speedFactor == 0)
+			return MIN_SPEED;
 		return Math.signum(maxSpeed * speedFactor) * clamp(Math.abs(maxSpeed * speedFactor), MIN_SPEED, 1);
 	}
 

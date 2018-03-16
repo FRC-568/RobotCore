@@ -61,7 +61,7 @@ public class Robot extends RobotBase {
 		blockLift = addSubsystem(BlockLift2018::new);
 		blockIntake = addSubsystem(BlockHandler::new);
 		climber = addSubsystem(WinchClimber::new);
-		// compressor = new Compressor();
+		compressor = new Compressor();
 
 		color = DriverStation.getInstance().getAlliance();
 
@@ -76,7 +76,7 @@ public class Robot extends RobotBase {
 		SmartDashboard.putNumber("Turn.P", 0.1);
 		SmartDashboard.putNumber("Turn.I", 0.01);
 		SmartDashboard.putNumber("Turn.D", 0.0);
-		// compressor.start();
+		compressor.start();
 		cam = CameraServer.getInstance().startAutomaticCapture();
 		cam.setResolution(360, 720);
 		// cam.setFPS(7);
@@ -91,11 +91,11 @@ public class Robot extends RobotBase {
 		oi.blockIn.whileHeld(blockIntake.getCommandBlockLiftIn());
 		oi.blockOut.whileHeld(blockIntake.getCommandBlockLiftOut());
 		oi.blockOut2.whileHeld(blockIntake.getCommandBlockLiftOut2());
-		/*
-		 * oi.blockGrab.whileHeld(blockIntake.blockGrabCommand());
-		 * oi.armIn.whileHeld(blockIntake.getCommandArmIn());
-		 * oi.armOut.whileHeld(blockIntake.getCommandArmOut());
-		 */
+
+		oi.blockGrab.whileHeld(blockIntake.blockGrabCommand());
+		oi.armIn.whileHeld(blockIntake.getCommandArmIn());
+		oi.armOut.whileHeld(blockIntake.getCommandArmOut());
+
 		oi.climb.whileHeld(new ClimbWithWinch());
 		oi.unClimb.whileHeld(new UnClimb());
 
