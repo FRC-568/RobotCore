@@ -10,8 +10,8 @@ public class Drive2018 extends Command {
 	private static final double CIRCUMFERENCE = 18.8496;
 	private static final double TPR = 4096; // Ticks per revolution
 	private static final double TO_TICKS = TPR / CIRCUMFERENCE; // To Ticks from inches
-	private static final double RAMP_UP = .5 * TPR;
-	private static final double RAMP_DOWN = 1.0 * TPR;
+	private static final double RAMP_UP = .25 * TPR;
+	private static final double RAMP_DOWN = 1.2 * TPR;
 	private static final double MIN_SPEED = 0.2;
 	private static final double TARGET_DEADZONE = 2 * (TPR / CIRCUMFERENCE); // inches * convert_to_ticks
 

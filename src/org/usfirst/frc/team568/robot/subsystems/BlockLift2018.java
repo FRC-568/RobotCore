@@ -16,7 +16,7 @@ public class BlockLift2018 extends SubsystemBase {
 	private static final double RAISE_SPEED = 1.0;
 	private static final double LOWER_SPEED = -1.0;
 	private static final double BOTTOM_POSITION = -6;
-	private static final double TOP_POSITION = 19;
+	private static final double TOP_POSITION = 20;
 
 	private SpeedController liftMotor;
 	private Encoder liftEncoder;
@@ -95,7 +95,8 @@ public class BlockLift2018 extends SubsystemBase {
 
 			@Override
 			protected void initialize() {
-				target = positionToRaw(clamp(position, BOTTOM, TOP));
+				// target = positionToRaw(clamp(position, BOTTOM, TOP));
+				target = position;
 				hasTarget = true;
 				startingPosition = getPositionRaw();
 			}

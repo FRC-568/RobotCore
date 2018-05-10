@@ -12,7 +12,6 @@ import org.usfirst.frc.team568.robot.subsystems.WinchClimber;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
 
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
@@ -63,31 +62,31 @@ public class Robot extends RobotBase {
 		port("intakeTwo", 7);
 
 		oi = new OI();
-		referenceFrame = new ReferenceFrame2017(this);
+		// referenceFrame = new ReferenceFrame2017(this);
 		driveTrain = new DriveTrain(this, referenceFrame);
 		time = new Timer();
-		imu = new ADIS16448_IMU();
-		compressor = new Compressor();
+		// imu = new ADIS16448_IMU();
+		// compressor = new Compressor();
 
-		blockIntake = new BlockIntake(this);
+		// blockIntake = new BlockIntake(this);
 	}
 
 	@Override
 	public void robotInit() {
-		imu.reset();
-		imu.calibrate();
-		referenceFrame.reset();
-		referenceFrame.calabrateGyro();
+		// imu.reset();
+		// imu.calibrate();
+		// referenceFrame.reset();
+		// referenceFrame.calabrateGyro();
 
-		CameraServer.getInstance().startAutomaticCapture(0);
+		// CameraServer.getInstance().startAutomaticCapture(0);
 
 		SmartDashboard.putNumber("Autonomous #", 1);
 		SmartDashboard.putNumber("Speed Multiplier", 1);
 
-		oi.intake.whileHeld(blockIntake.getCommandBlockIn());
-		oi.outtake.whileHeld(blockIntake.getCommandBlockOut());
+		// oi.intake.whileHeld(blockIntake.getCommandBlockIn());
+		// oi.outtake.whileHeld(blockIntake.getCommandBlockOut());
 
-		compressor.start();
+		// compressor.start();
 
 		// SmartDashboard.putNumber("Kp", .15);
 
@@ -105,8 +104,8 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousInit() {
-		referenceFrame.motorEncoder.reset();
-		imu.reset();
+		// referenceFrame.motorEncoder.reset();
+		// imu.reset();
 
 		if (SmartDashboard.getNumber("Autonomous #", 0) == 1) {
 			autonomousCommand = new AutoOne();
@@ -117,8 +116,8 @@ public class Robot extends RobotBase {
 		} else if (SmartDashboard.getNumber("Autonomous #", 0) == 4) {
 			autonomousCommand = new AutoFour();
 		}
-		referenceFrame.reset();
-		visionProcessor.start();
+		// referenceFrame.reset();
+		// visionProcessor.start();
 		autonomousCommand.start();
 
 	}
@@ -136,9 +135,9 @@ public class Robot extends RobotBase {
 			autonomousCommand.cancel();
 		}
 
-		referenceFrame.motorEncoder.reset();
-		imu.reset();
-		referenceFrame.reset();
+		// referenceFrame.motorEncoder.reset();
+		// imu.reset();
+		// referenceFrame.reset();
 
 	}
 
@@ -146,8 +145,9 @@ public class Robot extends RobotBase {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 
-		SmartDashboard.putNumber("MotorEncoderTicks:", referenceFrame.motorEncoder.get());
-		SmartDashboard.putNumber("GYRO", referenceFrame.getAngle());
+		// SmartDashboard.putNumber("MotorEncoderTicks:",
+		// referenceFrame.motorEncoder.get());
+		// SmartDashboard.putNumber("GYRO", referenceFrame.getAngle());
 
 	}
 

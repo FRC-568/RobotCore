@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.TimedCommand;
 
@@ -76,7 +75,7 @@ public class BlockHandler extends SubsystemBase {
 			@Override
 			protected void execute() {
 				armIn();
-				Timer.delay(.1);
+
 			}
 
 			@Override
@@ -97,7 +96,7 @@ public class BlockHandler extends SubsystemBase {
 			@Override
 			protected void execute() {
 				armOut();
-				Timer.delay(.1);
+
 			}
 
 			@Override
@@ -118,7 +117,7 @@ public class BlockHandler extends SubsystemBase {
 			protected void execute() {
 				blockLiftIn();
 				// blockGrab();
-				Timer.delay(.1);
+
 			}
 
 			@Override
@@ -153,7 +152,7 @@ public class BlockHandler extends SubsystemBase {
 			@Override
 			protected void execute() {
 				blockLiftOut();
-				Timer.delay(.5);
+
 			}
 
 			@Override
@@ -173,7 +172,7 @@ public class BlockHandler extends SubsystemBase {
 			@Override
 			protected void execute() {
 				blockLiftOut();
-				Timer.delay(.5);
+
 			}
 
 			@Override
@@ -188,7 +187,7 @@ public class BlockHandler extends SubsystemBase {
 			@Override
 			protected void execute() {
 				blockLiftOut();
-				Timer.delay(.5);
+
 			}
 
 			@Override
@@ -209,7 +208,7 @@ public class BlockHandler extends SubsystemBase {
 			@Override
 			protected void execute() {
 				blockGrab();
-				Timer.delay(.5);
+
 			}
 
 			@Override

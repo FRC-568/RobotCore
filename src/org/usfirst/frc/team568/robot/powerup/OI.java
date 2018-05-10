@@ -19,6 +19,7 @@ public class OI {
 	public Button blockSpinR = new JoystickButton(joyStick1, ControllerButtons.Y);
 
 	public Button blockOut2 = new JoystickButton(joyStick2, ControllerButtons.B);
+	public Button blockIn2 = new JoystickButton(joyStick2, ControllerButtons.A);
 
 	public Button armOut = new JoystickButton(joyStick1, ControllerButtons.RightBumper);
 	public Button armIn = new JoystickButton(joyStick1, ControllerButtons.LeftBumper);
@@ -28,4 +29,12 @@ public class OI {
 
 	public Button climb = new JoystickButton(joyStick2, ControllerButtons.LeftBumper);
 	public Button unClimb = new JoystickButton(joyStick2, ControllerButtons.RightBumper);
+
+	public Button climbA = new JoystickButton(arcadeBox, 12);
+	public Button unClimbA = new JoystickButton(arcadeBox, 11);
+	public Button liftUpA = new JoystickButton(arcadeBox, 7);
+	public Button liftDownA = new JoystickButton(arcadeBox, 10);
+	public Button suckA = new JoystickButton(arcadeBox, 8);
+	public Button fuckA = new JoystickButton(arcadeBox, 9);
+
 }

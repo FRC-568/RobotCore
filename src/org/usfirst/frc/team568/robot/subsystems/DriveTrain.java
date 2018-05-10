@@ -19,7 +19,6 @@ public class DriveTrain extends SubsystemBase {
 
 	protected Joystick driveStick1;
 	private Gyro gyro;
-	
 
 	public DriveTrain(RobotBase robot, Gyro gyro) {
 		super(robot);
@@ -42,12 +41,8 @@ public class DriveTrain extends SubsystemBase {
 	}
 
 	public void arcadeDrive() {
-		leftFront.setInverted(false);
-		leftBack.setInverted(false);
-		rightFront.setInverted(false);
-		rightBack.setInverted(false);
 
-		myDrive.arcadeDrive((driveStick1.getRawAxis(1) * 1), (-driveStick1.getRawAxis(4) * .6));
+		myDrive.arcadeDrive((driveStick1.getRawAxis(1) * 75), (-driveStick1.getRawAxis(4) * .6));
 
 	}
 
@@ -76,8 +71,7 @@ public class DriveTrain extends SubsystemBase {
 		double error = gyro.getAngle() * Kp;
 		speed = -speed;
 
-		if (gyro.getAngle() <= 5
-				&& gyro.getAngle() >= -5) {
+		if (gyro.getAngle() <= 5 && gyro.getAngle() >= -5) {
 			myDrive.tankDrive(speed, speed, false);
 		} else {
 			myDrive.tankDrive(speed - error, speed + error, false);
@@ -91,11 +85,9 @@ public class DriveTrain extends SubsystemBase {
 		rightBack.setInverted(true);
 
 		final double speed = 0.25;
-		if (ra < (gyro.getAngle() + 2)
-				|| ra < (gyro.getAngle() - 2)) {
+		if (ra < (gyro.getAngle() + 2) || ra < (gyro.getAngle() - 2)) {
 			myDrive.tankDrive(speed, -speed, false);
-		} else if (ra > (gyro.getAngle() + 2)
-				|| ra > (gyro.getAngle() - 2)) {
+		} else if (ra > (gyro.getAngle() + 2) || ra > (gyro.getAngle() - 2)) {
 			myDrive.tankDrive(-speed, speed, false);
 		} else
 			halt();
@@ -133,12 +125,12 @@ public class DriveTrain extends SubsystemBase {
 			{
 				requires(DriveTrain.this);
 			}
-		
+
 			@Override
 			protected void execute() {
 				arcadeDrive();
 			}
-		
+
 			@Override
 			protected boolean isFinished() {
 				return false;

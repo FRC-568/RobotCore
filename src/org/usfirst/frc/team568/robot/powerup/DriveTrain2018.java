@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDCommand;
@@ -38,7 +37,7 @@ public class DriveTrain2018 extends SubsystemBase {
 	WPI_TalonSRX fr;
 	WPI_TalonSRX br;
 
-	Spark blinkin;
+	// Spark blinkin;
 
 	int kTimeoutMs;
 	int driveTargetL;
@@ -54,7 +53,7 @@ public class DriveTrain2018 extends SubsystemBase {
 		fr = new WPI_TalonSRX(port("rightFrontMotor"));
 		br = new WPI_TalonSRX(port("rightBackMotor"));
 
-		blinkin = new Spark(port("blinkin"));
+		// blinkin = new Spark(port("blinkin"));
 		addChild("FL Motor", fl);
 		addChild("BL Motor", bl);
 		addChild("FR Motor", fr);
@@ -274,7 +273,7 @@ public class DriveTrain2018 extends SubsystemBase {
 
 			@Override
 			protected void execute() {
-				arcadeDrive(-joystick.getRawAxis(1), joystick.getRawAxis(4) * .75, false);
+				arcadeDrive(-joystick.getRawAxis(1), joystick.getRawAxis(4) * .6, false);
 			}
 
 			@Override

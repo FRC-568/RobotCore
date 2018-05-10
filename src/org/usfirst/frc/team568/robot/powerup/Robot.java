@@ -63,32 +63,27 @@ public class Robot extends RobotBase {
 		climber = addSubsystem(WinchClimber::new);
 		compressor = new Compressor();
 
-		color = DriverStation.getInstance().getAlliance();
-
 	}
 
 	@Override
 	public void robotInit() {
-		SmartDashboard.putNumber("Drive.P", 0.004);
-		SmartDashboard.putNumber("Drive.I", 0.001);
-		SmartDashboard.putNumber("Drive.D", 0.004);
 
-		SmartDashboard.putNumber("Turn.P", 0.1);
-		SmartDashboard.putNumber("Turn.I", 0.01);
-		SmartDashboard.putNumber("Turn.D", 0.0);
+		// SmartDashboard.putNumber("Turn.P", 0.05);
+		// SmartDashboard.putNumber("Turn.I", 0.003);
+		// SmartDashboard.putNumber("Turn.D", 0.0);
 		compressor.start();
 		cam = CameraServer.getInstance().startAutomaticCapture();
 		cam.setResolution(360, 720);
 		// cam.setFPS(7);
 		driveTrain.calGyro();
 
-		driveTrain.blinkin.set(-.99);
 		SmartDashboard.putNumber("Robot Position: ", 0);
 		SmartDashboard.setPersistent("Robot Position: ");
 
 		oi.liftUp.whileHeld(blockLift.getCommandRaise());
 		oi.liftDown.whileHeld(blockLift.getCommandLower());
 		oi.blockIn.whileHeld(blockIntake.getCommandBlockLiftIn());
+		oi.blockIn2.whileHeld(blockIntake.getCommandBlockLiftIn());
 		oi.blockOut.whileHeld(blockIntake.getCommandBlockLiftOut());
 		oi.blockOut2.whileHeld(blockIntake.getCommandBlockLiftOut2());
 
@@ -98,6 +93,13 @@ public class Robot extends RobotBase {
 
 		oi.climb.whileHeld(new ClimbWithWinch());
 		oi.unClimb.whileHeld(new UnClimb());
+
+		oi.liftUpA.whileHeld(blockLift.getCommandRaise());
+		oi.liftDownA.whileHeld(blockLift.getCommandLower());
+		oi.suckA.whileHeld(blockIntake.getCommandBlockLiftIn());
+		oi.fuckA.whileHeld(blockIntake.getCommandBlockLiftOut());
+		oi.climbA.whileHeld(new ClimbWithWinch());
+		oi.unClimbA.whileHeld(new UnClimb());
 
 	}
 
@@ -124,19 +126,12 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void disabledPeriodic() {
+
 		Scheduler.getInstance().run();
 	}
 
 	@Override
 	public void autonomousInit() {
-
-		if (color == DriverStation.Alliance.Blue)
-
-		{
-			driveTrain.blinkin.set(.87);
-		} else {
-			driveTrain.blinkin.set(.61);
-		}
 
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
@@ -146,9 +141,9 @@ public class Robot extends RobotBase {
 
 		if (gameData.length() > 0) {
 			if (gameData.charAt(0) == 'L') {
-				scalePos = 1;
+				switchPos = 1;
 			} else {
-				scalePos = 2;
+				switchPos = 2;
 			}
 		}
 		if (gameData.length() > 0) {
@@ -181,14 +176,6 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void teleopInit() {
-
-		if (color == DriverStation.Alliance.Blue)
-
-		{
-			driveTrain.blinkin.set(.87);
-		} else {
-			driveTrain.blinkin.set(.61);
-		}
 
 	}
 

@@ -2,7 +2,6 @@ package org.usfirst.frc.team568.robot.powerup;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.PIDCommand;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Turn2018 extends PIDCommand {
 	DriveTrain2018 dt;
@@ -15,8 +14,7 @@ public class Turn2018 extends PIDCommand {
 	// ReferenceFrame2017 ref;
 
 	public Turn2018(DriveTrain2018 dt, double degrees) {
-		super(SmartDashboard.getNumber("Turn.P", 0.04), SmartDashboard.getNumber("Turn.I", 0.01),
-				SmartDashboard.getNumber("Turn.D", 0.02));
+		super(0.04, 0.003, 0.0);
 		this.dt = dt;
 		requires(dt);
 		this.degrees = degrees;
@@ -45,7 +43,7 @@ public class Turn2018 extends PIDCommand {
 	@Override
 	protected boolean isFinished() {
 
-		if (Math.abs(getPIDController().getSetpoint() - dt.getAngle()) <= 2) {
+		if (Math.abs(getPIDController().getSetpoint() - dt.getAngle()) <= 5) {
 			if (atTarget) {
 				if ((Timer.getFPGATimestamp() - timeStamp) >= TimeToCheck) {
 					return true;
@@ -64,7 +62,7 @@ public class Turn2018 extends PIDCommand {
 	protected void end() {
 		System.out.println("turn Finished");
 		dt.stop();
-		Timer.delay(1);
+		// Timer.delay(1);
 	}
 
 	@Override
