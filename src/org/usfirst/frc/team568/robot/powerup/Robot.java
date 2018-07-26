@@ -96,8 +96,8 @@ public class Robot extends RobotBase {
 
 		oi.liftUpA.whileHeld(blockLift.getCommandRaise());
 		oi.liftDownA.whileHeld(blockLift.getCommandLower());
-		oi.suckA.whileHeld(blockIntake.getCommandBlockLiftIn());
-		oi.fuckA.whileHeld(blockIntake.getCommandBlockLiftOut());
+		oi.blockLiftIn.whileHeld(blockIntake.getCommandBlockLiftIn());
+		oi.blockLiftOut.whileHeld(blockIntake.getCommandBlockLiftOut());
 		oi.climbA.whileHeld(new ClimbWithWinch());
 		oi.unClimbA.whileHeld(new UnClimb());
 

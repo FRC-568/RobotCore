@@ -34,7 +34,7 @@ public class OI {
 	public Button unClimbA = new JoystickButton(arcadeBox, 11);
 	public Button liftUpA = new JoystickButton(arcadeBox, 7);
 	public Button liftDownA = new JoystickButton(arcadeBox, 10);
-	public Button suckA = new JoystickButton(arcadeBox, 8);
-	public Button fuckA = new JoystickButton(arcadeBox, 9);
+	public Button blockLiftIn = new JoystickButton(arcadeBox, 8);
+	public Button blockLiftOut = new JoystickButton(arcadeBox, 9);
 
 }
