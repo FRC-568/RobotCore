@@ -267,13 +267,42 @@ public class DriveTrain2018 extends SubsystemBase {
 	@Override
 	protected void initDefaultCommand() {
 		setDefaultCommand(new Command() {
+			double comboStartTime = 0;
+			boolean safeMode = true;
+			boolean alreadyToggled = false;
+
 			{
 				requires(DriveTrain2018.this);
 			}
 
 			@Override
+			protected void initialize() {
+				System.out.println("Beginning teleop control - safemode is " + (safeMode ? "Enabled" : "Disabled")
+						+ ". Hold L3 + R3 5 seconds to toggle safe mode.");
+			}
+
+			@Override
 			protected void execute() {
-				arcadeDrive(-joystick.getRawAxis(1), joystick.getRawAxis(4) * .6, false);
+				if (joystick.getRawButton(ControllerButtons.LeftStickIn)
+						&& joystick.getRawButton(ControllerButtons.RightStickIn)) {
+					if (comboStartTime == 0)
+						comboStartTime = Timer.getFPGATimestamp();
+					else if (Timer.getFPGATimestamp() - comboStartTime >= 5.0) {
+						if (!alreadyToggled) {
+							safeMode = !safeMode;
+							alreadyToggled = true;
+							System.out.println("Safemode is " + (safeMode ? "Enabled" : "Disabled") + ".");
+						}
+					}
+				} else {
+					comboStartTime = 0;
+					alreadyToggled = false;
+				}
+
+				if (safeMode)
+					arcadeDrive(-joystick.getRawAxis(1) * 0.5, joystick.getRawAxis(4) * 0.5, false);
+				else
+					arcadeDrive(-joystick.getRawAxis(1), joystick.getRawAxis(4) * 0.6, false);
 			}
 
 			@Override
