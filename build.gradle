@@ -5,13 +5,13 @@ plugins {
 
 repositories{
     maven {url "${System.getProperty('user.home')}/releases/maven/release/"}
-    maven {url "http://devsite.ctr-electronics.com/maven/release/"}
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 ext.PhoenixVersion = "5.8.1"
 
-def ROBOT_MAIN_CLASS = "org.usfirst.frc.team568.robot.powerup.Robot"
+def ROBOT_MAIN_CLASS = "frc.team568.robot.Main"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -46,9 +46,8 @@ deploy {
 // and NavX.
 dependencies {
     compile wpi.deps.wpilib()
-    compile "com.ctre.phoenix:api-java:${PhoenixVersion}"
-    compile "com.ctre.phoenix:wpiapi-java:${PhoenixVersion}"
     nativeZip "com.ctre.phoenix:cci:${PhoenixVersion}:linuxathena@zip"
+    compile 'com.github.juchong:ADIS16448-RoboRIO-Driver:master-SNAPSHOT'
     compile 'net.java.dev.jna:jna:4.5.0'
     compile wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
