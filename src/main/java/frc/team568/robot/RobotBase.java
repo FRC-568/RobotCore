@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public abstract class RobotBase extends IterativeRobot implements PortMapper {
+public abstract class RobotBase extends TimedRobot implements PortMapper {
 	private final Map<String, Integer> _portMap;
 	private final Map<Class<? extends Subsystem>, Subsystem> subsystems;
 

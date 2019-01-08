@@ -208,7 +208,7 @@ public class ReferenceFrame2016 extends Subsystem implements Gyro {
 
 	@Override
 	public void free() {
-		gyro.free();
+		gyro.close();
 	}
 
 }

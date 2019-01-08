@@ -16,7 +16,6 @@ public class Climb extends Command {
 		System.out.println("GoToCommand");
 		// climber.isClimbing = true;
 		this.climber = climber;
-
 	}
 
 	public void topClampIn() {
@@ -55,8 +54,6 @@ public class Climb extends Command {
 		// reacherIn();
 		// topClampIn();
 		// bottomClampIn();
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -101,12 +98,10 @@ public class Climb extends Command {
 		default:
 			break;
 		}
-
 	}
 
 	@Override
 	protected boolean isFinished() {
-
 		return false;
 	}
 
@@ -117,18 +112,15 @@ public class Climb extends Command {
 		climber.isClimbing = false;
 		climber.currentState = Climber.State.BOTTOM_CLAMPED;
 		// reacher
-
 	}
 
 	@Override
 	protected void interrupted() {
-		// TODO Auto-generated method stub
 		topClampOut();
 		bottomClampOut();
 		// climber.isClimbing = false;
 		// climber.currentState = Climber.State.BOTTOM_CLAMPED;
 		// reacher
-
 	}
 
 }

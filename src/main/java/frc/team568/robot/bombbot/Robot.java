@@ -2,12 +2,12 @@ package frc.team568.robot.bombbot;
 
 import frc.team568.robot.steamworks.ControllerButtons;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
-public class Robot extends IterativeRobot {
+public class Robot extends TimedRobot {
 
 	VictorSP leftDrive;
 	VictorSP rightDrive;

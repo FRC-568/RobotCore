@@ -16,7 +16,6 @@ public class Drive2016 extends Command {
 
 	@Override
 	protected void initialize() {
-		// TODO Auto-generated method stub
 		drive = Robot.getInstance().arcadeDrive;
 		timer = new Timer();
 		speed = SmartDashboard.getNumber("Speed", 0.0);
@@ -24,21 +23,15 @@ public class Drive2016 extends Command {
 		forward = SmartDashboard.getBoolean("Forward?", true);
 		timer.reset();
 		timer.start();
-
 	}
 
 	@Override
 	protected void execute() {
-
 		if (forward) {
-
 			drive.forwardWithGyro(speed);
 		} else if (!forward) {
 			drive.reverseWithGyro(speed);
 		}
-
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -52,14 +45,10 @@ public class Drive2016 extends Command {
 	@Override
 	protected void end() {
 		drive.halt();
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	protected void interrupted() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

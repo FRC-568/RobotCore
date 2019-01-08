@@ -6,7 +6,7 @@ import frc.team568.robot.subsystems.Arms;
 import frc.team568.robot.subsystems.ReferenceFrame2016;
 import frc.team568.robot.subsystems.Shooter2016;
 
-/* TODO: replace with OpenCV
+/* replace with OpenCV
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;

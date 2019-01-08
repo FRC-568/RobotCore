@@ -8,7 +8,7 @@ import frc.team568.robot.subsystems.BlockLift2018;
 import frc.team568.robot.subsystems.WinchClimber;
 
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;

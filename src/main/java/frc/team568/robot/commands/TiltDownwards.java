@@ -9,24 +9,18 @@ public class TiltDownwards extends Command {
 	Shooter2016 shooter;
 
 	public TiltDownwards() {
-
 		// requires(shooter);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void initialize() {
 		shooter = Robot.getInstance().shooter;
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	protected void execute() {
 		shooter.tiltDown();
 		System.out.println("Tilt down");
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -35,18 +29,15 @@ public class TiltDownwards extends Command {
 			return false;
 		else
 			return true;
-
 	}
 
 	@Override
 	protected void end() {
-		// TODO Auto-generated method stub
 		shooter.stopTilt();
 	}
 
 	@Override
 	protected void interrupted() {
-		// TODO Auto-generated method stub
 		end();
 	}
 

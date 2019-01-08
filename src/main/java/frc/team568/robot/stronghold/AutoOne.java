@@ -10,7 +10,6 @@ public class AutoOne extends CommandGroup {
 	public AutoOne() {
 		addSequential(new AutoShooter());
 		addSequential(new Drive2016());
-		// TODO Auto-generated constructor stub
 	}
 
 }
