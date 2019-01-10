@@ -46,7 +46,7 @@ repositories{
 dependencies {
     compile wpi.deps.wpilib()
     compile wpi.deps.vendor.java()
-    compile 'com.github.juchong:ADIS16448-RoboRIO-Driver:master-SNAPSHOT'
+    compile 'com.github.FRC-568:ADIS16448-RoboRIO-Driver:java-SNAPSHOT'
     compile 'net.java.dev.jna:jna:4.5.0'
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
