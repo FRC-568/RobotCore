@@ -3,6 +3,7 @@ package frc.team568.robot.deepspace;
 import static frc.team568.util.Utilities.*;
 
 import frc.team568.robot.RobotBase;
+import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -300,7 +301,7 @@ public class DriveTrain2019 extends SubsystemBase {
 			@Override
 			// runs every 20 milliseconds
 			protected void execute() {
-				if (joystick.getRawButton(ControllerIDs.LeftStickIn) && joystick.getRawButton(ControllerIDs.RightStickIn)) {
+				if (joystick.getRawButton(Xinput.LeftStickIn) && joystick.getRawButton(Xinput.RightStickIn)) {
 					if (comboStartTime == 0)
 						comboStartTime = Timer.getFPGATimestamp();
 					else if (Timer.getFPGATimestamp() - comboStartTime >= 5.0) {
@@ -316,11 +317,11 @@ public class DriveTrain2019 extends SubsystemBase {
 				}
 
 				if (safeMode)
-					arcadeDrive(-joystick.getRawAxis(ControllerIDs.LeftStickY) * 0.5, joystick.getRawAxis(ControllerIDs.RightStickX) * 0.5, false);
+					arcadeDrive(-joystick.getRawAxis(Xinput.LeftStickY) * 0.5, joystick.getRawAxis(Xinput.RightStickX) * 0.5, false);
 				else
-					arcadeDrive(-joystick.getRawAxis(ControllerIDs.LeftStickY), joystick.getRawAxis(ControllerIDs.RightStickX) * 0.6, false);
+					arcadeDrive(-joystick.getRawAxis(Xinput.LeftStickY), joystick.getRawAxis(Xinput.RightStickX) * 0.6, false);
 
-				if (joystick.getRawButton(ControllerIDs.LeftBumper)) {
+				if (joystick.getRawButton(Xinput.LeftBumper)) {
 					if (!isShiftHigh) {
 						// Set to high gear
 						shiftHigh();

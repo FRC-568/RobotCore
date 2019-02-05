@@ -1,19 +1,19 @@
-package frc.team568.robot.deepspace;
+package frc.team568.robot.subsystems;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.Servo;
-import frc.team568.robot.RobotBase;
-import frc.team568.robot.subsystems.SubsystemBase;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.command.Command;
+import frc.team568.robot.RobotBase;
+import frc.team568.robot.Xinput;
 
-public class Camera extends SubsystemBase {
+public class PanTiltCamera extends SubsystemBase {
 
 	private Joystick joystick;
 
 	public Servo cameraVerticalServo;
 	public Servo cameraHorizontalServo;
 
-	public Camera(RobotBase robot) {
+	public PanTiltCamera(RobotBase robot) {
 		super(robot);
 
 		// Joystick
@@ -31,7 +31,7 @@ public class Camera extends SubsystemBase {
 		setDefaultCommand(new Command() {
 
 			{
-				requires(Camera.this);
+				requires(PanTiltCamera.this);
 			}
 
 			@Override
@@ -43,10 +43,10 @@ public class Camera extends SubsystemBase {
 			protected void execute() {
 
 				// Rotate camera vertically
-				cameraVerticalServo.setAngle(cameraVerticalServo.getAngle() + joystick.getRawAxis(ControllerIDs.LeftStickY));
+				cameraVerticalServo.setAngle(cameraVerticalServo.getAngle() + joystick.getRawAxis(Xinput.LeftStickY));
 
 				// Rotate camera horizontally
-				cameraHorizontalServo.setAngle(cameraHorizontalServo.getAngle() + joystick.getRawAxis(ControllerIDs.LeftStickX));
+				cameraHorizontalServo.setAngle(cameraHorizontalServo.getAngle() + joystick.getRawAxis(Xinput.LeftStickX));
 			
 			}
 

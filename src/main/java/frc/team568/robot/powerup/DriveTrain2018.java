@@ -3,6 +3,7 @@ package frc.team568.robot.powerup;
 import static frc.team568.util.Utilities.*;
 
 import frc.team568.robot.RobotBase;
+import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -283,8 +284,8 @@ public class DriveTrain2018 extends SubsystemBase {
 
 			@Override
 			protected void execute() {
-				if (joystick.getRawButton(ControllerButtons.LeftStickIn)
-						&& joystick.getRawButton(ControllerButtons.RightStickIn)) {
+				if (joystick.getRawButton(Xinput.LeftStickIn)
+						&& joystick.getRawButton(Xinput.RightStickIn)) {
 					if (comboStartTime == 0)
 						comboStartTime = Timer.getFPGATimestamp();
 					else if (Timer.getFPGATimestamp() - comboStartTime >= 5.0) {
