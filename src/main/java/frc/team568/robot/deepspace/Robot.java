@@ -54,6 +54,8 @@ public class Robot extends RobotBase {
 	private final int cameraServerPort = 0;
 
 	public Robot() {
+		super("deepspace");
+		
 		// Compressor
 		compressor = new Compressor();
 		WPI_TalonSRX frontLeft = new WPI_TalonSRX(lfMotorPort);	

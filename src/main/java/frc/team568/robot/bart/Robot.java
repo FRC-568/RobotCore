@@ -16,6 +16,8 @@ public class Robot extends RobotBase {
 	private Command autonomousCommand;
 
 	public Robot() {
+		super("bart");
+		
 		port("leftFrontMotor", 0);
 		port("leftBackMotor", 1);
 		port("rightFrontMotor", 2);

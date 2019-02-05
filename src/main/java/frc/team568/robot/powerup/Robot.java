@@ -34,6 +34,8 @@ public class Robot extends RobotBase {
 	protected static Robot instance;
 
 	public Robot() {
+		super("powerup");
+		
 		port("leftFrontMotor", 1);
 		port("leftBackMotor", 2);
 		port("rightFrontMotor", 3);

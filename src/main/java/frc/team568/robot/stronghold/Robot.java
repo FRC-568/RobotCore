@@ -65,6 +65,8 @@ public class Robot extends RobotBase {
 	 */
 
 	public Robot() {
+		super("stronghold");
+		
 		instance = this;
 		
 		port("nudge", 8);

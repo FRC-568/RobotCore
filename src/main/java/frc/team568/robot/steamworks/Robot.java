@@ -42,6 +42,8 @@ public class Robot extends RobotBase {
 	public BlockIntake blockIntake;
 
 	public Robot() {
+		super("steamworks");
+		
 		instance = this;
 
 		port("leftFrontMotor", 1);
