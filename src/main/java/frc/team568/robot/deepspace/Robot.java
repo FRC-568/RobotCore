@@ -117,13 +117,14 @@ public class Robot extends RobotBase {
 	
 		drive.tankDrive(controller1.getRawAxis(1), controller1.getRawAxis(5));
 
-		if(controller1.getRawButton(4) ) {	
+		if(controller1.getRawButton(4) ) {
 			if(!shiftIsHeld) {
 				if(isShifted) {
 					solenoidShifter.set(DoubleSolenoid.Value.kReverse); //high gear
-				} else {									
+				} else {			
 					solenoidShifter.set(DoubleSolenoid.Value.kForward); //low gear
 				}
+				isShifted = !isShifted;
 			}
 			shiftIsHeld = true;
 		} else {
