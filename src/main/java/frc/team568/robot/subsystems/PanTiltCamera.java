@@ -3,12 +3,15 @@ package frc.team568.robot.subsystems;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.cameraserver.CameraServer;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 
 public class PanTiltCamera extends SubsystemBase {
 
 	private Joystick joystick;
+
+	private int cameraServerPort = 0;
 
 	public Servo cameraVerticalServo;
 	public Servo cameraHorizontalServo;
@@ -24,6 +27,8 @@ public class PanTiltCamera extends SubsystemBase {
 		cameraHorizontalServo = new Servo(port("horizontalServo"));
 		cameraVerticalServo.set(0.5);
 		cameraHorizontalServo.set(0.5);
+
+		CameraServer.getInstance().startAutomaticCapture(cameraServerPort);
 	}
 
 	@Override

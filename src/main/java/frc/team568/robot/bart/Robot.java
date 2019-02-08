@@ -3,9 +3,11 @@ package frc.team568.robot.bart;
 import frc.team568.robot.PMW3901;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.Locator;
+import frc.team568.robot.subsystems.PanTiltCamera;
 import frc.team568.util.Vector2;
 
-import edu.wpi.first.wpilibj.Talon;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
@@ -13,19 +15,27 @@ public class Robot extends RobotBase {
 	public WestCoastDrive driveTrain;
 	public PMW3901 flow;
 	public Locator locator;
+	public PanTiltCamera camera;
 	private Command autonomousCommand;
 
 	public Robot() {
 		super("bart");
-		
-		port("leftFrontMotor", 0);
-		port("leftBackMotor", 1);
-		port("rightFrontMotor", 2);
-		port("rightBackMotor", 3);
 
-		driveTrain = new WestCoastDrive(this, Talon::new);
+		port("horizontalServo", 1);
+		port("verticalServo", 0);
+		port("cameraJoystick", 0);
+		port("mainJoystick", 1);
+
+		port("leftFrontMotor", 1);
+		port("leftBackMotor", 2);
+		port("rightFrontMotor", 3);
+		port("rightBackMotor", 4);
+
+		driveTrain = new WestCoastDrive(this, WPI_TalonSRX::new);
 		locator = new Locator(this);
 		addSubsystem(Locator.class, locator);
+		camera = new PanTiltCamera(this);
+		addSubsystem(PanTiltCamera.class, camera);
 	}
 
 	@Override
@@ -33,20 +43,24 @@ public class Robot extends RobotBase {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
-		flow.startAutoLoop();
+		if (flow != null)
+			flow.startAutoLoop();
 	}
 
 	@Override
 	public void teleopPeriodic() {
-		locator.update();
+		// locator.update();
 		Scheduler.getInstance().run();
-		Vector2 postition = flow.getPosition();
-		System.out.println("X " + postition.x + " Y " + postition.y);
+		if (flow != null) {
+			Vector2 postition = flow.getPosition();
+			System.out.println("X " + postition.x + " Y " + postition.y);
+		}
 	}
 
 	@Override
 	public void disabledInit() {
-		flow.stopAutoLoop();
+		if (flow != null)
+			flow.stopAutoLoop();
 
 	}
 
