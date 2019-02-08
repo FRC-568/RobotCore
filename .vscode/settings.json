@@ -11,5 +11,6 @@
     ".project": true
   },
   "wpilib.online": true,
-  "editor.insertSpaces": false
+  "editor.insertSpaces": false,
+  "java.saveActions.organizeImports": true
 }
