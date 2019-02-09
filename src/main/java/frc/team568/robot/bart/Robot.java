@@ -1,15 +1,12 @@
 package frc.team568.robot.bart;
 
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.team568.robot.PMW3901;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.Locator;
 import frc.team568.robot.subsystems.PanTiltCamera;
 import frc.team568.util.Vector2;
-
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class Robot extends RobotBase {
 	public WestCoastDrive driveTrain;
@@ -23,6 +20,7 @@ public class Robot extends RobotBase {
 
 		port("horizontalServo", 1);
 		port("verticalServo", 0);
+
 		port("cameraJoystick", 0);
 		port("mainJoystick", 1);
 
@@ -31,7 +29,7 @@ public class Robot extends RobotBase {
 		port("rightFrontMotor", 3);
 		port("rightBackMotor", 4);
 
-		driveTrain = new WestCoastDrive(this, WPI_TalonSRX::new);
+		driveTrain = new WestCoastDrive(this);
 		locator = new Locator(this);
 		addSubsystem(Locator.class, locator);
 		camera = new PanTiltCamera(this);
