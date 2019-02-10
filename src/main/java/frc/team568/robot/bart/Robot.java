@@ -32,17 +32,17 @@ public class Robot extends RobotBase {
 		driveTrain = new WestCoastDrive(this);
 		locator = new Locator(this);
 		addSubsystem(Locator.class, locator);
-		camera = new PanTiltCamera(this);
-		addSubsystem(PanTiltCamera.class, camera);
+		//camera = new PanTiltCamera(this);
+		//addSubsystem(PanTiltCamera.class, camera);
 	}
 
 	@Override
 	public void teleopInit() {
-		if (autonomousCommand != null) {
+		if (autonomousCommand != null)
 			autonomousCommand.cancel();
-		}
 		if (flow != null)
 			flow.startAutoLoop();
+		driveTrain.reset();
 	}
 
 	@Override
@@ -59,14 +59,12 @@ public class Robot extends RobotBase {
 	public void disabledInit() {
 		if (flow != null)
 			flow.stopAutoLoop();
-
 	}
 
 	@Override
 	public void autonomousInit() {
 		autonomousCommand = new DriveForward(driveTrain, 5);
 		autonomousCommand.start();
-
 	}
 
 	@Override
