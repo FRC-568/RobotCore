@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
@@ -21,6 +22,7 @@ public class WestCoastDrive extends SubsystemBase {
 	private WPI_TalonSRX bl;
 	private WPI_TalonSRX fr;
 	private WPI_TalonSRX br;
+	private ADXRS450_Gyro gyro;
 	private NetworkTableEntry averageVelocityEntry;
 	private NetworkTableEntry averageDistanceEntry;
 	private NetworkTableEntry rightDistanceEntry;
@@ -44,6 +46,9 @@ public class WestCoastDrive extends SubsystemBase {
 		drive.setRightSideInverted(false);
 		
 		joystick = new Joystick(port("mainJoystick"));
+
+		gyro = new ADXRS450_Gyro();
+		gyro.calibrate();
 
 		reset();
 
@@ -127,6 +132,23 @@ public class WestCoastDrive extends SubsystemBase {
 		return (fl.getSelectedSensorPosition() + fr.getSelectedSensorPosition()) / 2 * DIST_PER_TICK;
 	}
 
+	public void driveDist(double dist, double speed) {
+		double goalDist = getAverageDistance() + dist;
+		while (goalDist > getAverageDistance()) {
+			drive.curvatureDrive(speed, 0, false);
+		}
+	}
+
+	public void turnAngle(double angle, double speed) {
+		double goalAngle = gyro.getAngle() + angle;
+		while (goalAngle > gyro.getAngle()) {
+			if (angle > 0) 
+				drive.curvatureDrive(0, speed, true);
+			else
+				drive.curvatureDrive(0, -speed, true);
+		}
+	}
+
 	public void reset() {
 		fl.setSelectedSensorPosition(0);
 		fr.setSelectedSensorPosition(0);
@@ -142,7 +164,7 @@ public class WestCoastDrive extends SubsystemBase {
 
 			@Override
 			protected void initialize() {
-
+				
 			}
 
 			@Override
