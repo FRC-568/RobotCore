@@ -14,6 +14,10 @@ public abstract class SubsystemBase extends Subsystem {
 		super(name);
 		this.robot = robot;
 	}
+
+	public Class<? extends SubsystemBase> getEffectiveClass() {
+		return getClass();
+	}
 	
 	protected int port(String name) {
 		return robot.getPort(name);
