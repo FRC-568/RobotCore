@@ -45,15 +45,15 @@ public class Robot extends RobotBase {
 	public DifferentialDrive drive;
 	
 	public Joystick controller1;	
-	UsbCamera camera;
-	GripPipeline gripPipeline;
-	CvSink cvSink;
-	Mat mat;
+	//UsbCamera camera;
+	//GripPipeline gripPipeline;
+	//CvSink cvSink;
+	//Mat mat;
 
 	public Timer timer;
 
 	DriveTrain2019 driveTrain;
-
+	VisionTargetTracker cameraFeed;
 	// Camera server port
 	private final int cameraServerPort = 0;
 
@@ -78,12 +78,13 @@ public class Robot extends RobotBase {
 	@Override
 	public void robotInit() {
 		compressor.start();
-		CameraServer.getInstance().startAutomaticCapture(cameraServerPort);
-		camera = CameraServer.getInstance().startAutomaticCapture();
-		gripPipeline = new GripPipeline();
-		cvSink = CameraServer.getInstance().getVideo();
-		mat = new Mat();
-		
+		//CameraServer.getInstance().startAutomaticCapture(cameraServerPort);
+		// camera = CameraServer.getInstance().startAutomaticCapture();
+		// gripPipeline = new GripPipeline();
+		// cvSink = CameraServer.getInstance().getVideo();
+		// mat = new Mat();
+		cameraFeed = new VisionTargetTracker();
+
 		solenoidShifter = new DoubleSolenoid(0, 1);
 		
 		compressor = new Compressor();
@@ -102,10 +103,11 @@ public class Robot extends RobotBase {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-
+		
+		cameraFeed.processImage();
 		//drive.tankDrive(0.5, 0.5);
-		cvSink.grabFrame(mat);
-		gripPipeline.process(mat);
+		// cvSink.grabFrame(mat);
+		// gripPipeline.process(mat);
 	}
 
 	@Override

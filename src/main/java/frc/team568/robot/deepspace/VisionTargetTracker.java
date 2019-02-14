@@ -12,6 +12,8 @@ import frc.team568.grip.GearLifterTarget;
 import org.opencv.core.Point;
 
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -27,8 +29,12 @@ public final class VisionTargetTracker extends Subsystem {
 	public final String cameraName;
 	public final UsbCamera camera;
 
+	CvSink cvSink;
+	CvSource cvSource;
+
 	private GripPipeline pipeline;
 	private Mat matOriginal;
+	private Mat output;
 	private double lengthBetweenContours;
 	private double distanceFromTarget;
 	private double[] centerX;
@@ -39,20 +45,27 @@ public final class VisionTargetTracker extends Subsystem {
 
 	public VisionTargetTracker(final int cameraUsbPort) {
 		matOriginal = new Mat();
+		output = new Mat();
 		pipeline = new GripPipeline();
 		camera = CameraServer.getInstance().startAutomaticCapture(cameraUsbPort);
+		cvSink = CameraServer.getInstance().getVideo();
+		cvSource = CameraServer.getInstance().putVideo("blur", CAMERA_WIDTH, CAMERA_HEIGHT);
 		cameraName = camera.getName();
 		camera.setResolution(CAMERA_WIDTH, CAMERA_HEIGHT);
 	}
 
 	public void processImage() {
-		CameraServer.getInstance().getVideo(cameraName).grabFrame(matOriginal);
+		cvSink.grabFrame(matOriginal);
 		pipeline.process(matOriginal);
+		matOriginal.copyTo(output);
 		pipeline.filterContoursOutput().forEach(contour -> {
 			var box = Imgproc.boundingRect(contour);
-			Imgproc.rectangle(pipeline.resizeImageOutput(), new Point(box.x, box.y), new Point(box.x + box.width, box.y + box.height), new Scalar(1, 0, 0));
+			Imgproc.rectangle(output, new Point(box.x, box.y), new Point(box.x + box.width, box.y + box.height), new Scalar(1, 0, 0));
+			System.out.println("rectangle drawn");
 		});
-		returnCenterX();	
+		returnCenterX();
+		//cvSink.grabFrame(matOriginal);
+		cvSource.putFrame(output);	
 	}
 
 	public double returnCenterX() {

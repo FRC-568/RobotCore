@@ -28,7 +28,6 @@ import org.opencv.objdetect.*;
 public class GripPipeline implements VisionPipeline {
 
 	//Outputs
-	private Mat resizeImageOutput = new Mat();
 	private Mat blurOutput = new Mat();
 	private Mat cvErodeOutput = new Mat();
 	private Mat hsvThresholdOutput = new Mat();
@@ -44,15 +43,8 @@ public class GripPipeline implements VisionPipeline {
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
 	 */
 	@Override	public void process(Mat source0) {
-		// Step Resize_Image0:
-		Mat resizeImageInput = source0;
-		double resizeImageWidth = 640.0;
-		double resizeImageHeight = 480.0;
-		int resizeImageInterpolation = Imgproc.INTER_CUBIC;
-		resizeImage(resizeImageInput, resizeImageWidth, resizeImageHeight, resizeImageInterpolation, resizeImageOutput);
-
 		// Step Blur0:
-		Mat blurInput = resizeImageOutput;
+		Mat blurInput = source0;
 		BlurType blurType = BlurType.get("Box Blur");
 		double blurRadius = 1.8018018018018018;
 		blur(blurInput, blurType, blurRadius, blurOutput);
@@ -86,9 +78,9 @@ public class GripPipeline implements VisionPipeline {
 		// Step Filter_Contours0:
 		ArrayList<MatOfPoint> filterContoursContours = findContoursOutput;
 		double filterContoursMinArea = 8.0;
-		double filterContoursMinPerimeter = 32.0;
-		double filterContoursMinWidth = 150.0;
-		double filterContoursMaxWidth = 300.0;
+		double filterContoursMinPerimeter = 0.0;
+		double filterContoursMinWidth = 10.0;
+		double filterContoursMaxWidth = 30.0;
 		double filterContoursMinHeight = 0.0;
 		double filterContoursMaxHeight = 1000.0;
 		double[] filterContoursSolidity = {0, 100};
@@ -98,14 +90,6 @@ public class GripPipeline implements VisionPipeline {
 		double filterContoursMaxRatio = 1000.0;
 		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
 
-	}
-
-	/**
-	 * This method is a generated getter for the output of a Resize_Image.
-	 * @return Mat output from Resize_Image.
-	 */
-	public Mat resizeImageOutput() {
-		return resizeImageOutput;
 	}
 
 	/**
@@ -156,19 +140,6 @@ public class GripPipeline implements VisionPipeline {
 		return filterContoursOutput;
 	}
 
-
-	/**
-	 * Scales and image to an exact size.
-	 * @param input The image on which to perform the Resize.
-	 * @param width The width of the output in pixels.
-	 * @param height The height of the output in pixels.
-	 * @param interpolation The type of interpolation.
-	 * @param output The image in which to store the output.
-	 */
-	private void resizeImage(Mat input, double width, double height,
-		int interpolation, Mat output) {
-		Imgproc.resize(input, output, new Size(width, height), 0.0, 0.0, interpolation);
-	}
 
 	/**
 	 * An indication of which type of filter to use for a blur.
