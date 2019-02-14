@@ -38,6 +38,8 @@ public class WestCoastDrive extends SubsystemBase {
 
 	private static final double CURVATURE_MINIMUM_VELOCITY = 6.0;
 
+	private static final int THRESHOLD_ANGLE = 2;
+
 	public WestCoastDrive(RobotBase robot) {
 		super(robot);
 
@@ -132,20 +134,34 @@ public class WestCoastDrive extends SubsystemBase {
 		return (fl.getSelectedSensorPosition() + fr.getSelectedSensorPosition()) / 2 * DIST_PER_TICK;
 	}
 
-	public void driveDist(double dist, double speed) {
+	public void driveDist(double dist) {
 		double goalDist = getAverageDistance() + dist;
+		double kP = 1 / Math.abs(goalDist - getAverageDistance());
 		while (goalDist > getAverageDistance()) {
-			drive.curvatureDrive(speed, 0, false);
+			drive.curvatureDrive((goalDist - getAverageDistance()) * kP, 0, false);
 		}
 	}
 
-	public void turnAngle(double angle, double speed) {
-		double goalAngle = gyro.getAngle() + angle;
-		while (goalAngle > gyro.getAngle()) {
-			if (angle > 0) 
-				drive.curvatureDrive(0, speed, true);
-			else
-				drive.curvatureDrive(0, -speed, true);
+	public void turnAngle(int angle) {
+		// Setting the goal angle
+		double goalAngle = gyro.getAngle();
+		for (int i = 0; i < angle; i++) {
+			if (angle > 0) {
+				++goalAngle;
+				if (goalAngle > 360)
+					goalAngle = 0;
+			}
+			else {
+				--goalAngle;
+				if (goalAngle < 0)
+					goalAngle = 360;
+			}
+		}
+
+		// Turning the robot
+		double kP = 1 / Math.abs(goalAngle - gyro.getAngle());
+		while (Math.abs(goalAngle - gyro.getAngle()) < THRESHOLD_ANGLE) {
+			drive.curvatureDrive(0, (goalAngle - gyro.getAngle()) * kP, true);
 		}
 	}
 
