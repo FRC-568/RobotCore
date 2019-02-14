@@ -11,36 +11,40 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.team568.robot.RobotBase;
+import frc.team568.robot.Xinput;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.AnalogGyro;
 
 public class Robot extends RobotBase {
 	Command autonomousCommand;
 
 	private Compressor compressor;
-
-	//motor ports
-	private static final int lfMotorPort = 1;
-	//private static final int lbMotorPort = 2;
-  	//private static final int rfMotorPort = 3;
-	private static final int rbMotorPort = 2;
-
-	// //joystick inputs
-	//private static final int JoystickInput = 1;
-	//private static final int rightJoystickInput = 1;
-
-	public DifferentialDrive drive;
-	
-	public Joystick controller1;
-	public Joystick controller2;
+	DoubleSolenoid solenoidShifter;
 	
 	boolean isShifted;
 	boolean shiftIsHeld;
 
-	DoubleSolenoid solenoidShifter;
+	//motor ports
+	private static final int lMotorPort = 1;
+	private static final int rMotorPort = 2;
+
+	private static final int gyroPort = 0;
+	private static final double AngleSetpoint = 0.0;
+ 	private static final double kP = 0.005; // propotional turning constant
+
+  	// gyro calibration constant, may need to be adjusted;
+  	// gyro value of 360 is set to correspond to one full revolution
+  	private static final double kVoltsPerDegreePerSecond = 0.0128;
+
+	AnalogGyro gyro;
+	public DifferentialDrive drive;
 	
+	public Joystick controller1;	
 	UsbCamera camera;
 	GripPipeline gripPipeline;
 	CvSink cvSink;
@@ -58,20 +62,17 @@ public class Robot extends RobotBase {
 		
 		// Compressor
 		compressor = new Compressor();
-		WPI_TalonSRX frontLeft = new WPI_TalonSRX(lfMotorPort);	
-		//WPI_TalonSRX rearLeft = new WPI_TalonSRX(lbMotorPort);
-		//WPI_TalonSRX frontRight = new WPI_TalonSRX(rfMotorPort);
-		WPI_TalonSRX rearRight = new WPI_TalonSRX(rbMotorPort);
 
-		drive = new DifferentialDrive(frontLeft, rearRight);
-		frontLeft.setInverted(true);
-		//rearLeft.setInverted(true);
-		//frontRight.setInverted(true);
-		rearRight.setInverted(true);
-		// rightStick = new Joystick(JoystickInput);
-		// leftStick = new Joystick(rightJoystickInput);
+		WPI_TalonSRX leftMotor = new WPI_TalonSRX(lMotorPort);	
+		WPI_TalonSRX Rightmotor = new WPI_TalonSRX(rMotorPort);
+
+		drive = new DifferentialDrive(leftMotor, Rightmotor);
+		
+		leftMotor.setInverted(true);
+		Rightmotor.setInverted(true);
+
 		controller1 = new Joystick(0);
-    	controller2 = new Joystick(1);
+		gyro = new AnalogGyro(gyroPort);	
 	}
 
 	@Override
@@ -110,16 +111,17 @@ public class Robot extends RobotBase {
 	@Override
 	public void teleopInit() {
 		compressor.setClosedLoopControl(true);
+		new JoystickButton(controller1, Xinput.X).whileHeld(new TapeTrackerCommand(driveTrain));
 	}
 
 	@Override
 	// Called every 20 milliseconds in teleop
-	public void teleopPeriodic() {
+	public void teleopPeriodic() { 
 		Scheduler.getInstance().run();
-	
+		
 		drive.tankDrive(controller1.getRawAxis(1), controller1.getRawAxis(5));
 
-		if(controller1.getRawButton(4) ) {
+		if(controller1.getRawButton(Xinput.Y) ) {
 			if(!shiftIsHeld) {
 				if(isShifted) {
 					solenoidShifter.set(DoubleSolenoid.Value.kReverse); //high gear
@@ -131,7 +133,7 @@ public class Robot extends RobotBase {
 			shiftIsHeld = true;
 		} else {
 			shiftIsHeld = false;
-		}	
+		}		
 	}
 
 	@Override

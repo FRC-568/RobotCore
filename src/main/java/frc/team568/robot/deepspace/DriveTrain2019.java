@@ -222,6 +222,11 @@ public class DriveTrain2019 extends SubsystemBase {
 		fr.set(ControlMode.PercentOutput, 0);
 	}
 
+	public void setSpeed(double leftValue, double rightValue) {
+		fl.set(leftValue);
+		fr.set(rightValue);
+	}
+
 	public void arcadeDrive(double xSpeed, double zRotation, boolean squaredInputs) {
 		final double m_deadband = 0.2;
 

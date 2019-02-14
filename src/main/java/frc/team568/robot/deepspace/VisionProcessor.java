@@ -6,38 +6,39 @@ package frc.team568.robot.deepspace;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import frc.team568.grip.GearLifterTarget;
-import org.opencv.core.Point;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public final class VisionTargetTracker extends Subsystem {
+public class VisionProcessor {
 	public static final double OFFSET_TO_FRONT = 0;
 	public static final int CAMERA_WIDTH = 320; // 640;
 	public static final int CAMERA_HEIGHT = 240; // 480;
+	public static final double CAMERA_FPS = 30.0;
+	public static final double FRAME_TIME = 1 / CAMERA_FPS;
 	public static final double DISTANCE_CONSTANT = 5760; // 5738;
-	public static final double WIDTH_BETWEEN_TARGET = 13.3133853031; // inches
+	public static final double WIDTH_BETWEEN_TARGET = 13.313;
 
 	public final String cameraName;
 	public final UsbCamera camera;
 
+	private Thread thread;
 	private GripPipeline pipeline;
 	private Mat matOriginal;
 	private double lengthBetweenContours;
 	private double distanceFromTarget;
 	private double[] centerX;
+	private boolean _isRunning;
+	public double processingTime = 0;
 
-	public VisionTargetTracker() {
+	public VisionProcessor() {
 		this(0);
 	}
 
-	public VisionTargetTracker(final int cameraUsbPort) {
+	public VisionProcessor(final int cameraUsbPort) {
 		matOriginal = new Mat();
 		pipeline = new GripPipeline();
 		camera = CameraServer.getInstance().startAutomaticCapture(cameraUsbPort);
@@ -45,14 +46,33 @@ public final class VisionTargetTracker extends Subsystem {
 		camera.setResolution(CAMERA_WIDTH, CAMERA_HEIGHT);
 	}
 
+	public void start() {
+		if (thread == null || !thread.isAlive()) {
+			thread = new ProcessThread();
+			thread.start();
+			_isRunning = true;
+		}
+	}
+
+	public void stop() {
+
+		if (thread != null && !thread.isAlive()) {
+
+			_isRunning = false;
+			thread.interrupt();
+		}
+
+	}
+
+	public boolean isRunning() {
+		return _isRunning;
+
+	}
+
 	public void processImage() {
 		CameraServer.getInstance().getVideo(cameraName).grabFrame(matOriginal);
 		pipeline.process(matOriginal);
-		pipeline.filterContoursOutput().forEach(contour -> {
-			var box = Imgproc.boundingRect(contour);
-			Imgproc.rectangle(pipeline.resizeImageOutput(), new Point(box.x, box.y), new Point(box.x + box.width, box.y + box.height), new Scalar(1, 0, 0));
-		});
-		returnCenterX();	
+		returnCenterX();
 	}
 
 	public double returnCenterX() {
@@ -94,31 +114,30 @@ public final class VisionTargetTracker extends Subsystem {
 				angleToGoal = Math.atan(distanceFromCenterInch / distanceFromTarget());
 				angleToGoal = Math.toDegrees(angleToGoal);
 				// prints angle
-				// System.out.println("Angle: " + angleToGoal);
+				System.out.println("Angle: " + angleToGoal);
+				SmartDashboard.putNumber("GearAngle", angleToGoal);
 			}
 		}
-		SmartDashboard.putNumber("angleToGoal", angleToGoal);
+
 		return angleToGoal;
 	}
 
-	@Override
-	protected void initDefaultCommand() {
-		class ImageProcessor extends Command {
-			public ImageProcessor() {
-				requires(VisionTargetTracker.this);
-			}
+	private class ProcessThread extends Thread {
+		@Override
+		public void run() {
+			while (_isRunning) {
+				try {
+					double timestamp = Timer.getFPGATimestamp();
+					processImage();
+					processingTime = Timer.getFPGATimestamp() - timestamp;
+					int delayMilliseconds = (int) (FRAME_TIME - processingTime) * 1000;
+					if (delayMilliseconds > 0) {
+						Thread.sleep(delayMilliseconds);
+					}
+				} catch (InterruptedException e) {
 
-			@Override
-			protected void execute() {
-				// processImage();
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return false;
+				}
 			}
 		}
-		setDefaultCommand(new ImageProcessor());
 	}
-
 }
