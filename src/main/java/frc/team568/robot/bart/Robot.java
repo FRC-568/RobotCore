@@ -64,7 +64,7 @@ public class Robot extends RobotBase {
 	@Override
 	public void autonomousInit() {
 		autonomousCommand = new DriveForward(driveTrain, 5);
-		// driveTrain.driveDist(24, 1); <- This is for testing
+		// driveTrain.driveDist(24); <- This is for testing
 		autonomousCommand.start();
 	}
 
