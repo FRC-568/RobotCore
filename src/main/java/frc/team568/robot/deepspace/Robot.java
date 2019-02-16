@@ -57,7 +57,7 @@ public class Robot extends RobotBase {
 		Scheduler.getInstance().run();
 		
 		drive.driveTank();
-		drive.gearShifter();	
+		
 	}
 
 	@Override

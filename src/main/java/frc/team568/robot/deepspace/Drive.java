@@ -4,6 +4,7 @@ package frc.team568.robot.deepspace;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import frc.team568.robot.subsystems.DriveBase;
+import frc.team568.robot.subsystems.SubsystemBase;
 import frc.team568.robot.RobotBase;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -11,6 +12,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.team568.robot.Xinput;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class Drive extends DriveBase {
 	
@@ -26,6 +29,7 @@ public class Drive extends DriveBase {
 	boolean shiftIsHeld;
 
 	DriveTrain2019 driveTrain;
+	SubsystemBase subSystem;
 
 	public Drive(final RobotBase robot) {
 		super(robot);
@@ -84,6 +88,28 @@ public class Drive extends DriveBase {
 
 	public void driveToTapeCommand() {
 		new JoystickButton(controller1, Xinput.X).whileHeld(new TapeTrackerCommand(driveTrain));
+	}
+
+	@Override
+	protected void initDefaultCommand() {
+		setDefaultCommand(new Command() {
+			
+
+			@Override
+			protected void initialize() {
+				System.out.println("Starting Default Command");
+			}
+
+			@Override
+			protected void execute() {
+				gearShifter();
+			}
+
+			@Override
+			protected boolean isFinished() {
+				return false;
+			}
+		});
 	}
 
 	@Override
