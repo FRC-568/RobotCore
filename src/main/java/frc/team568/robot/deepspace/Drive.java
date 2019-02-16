@@ -94,7 +94,10 @@ public class Drive extends DriveBase {
 	protected void initDefaultCommand() {
 		setDefaultCommand(new Command() {
 			
-
+			{
+				requires(Drive.this);
+			}
+			
 			@Override
 			protected void initialize() {
 				System.out.println("Starting Default Command");
@@ -103,6 +106,7 @@ public class Drive extends DriveBase {
 			@Override
 			protected void execute() {
 				gearShifter();
+				driveTank();
 			}
 
 			@Override
