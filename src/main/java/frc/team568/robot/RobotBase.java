@@ -18,6 +18,7 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 	private final Map<Class<? extends Subsystem>, Subsystem> subsystems;
 	private final String _name;
 	private final NetworkTable config;
+	private final ControlManager controls;
 
 	protected RobotBase(final String name) {
 		_name = name;
@@ -27,6 +28,7 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 		config.addEntryListener(
 			(table, key, entry, value, flags) -> entry.setPersistent(),
 			EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
+		controls = new ControlManager();
 	}
 	
 	//Returns a single IO port mapping - use in subsystems to lookup the location of a hardware device
@@ -55,6 +57,10 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 
 	public NetworkTable getConfig() {
 		return config;
+	}
+
+	public ControlManager getControls() {
+		return controls;
 	}
 	
 	//Adds a new port mapping - call in the constructor before initializing subsystems
