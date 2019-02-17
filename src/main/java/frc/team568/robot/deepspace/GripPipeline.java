@@ -25,6 +25,7 @@ import org.opencv.objdetect.*;
 *
 * @author GRIP
 */
+@SuppressWarnings("all")
 public class GripPipeline implements VisionPipeline {
 
 	//Outputs
