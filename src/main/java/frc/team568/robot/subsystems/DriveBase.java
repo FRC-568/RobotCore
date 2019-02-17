@@ -18,6 +18,11 @@ public abstract class DriveBase extends SubsystemBase {
 		return DriveBase.class;
 	}
 
+	@Override
+	public String getConfigName() {
+		return "drive";
+	}
+
 	public void tankDrive(double leftValue, double rightValue) {
 		tankDrive(leftValue, rightValue, true);
 	}

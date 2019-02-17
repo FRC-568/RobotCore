@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -14,10 +17,16 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 
 	private final Map<Class<? extends Subsystem>, Subsystem> subsystems;
 	private final String _name;
+	private final NetworkTable config;
 
 	protected RobotBase(final String name) {
 		_name = name;
 		subsystems = new HashMap<Class<? extends Subsystem>, Subsystem>();
+		config = NetworkTableInstance.getDefault().getTable(getName());
+		config.getEntry(".type").setString("RobotPreferences");
+		config.addEntryListener(
+			(table, key, entry, value, flags) -> entry.setPersistent(),
+			EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
 	}
 	
 	//Returns a single IO port mapping - use in subsystems to lookup the location of a hardware device
@@ -43,10 +52,34 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 			key -> key.substring(prefix.length()),
 			value -> preferences.getInt(value, -1)));
 	}
+
+	public NetworkTable getConfig() {
+		return config;
+	}
 	
 	//Adds a new port mapping - call in the constructor before initializing subsystems
 	protected void port(String name, int port) {
 		preferences.putInt(getName() + "/ports/" + name, port);
+	}
+	
+	// Set Subsystem configuration - call in the constructor before initializing subsystems
+	protected void config(String key, boolean value) {
+		getConfig().getEntry(key).setBoolean(value);
+	}
+	
+	//Set Subsystem configuration - call in the constructor before initializing subsystems
+	protected void config(String key, boolean[] value) {
+		getConfig().getEntry(key).setBooleanArray(value);
+	}
+	
+	// Set Subsystem configuration - call in the constructor before initializing subsystems
+	protected void config(String key, Number value) {
+		getConfig().getEntry(key).setNumber(value);
+	}
+	
+	//Set Subsystem configuration - call in the constructor before initializing subsystems
+	protected void config(String key, Number[] value) {
+		getConfig().getEntry(key).setNumberArray(value);
 	}
 	
 	//Takes a constructor Function and returns the created subsystem. Subsystems are retrievable with getSubsystem()
