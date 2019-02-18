@@ -3,17 +3,16 @@ package frc.team568.robot.deepspace;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import frc.team568.robot.subsystems.DriveBase;
-import frc.team568.robot.subsystems.SubsystemBase;
-import frc.team568.robot.RobotBase;
-
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import frc.team568.robot.Xinput;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+
+import frc.team568.robot.RobotBase;
+import frc.team568.robot.Xinput;
+import frc.team568.robot.subsystems.DriveBase;
+import frc.team568.robot.subsystems.SubsystemBase;
 
 public class Drive extends DriveBase {
 	
