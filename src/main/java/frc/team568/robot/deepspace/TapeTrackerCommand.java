@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class TapeTrackerCommand extends Command {
 	DriveTrain2019 drive;
 	GripPipeline pipeline;
-	VisionTargetTracker tracker;
+	TargetTracker1 tracker;
 
 	private static final double MAX_SPEED = .4;
 	private static final double MAX_DISTANCE = 80; // inches

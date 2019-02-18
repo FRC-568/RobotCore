@@ -16,9 +16,10 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public final class VisionTargetTracker extends Subsystem {
+public final class TargetTracker1 extends Subsystem {
 	public static final double OFFSET_TO_FRONT = 0;
 	public static final int CAMERA_WIDTH = 320; // 640;
 	public static final int CAMERA_HEIGHT = 240; // 480;
@@ -38,33 +39,58 @@ public final class VisionTargetTracker extends Subsystem {
 	private double distanceFromTarget;
 	private double[] centerX;
 
-	public VisionTargetTracker() {
+	public TargetTracker1() {
 		this(0);
 	}
 
-	public VisionTargetTracker(final int cameraUsbPort) {
+	public TargetTracker1(final int cameraUsbPort) {
 		matOriginal = new Mat();
 		output = new Mat();
 		pipeline = new GripPipeline();
 		camera = CameraServer.getInstance().startAutomaticCapture(cameraUsbPort);
 		cvSink = CameraServer.getInstance().getVideo();
-		cvSource = CameraServer.getInstance().putVideo("blur", CAMERA_WIDTH, CAMERA_HEIGHT);
+		cvSource = CameraServer.getInstance().putVideo("findContours", CAMERA_WIDTH, CAMERA_HEIGHT);
 		cameraName = camera.getName();
 		camera.setResolution(CAMERA_WIDTH, CAMERA_HEIGHT);
+		camera.setFPS(30);
+
+		SmartDashboard.putNumber("brightness", camera.getBrightness());
+		SmartDashboard.putNumber("exposure", 20);
 	}
 
 	public void processImage() {
+		
+		double brightness = SmartDashboard.getNumber("brightness", 50);
+		double exposure = SmartDashboard.getNumber("exposure", 20);
+		//int brightness = 55;
+		camera.setBrightness((int) brightness);
+		camera.setExposureManual((int) exposure);
+		
+		
 		cvSink.grabFrame(matOriginal);
 		pipeline.process(matOriginal);
 		matOriginal.copyTo(output);
 		pipeline.filterContoursOutput().forEach(contour -> {
 			var box = Imgproc.boundingRect(contour);
-			Imgproc.rectangle(output, new Point(box.x, box.y), new Point(box.x + box.width, box.y + box.height), new Scalar(1, 0, 0));
+			Imgproc.rectangle(output, new Point(box.x, box.y), new Point(box.x + box.width, box.y + box.height), new Scalar(200, 0, 0));
 			System.out.println("rectangle drawn");
 		});
 		returnCenterX();
 		//cvSink.grabFrame(matOriginal);
 		cvSource.putFrame(output);	
+	}
+
+	@Override
+	public void initSendable(SendableBuilder builder) {
+		builder.setSmartDashboardType(getName());
+		
+		builder.addDoubleProperty("upperHue", () -> pipeline.upperHue, value -> {pipeline.upperHue = value; System.out.println("upperHue");});
+		builder.addDoubleProperty("lowerHue", () -> pipeline.lowerHue, value -> {pipeline.lowerHue = value;});
+		builder.addDoubleProperty("upperSaturation", () -> pipeline.upperSaturation, value -> {pipeline.upperSaturation = value;});
+		builder.addDoubleProperty("lowerSaturation", () -> pipeline.lowerSaturation, value -> {pipeline.lowerSaturation = value;});
+		builder.addDoubleProperty("upperValue", () -> pipeline.upperValue, value -> {pipeline.upperValue = value;});
+		builder.addDoubleProperty("lowerValue", () -> pipeline.lowerValue, value -> {pipeline.lowerValue = value;});		
+
 	}
 
 	public double returnCenterX() {
@@ -117,12 +143,12 @@ public final class VisionTargetTracker extends Subsystem {
 	protected void initDefaultCommand() {
 		class ImageProcessor extends Command {
 			public ImageProcessor() {
-				requires(VisionTargetTracker.this);
+				requires(TargetTracker1.this);
 			}
 
 			@Override
 			protected void execute() {
-				// processImage();
+				//processImage();
 			}
 
 			@Override

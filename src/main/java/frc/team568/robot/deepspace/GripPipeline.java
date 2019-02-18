@@ -36,6 +36,13 @@ public class GripPipeline implements VisionPipeline {
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
 
+	public double lowerHue = 30.082225735207203;
+	public double upperHue = 118.56654704227383;
+	public double lowerSaturation = 0.0;
+	public double upperSaturation = 111.38223775343756;
+	public double lowerValue = 229.34331145532886; 
+	public double upperValue = 255.0;
+
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
@@ -61,9 +68,9 @@ public class GripPipeline implements VisionPipeline {
 
 		// Step HSV_Threshold0:
 		Mat hsvThresholdInput = cvErodeOutput;
-		double[] hsvThresholdHue = {30.082225735207203, 118.56654704227383};
-		double[] hsvThresholdSaturation = {0.0, 111.38223775343756};
-		double[] hsvThresholdValue = {229.34331145532886, 255.0};
+		double[] hsvThresholdHue = {lowerHue, upperHue};
+		double[] hsvThresholdSaturation = {lowerSaturation, upperSaturation};
+		double[] hsvThresholdValue = {lowerValue, upperValue};
 		hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvThresholdOutput);
 
 		// Step Mask0:
@@ -81,14 +88,14 @@ public class GripPipeline implements VisionPipeline {
 		double filterContoursMinArea = 0;
 		double filterContoursMinPerimeter = 0;
 		double filterContoursMinWidth = 0;
-		double filterContoursMaxWidth = 500.0;
+		double filterContoursMaxWidth = 50000.0;
 		double filterContoursMinHeight = 0;
-		double filterContoursMaxHeight = 500.0;
+		double filterContoursMaxHeight = 5000.0;
 		double[] filterContoursSolidity = {0, 100};
 		double filterContoursMaxVertices = 1000000;
 		double filterContoursMinVertices = 0;
 		double filterContoursMinRatio = 0;
-		double filterContoursMaxRatio = 1000;
+		double filterContoursMaxRatio = 10000;
 		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
 
 	}

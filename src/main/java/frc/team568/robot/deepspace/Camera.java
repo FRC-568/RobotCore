@@ -2,17 +2,17 @@ package frc.team568.robot.deepspace;
 
 
 public class Camera {
-	VisionTargetTracker cameraFeed;
+	TargetTracker1 cameraFeed;
 
 	public Camera() {
 
 	}
 
 	public void initCamera() {
-		cameraFeed = new VisionTargetTracker();
+		cameraFeed = new TargetTracker1();
 	}
 
-	public void processImage() {
+	public void imageProcess() {
 		cameraFeed.processImage();
 	}
 }
