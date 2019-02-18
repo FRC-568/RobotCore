@@ -2,12 +2,15 @@ package frc.team568.robot;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -67,8 +70,24 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 		getControls().bindButton(key, controller, button);
 	}
 
+	protected void button(String key, BooleanSupplier supplier) {
+		getControls().bindButton(key, supplier);
+	}
+
+	protected boolean button(int controller, int button) {
+		return DriverStation.getInstance().getStickButton(controller, button);
+	}
+
 	protected void axis(String key, int controller, int axis) {
 		getControls().bindAxis(key, controller, axis);
+	}
+
+	protected void axis(String key, DoubleSupplier supplier) {
+		getControls().bindAxis(key, supplier);
+	}
+
+	protected double axis(int controller, int axis) {
+		return DriverStation.getInstance().getStickAxis(controller, axis);
 	}
 	
 	//Adds a new port mapping - call in the constructor before initializing subsystems

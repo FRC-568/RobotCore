@@ -13,7 +13,8 @@ public class Robot extends RobotBase {
 	private Compressor compressor;
 	
 	TalonSRXDrive drive;
-	EvoDriveShifter shifter;	
+	EvoDriveShifter shifter;
+	HabitatClimber climber;	
 	Camera camera;
 
 	public Robot() {
@@ -27,16 +28,25 @@ public class Robot extends RobotBase {
 		config("shifter/solenoidLow", 0);
 		config("shifter/solenoidHigh", 3);
 
-		axis("forward", 0, Xinput.LeftStickY);
-		axis("turn", 0, Xinput.RightStickX);
+		config("climber/motorDrive", 1);
+		config("climber/motorLiftFront", 6);
+		config("climber/motorLiftBack", 7);
+
+		axis("forward", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.LeftStickY));
+		axis("turn", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.RightStickX));
 		button("shifterToggle", 0, Xinput.Y);
 		button("idleMotors", 0, Xinput.A);
 		button("stopMotors", 0, Xinput.B);
+
+		axis("climberFront", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.LeftStickY) : 0);
+		axis("climberBack", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.RightStickY) : 0);
+		axis("climberDrive", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.RightTrigger) - axis(0, Xinput.LeftTrigger) : 0);
 
 		compressor = new Compressor();
 
 		drive = addSubsystem(TalonSRXDrive::new);
 		shifter = addSubsystem(EvoDriveShifter::new);
+		climber = addSubsystem(HabitatClimber::new);
 		//camera.initCamera();	
 	}
 
