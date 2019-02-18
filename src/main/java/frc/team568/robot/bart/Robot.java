@@ -2,13 +2,10 @@ package frc.team568.robot.bart;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import frc.team568.robot.PMW3901;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
-import frc.team568.robot.subsystems.Locator;
 import frc.team568.robot.subsystems.PanTiltCamera;
 import frc.team568.robot.subsystems.TalonSRXDrive;
-import frc.team568.util.Vector2;
 
 public class Robot extends RobotBase {
 	public TalonSRXDrive drive;
@@ -29,9 +26,8 @@ public class Robot extends RobotBase {
 		config("drive/leftInverted", false);
 		config("drive/rightInverted", true);
 
-		config("drive/driveForward", Xinput.LeftStickY);
-		config("drive/driveTurn", Xinput.RightStickX);
-		config("drive/driveController", 0);
+		axis("forward", 0, Xinput.LeftStickY);
+		axis("turn", 0, Xinput.RightStickX);
 
 		drive = addSubsystem(TalonSRXDrive::new);
 		//camera = new PanTiltCamera(this);

@@ -1,17 +1,13 @@
 package frc.team568.robot.subsystems;
 
-import java.util.Arrays;
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.Xinput;
 
 public class TalonSRXDrive extends DriveBase {
 	private final DifferentialDrive drive;
@@ -41,7 +37,7 @@ public class TalonSRXDrive extends DriveBase {
 		motorsL = new WPI_TalonSRX[ports.length];
 		for (int i = 0; i < motorsL.length; i++) {
 			motorsL[i] = new WPI_TalonSRX(ports[i]);
-			addChild(motorsL[i]);
+			//addChild(motorsL[i]);
 			motorsL[i].setInverted(invert);
 			if (i > 0)
 				motorsL[i].follow(motorsL[0]);
@@ -52,7 +48,7 @@ public class TalonSRXDrive extends DriveBase {
 		motorsR = new WPI_TalonSRX[ports.length];
 		for (int i = 0; i < motorsR.length; i++) {
 			motorsR[i] = new WPI_TalonSRX(ports[i]);
-			addChild(motorsR[i]);
+			//addChild(motorsR[i]);
 			motorsR[i].setInverted(invert);
 			if (i > 0)
 				motorsR[i].follow(motorsR[0]);
@@ -60,6 +56,7 @@ public class TalonSRXDrive extends DriveBase {
 
 		DifferentialDrive d = new DifferentialDrive(motorsL[0], motorsR[0]);
 		d.setRightSideInverted(false);
+		addChild(d);
 		return d;
 	}
 
@@ -131,7 +128,6 @@ public class TalonSRXDrive extends DriveBase {
 			double comboStartTime = 0;
 			boolean safeMode = configBoolean("enableSafeMode");
 			boolean alreadyToggled = false;
-			Joystick joystick = new Joystick(configInt("driveController"));
 
 			{ requires(TalonSRXDrive.this); }
 
@@ -143,15 +139,13 @@ public class TalonSRXDrive extends DriveBase {
 
 			@Override
 			protected void execute() {
-				if (joystick.getRawButton(Xinput.LeftStickIn) && joystick.getRawButton(Xinput.RightStickIn)) {
+				if (button("safeMode1") && button("safeMode2")) {
 					if (comboStartTime == 0)
 						comboStartTime = Timer.getFPGATimestamp();
-					else if (Timer.getFPGATimestamp() - comboStartTime >= 5.0) {
-						if (!alreadyToggled) {
-							safeMode = !safeMode;
-							alreadyToggled = true;
-							System.out.println("Safemode is " + (safeMode ? "Enabled" : "Disabled") + ".");
-						}
+					else if (Timer.getFPGATimestamp() - comboStartTime >= 5.0 && !alreadyToggled) {
+						safeMode = !safeMode;
+						alreadyToggled = true;
+						System.out.println("Safemode is " + (safeMode ? "Enabled" : "Disabled") + ".");
 					}
 				} else {
 					comboStartTime = 0;
@@ -159,9 +153,15 @@ public class TalonSRXDrive extends DriveBase {
 				}
 
 				if (safeMode)
-					arcadeDrive(-joystick.getRawAxis(configInt("driveForward")) * 0.5, joystick.getRawAxis(configInt("driveTurn")) * 0.5, false);
+					arcadeDrive(-axis("forward") * 0.5, axis("turn") * 0.5);
 				else
-					arcadeDrive(-joystick.getRawAxis(configInt("driveForward")), joystick.getRawAxis(configInt("driveTurn")) * 0.6, false);
+					arcadeDrive(-axis("forward"), axis("turn") * 0.6);
+					
+				if (button("stopMotors")) {
+					drive.stopMotor();
+				} else if (button("idleMotors")) {
+					drive.arcadeDrive(0, 0, false);
+				}
 			}
 
 			@Override
@@ -169,6 +169,13 @@ public class TalonSRXDrive extends DriveBase {
 				return false;
 			}
 		});
+	}
+
+	@Override
+	public void initSendable(SendableBuilder builder) {
+		super.initSendable(builder);
+		builder.addDoubleProperty("Left Velocity", () -> getVelocity(Side.LEFT), null);
+		builder.addDoubleProperty("Right Velocity", () -> getVelocity(Side.RIGHT), null);
 	}
 
 }

@@ -7,6 +7,8 @@ import java.util.Arrays;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
+import static edu.wpi.first.wpilibj.DriverStation.reportWarning;
+
 public abstract class SubsystemBase extends Subsystem {
 	public final RobotBase robot;
 	public final NetworkTable config;
@@ -35,20 +37,38 @@ public abstract class SubsystemBase extends Subsystem {
 	}
 
 	protected boolean configBoolean(String key) {
+		if (!config.containsKey(key)) {
+			reportWarning("Configuration is missing: " + config.getPath() + "/" + key, false);
+			config.getEntry(key).setBoolean(false);
+		}
 		return config.getEntry(key).getBoolean(false);
 	}
 
 	protected int configInt(String key) {
+		if (!config.containsKey(key)) {
+			reportWarning("Configuration is missing: " + config.getPath() + "/" + key, false);
+			config.getEntry(key).setNumber(-1);
+		}
 		return config.getEntry(key).getNumber(-1).intValue();
 	}
 
 	protected int[] configIntArray(String key) {
-		if (!config.containsKey(key))
+		if (!config.containsKey(key)) {
+			reportWarning("Configuration is missing: " + config.getPath() + "/" + key, false);
+			config.getEntry(key).setNumberArray(new Number[0]);
 			return new int[0];
-
+		}
 		return Arrays.stream(config.getEntry(key).getNumberArray(new Number[0]))
 			.mapToInt(n -> n.intValue())
 			.toArray();
+	}
+
+	protected boolean button(String key) {
+		return robot.getControls().button(key);
+	}
+
+	protected double axis(String key) {
+		return robot.getControls().axis(key);
 	}
 	
 	@Override
