@@ -164,6 +164,8 @@ public class TalonSRXDrive extends DriveBase {
 			double comboStartTime = 0;
 			boolean safeMode = configBoolean("enableSafeMode");
 			boolean alreadyToggled = false;
+			boolean driveReverse = false;
+			boolean reverseIsHeld = false;
 
 			{
 				requires(TalonSRXDrive.this);
@@ -190,14 +192,34 @@ public class TalonSRXDrive extends DriveBase {
 					comboStartTime = 0;
 					alreadyToggled = false;
 				}
+				
+				if(button("driveReverse")) {
+					if(!reverseIsHeld)
+						driveReverse = !driveReverse;
+					reverseIsHeld = true;
+				} else {
+					reverseIsHeld = false;
+				}
+
+				double forward = axis("forward");
+				double turn = axis("turn");
+
+				if (driveReverse) {
+					if (forward > 0)
+						turn *= -1;
+				} else {
+					forward *= -1;
+					if (forward < 0)
+						turn *= -1;
+				}
 
 				pidController.setSetpoint(axis("turn"));
 
 				if (safeMode)
-					arcadeDrive(-axis("forward") * 0.5, axis("turn") * 0.5);
+					arcadeDrive(forward * 0.5, turn * 0.5);
 				else
-					arcadeDrive(-axis("forward"), axis("turn") * 0.7);
-
+					arcadeDrive(forward, turn * 0.6);
+					
 				if (button("stopMotors")) {
 					drive.stopMotor();
 				} else if (button("idleMotors")) {

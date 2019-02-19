@@ -15,8 +15,12 @@ class HabitatClimber extends SubsystemBase {
 		super(robot);
 
 		driveMotor = new WPI_TalonSRX(configInt("motorDrive"));
-		liftMotorFront = new WPI_TalonSRX(configInt("motorLiftFront"));
-		liftMotorBack = new WPI_TalonSRX(configInt("motorLiftBack"));
+		liftMotorFront = new WPI_TalonSRX(configInt("motorClimbFront"));
+		liftMotorBack = new WPI_TalonSRX(configInt("motorClimbBack"));
+
+		addChild(driveMotor);
+		addChild(liftMotorFront);
+		addChild(liftMotorBack);
 	}
 
 	@Override
