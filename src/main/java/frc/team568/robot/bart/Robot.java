@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
+import frc.team568.robot.subsystems.GyroSubsystem;
 import frc.team568.robot.subsystems.PanTiltCamera;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
@@ -29,6 +30,7 @@ public class Robot extends RobotBase {
 		axis("forward", 0, Xinput.LeftStickY);
 		axis("turn", 0, Xinput.RightStickX);
 
+		addSubsystem(GyroSubsystem::new);
 		drive = addSubsystem(TalonSRXDrive::new);
 		//camera = new PanTiltCamera(this);
 		//addSubsystem(PanTiltCamera.class, camera);
@@ -44,6 +46,12 @@ public class Robot extends RobotBase {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+	}
+
+	@Override
+	public void testPeriodic() {
+		Scheduler.getInstance().run();
+		
 	}
 
 	@Override

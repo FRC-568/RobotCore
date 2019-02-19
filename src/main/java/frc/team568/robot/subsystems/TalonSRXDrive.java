@@ -1,15 +1,21 @@
 package frc.team568.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.PIDCommand;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
+	private static final double Kp = 0.2;
+	private static final double Ki = 0;
+	private static final double Kd = 0.1;
+	private static final double MAX_VELOCITY = 3000;
+
 	private final DifferentialDrive drive;
 	private WPI_TalonSRX[] motorsL;
 	private WPI_TalonSRX[] motorsR;
@@ -37,8 +43,8 @@ public class TalonSRXDrive extends DriveBase {
 		motorsL = new WPI_TalonSRX[ports.length];
 		for (int i = 0; i < motorsL.length; i++) {
 			motorsL[i] = new WPI_TalonSRX(ports[i]);
-			//addChild(motorsL[i]);
 			motorsL[i].setInverted(invert);
+			motorsL[i].setNeutralMode(NeutralMode.Coast);
 			if (i > 0)
 				motorsL[i].follow(motorsL[0]);
 		}
@@ -48,8 +54,8 @@ public class TalonSRXDrive extends DriveBase {
 		motorsR = new WPI_TalonSRX[ports.length];
 		for (int i = 0; i < motorsR.length; i++) {
 			motorsR[i] = new WPI_TalonSRX(ports[i]);
-			//addChild(motorsR[i]);
 			motorsR[i].setInverted(invert);
+			motorsL[i].setNeutralMode(NeutralMode.Coast);
 			if (i > 0)
 				motorsR[i].follow(motorsR[0]);
 		}
@@ -92,28 +98,22 @@ public class TalonSRXDrive extends DriveBase {
 
 	@Override
 	public double getVelocity() {
-		return (motorsL[0].getSelectedSensorVelocity()
-			+ motorsR[0].getSelectedSensorVelocity()) / 2;
+		return (motorsL[0].getSelectedSensorVelocity() + motorsR[0].getSelectedSensorVelocity()) / 2;
 	}
 
 	@Override
 	public double getVelocity(Side side) {
-		return side == Side.RIGHT
-			? motorsR[0].getSelectedSensorVelocity()
-			: motorsL[0].getSelectedSensorVelocity();
+		return side == Side.RIGHT ? motorsR[0].getSelectedSensorVelocity() : motorsL[0].getSelectedSensorVelocity();
 	}
 
 	@Override
 	public double getDistance() {
-		return (motorsL[0].getSelectedSensorPosition()
-			+ motorsR[0].getSelectedSensorPosition()) / 2;
+		return (motorsL[0].getSelectedSensorPosition() + motorsR[0].getSelectedSensorPosition()) / 2;
 	}
 
 	@Override
 	public double getDistance(Side side) {
-		return side == Side.RIGHT
-			? motorsR[0].getSelectedSensorPosition()
-			: motorsL[0].getSelectedSensorPosition();
+		return side == Side.RIGHT ? motorsR[0].getSelectedSensorPosition() : motorsL[0].getSelectedSensorPosition();
 	}
 
 	@Override
@@ -121,13 +121,16 @@ public class TalonSRXDrive extends DriveBase {
 		motorsL[0].setSelectedSensorPosition(0);
 		motorsR[0].setSelectedSensorPosition(0);
 	}
-	
+
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new Command() {
+		setDefaultCommand(new PIDCommand(Kp, Ki, Kd) {
 			double comboStartTime = 0;
 			boolean safeMode = configBoolean("enableSafeMode");
 			boolean alreadyToggled = false;
+			boolean driveReverse = false;
+			boolean reverseIsHeld = false;
+			double driftCompensation = 0;
 
 			{ requires(TalonSRXDrive.this); }
 
@@ -151,11 +154,34 @@ public class TalonSRXDrive extends DriveBase {
 					comboStartTime = 0;
 					alreadyToggled = false;
 				}
+				
+				if(button("driveReverse")) {
+					if(!reverseIsHeld)
+						driveReverse = !driveReverse;
+					reverseIsHeld = true;
+				} else {
+					reverseIsHeld = false;
+				}
+
+				double forward = axis("forward");
+				double turn = axis("turn");
+
+				if (driveReverse) {
+					if (forward > 0)
+						turn *= -1;
+				} else {
+					forward *= -1;
+					if (forward < 0)
+						turn *= -1;
+				}
+
+				setSetpoint(turn);
+				// turn += driftCompensation;
 
 				if (safeMode)
-					arcadeDrive(-axis("forward") * 0.5, axis("turn") * 0.5);
+					arcadeDrive(forward * 0.5, turn * 0.5);
 				else
-					arcadeDrive(-axis("forward"), axis("turn") * 0.6);
+					arcadeDrive(forward, turn * 0.6);
 					
 				if (button("stopMotors")) {
 					drive.stopMotor();
@@ -168,6 +194,22 @@ public class TalonSRXDrive extends DriveBase {
 			protected boolean isFinished() {
 				return false;
 			}
+
+			@Override
+			protected double returnPIDInput() {
+				return (getVelocity(Side.LEFT) - getVelocity(Side.RIGHT)) / MAX_VELOCITY;
+			}
+
+			@Override
+			protected void usePIDOutput(double pidOut) {
+				driftCompensation = pidOut;
+			}
+
+			@Override
+			public void initSendable(SendableBuilder builder) {
+				super.initSendable(builder);
+				builder.addDoubleProperty("Drift Compensation", () -> driftCompensation, null);
+			}
 		});
 	}
 
@@ -176,6 +218,7 @@ public class TalonSRXDrive extends DriveBase {
 		super.initSendable(builder);
 		builder.addDoubleProperty("Left Velocity", () -> getVelocity(Side.LEFT), null);
 		builder.addDoubleProperty("Right Velocity", () -> getVelocity(Side.RIGHT), null);
+		builder.addDoubleProperty("Average Distance", () -> getDistance(), null);
 	}
 
 }

@@ -3,15 +3,15 @@ package frc.team568.robot.bart;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
+import frc.team568.robot.subsystems.GyroSubsystem;
 import frc.team568.robot.subsystems.SubsystemBase;
 
 public class WestCoastDrive extends SubsystemBase {
@@ -22,11 +22,7 @@ public class WestCoastDrive extends SubsystemBase {
 	private WPI_TalonSRX bl;
 	private WPI_TalonSRX fr;
 	private WPI_TalonSRX br;
-	private ADXRS450_Gyro gyro;
-	private NetworkTableEntry averageVelocityEntry;
-	private NetworkTableEntry averageDistanceEntry;
-	private NetworkTableEntry rightDistanceEntry;
-	private NetworkTableEntry leftDistanceEntry;
+	private Gyro gyro;
 
 	// Circumference of wheel (Inches)
 	private static final double WHEEL_DIAMETER = 6.0;
@@ -36,7 +32,7 @@ public class WestCoastDrive extends SubsystemBase {
 	// Distance per ticks
 	private static final double DIST_PER_TICK = WHEEL_CIRCUMFERENCE / TPR;
 
-	private static final double CURVATURE_MINIMUM_VELOCITY = 6.0;
+	private static final double CURVATURE_MINIMUM_VELOCITY = 6.0 * TPR;
 
 	private static final int THRESHOLD_ANGLE = 2;
 
@@ -49,8 +45,7 @@ public class WestCoastDrive extends SubsystemBase {
 		
 		joystick = new Joystick(port("mainJoystick"));
 
-		gyro = new ADXRS450_Gyro();
-		gyro.calibrate();
+		gyro = robot.getSubsystem(GyroSubsystem.class).getGyro();
 
 		reset();
 
@@ -59,10 +54,7 @@ public class WestCoastDrive extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		averageVelocityEntry.setDouble(getAverageVelocity());
-		averageDistanceEntry.setDouble(getAverageDistance());
-		leftDistanceEntry.setDouble(fl.getSelectedSensorPosition() * DIST_PER_TICK);
-		rightDistanceEntry.setDouble(fr.getSelectedSensorPosition() * DIST_PER_TICK);
+		
 	}
 
 	protected void initMotors() {
@@ -112,10 +104,7 @@ public class WestCoastDrive extends SubsystemBase {
 
 	protected void initShuffleboard() {
 		var tab = Shuffleboard.getTab("Bart");
-		averageVelocityEntry = tab.add("Velocity (ave)", getAverageVelocity()).getEntry();
-		averageDistanceEntry = tab.add("Distance (avg)", getAverageDistance()).getEntry();
-		leftDistanceEntry = tab.add("Left distance", fl.getSelectedSensorPosition()).getEntry();
-		rightDistanceEntry = tab.add("Right distance", fr.getSelectedSensorPosition()).getEntry();
+
 	}
 
 	public void stop() {
@@ -186,6 +175,9 @@ public class WestCoastDrive extends SubsystemBase {
 			@Override
 			protected void execute() {
 				double velocity = Math.max(Math.abs(fl.getSelectedSensorVelocity()), Math.abs(fr.getSelectedSensorVelocity()));
+				double turnRate = joystick.getRawAxis(Xinput.RightStickX);
+				double gyroRate = gyro.getRate();
+				
 				drive.curvatureDrive(
 					-joystick.getRawAxis(Xinput.LeftStickY),
 					joystick.getRawAxis(Xinput.RightStickX),
