@@ -14,6 +14,9 @@ import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
@@ -39,6 +42,9 @@ public final class TargetTracker1 extends Subsystem {
 	private double distanceFromTarget;
 	private double[] centerX;
 
+	NetworkTable dataToSendTable = NetworkTableInstance.getDefault().getTable("dataToSend");
+	NetworkTableEntry recieveCenterX;
+
 	public TargetTracker1() {
 		this(0);
 	}
@@ -54,57 +60,61 @@ public final class TargetTracker1 extends Subsystem {
 		camera.setResolution(CAMERA_WIDTH, CAMERA_HEIGHT);
 		camera.setFPS(30);
 
-		SmartDashboard.putNumber("brightness", camera.getBrightness());
-		SmartDashboard.putNumber("exposure", 20);
+		// SmartDashboard.putNumber("brightness", camera.getBrightness());
+		// SmartDashboard.putNumber("exposure", 20);
 	}
 
 	public void processImage() {
 		
-		double brightness = SmartDashboard.getNumber("brightness", 50);
-		double exposure = SmartDashboard.getNumber("exposure", 20);
-		//int brightness = 55;
-		camera.setBrightness((int) brightness);
-		camera.setExposureManual((int) exposure);
+		// double brightness = SmartDashboard.getNumber("brightness", 50);
+		// double exposure = SmartDashboard.getNumber("exposure", 20);
+		// //int brightness = 55;
+		// camera.setBrightness((int) brightness);
+		// camera.setExposureManual((int) exposure);
 		
 		
-		cvSink.grabFrame(matOriginal);
-		pipeline.process(matOriginal);
-		matOriginal.copyTo(output);
-		pipeline.filterContoursOutput().forEach(contour -> {
-			var box = Imgproc.boundingRect(contour);
-			Imgproc.rectangle(output, new Point(box.x, box.y), new Point(box.x + box.width, box.y + box.height), new Scalar(200, 0, 0));
-			System.out.println("rectangle drawn");
-		});
-		returnCenterX();
+		// cvSink.grabFrame(matOriginal);
+		// pipeline.process(matOriginal);
+		// matOriginal.copyTo(output);
+		// pipeline.filterContoursOutput().forEach(contour -> {
+		// 	var box = Imgproc.boundingRect(contour);
+		// 	Imgproc.rectangle(output, new Point(box.x, box.y), new Point(box.x + box.width, box.y + box.height), new Scalar(200, 0, 0));
+		// 	System.out.println("rectangle drawn");
+		// });
+		System.out.println(returnCenterX());
 		//cvSink.grabFrame(matOriginal);
-		cvSource.putFrame(output);	
+		//cvSource.putFrame(output);	
 	}
 
-	@Override
-	public void initSendable(SendableBuilder builder) {
-		builder.setSmartDashboardType(getName());
+	// @Override
+	// public void initSendable(SendableBuilder builder) {
+	// 	builder.setSmartDashboardType(getName());
 		
-		builder.addDoubleProperty("upperHue", () -> pipeline.upperHue, value -> {pipeline.upperHue = value; System.out.println("upperHue");});
-		builder.addDoubleProperty("lowerHue", () -> pipeline.lowerHue, value -> {pipeline.lowerHue = value;});
-		builder.addDoubleProperty("upperSaturation", () -> pipeline.upperSaturation, value -> {pipeline.upperSaturation = value;});
-		builder.addDoubleProperty("lowerSaturation", () -> pipeline.lowerSaturation, value -> {pipeline.lowerSaturation = value;});
-		builder.addDoubleProperty("upperValue", () -> pipeline.upperValue, value -> {pipeline.upperValue = value;});
-		builder.addDoubleProperty("lowerValue", () -> pipeline.lowerValue, value -> {pipeline.lowerValue = value;});		
+	// 	builder.addDoubleProperty("upperHue", () -> pipeline.upperHue, value -> {pipeline.upperHue = value; System.out.println("upperHue");});
+	// 	builder.addDoubleProperty("lowerHue", () -> pipeline.lowerHue, value -> {pipeline.lowerHue = value;});
+	// 	builder.addDoubleProperty("upperSaturation", () -> pipeline.upperSaturation, value -> {pipeline.upperSaturation = value;});
+	// 	builder.addDoubleProperty("lowerSaturation", () -> pipeline.lowerSaturation, value -> {pipeline.lowerSaturation = value;});
+	// 	builder.addDoubleProperty("upperValue", () -> pipeline.upperValue, value -> {pipeline.upperValue = value;});
+	// 	builder.addDoubleProperty("lowerValue", () -> pipeline.lowerValue, value -> {pipeline.lowerValue = value;});		
 
-	}
+	// }
 
 	public double returnCenterX() {
-		// This is the center value returned by GRIP thank WPI
-		if (!pipeline.filterContoursOutput().isEmpty() && pipeline.filterContoursOutput().size() >= 2) {
-			Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(1));
-			Rect r1 = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
-			centerX = new double[] { r1.x + (r1.width / 2), r.x + (r.width / 2) };
-			// this again checks for the 2 shapes on the target
-			if (centerX.length == 2) {
-				// subtracts one another to get length in pixels
-				lengthBetweenContours = Math.abs(centerX[0] - centerX[1]);
-			}
-		}
+		// // This is the center value returned by GRIP thank WPI
+		// if (!pipeline.filterContoursOutput().isEmpty() && pipeline.filterContoursOutput().size() >= 2) {
+		// 	Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(1));
+		// 	Rect r1 = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
+		// 	centerX = new double[] { r1.x + (r1.width / 2), r.x + (r.width / 2) };
+		// 	// this again checks for the 2 shapes on the target
+		// 	if (centerX.length == 2) {
+		// 		// subtracts one another to get length in pixels
+		// 		lengthBetweenContours = Math.abs(centerX[0] - centerX[1]);
+		// 	}
+		// }
+			recieveCenterX = dataToSendTable.getEntry("centerX");
+
+			recieveCenterX.getNumber(-200);
+
 		return lengthBetweenContours;
 	}
 
@@ -143,7 +153,7 @@ public final class TargetTracker1 extends Subsystem {
 	protected void initDefaultCommand() {
 		class ImageProcessor extends Command {
 			public ImageProcessor() {
-				requires(TargetTracker1.this);
+				//requires(TargetTracker1.this);
 			}
 
 			@Override
@@ -156,7 +166,7 @@ public final class TargetTracker1 extends Subsystem {
 				return false;
 			}
 		}
-		setDefaultCommand(new ImageProcessor());
+		//setDefaultCommand(new ImageProcessor());
 	}
 
 }
