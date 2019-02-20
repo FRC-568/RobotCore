@@ -50,9 +50,9 @@ public class Robot extends RobotBase {
 		axis("forward", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.LeftStickY));
 		axis("turn", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.RightStickX));
 		button("shifterToggle", 0, Xinput.Y);
-		button("idleMotors", 0, Xinput.A);
-		button("stopMotors", 0, Xinput.B);
-		button("driveReverse", 0, Xinput.Back);
+		button("idleMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.A));
+		button("stopMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.B));
+		button("driveReverse", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.X));
 
 		axis("climberFront", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.LeftStickY) : 0);
 		axis("climberBack", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.RightStickY) : 0);

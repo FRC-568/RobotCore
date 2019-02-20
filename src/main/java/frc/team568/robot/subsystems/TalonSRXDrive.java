@@ -166,14 +166,11 @@ public class TalonSRXDrive extends DriveBase {
 				double forward = axis("forward");
 				double turn = axis("turn");
 
-				if (driveReverse) {
-					if (forward > 0)
-						turn *= -1;
-				} else {
+				
+				if (forward > 0) // <- increase 0 to add a dead zone
+					turn *= -1;
+				if (!driveReverse)
 					forward *= -1;
-					if (forward < 0)
-						turn *= -1;
-				}
 
 				setSetpoint(turn);
 				// turn += driftCompensation;
