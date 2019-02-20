@@ -5,7 +5,6 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Camera {
-	//TargetTracker1 cameraFeed;
 	NetworkTable dataToSendTable = NetworkTableInstance.getDefault().getTable("dataToSend");
 	NetworkTableEntry recieveDistanceFromTarget;
 	NetworkTableEntry recieveCenterX;
@@ -20,11 +19,9 @@ public class Camera {
 	}
 
 	public void initCamera() {
-		//cameraFeed = new TargetTracker1();
 	}
 
 	public void imageProcess() {
-		//cameraFeed.processImage();	
 	}
 
 	public Double returnCenterX() {
