@@ -52,7 +52,7 @@ public class Robot extends RobotBase {
 		button("shifterToggle", 0, Xinput.Y);
 		button("idleMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.A));
 		button("stopMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.B));
-		button("driveReverse", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.X));
+		button("driveReverse", 0, Xinput.Back);
 
 		axis("climberFront", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.LeftStickY) : 0);
 		axis("climberBack", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.RightStickY) : 0);

@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.GyroSubsystem;
@@ -48,8 +47,6 @@ public class WestCoastDrive extends SubsystemBase {
 		gyro = robot.getSubsystem(GyroSubsystem.class).getGyro();
 
 		reset();
-
-		initShuffleboard();
 	}
 
 	@Override
@@ -100,11 +97,6 @@ public class WestCoastDrive extends SubsystemBase {
 		fr.config_kP(0, 0.1, 0);
 		fr.config_kI(0, 0, 0);
 		fr.config_kD(0, 0, 0);
-	}
-
-	protected void initShuffleboard() {
-		var tab = Shuffleboard.getTab("Bart");
-
 	}
 
 	public void stop() {
@@ -175,8 +167,6 @@ public class WestCoastDrive extends SubsystemBase {
 			@Override
 			protected void execute() {
 				double velocity = Math.max(Math.abs(fl.getSelectedSensorVelocity()), Math.abs(fr.getSelectedSensorVelocity()));
-				double turnRate = joystick.getRawAxis(Xinput.RightStickX);
-				double gyroRate = gyro.getRate();
 				
 				drive.curvatureDrive(
 					-joystick.getRawAxis(Xinput.LeftStickY),
