@@ -206,6 +206,8 @@ public class TalonSRXDrive extends DriveBase {
 			public void initSendable(SendableBuilder builder) {
 				super.initSendable(builder);
 				builder.addDoubleProperty("Drift Compensation", () -> driftCompensation, null);
+				builder.addDoubleProperty("Error Rate", () -> getPIDController().getError(), null);
+				builder.addDoubleProperty("Setpoint", () -> getPIDController().getSetpoint(), null);
 			}
 		});
 	}
