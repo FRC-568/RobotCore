@@ -10,6 +10,10 @@ public class Camera {
 	NetworkTableEntry recieveCenterX;
 	NetworkTableEntry recieveGetAngle;
 
+	NetworkTableEntry dummyDistanceFromTarget;
+	NetworkTableEntry dummyCenterX;
+	NetworkTableEntry dummyGetAngle;
+
 	Double centerX;
 	Double distanceFromTarget;
 	Double getAngle;
@@ -19,20 +23,26 @@ public class Camera {
 	}
 
 	public void initCamera() {
+	
 	}
 
 	public void imageProcess() {
+	
 	}
 
 	public Double returnCenterX() {
-		
+		// dummyCenterX = dataToSendTable.getEntry("centerx");
+		// dummyCenterX.setDouble(10);
+
 		recieveCenterX = dataToSendTable.getEntry("centerX");
 		centerX = recieveCenterX.getDouble(-40);
 		return centerX;
 	}
 
 	public Double returnDistanceFromTarget() {
-		
+		// dummyDistanceFromTarget = dataToSendTable.getEntry("distanceFromTarget");
+		// dummyDistanceFromTarget.setDouble(20);
+
 		recieveDistanceFromTarget = dataToSendTable.getEntry("distanceFromTarget");
 		distanceFromTarget = recieveDistanceFromTarget.getDouble(-30);
 		
@@ -40,7 +50,9 @@ public class Camera {
 	}
 
 	public Double returnGetAngle() {
-		
+		// dummyGetAngle = dataToSendTable.getEntry("distanceFromTarget");
+		// dummyGetAngle.setDouble(30);
+
 		recieveGetAngle = dataToSendTable.getEntry("getAngle");
 		getAngle = recieveGetAngle.getDouble(-20);
 		

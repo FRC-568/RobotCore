@@ -16,6 +16,7 @@ public class Robot extends RobotBase {
 	private PowerDistributionPanel pdp;
 	private Compressor compressor;
 	
+	Drive oldDrive;
 	TalonSRXDrive drive;
 	EvoDriveShifter shifter;
 	HabitatClimber climber;
@@ -73,15 +74,17 @@ public class Robot extends RobotBase {
 		pdp = new PowerDistributionPanel();
 		compressor = new Compressor();
 
-
+		 oldDrive = addSubsystem(Drive::new);
 		drive = addSubsystem(TalonSRXDrive::new);
 		shifter = addSubsystem(EvoDriveShifter::new);
 		climber = addSubsystem(HabitatClimber::new);
 		lift = addSubsystem(Lift::new);
 		claw = addSubsystem(Claw::new);
 		shpaa = addSubsystem(Shpaa::new);
+
 		lights = addSubsystem(BlinkinLights::new);
 		//camera.initCamera();	
+
 	}
 
 	@Override
@@ -97,7 +100,10 @@ public class Robot extends RobotBase {
 	@Override
 	public void autonomousInit() {
 		compressor.setClosedLoopControl(true);
+
 		lights.setTeamColor();
+		oldDrive.driveToTapeCommand();
+
 	}
 
 	@Override

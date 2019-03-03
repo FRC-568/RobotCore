@@ -32,7 +32,6 @@ public class Drive extends DriveBase {
 
 	public Drive(final RobotBase robot) {
 		super(robot);
-
 		
 	}
 
@@ -86,7 +85,7 @@ public class Drive extends DriveBase {
 	}
 
 	public void driveToTapeCommand() {
-		new JoystickButton(controller1, Xinput.X).whileHeld(new TapeTrackerCommand(driveTrain));
+		new JoystickButton(controller1, Xinput.X).whileActive(new TapeTrackerCommand(driveTrain));
 	}
 
 	@Override
@@ -105,7 +104,7 @@ public class Drive extends DriveBase {
 			@Override
 			protected void execute() {
 				gearShifter();
-				driveTank();
+				//driveTank();
 			}
 
 			@Override
