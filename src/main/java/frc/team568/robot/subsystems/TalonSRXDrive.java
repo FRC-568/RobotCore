@@ -132,7 +132,10 @@ public class TalonSRXDrive extends DriveBase {
 			boolean reverseIsHeld = false;
 			double driftCompensation = 0;
 
-			{ requires(TalonSRXDrive.this); }
+			{ 
+				requires(TalonSRXDrive.this); 
+				TalonSRXDrive.this.addChild(this);
+			}
 
 			@Override
 			protected void initialize() {
@@ -173,7 +176,7 @@ public class TalonSRXDrive extends DriveBase {
 					forward *= -1;
 
 				setSetpoint(turn);
-				// turn += driftCompensation;
+				turn -= driftCompensation;
 
 				if (safeMode)
 					arcadeDrive(forward * 0.5, turn * 0.5);
@@ -194,7 +197,7 @@ public class TalonSRXDrive extends DriveBase {
 
 			@Override
 			protected double returnPIDInput() {
-				return (getVelocity(Side.LEFT) - getVelocity(Side.RIGHT)) / MAX_VELOCITY;
+				return (getVelocity(Side.RIGHT) - getVelocity(Side.LEFT)) / MAX_VELOCITY;
 			}
 
 			@Override

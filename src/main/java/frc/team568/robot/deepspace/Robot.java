@@ -1,13 +1,13 @@
 package frc.team568.robot.deepspace;
 
-import frc.team568.robot.RobotBase;
-import frc.team568.robot.Xinput;
-import frc.team568.robot.subsystems.EvoDriveShifter;
-import frc.team568.robot.subsystems.TalonSRXDrive;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import frc.team568.robot.RobotBase;
+import frc.team568.robot.Xinput;
+import frc.team568.robot.subsystems.EvoDriveShifter;
+import frc.team568.robot.subsystems.TalonSRXDrive;
 
 public class Robot extends RobotBase {
 	Command autonomousCommand;
@@ -28,7 +28,7 @@ public class Robot extends RobotBase {
 		config("drive/leftMotors", new Integer[]{4, 3});
 		config("drive/rightMotors", new Integer[] {2, 1});
 		config("drive/leftInverted", false);
-		config("drive/rightInverted", false);
+		config("drive/rightInverted", true);
 
 		config("shifter/solenoidLow", 0);
 		config("shifter/solenoidHigh", 3);
