@@ -13,6 +13,9 @@ public class BlinkinLights extends SubsystemBase {
 		addChild(control);
 	}
 
+	public void setColor (Color color) {
+		control.set(color.getCode());
+	}
 	public enum Color {
 		RAINBOW(-0.99), RAINBOW_PARTY(-0.97), RAINBOW_OCEAN(-0.95), LARSON_SCANNER(-0.35), CUSTOM1_HEARTBEAT_SLOW(
 				0.03), CUSTOM1_HEARTBEAT_MEDIUM(0.05), CUSTOM1_HEARTBEAT_FAST(0.07),
