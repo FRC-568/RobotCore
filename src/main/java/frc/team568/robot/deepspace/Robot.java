@@ -1,11 +1,14 @@
 package frc.team568.robot.deepspace;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
+import frc.team568.robot.subsystems.BlinkinLights;
+import frc.team568.robot.subsystems.BlinkinLights.Color;
 import frc.team568.robot.subsystems.EvoDriveShifter;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
@@ -21,6 +24,7 @@ public class Robot extends RobotBase {
 	Claw claw;
 	Shpaa shpaa;
 	Camera camera;
+	BlinkinLights lights;
 
 	public Robot() {
 		super("Deepspace");
@@ -75,12 +79,13 @@ public class Robot extends RobotBase {
 		lift = addSubsystem(Lift::new);
 		claw = addSubsystem(Claw::new);
 		shpaa = addSubsystem(Shpaa::new);
+		lights = addSubsystem(BlinkinLights::new);
 		//camera.initCamera();	
 	}
 
 	@Override
 	public void robotInit() {
-
+		lights.setColor(Color.RAINBOW_PARTY);
 	}
 
 	@Override
@@ -91,6 +96,15 @@ public class Robot extends RobotBase {
 	@Override
 	public void autonomousInit() {
 		compressor.setClosedLoopControl(true);
+		DriverStation.Alliance color;
+		color = DriverStation.getInstance().getAlliance();
+		if (color == DriverStation.Alliance.Blue) {
+			lights.setColor(Color.BLUE);
+		}else if (color == DriverStation.Alliance.Red) {
+			lights.setColor(Color.RED);
+		} else {
+			lights.setColor(Color.GREEN);
+		}
 	}
 
 	@Override
@@ -103,6 +117,15 @@ public class Robot extends RobotBase {
 	@Override
 	public void teleopInit() {
 		compressor.setClosedLoopControl(true);
+		DriverStation.Alliance color;
+		color = DriverStation.getInstance().getAlliance();
+		if (color == DriverStation.Alliance.Blue) {
+			lights.setColor(Color.BLUE);
+		}else if (color == DriverStation.Alliance.Red) {
+			lights.setColor(Color.RED);
+		} else {
+			lights.setColor(Color.GREEN);
+		}
 	}
 
 	@Override
