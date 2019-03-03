@@ -4,9 +4,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.team568.robot.subsystems.TalonSRXDrive;
 
 public class TapeTrackerCommand extends Command {
-	DriveTrain2019 drive;
+	TalonSRXDrive drive;
 	GripPipeline pipeline;
 	Camera tracker;
 
@@ -17,7 +18,7 @@ public class TapeTrackerCommand extends Command {
 	NetworkTableEntry speedEntry = targetDrivingData.getEntry("speed");
 	NetworkTableEntry directionEntry = targetDrivingData.getEntry("direction");
 	
-	public TapeTrackerCommand(DriveTrain2019 drive) {
+	public TapeTrackerCommand(TalonSRXDrive drive) {
 		this.drive = drive;
 		tracker = new Camera();
 	}
@@ -39,20 +40,20 @@ public class TapeTrackerCommand extends Command {
 
 
 		if (tracker.returnGetAngle() <= 2 && tracker.returnGetAngle() >= -2) {
-			drive.setSpeed(speed, speed);
+			//drive.tankDrive(speed, speed);
 			speedEntry.setDouble(speed);
 		}
 
 		else {
 			double error = tracker.returnGetAngle() * Kp;
-			drive.setSpeed(speed - error, speed + error);
+			//drive.tankDrive(speed - error, speed + error);
 			if(error > 0) {
 				speedEntry.setDouble(speed);
 				directionEntry.setString("left");
 				
 				System.out.println(error);
 				System.out.println("left");
-				
+
 			} else {
 				speedEntry.setDouble(speed);
 				directionEntry.setString("right");

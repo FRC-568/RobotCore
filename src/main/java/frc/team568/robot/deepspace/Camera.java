@@ -3,8 +3,15 @@ package frc.team568.robot.deepspace;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.team568.robot.Xinput;
+import frc.team568.robot.subsystems.TalonSRXDrive;
 
 public class Camera {
+	Joystick controller1;	
+	TalonSRXDrive driveTrain;
+
 	NetworkTable dataToSendTable = NetworkTableInstance.getDefault().getTable("dataToSend");
 	NetworkTableEntry recieveDistanceFromTarget;
 	NetworkTableEntry recieveCenterX;
@@ -23,12 +30,17 @@ public class Camera {
 	}
 
 	public void initCamera() {
-	
+		controller1 = new Joystick(0);
 	}
 
 	public void imageProcess() {
 	
 	}
+
+	public void driveToTapeCommand() {
+		new JoystickButton(controller1, Xinput.X).whileActive(new TapeTrackerCommand(driveTrain));
+	}
+
 
 	public Double returnCenterX() {
 		// dummyCenterX = dataToSendTable.getEntry("centerx");
