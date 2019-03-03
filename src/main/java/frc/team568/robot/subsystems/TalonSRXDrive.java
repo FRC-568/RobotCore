@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
-	private static final double Kp = 0.2;
+	private static final double Kp = 0.195;
 	private static final double Ki = 0;
-	private static final double Kd = 0.1;
+	private static final double Kd = 0;
 	private static final double MAX_VELOCITY = 3000;
 
 	private final DifferentialDrive drive;
@@ -172,6 +172,7 @@ public class TalonSRXDrive extends DriveBase {
 				
 				if (forward > 0) // <- increase 0 to add a dead zone
 					turn *= -1;
+
 				if (!driveReverse)
 					forward *= -1;
 
