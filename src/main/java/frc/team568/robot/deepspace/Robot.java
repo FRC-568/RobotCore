@@ -98,13 +98,12 @@ public class Robot extends RobotBase {
 		compressor.setClosedLoopControl(true);
 		DriverStation.Alliance color;
 		color = DriverStation.getInstance().getAlliance();
-		if (color == DriverStation.Alliance.Blue) {
+		if (color == DriverStation.Alliance.Blue) 
 			lights.setColor(Color.BLUE);
-		}else if (color == DriverStation.Alliance.Red) {
+		else if (color == DriverStation.Alliance.Red) 
 			lights.setColor(Color.RED);
-		} else {
+		else
 			lights.setColor(Color.GREEN);
-		}
 	}
 
 	@Override
@@ -119,13 +118,12 @@ public class Robot extends RobotBase {
 		compressor.setClosedLoopControl(true);
 		DriverStation.Alliance color;
 		color = DriverStation.getInstance().getAlliance();
-		if (color == DriverStation.Alliance.Blue) {
+		if (color == DriverStation.Alliance.Blue)
 			lights.setColor(Color.BLUE);
-		}else if (color == DriverStation.Alliance.Red) {
+		else if (color == DriverStation.Alliance.Red)
 			lights.setColor(Color.RED);
-		} else {
+		else
 			lights.setColor(Color.GREEN);
-		}
 	}
 
 	@Override

@@ -158,8 +158,8 @@ public class TalonSRXDrive extends DriveBase {
 					alreadyToggled = false;
 				}
 				
-				if(button("driveReverse")) {
-					if(!reverseIsHeld)
+				if (button("driveReverse")) {
+					if (!reverseIsHeld)
 						driveReverse = !driveReverse;
 					reverseIsHeld = true;
 				} else {
@@ -169,7 +169,6 @@ public class TalonSRXDrive extends DriveBase {
 				double forward = axis("forward");
 				double turn = axis("turn");
 
-				
 				if (forward > 0) // <- increase 0 to add a dead zone
 					turn *= -1;
 
