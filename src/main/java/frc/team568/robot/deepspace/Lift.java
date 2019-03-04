@@ -17,8 +17,7 @@ class Lift extends SubsystemBase {
 
 	Lift(RobotBase robot) {
 		super(robot);
-		liftMotor = new WPI_TalonSRX(4);
-		//liftMotor = new WPI_TalonSRX(configInt("motorLift"));
+		liftMotor = new WPI_TalonSRX(configInt("motorLift"));
 		addChild(liftMotor);
 
 		liftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
