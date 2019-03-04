@@ -52,7 +52,7 @@ public class Robot extends RobotBase {
 		config("lift/motorLift", 5);
 
 		axis("forward", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.LeftStickY));
-		axis("turn", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.RightStickX));
+		axis("turn", () -> button(0, Xinput.LeftBumper) || (Math.abs(axis(0, Xinput.RightStickX)) < 0.15) ? 0 : axis(0, Xinput.RightStickX));
 		button("shifterToggle", 0, Xinput.Y);
 		button("idleMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.A));
 		button("stopMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.B));
