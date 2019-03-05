@@ -124,7 +124,7 @@ public class TalonSRXDrive extends DriveBase {
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new PIDCommand(Kp, Ki, Kd) {
+		setDefaultCommand(new PIDCommand(Kp, Ki, Kd, 0.02) {
 			double comboStartTime = 0;
 			boolean safeMode = configBoolean("enableSafeMode");
 			boolean alreadyToggled = false;
@@ -145,7 +145,7 @@ public class TalonSRXDrive extends DriveBase {
 
 			@Override
 			protected void execute() {
-				if (button("safeMode1") && button("safeMode2")) {
+				if (button("safeModeToggle")) {
 					if (comboStartTime == 0)
 						comboStartTime = Timer.getFPGATimestamp();
 					else if (Timer.getFPGATimestamp() - comboStartTime >= 5.0 && !alreadyToggled) {
@@ -208,6 +208,7 @@ public class TalonSRXDrive extends DriveBase {
 			@Override
 			public void initSendable(SendableBuilder builder) {
 				super.initSendable(builder);
+				builder.setSmartDashboardType("Anti-Drift");
 				builder.addDoubleProperty("Drift Compensation", () -> driftCompensation, null);
 				builder.addDoubleProperty("Error Rate", () -> getPIDController().getError(), null);
 				builder.addDoubleProperty("Setpoint", () -> getPIDController().getSetpoint(), null);
