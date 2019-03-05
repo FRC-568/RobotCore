@@ -31,7 +31,7 @@ public class Robot extends RobotBase {
 		config("drive/leftMotors", new Integer[]{4, 3});
 		config("drive/rightMotors", new Integer[] {2, 1});
 		config("drive/leftInverted", false);
-		config("drive/rightInverted", true);
+		config("drive/rightInverted", false);
 
 		config("shifter/solenoidLow", 0);
 		config("shifter/solenoidHigh", 3);
