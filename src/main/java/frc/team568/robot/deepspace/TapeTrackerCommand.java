@@ -12,7 +12,7 @@ public class TapeTrackerCommand extends Command {
 	Camera tracker;
 
 	private static final double MAX_SPEED = .5;
-	private static final double MAX_DISTANCE = 800; // inches
+	private static final double MAX_DISTANCE = 80; // inches
 
 	NetworkTable targetDrivingData = NetworkTableInstance.getDefault().getTable("targetDrivingData");
 	NetworkTableEntry speedEntry = targetDrivingData.getEntry("speed");
@@ -24,27 +24,22 @@ public class TapeTrackerCommand extends Command {
 	}
 	@Override
 	public void initialize() {
-		
-		
+		System.out.println("starting tapeTrackerCommand");			
 	}
 	@Override
 	public void execute() {
+
 		final double Kp = .02;
 		double speed = MAX_SPEED * tracker.returnDistanceFromTarget() / MAX_DISTANCE;
 		if (speed > MAX_SPEED) {
 			speed = MAX_SPEED;
 			speedEntry.setDouble(speed);
 		}
-			//System.out.println("Running");
-
-
 
 		if (tracker.returnGetAngle() <= 2 && tracker.returnGetAngle() >= -2) {
 			//drive.tankDrive(speed, speed);
 			speedEntry.setDouble(speed);
-		}
-
-		else {
+		} else {
 			double error = tracker.returnGetAngle() * Kp;
 			//drive.tankDrive(speed - error, speed + error);
 			if(error > 0) {

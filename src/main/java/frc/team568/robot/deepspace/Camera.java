@@ -17,13 +17,15 @@ public class Camera {
 	NetworkTableEntry recieveCenterX;
 	NetworkTableEntry recieveGetAngle;
 
-	NetworkTableEntry dummyDistanceFromTarget;
-	NetworkTableEntry dummyCenterX;
-	NetworkTableEntry dummyGetAngle;
+	NetworkTable cameraInput = NetworkTableInstance.getDefault().getTable("Camera Input");
+	NetworkTableEntry cameraInputPort;
 
 	Double centerX;
 	Double distanceFromTarget;
 	Double getAngle;
+
+	boolean isShifted;
+	boolean shiftIsHeld;
 
 	public Camera() {
 
@@ -32,29 +34,42 @@ public class Camera {
 	public void initCamera() {
 		controller1 = new Joystick(0);
 	}
-
-	public void imageProcess() {
 	
-	}
-
 	public void driveToTapeCommand() {
 		new JoystickButton(controller1, Xinput.X).whileActive(new TapeTrackerCommand(driveTrain));
 	}
+	public void toggleCameraCommand() {
+		new JoystickButton(controller1, Xinput.Y).whileActive(new TapeTrackerCommand(driveTrain));
+	}
 
+	public void toggleCamera() {
+		
+	}
+
+	public void toggleCamera0() {
+		cameraInputPort = cameraInput.getEntry("Camera Port");
+		cameraInputPort.setNumber(0);
+
+	}
+
+	public void toggleCamera1() {
+		cameraInputPort = cameraInput.getEntry("Camera Port");
+		cameraInputPort.setNumber(1);
+	}
+
+	public void setDefaultCamera() {
+		cameraInputPort = cameraInput.getEntry("Camera Port");
+		cameraInputPort.setNumber(0);
+	}
 
 	public Double returnCenterX() {
-		// dummyCenterX = dataToSendTable.getEntry("centerx");
-		// dummyCenterX.setDouble(10);
-
 		recieveCenterX = dataToSendTable.getEntry("centerX");
 		centerX = recieveCenterX.getDouble(-40);
+		
 		return centerX;
 	}
 
 	public Double returnDistanceFromTarget() {
-		// dummyDistanceFromTarget = dataToSendTable.getEntry("distanceFromTarget");
-		// dummyDistanceFromTarget.setDouble(20);
-
 		recieveDistanceFromTarget = dataToSendTable.getEntry("distanceFromTarget");
 		distanceFromTarget = recieveDistanceFromTarget.getDouble(-30);
 		
@@ -62,9 +77,6 @@ public class Camera {
 	}
 
 	public Double returnGetAngle() {
-		// dummyGetAngle = dataToSendTable.getEntry("distanceFromTarget");
-		// dummyGetAngle.setDouble(30);
-
 		recieveGetAngle = dataToSendTable.getEntry("getAngle");
 		getAngle = recieveGetAngle.getDouble(-20);
 		
