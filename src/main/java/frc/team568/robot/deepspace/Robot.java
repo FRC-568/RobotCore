@@ -1,7 +1,6 @@
 package frc.team568.robot.deepspace;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -51,6 +50,8 @@ public class Robot extends RobotBase {
 
 		config("lift/motorLift", 5);
 
+		config("blinkin/control", 8);
+
 		axis("forward", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.LeftStickY));
 		axis("turn", () -> button(0, Xinput.LeftBumper) || (Math.abs(axis(0, Xinput.RightStickX)) < 0.15) ? 0 : axis(0, Xinput.RightStickX));
 		button("shifterToggle", 0, Xinput.Y);
@@ -96,14 +97,7 @@ public class Robot extends RobotBase {
 	@Override
 	public void autonomousInit() {
 		compressor.setClosedLoopControl(true);
-		DriverStation.Alliance color;
-		color = DriverStation.getInstance().getAlliance();
-		if (color == DriverStation.Alliance.Blue) 
-			lights.setColor(Color.BLUE);
-		else if (color == DriverStation.Alliance.Red) 
-			lights.setColor(Color.RED);
-		else
-			lights.setColor(Color.GREEN);
+		lights.setTeamColor();
 	}
 
 	@Override
@@ -116,14 +110,7 @@ public class Robot extends RobotBase {
 	@Override
 	public void teleopInit() {
 		compressor.setClosedLoopControl(true);
-		DriverStation.Alliance color;
-		color = DriverStation.getInstance().getAlliance();
-		if (color == DriverStation.Alliance.Blue)
-			lights.setColor(Color.BLUE);
-		else if (color == DriverStation.Alliance.Red)
-			lights.setColor(Color.RED);
-		else
-			lights.setColor(Color.GREEN);
+		lights.setTeamColor();
 	}
 
 	@Override
@@ -156,4 +143,5 @@ public class Robot extends RobotBase {
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
 	}
+
 }
