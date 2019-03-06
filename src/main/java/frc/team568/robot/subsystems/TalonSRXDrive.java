@@ -11,10 +11,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
-	private static final double Kp = 0.25;
-	private static final double Ki = 0.01;
-	private static final double Kd = 0.01;
-	private static final double MAX_VELOCITY = 3000;
+	private static double Kp = 0.25;
+	private static double Ki = 0.01;
+	private static double Kd = 0;
+	private static double period = 0.02;
+	private static double maxVelocity = 3000;
 
 	private final DifferentialDrive drive;
 	private WPI_TalonSRX[] motorsL;
@@ -124,7 +125,7 @@ public class TalonSRXDrive extends DriveBase {
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new PIDCommand(Kp, Ki, Kd, 0.02) {
+		setDefaultCommand(new PIDCommand(Kp, Ki, Kd, period) {
 			double comboStartTime = 0;
 			boolean safeMode = configBoolean("enableSafeMode");
 			boolean alreadyToggled = false;
@@ -197,7 +198,7 @@ public class TalonSRXDrive extends DriveBase {
 
 			@Override
 			protected double returnPIDInput() {
-				return (getVelocity(Side.LEFT) - getVelocity(Side.RIGHT)) / MAX_VELOCITY;
+				return (getVelocity(Side.LEFT) - getVelocity(Side.RIGHT)) / maxVelocity;
 			}
 
 			@Override
@@ -209,6 +210,11 @@ public class TalonSRXDrive extends DriveBase {
 			public void initSendable(SendableBuilder builder) {
 				super.initSendable(builder);
 				builder.setSmartDashboardType("Anti-Drift");
+				builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
+				builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
+				builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
+				builder.addDoubleProperty("Period", () -> period, (value) -> period = value);
+				builder.addDoubleProperty("Max Velocity", () -> maxVelocity, (value) -> maxVelocity = value);
 				builder.addDoubleProperty("Drift Compensation", () -> driftCompensation, null);
 				builder.addDoubleProperty("Error Rate", () -> getPIDController().getError(), null);
 				builder.addDoubleProperty("Setpoint", () -> getPIDController().getSetpoint(), null);
@@ -221,6 +227,7 @@ public class TalonSRXDrive extends DriveBase {
 		super.initSendable(builder);
 		builder.addDoubleProperty("Left Velocity", () -> getVelocity(Side.LEFT), null);
 		builder.addDoubleProperty("Right Velocity", () -> getVelocity(Side.RIGHT), null);
+		builder.addDoubleProperty("Average Velocity", () -> getVelocity(), null);
 		builder.addDoubleProperty("Average Distance", () -> getDistance(), null);
 	}
 
