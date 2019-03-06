@@ -1,6 +1,7 @@
 package frc.team568.robot.deepspace;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -49,26 +50,51 @@ public class Robot extends RobotBase {
 		config("claw/solenoidClose", 5);
 
 		config("lift/motorLift", 5);
+		config("lift/homeSwitch", 0);
 
 		config("blinkin/control", 8);
 
-		axis("forward", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.LeftStickY));
-		axis("turn", () -> button(0, Xinput.LeftBumper) || (Math.abs(axis(0, Xinput.RightStickX)) < 0.15) ? 0 : axis(0, Xinput.RightStickX));
-		button("shifterToggle", 0, Xinput.Y);
-		button("idleMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.A));
-		button("stopMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.B));
-		button("driveReverse", 0, Xinput.Back);
+		if (DriverStation.getInstance().getJoystickIsXbox(0)) { // Joystick Inputs for Xbox controller
 
-		axis("climberFront", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.LeftStickY) : 0);
-		axis("climberBack", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.RightStickY) : 0);
-		axis("climberDrive", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.RightTrigger) - axis(0, Xinput.LeftTrigger) : 0);
+			axis("forward", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.LeftStickY));
+			axis("turn", () -> button(0, Xinput.LeftBumper) || (Math.abs(axis(0, Xinput.RightStickX)) < 0.15) ? 0 : axis(0, Xinput.RightStickX));
+			button("shifterToggle", 0, Xinput.Y);
+			button("idleMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.A));
+			button("stopMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.B));
+			button("driveReverse", 0, Xinput.Back);
+	
+			axis("climberFront", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.LeftStickY) : 0);
+			axis("climberBack", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.RightStickY) : 0);
+			axis("climberDrive", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.RightTrigger) - axis(0, Xinput.LeftTrigger) : 0);
+	
+			axis("lift", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.RightTrigger) - axis(0, Xinput.LeftTrigger));
+	
+			button("shpaaGrabberToggle", () -> button(0, Xinput.RightBumper) && button(0, Xinput.B));
+			button("shpaaExtenderToggle", () -> button(0, Xinput.RightBumper) && button(0, Xinput.X));
+			
+			button("clawToggle", () -> button(0, Xinput.RightBumper) && button(0, Xinput.A));
 
-		axis("lift", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.RightTrigger) - axis(0, Xinput.LeftTrigger));
+		} else { // Joystick inputs for driverstation
 
-		button("shpaaGrabberToggle", () -> button(0, Xinput.RightBumper) && button(0, Xinput.B));
-		button("shpaaExtenderToggle", () -> button(0, Xinput.RightBumper) && button(0, Xinput.X));
-		
-		button("clawToggle", () -> button(0, Xinput.RightBumper) && button(0, Xinput.A));
+			axis("forward", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.LeftStickY));
+			axis("turn", () -> button(0, Xinput.LeftBumper) || (Math.abs(axis(0, Xinput.RightStickX)) < 0.15) ? 0 : axis(0, Xinput.RightStickX));
+			button("shifterToggle", 0, Xinput.Y);
+			button("idleMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.A));
+			button("stopMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.B));
+			button("driveReverse", 0, Xinput.Back);
+	
+			axis("climberFront", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.LeftStickY) : 0);
+			axis("climberBack", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.RightStickY) : 0);
+			axis("climberDrive", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.RightTrigger) - axis(0, Xinput.LeftTrigger) : 0);
+	
+			axis("lift", () -> button(0, Xinput.LeftBumper) ? 0 : axis(0, Xinput.RightTrigger) - axis(0, Xinput.LeftTrigger));
+	
+			button("shpaaGrabberToggle", () -> button(0, Xinput.RightBumper) && button(0, Xinput.B));
+			button("shpaaExtenderToggle", () -> button(0, Xinput.RightBumper) && button(0, Xinput.X));
+			
+			button("clawToggle", () -> button(0, Xinput.RightBumper) && button(0, Xinput.A));
+
+		}
 
 		pdp = new PowerDistributionPanel();
 		compressor = new Compressor();
