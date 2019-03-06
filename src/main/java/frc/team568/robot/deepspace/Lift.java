@@ -3,6 +3,7 @@ package frc.team568.robot.deepspace;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.team568.robot.RobotBase;
@@ -10,6 +11,8 @@ import frc.team568.robot.subsystems.SubsystemBase;
 
 class Lift extends SubsystemBase {
 	WPI_TalonSRX liftMotor;
+
+	DigitalInput homeSwitch;
 
 	// Minimum and maximum height
 	private static double minHeight = 0;
@@ -23,6 +26,7 @@ class Lift extends SubsystemBase {
 		liftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 		liftMotor.setSensorPhase(true);
 
+		homeSwitch = new DigitalInput(configInt("homeSwitch"));
 	}
 
 	@Override
@@ -51,8 +55,9 @@ class Lift extends SubsystemBase {
 				else 
 					liftMotor.set(axis("lift"));
 
-				// if (switchIsPressed);
-				// 	liftMotor.setSelectedSensorPosition(0);
+				// Calibration point
+				if (homeSwitch.get());
+					liftMotor.setSelectedSensorPosition(0);
 			
 			}
 
