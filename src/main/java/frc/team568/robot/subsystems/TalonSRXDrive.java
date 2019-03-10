@@ -173,11 +173,11 @@ public class TalonSRXDrive extends DriveBase {
 				//if (forward > 0) // <- increase 0 to add a dead zone
 				//	turn *= -1;
 
-				if (!driveReverse)
+				if (driveReverse)
 					forward *= -1;
 
 				setSetpoint(turn);
-				turn += driftCompensation;
+				//turn += driftCompensation;
 
 				if (safeMode)
 					arcadeDrive(forward * 0.5, turn * 0.5);

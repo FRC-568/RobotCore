@@ -49,13 +49,19 @@ class Claw extends SubsystemBase {
 
 			@Override
 			protected void execute() {
-				if(button("clawToggle")) {
-					if(!toggleIsHeld)
+				if (button("clawToggle")) {
+					if (!toggleIsHeld)
 						toggleOpen();
 					toggleIsHeld = true;
 				} else {
 					toggleIsHeld = false;
 				}
+
+				if (button("clawOpen"))
+					setOpen(true);
+
+				if (button("clawClose"))
+					setOpen(false);
 			}
 
 			@Override

@@ -67,21 +67,33 @@ class Shpaa extends SubsystemBase {
 
 			@Override
 			protected void execute() {
-				if(button("shpaaGrabberToggle")) {
-					if(!grabberIsHeld)
+				if (button("shpaaGrabberToggle")) {
+					if (!grabberIsHeld)
 						toggleGrabber();
 					grabberIsHeld = true;
 				} else {
 					grabberIsHeld = false;
 				}
 
-				if(button("shpaaExtenderToggle")) {
-					if(!extenderIsHeld)
+				if (button("shpaaGrabberOpen"))
+					setGrabberOpen(true);
+
+				if (button("shpaaGrabberClose"))
+					setGrabberOpen(false);
+
+				if (button("shpaaExtenderToggle")) {
+					if (!extenderIsHeld)
 						toggleExtender();
 					extenderIsHeld = true;
 				} else {
 					extenderIsHeld = false;
-				}	
+				}
+
+				if (button("shpaaExtenderOut"))
+					setExtenderOut(true);
+
+				if (button("shpaaExtenderIn"))
+					setExtenderOut(false);
 			}
 
 			@Override
