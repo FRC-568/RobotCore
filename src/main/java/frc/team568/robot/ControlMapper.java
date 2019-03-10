@@ -13,12 +13,18 @@ public final class ControlMapper {
 	private Map<String, BooleanSupplier> buttonMap = new HashMap<>();
 	private Map<String, DoubleSupplier> axisMap = new HashMap<>();
 
+	public static final int UP = 0, RIGHT = 90, DOWN = 180, LEFT = 270;
+
 	public void bindButton(String key, BooleanSupplier supplier) {
 		buttonMap.put(key, supplier);
 	}
 
 	public void bindButton(String key, int controller, int button) {
 		bindButton(key, () -> ds.getStickButton(controller, button));
+	}
+
+	public void bindPOVButton(String key, int controller, int direction) {
+		bindButton(key, () -> ds.getStickPOV(controller, 0) == direction);
 	}
 
 	public void bindAxis(String key, DoubleSupplier supplier) {

@@ -22,6 +22,8 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 	private final String _name;
 	private final NetworkTable config;
 	private final ControlMapper controls;
+	
+	protected static final int UP = 0, RIGHT = 90, DOWN = 180, LEFT = 270;
 
 	protected RobotBase(final String name) {
 		_name = name;
@@ -76,6 +78,18 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 
 	protected boolean button(int controller, int button) {
 		return DriverStation.getInstance().getStickButton(controller, button);
+	}
+
+	protected void pov(String key, int controller, int direction) {
+		getControls().bindPOVButton(key, controller, direction);
+	}
+
+	protected void pov(String key, BooleanSupplier supplier) {
+		getControls().bindButton(key, supplier);
+	}
+
+	protected boolean pov(int controller, int direction) {
+		return DriverStation.getInstance().getStickPOV(controller, 0) == direction;
 	}
 
 	protected void axis(String key, int controller, int axis) {
