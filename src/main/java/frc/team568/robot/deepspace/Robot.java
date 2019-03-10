@@ -169,7 +169,7 @@ public class Robot extends RobotBase {
 
 		pdp = new PowerDistributionPanel();
 		compressor = new Compressor();
-
+		
 		spikeFront = new Relay(6);
 		spikeBack = new Relay(7);
 
@@ -215,7 +215,7 @@ public class Robot extends RobotBase {
 	@Override
 	public void autonomousInit() {
 		compressor.setClosedLoopControl(true);
-
+		
 		spikeFront.setDirection(Direction.kForward);
 		spikeFront.setDirection(Direction.kForward);
 
@@ -234,6 +234,9 @@ public class Robot extends RobotBase {
 	public void teleopInit() {
 		compressor.setClosedLoopControl(true);
 		
+		spikeFront.setDirection(Direction.kForward);
+		spikeBack.setDirection(Direction.kForward);
+
 		lights.setTeamColor();
 	}
 
