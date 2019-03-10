@@ -77,9 +77,9 @@ public class Robot extends RobotBase {
 
 		axis("climberFront", 1, Xinput.RightStickY);
 		axis("climberBack", 1, Xinput.LeftStickY);
-		axis("climberDrive", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
+		axis("climberDrive", () -> (button(1, Xinput.RightBumper) ? 1 : 0) + (button(1, Xinput.LeftBumper) ? -1 : 0));
 
-		axis("lift", () -> (button(1, Xinput.RightBumper) ? 1 : 0) + (button(1, Xinput.LeftBumper) ? -1 : 0));
+		axis("lift", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
 
 		button("shpaaGrabberToggle", 1, Xinput.B);
 		button("shpaaExtenderToggle", 1, Xinput.X);
