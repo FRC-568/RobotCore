@@ -46,6 +46,7 @@ public class TalonSRXDrive extends DriveBase {
 			motorsL[i] = new WPI_TalonSRX(ports[i]);
 			motorsL[i].setInverted(invert);
 			motorsL[i].setNeutralMode(NeutralMode.Coast);
+			motorsL[i].configOpenloopRamp(1);
 			if (i > 0)
 				motorsL[i].follow(motorsL[0]);
 		}
@@ -57,6 +58,7 @@ public class TalonSRXDrive extends DriveBase {
 			motorsR[i] = new WPI_TalonSRX(ports[i]);
 			motorsR[i].setInverted(invert);
 			motorsL[i].setNeutralMode(NeutralMode.Coast);
+			motorsL[i].configOpenloopRamp(1);
 			if (i > 0)
 				motorsR[i].follow(motorsR[0]);
 		}
