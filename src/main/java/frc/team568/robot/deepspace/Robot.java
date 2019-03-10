@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -27,6 +29,8 @@ public class Robot extends RobotBase {
 	TalonSRXDrive drive;
 	EvoDriveShifter shifter;
 	HabitatClimber climber;
+	Relay spikeFront;
+	Relay spikeBack;
 	Lift lift;
 	Claw claw;
 	Shpaa shpaa;
@@ -67,7 +71,7 @@ public class Robot extends RobotBase {
 		config("blinkin/control", 8);
 		//camera LED ring is on PWM 7
 
-		axis("forward", 0, Xinput.LeftStickY);
+		axis("forward", () -> -axis(0 , Xinput.LeftStickY));
 		axis("turn", () -> (Math.abs(axis(0, Xinput.RightStickX)) < 0.15) ? 0 : axis(0, Xinput.RightStickX));
 		//button("shifterToggle", 0, Xinput.Y);
 		button("idleMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.A));
@@ -166,6 +170,9 @@ public class Robot extends RobotBase {
 		pdp = new PowerDistributionPanel();
 		compressor = new Compressor();
 
+		spikeFront = new Relay(6);
+		spikeBack = new Relay(7);
+
 		drive = addSubsystem(TalonSRXDrive::new);
 		shifter = addSubsystem(EvoDriveShifter::new);
 		climber = addSubsystem(HabitatClimber::new);
@@ -197,6 +204,7 @@ public class Robot extends RobotBase {
 	@Override
 	public void robotInit() {
 		lights.setColor(Color.RAINBOW_PARTY);
+
 	}
 
 	@Override
@@ -207,6 +215,9 @@ public class Robot extends RobotBase {
 	@Override
 	public void autonomousInit() {
 		compressor.setClosedLoopControl(true);
+
+		spikeFront.setDirection(Direction.kForward);
+		spikeFront.setDirection(Direction.kForward);
 
 		lights.setTeamColor();
 
@@ -222,6 +233,7 @@ public class Robot extends RobotBase {
 	@Override
 	public void teleopInit() {
 		compressor.setClosedLoopControl(true);
+		
 		lights.setTeamColor();
 	}
 
@@ -249,6 +261,8 @@ public class Robot extends RobotBase {
 		}
 
 		compressor.setClosedLoopControl(false);
+		spikeFront.setDirection(Direction.kReverse);
+		spikeBack.setDirection(Direction.kReverse);
 	}
 
 	@Override
