@@ -83,6 +83,10 @@ public class Robot extends RobotBase {
 		axis("climberDrive", () -> (button(1, Xinput.RightBumper) ? 1 : 0) + (button(1, Xinput.LeftBumper) ? -1 : 0));
 
 		axis("lift", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
+		pov("moveToPosition1", 1, DOWN);
+		pov("moveToPosition2", 1, RIGHT);
+		pov("moveToPosition3", 1, UP);
+		button("liftForCargo", 1, Xinput.Y);
 
 		button("shpaaGrabberToggle", 1, Xinput.B);
 		button("shpaaExtenderToggle", 1, Xinput.X);
@@ -217,7 +221,7 @@ public class Robot extends RobotBase {
 		compressor.setClosedLoopControl(true);
 		
 		spikeFront.setDirection(Direction.kForward);
-		spikeFront.setDirection(Direction.kForward);
+		spikeBack.setDirection(Direction.kForward);
 
 		lights.setTeamColor();
 

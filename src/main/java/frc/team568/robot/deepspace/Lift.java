@@ -1,5 +1,7 @@
 package frc.team568.robot.deepspace;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -51,9 +53,14 @@ class Lift extends SubsystemBase {
 
 			@Override
 			protected void execute() {
-
-				// Stops the motor when passes MIN_HEIGHT or MAX_HEIGHT
-				if (getPosition() < minHeight && axis("lift") < 0)
+				
+				if(button("liftToPosition1")) {
+					new MoveToCommand(button("liftForCargo") ? cargo1 : hatch1, () -> !button("liftToPosition1"));
+				} else if(button("liftToPosition2")) {
+					new MoveToCommand(button("liftForCargo") ? cargo2 : hatch2, () -> !button("liftToPosition2"));
+				} else if(button("liftToPosition3")) {
+					new MoveToCommand(button("liftForCargo") ? cargo3 : hatch3, () -> !button("liftToPosition3"));
+				} else if (getPosition() < minHeight && axis("lift") < 0) // Stops the motor when passes MIN_HEIGHT or MAX_HEIGHT
 					liftMotor.stopMotor();
 				else if (getPosition() > maxHeight && axis("lift") > 0)
 					liftMotor.stopMotor();
@@ -75,27 +82,21 @@ class Lift extends SubsystemBase {
 
 	}
 
-	public Command getCommandLiftTo1() {
-		return new MoveToCommand(hatch1, cargo1);
-	}
-
 	private class MoveToCommand extends Command {
-		private final NetworkTableEntry hatchEntry;
-		private final NetworkTableEntry cargoEntry;
-		private boolean forCargo = false;
+		private final NetworkTableEntry targetEntry;
 		private double targetPosition = 0;
-
-		MoveToCommand(final NetworkTableEntry hatchEntry, final NetworkTableEntry cargoEntry){
+		private BooleanSupplier condition;
+		MoveToCommand(final NetworkTableEntry targetEntry, BooleanSupplier finishedCondition){
 			requires(Lift.this);
-			this.hatchEntry = hatchEntry;
-			this.cargoEntry = cargoEntry;
+			this.targetEntry = targetEntry;
+			condition = finishedCondition;
+
 		}
 
 		@Override
 		protected void initialize() {
-			forCargo = button("liftForCargo");
 			double pos = liftMotor.getSelectedSensorPosition();
-			targetPosition = forCargo ?  cargoEntry.getDouble(pos) : hatchEntry.getDouble(pos);
+			//targetPosition = forCargo ?  cargoEntry.getDouble(pos) : targetEntry.getDouble(pos);
 		}
 
 		@Override
@@ -105,7 +106,7 @@ class Lift extends SubsystemBase {
 
 		@Override
 		protected boolean isFinished() {
-			return false;
+			return condition.getAsBoolean();
 		}
 	}
 

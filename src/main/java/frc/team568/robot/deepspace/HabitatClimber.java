@@ -1,5 +1,6 @@
 package frc.team568.robot.deepspace;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -17,6 +18,9 @@ class HabitatClimber extends SubsystemBase {
 		driveMotor = new WPI_TalonSRX(configInt("motorDrive"));
 		liftMotorFront = new WPI_TalonSRX(configInt("motorClimbFront"));
 		liftMotorBack = new WPI_TalonSRX(configInt("motorClimbBack"));
+		
+		liftMotorFront.setNeutralMode(NeutralMode.Brake);
+		liftMotorFront.setNeutralMode(NeutralMode.Brake);
 
 		addChild(driveMotor);
 		addChild(liftMotorFront);

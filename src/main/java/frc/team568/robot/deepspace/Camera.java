@@ -9,7 +9,8 @@ import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
 public class Camera {
-	Joystick controller1;	
+	Joystick controller0;
+
 	TalonSRXDrive driveTrain;
 
 	NetworkTable dataToSendTable = NetworkTableInstance.getDefault().getTable("dataToSend");
@@ -32,14 +33,14 @@ public class Camera {
 	}
 
 	public void initCamera() {
-		controller1 = new Joystick(0);
+		controller0 = new Joystick(0);
 	}
 	
 	public void driveToTapeCommand() {
-		new JoystickButton(controller1, Xinput.X).whileActive(new TapeTrackerCommand(driveTrain));
+		new JoystickButton(controller0, Xinput.X).whileActive(new TapeTrackerCommand(driveTrain));
 	}
 	public void toggleCameraCommand() {
-		new JoystickButton(controller1, Xinput.Y).whileActive(new TapeTrackerCommand(driveTrain));
+		new JoystickButton(controller0, Xinput.Back).whenPressed(new TapeTrackerCommand(driveTrain));
 	}
 
 	public void toggleCamera() {
