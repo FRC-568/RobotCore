@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
 
@@ -20,10 +21,13 @@ class Lift extends SubsystemBase {
 	DigitalInput homeSwitch;
 
 	// Minimum and maximum height
-	private static double minHeight = 0;
-	private static double maxHeight = 400000;
+	private static double minHeight = -999999999;
+	private static double maxHeight = 999999999;
 
 	private NetworkTableEntry hatch1, hatch2, hatch3, cargo1, cargo2, cargo3;
+	
+	private int hatchFlag = 1;
+	private int cargoFlag = 1;
 
 	Lift(RobotBase robot) {
 		super(robot);
@@ -32,8 +36,11 @@ class Lift extends SubsystemBase {
 
 		liftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 		liftMotor.setSensorPhase(true);
+		liftMotor.setSelectedSensorPosition(0);
 
 		homeSwitch = new DigitalInput(configInt("homeSwitch"));
+
+		SmartDashboard.putData("Reset Problem Encoder", new ResetProblemMotorEncoderCommand());
 	}
 
 	@Override
@@ -53,16 +60,29 @@ class Lift extends SubsystemBase {
 
 			@Override
 			protected void execute() {
+				NetworkTableEntry target;
 				
 				if(button("liftToPosition1")) {
-					new MoveToCommand(button("liftForCargo") ? cargo1 : hatch1, () -> !button("liftToPosition1"));
+					target = button("liftForCargo") ? cargo1 : hatch1;
+					if(button("bookmarkButton"))
+						target.setDouble(liftMotor.getSelectedSensorPosition());
+					else
+						new MoveToCommand(target, () -> !button("liftToPosition1"));
 				} else if(button("liftToPosition2")) {
-					new MoveToCommand(button("liftForCargo") ? cargo2 : hatch2, () -> !button("liftToPosition2"));
+					target = button("liftForCargo") ? cargo2 : hatch2;
+					if(button("bookmarkButton"))
+						target.setDouble(liftMotor.getSelectedSensorPosition());
+					else
+						new MoveToCommand(target, () -> !button("liftToPosition2"));
 				} else if(button("liftToPosition3")) {
-					new MoveToCommand(button("liftForCargo") ? cargo3 : hatch3, () -> !button("liftToPosition3"));
-				} else if (getPosition() < minHeight && axis("lift") < 0) // Stops the motor when passes MIN_HEIGHT or MAX_HEIGHT
+					target = button("liftForCargo") ? cargo3 : hatch3;
+					if(button("bookmarkButton"))
+						target.setDouble(liftMotor.getSelectedSensorPosition());
+					else
+						new MoveToCommand(target, () -> !button("liftToPosition3"));
+				} else if (getPosition() < minHeight && axis("lift") < 0) { // Stops the motor when passes MIN_HEIGHT or MAX_HEIGHT
 					liftMotor.stopMotor();
-				else if (getPosition() > maxHeight && axis("lift") > 0)
+				} else if (getPosition() > maxHeight && axis("lift") > 0)
 					liftMotor.stopMotor();
 				else 
 					liftMotor.set(axis("lift"));
@@ -96,7 +116,7 @@ class Lift extends SubsystemBase {
 		@Override
 		protected void initialize() {
 			double pos = liftMotor.getSelectedSensorPosition();
-			//targetPosition = forCargo ?  cargoEntry.getDouble(pos) : targetEntry.getDouble(pos);
+			targetPosition = targetEntry.getDouble(pos);
 		}
 
 		@Override
@@ -132,4 +152,28 @@ class Lift extends SubsystemBase {
 		cargo3.setPersistent();
 	}
 
+	private class ResetProblemMotorEncoderCommand extends Command {
+			
+		ResetProblemMotorEncoderCommand(){
+				requires(Lift.this);
+	
+			}
+	
+			@Override
+			protected void initialize() {
+				liftMotor.setSelectedSensorPosition(0);
+			}
+	
+			@Override
+			protected void execute() {
+			
+			}
+	
+			@Override
+			protected boolean isFinished() {
+				return true;
+			}
+	}
+
 }
+

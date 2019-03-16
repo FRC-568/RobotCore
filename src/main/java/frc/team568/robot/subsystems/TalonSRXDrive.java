@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -46,7 +47,8 @@ public class TalonSRXDrive extends DriveBase {
 			motorsL[i] = new WPI_TalonSRX(ports[i]);
 			motorsL[i].setInverted(invert);
 			motorsL[i].setNeutralMode(NeutralMode.Coast);
-			motorsL[i].configOpenloopRamp(1);
+			//motorsL[i].configOpenloopRamp(0.2);
+			motorsL[i].configContinuousCurrentLimit(27);
 			if (i > 0)
 				motorsL[i].follow(motorsL[0]);
 		}
@@ -58,7 +60,8 @@ public class TalonSRXDrive extends DriveBase {
 			motorsR[i] = new WPI_TalonSRX(ports[i]);
 			motorsR[i].setInverted(invert);
 			motorsL[i].setNeutralMode(NeutralMode.Coast);
-			motorsL[i].configOpenloopRamp(1);
+			//motorsL[i].configOpenloopRamp(0.2);
+			motorsL[i].configContinuousCurrentLimit(27);
 			if (i > 0)
 				motorsR[i].follow(motorsR[0]);
 		}
@@ -135,6 +138,8 @@ public class TalonSRXDrive extends DriveBase {
 			boolean reverseIsHeld = false;
 			double driftCompensation = 0;
 
+			NetworkTableEntry tankMode;
+
 			{ 
 				requires(TalonSRXDrive.this); 
 				TalonSRXDrive.this.addChild(this);
@@ -148,6 +153,12 @@ public class TalonSRXDrive extends DriveBase {
 
 			@Override
 			protected void execute() {
+				
+				if(button("tankModeToggle")) {
+					tankMode.setBoolean(!tankMode.getBoolean(false));
+				}
+
+									
 				if (button("safeModeToggle")) {
 					if (comboStartTime == 0)
 						comboStartTime = Timer.getFPGATimestamp();
@@ -168,24 +179,54 @@ public class TalonSRXDrive extends DriveBase {
 				} else {
 					reverseIsHeld = false;
 				}
+				
+				if(tankMode.getBoolean(false)) {
+					double left = axis("left");
+					double right = axis("right");
 
-				double forward = axis("forward");
-				double turn = axis("turn");
+					//if (forward > 0) // <- increase 0 to add a dead zone
+					//	turn *= -1;
+					if(button("launch")) {
+						left = 1;
+						right = 1;
+					}
 
-				//if (forward > 0) // <- increase 0 to add a dead zone
-				//	turn *= -1;
-
-				if (driveReverse)
-					forward *= -1;
-
-				setSetpoint(turn);
-				//turn += driftCompensation;
-
-				if (safeMode)
-					arcadeDrive(forward * 0.5, turn * 0.5);
-				else
-					arcadeDrive(forward, turn * 0.6);
+					if (driveReverse) {
+						double leftTemp = left * -1;
+						left = right * -1;
+						right = leftTemp;
+					}
+						
+					//setSetpoint(turn);
+					//turn += driftCompensation;
 					
+					if (safeMode)
+						tankDrive(left * 0.5, right * 0.5);
+					else 
+						tankDrive(left, right);
+				} else {
+					double forward = axis("forward");
+					double turn = axis("turn");
+
+					//if (forward > 0) // <- increase 0 to add a dead zone
+					//	turn *= -1;
+					if(button("launch")) {
+						forward = 1;
+						turn = 0;
+				}
+
+					if (driveReverse)
+						forward *= -1;
+
+					setSetpoint(turn);
+					//turn += driftCompensation;
+
+					if (safeMode)
+						arcadeDrive(forward * 0.5, turn * 0.5);
+						
+					else
+						arcadeDrive(forward, turn * 0.6);
+				}
 				if (button("stopMotors")) {
 					drive.stopMotor();
 				} else if (button("idleMotors")) {
@@ -220,6 +261,10 @@ public class TalonSRXDrive extends DriveBase {
 				builder.addDoubleProperty("Drift Compensation", () -> driftCompensation, null);
 				builder.addDoubleProperty("Error Rate", () -> getPIDController().getError(), null);
 				builder.addDoubleProperty("Setpoint", () -> getPIDController().getSetpoint(), null);
+
+				tankMode = builder.getEntry("tankMode");
+				tankMode.setPersistent();
+				tankMode.setDefaultBoolean(false);
 			}
 		});
 	}

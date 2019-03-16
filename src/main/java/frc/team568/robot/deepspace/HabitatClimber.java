@@ -20,7 +20,7 @@ class HabitatClimber extends SubsystemBase {
 		liftMotorBack = new WPI_TalonSRX(configInt("motorClimbBack"));
 		
 		liftMotorFront.setNeutralMode(NeutralMode.Brake);
-		liftMotorFront.setNeutralMode(NeutralMode.Brake);
+		liftMotorBack.setNeutralMode(NeutralMode.Brake);
 
 		addChild(driveMotor);
 		addChild(liftMotorFront);

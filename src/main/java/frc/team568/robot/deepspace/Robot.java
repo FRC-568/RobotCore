@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
@@ -37,7 +38,7 @@ public class Robot extends RobotBase {
 	Camera camera;
 	BlinkinLights lights;
 
-	public UsbCamera cameraFront, cameraBack;
+	// public UsbCamera cameraFront, cameraBack;
 
 	private boolean habMode = false;
 	private JoystickButton habModeButton;
@@ -48,10 +49,11 @@ public class Robot extends RobotBase {
 		config("drive/leftMotors", new Integer[] { 4, 3 });
 		config("drive/rightMotors", new Integer[] { 2, 1 });
 		config("drive/leftInverted", false);
-		config("drive/rightInverted", false);
-
+		config("drive/rightInverted", true);
 		config("shifter/solenoidLow", 0);
 		config("shifter/solenoidHigh", 3);
+
+		config("drive/useTankControls", true);
 
 		config("climber/motorDrive", 8);
 		config("climber/motorClimbFront", 6);
@@ -73,16 +75,24 @@ public class Robot extends RobotBase {
 
 		axis("forward", () -> -axis(0 , Xinput.LeftStickY));
 		axis("turn", () -> (Math.abs(axis(0, Xinput.RightStickX)) < 0.15) ? 0 : axis(0, Xinput.RightStickX));
-		//button("shifterToggle", 0, Xinput.Y);
+		axis("left", () -> -axis(0 , Xinput.LeftStickY));
+		axis("right", () -> -axis(0, Xinput.RightStickY));
+		 pov("shifterToggle", 1, LEFT);
 		button("idleMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.A));
 		button("stopMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.B));
 		button("driveReverse", 0, Xinput.Back);
 
-		axis("climberFront", 1, Xinput.RightStickY);
-		axis("climberBack", 1, Xinput.LeftStickY);
-		axis("climberDrive", () -> (button(1, Xinput.RightBumper) ? 1 : 0) + (button(1, Xinput.LeftBumper) ? -1 : 0));
+		button("launch", 0, Xinput.X);
 
+		axis("climberFront", () -> (Math.abs(axis(1, Xinput.LeftStickY)) < 0.15) ? 0 : axis(1, Xinput.LeftStickY));
+		//axis("climberBack", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
+		//axis("climberDrive", () -> (button(1, Xinput.RightBumper) ? 1 : 0) + (button(1, Xinput.LeftBumper) ? -1 : 0));
+
+		button("bookmarkButton", 1, Xinput.Back);
+		button("tankModeToggle", 0, Xinput.Start);
 		axis("lift", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
+		
+		
 		pov("moveToPosition1", 1, DOWN);
 		pov("moveToPosition2", 1, RIGHT);
 		pov("moveToPosition3", 1, UP);
@@ -173,9 +183,11 @@ public class Robot extends RobotBase {
 
 		pdp = new PowerDistributionPanel();
 		compressor = new Compressor();
+		camera = new Camera();
+		spikeFront = new Relay(2);	
+		spikeBack = new Relay(3);
 		
-		spikeFront = new Relay(6);
-		spikeBack = new Relay(7);
+		
 
 		drive = addSubsystem(TalonSRXDrive::new);
 		shifter = addSubsystem(EvoDriveShifter::new);
@@ -185,9 +197,9 @@ public class Robot extends RobotBase {
 		shpaa = addSubsystem(Shpaa::new);
 
 		lights = addSubsystem(BlinkinLights::new);
-		//camera.initCamera();
-		cameraFront = CameraServer.getInstance().startAutomaticCapture(0);
-		cameraBack = CameraServer.getInstance().startAutomaticCapture(1);
+		camera.initCamera();
+		// cameraFront = CameraServer.getInstance().startAutomaticCapture(0);
+		// cameraBack = CameraServer.getInstance().startAutomaticCapture(1);
 	}
 
 	private boolean triggerWasActive = false;
@@ -208,20 +220,26 @@ public class Robot extends RobotBase {
 	@Override
 	public void robotInit() {
 		lights.setColor(Color.RAINBOW_PARTY);
-
+		camera.driveToTapeCommand();
+		camera.toggleCameraCommand();
 	}
 
 	@Override
 	public void robotPeriodic() {
+		if(RobotController.getUserButton()) {
+			shpaa.setExtenderOut(false);
+			shpaa.setGrabberOpen(true);
+			shifter.shiftLow();
 
+		}
 	}
 
 	@Override
 	public void autonomousInit() {
 		compressor.setClosedLoopControl(true);
 		
-		spikeFront.setDirection(Direction.kForward);
-		spikeBack.setDirection(Direction.kForward);
+		spikeFront.setDirection(Relay.Direction.kForward);
+		spikeBack.setDirection(Relay.Direction.kForward);
 
 		lights.setTeamColor();
 
@@ -238,8 +256,8 @@ public class Robot extends RobotBase {
 	public void teleopInit() {
 		compressor.setClosedLoopControl(true);
 		
-		spikeFront.setDirection(Direction.kForward);
-		spikeBack.setDirection(Direction.kForward);
+		spikeFront.setDirection(Relay.Direction.kForward);
+		spikeBack.setDirection(Relay.Direction.kForward);
 
 		lights.setTeamColor();
 	}
@@ -268,8 +286,8 @@ public class Robot extends RobotBase {
 		}
 
 		compressor.setClosedLoopControl(false);
-		spikeFront.setDirection(Direction.kReverse);
-		spikeBack.setDirection(Direction.kReverse);
+		spikeFront.setDirection(Relay.Direction.kReverse);
+		spikeBack.setDirection(Relay.Direction.kReverse);
 	}
 
 	@Override

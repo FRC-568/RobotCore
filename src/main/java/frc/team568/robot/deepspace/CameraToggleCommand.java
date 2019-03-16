@@ -50,7 +50,7 @@ public class CameraToggleCommand extends Command {
 		// } else {
 		// 	return false;
 		// }
-		return false;
+		return true;
 	}
 
 }

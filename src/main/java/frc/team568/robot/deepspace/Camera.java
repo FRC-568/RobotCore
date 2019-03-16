@@ -53,16 +53,6 @@ public class Camera {
 
 	}
 
-	public void toggleCamera1() {
-		cameraInputPort = cameraInput.getEntry("Camera Port");
-		cameraInputPort.setNumber(1);
-	}
-
-	public void setDefaultCamera() {
-		cameraInputPort = cameraInput.getEntry("Camera Port");
-		cameraInputPort.setNumber(0);
-	}
-
 	public Double returnCenterX() {
 		recieveCenterX = dataToSendTable.getEntry("centerX");
 		centerX = recieveCenterX.getDouble(-40);
