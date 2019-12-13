@@ -10,10 +10,11 @@ public class GyroSubsystem extends SubsystemBase {
 	private ADXRS450_Gyro gyro;
 
 	public GyroSubsystem(RobotBase robot) {
+		
 		super(robot);
-
 		gyro = new ADXRS450_Gyro();
 		addChild(gyro);
+	
 	}
 
 	public Gyro getGyro() {
@@ -22,8 +23,11 @@ public class GyroSubsystem extends SubsystemBase {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
+
 		super.initSendable(builder);
 		builder.addDoubleProperty("Rate", gyro::getRate, null);
+		builder.addDoubleProperty("Angle", gyro::getAngle, null);
+	
 	}
 
 }
