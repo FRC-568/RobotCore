@@ -29,6 +29,8 @@ public class Robot extends RobotBase {
 
 		axis("forward", 0, Xinput.LeftStickY);
 		axis("turn", 0, Xinput.RightStickX);
+		axis("left", 0, Xinput.LeftStickY);
+		axis("right", 0, Xinput.RightStickY);
 
 		addSubsystem(GyroSubsystem::new);
 		drive = addSubsystem(TalonSRXDrive::new);
