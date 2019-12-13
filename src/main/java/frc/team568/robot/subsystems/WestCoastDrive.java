@@ -1,4 +1,4 @@
-package frc.team568.robot.bart;
+package frc.team568.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -167,7 +167,7 @@ public class WestCoastDrive extends SubsystemBase {
 			@Override
 			protected void execute() {
 				double velocity = Math.max(Math.abs(fl.getSelectedSensorVelocity()), Math.abs(fr.getSelectedSensorVelocity()));
-				
+
 				drive.curvatureDrive(
 					-joystick.getRawAxis(Xinput.LeftStickY),
 					joystick.getRawAxis(Xinput.RightStickX),
