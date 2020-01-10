@@ -19,11 +19,12 @@ public class Robot extends RobotBase {
 		port("horizontalServo", 1);
 		port("verticalServo", 0);
 
-		port("cameraJoystick", 0);
-		port("mainJoystick", 1);
+		//port("cameraJoystick", 0);
+		//port("mainJoystick", 1);
+		port("mainJoystick", 0);
 
-		config("drive/leftMotors", new Integer[]{1, 2});
-		config("drive/rightMotors", new Integer[] {3, 4});
+		config("drive/leftMotors", new Integer[]{0, 1});
+		config("drive/rightMotors", new Integer[] {2, 3});
 		config("drive/leftInverted", false);
 		config("drive/rightInverted", true);
 
