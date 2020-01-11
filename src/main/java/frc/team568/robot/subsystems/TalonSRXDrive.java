@@ -8,18 +8,17 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-
-import frc.team568.robot.subsystems.GyroSubsystem;
-import frc.team568.robot.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.team568.robot.PIDController;
+import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
 	
 	private double Kp = 0.5;
 	private double Ki = 0;
 	private double Kd = 0;
+	private double correction = 0;
 
 	private final DifferentialDrive drive;
 	private WPI_TalonSRX[] motorsL;
@@ -78,9 +77,9 @@ public class TalonSRXDrive extends DriveBase {
 
 			motorsR[i] = new WPI_TalonSRX(ports[i]);
 			motorsR[i].setInverted(invert);
-			motorsL[i].setNeutralMode(NeutralMode.Coast);
+			motorsR[i].setNeutralMode(NeutralMode.Coast);
 			//motorsL[i].configOpenloopRamp(0.2);
-			motorsL[i].configContinuousCurrentLimit(27);
+			motorsR[i].configContinuousCurrentLimit(27);
 			if (i > 0)
 				motorsR[i].follow(motorsR[0]);
 
@@ -127,10 +126,8 @@ public class TalonSRXDrive extends DriveBase {
 	public double getError() {
 
 		double error = 0;
-		if (gyro == null)
-			error = getDistance(Side.RIGHT) - getDistance(Side.LEFT);
-		else 
-			error = gyro.getAngle();
+		
+		error = gyro.getAngle();
 
         return error;
 
@@ -290,7 +287,8 @@ public class TalonSRXDrive extends DriveBase {
 						pidDrive.setInputRange(-90, 90);
 						pidDrive.setTolerance(1);
 						pidDrive.enable();
-						pidDrive.performPID(getError());
+						
+						correction = pidDrive.performPID(getError());
 		
 					} else {
 
@@ -301,9 +299,9 @@ public class TalonSRXDrive extends DriveBase {
 					}
 
 					if (safeMode)
-						arcadeDrive(forward * 0.5, turn * 0.5);						
+						arcadeDrive(forward * 0.5, turn * 0.5 + correction);						
 					else
-						arcadeDrive(forward, turn * 0.6);
+						arcadeDrive(forward, turn * 0.6 + correction);
 
 				}
 				if (button("stopMotors"))
@@ -326,6 +324,7 @@ public class TalonSRXDrive extends DriveBase {
 				builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
 				builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
 				builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
+				builder.addDoubleProperty("Correction", () -> pidDrive.performPID(), null);
 
 				tankMode = builder.getEntry("tankMode");
 				tankMode.setPersistent();
