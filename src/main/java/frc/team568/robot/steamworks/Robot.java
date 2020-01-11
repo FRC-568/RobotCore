@@ -1,5 +1,12 @@
 package frc.team568.robot.steamworks;
 
+//import com.analog.adis16448.frc.ADIS16448_IMU;
+
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team568.grip.VisionProcessor;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.DriveTrain;
@@ -9,14 +16,6 @@ import frc.team568.robot.subsystems.RopeCollector;
 import frc.team568.robot.subsystems.Shooter2017;
 import frc.team568.robot.subsystems.VisionTargetTracker;
 import frc.team568.robot.subsystems.WinchClimber;
-
-import com.analog.adis16448.frc.ADIS16448_IMU;
-
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends RobotBase {
 	int session;
@@ -29,7 +28,7 @@ public class Robot extends RobotBase {
 	public OI oi;
 	public DriveTrain driveTrain;
 	public ReferenceFrame2017 referenceFrame;
-	public ADIS16448_IMU imu;
+	//public ADIS16448_IMU imu;
 	public VisionTargetTracker gearLiftTracker;
 	public GearBox gearBox;
 	public RopeCollector ropeCollector;
