@@ -1,8 +1,5 @@
 package frc.team568.robot.subsystems;
 
-import frc.team568.robot.RobotBase;
-import frc.team568.util.Vector2;
-
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
@@ -15,6 +12,8 @@ import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team568.robot.RobotBase;
+import frc.team568.util.Vector2;
 
 public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 	public int calibrationSamples = 250;
@@ -218,7 +217,7 @@ public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 		gyro.calibrate();
 	}
 
-	@Override
+	//@Override
 	public double getRate() {
 		return gyro.getRate();
 	}
