@@ -1,17 +1,9 @@
 package frc.team568.robot.deepspace;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -90,6 +82,7 @@ public class Robot extends RobotBase {
 
 		button("bookmarkButton", 1, Xinput.Back);
 		button("tankModeToggle", 0, Xinput.Start);
+		button("safeModeToggle", () -> button(0, Xinput.LeftStickIn) && button(0, Xinput.RightStickIn));
 		axis("lift", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
 		
 		
