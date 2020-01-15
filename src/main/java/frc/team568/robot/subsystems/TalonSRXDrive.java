@@ -285,7 +285,6 @@ public class TalonSRXDrive extends DriveBase {
 						pidDrive.setSetpoint(0);
 						pidDrive.setOutputRange(0, forward);
 						pidDrive.setInputRange(-90, 90);
-						pidDrive.setTolerance(1);
 						pidDrive.enable();
 						
 						correction = pidDrive.performPID(getError());
