@@ -42,6 +42,7 @@ public class Robot extends RobotBase {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
 		drive.resetSensors();
+		drive.resetGyro();
 	}
 
 	@Override
