@@ -4,14 +4,10 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.LinearFilter;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.filters.Filter;
-import edu.wpi.first.wpilibj.filters.LinearDigitalFilter;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team568.robot.RobotBase;
 import frc.team568.util.Vector2;
 
@@ -20,7 +16,7 @@ public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 	public int calibrationSampleRate = 20;
 
 	protected ADXRS450_Gyro gyro;
-	protected BuiltInAccelerometer acel;
+	protected BuiltInAccelerometer accel;
 	protected Thread updateThread;
 	protected Vector2 acceleration;
 	protected Vector2 velocity;
@@ -28,8 +24,8 @@ public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 	protected Vector2 acelBias;
 	public Encoder motorEncoder;
 	private double lastTimestamp;
-	private Filter xFilter;
-	private Filter yFilter;
+	private LinearFilter xFilter;
+	private LinearFilter yFilter;
 	public double threshold;
 	public double centimetersTraveled;
 	private static final int filterPoles = 20;
@@ -49,48 +45,11 @@ public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 		motorEncoder.setDistancePerPulse(.01);
 
 		gyro = new ADXRS450_Gyro();
-		acel = new BuiltInAccelerometer(Range.k8G);
-		calibrateAcel();
+		accel = new BuiltInAccelerometer(Range.k8G);
+		calibrateAccel();
 
-		xFilter = LinearDigitalFilter.movingAverage(new PIDSource() {
-			@Override
-			public void setPIDSourceType(PIDSourceType pidSource) {
-			}
-
-			@Override
-			public PIDSourceType getPIDSourceType() {
-				return PIDSourceType.kDisplacement;
-			}
-
-			@Override
-			public double pidGet() {
-				double x = acel.getX() - acelBias.x;
-				if (x > threshold || x < -threshold)
-					return x;
-				else
-					return 0;
-			}
-		}, filterPoles);
-
-		yFilter = LinearDigitalFilter.movingAverage(new PIDSource() {
-			@Override
-			public void setPIDSourceType(PIDSourceType pidSource) {
-			}
-
-			@Override
-			public PIDSourceType getPIDSourceType() {
-				return PIDSourceType.kDisplacement;
-			}
-
-			@Override
-			public double pidGet() {
-				double y = acel.getY() - acelBias.y;
-				if (y > threshold || y < -threshold)
-					return y;
-				else
-					return 0;
-			}
-		}, filterPoles);
+		xFilter = LinearFilter.movingAverage(filterPoles);
+		yFilter = LinearFilter.movingAverage(filterPoles);
 	}
 
 	public void start() {
@@ -99,9 +58,7 @@ public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 
 		updateThread = new Thread(() -> {
 			while (!Thread.interrupted()) {
-				updateAcel();
-				// SmartDashboard.putNumber("Raw Y", acel.getY() - acelBias.y);
-				// SmartDashboard.putNumber("Raw X", acel.getX() - acelBias.x);
+				updateAccel();
 				try {
 					Thread.sleep(calibrationSampleRate);
 				} catch (InterruptedException e) {
@@ -124,7 +81,6 @@ public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 		gyro.reset();
 	}
 
-	// int currentTicks = motorEncoder.getRaw();
 	public double DistanceTraveled() {
 		return motorEncoder.getDistance();
 	}
@@ -134,12 +90,8 @@ public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 	}
 
 	public double getHeading() {
-		double unclipped = -(gyro.getAngle());
-		double clip = unclipped % 360;
-		if (clip < 0)
-			return 360 + clip;
-		else
-			return clip;
+		double clip = -(gyro.getAngle()) % 360;
+		return (clip < 0) ? 360 + clip : clip;
 	}
 
 	@Override
@@ -157,67 +109,53 @@ public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 
 	@Override
 	protected void initDefaultCommand() {
-
 	}
 
-	public void calabrateGyro() {
+	public void calibrateGyro() {
 		gyro.calibrate();
 	}
 
-	public void calibrateAcel() {
+	public void calibrateAccel() {
 		double avgX = 0;
 		double avgY = 0;
 
 		for (int i = 0; i < calibrationSamples; i++) {
-			avgX += acel.getX();
-			avgY += acel.getY();
+			avgX += accel.getX();
+			avgY += accel.getY();
 			Timer.delay(0.005);// calibrationSampleRate / 1000.0);
 		}
 		avgX /= calibrationSamples;
 		avgY /= calibrationSamples;
 		acelBias = Vector2.of(avgX, avgY);
 		lastTimestamp = Timer.getFPGATimestamp();
-		// SmartDashboard.putNumber("X Bias", acelBias.x);
-		// SmartDashboard.putNumber("Y Bias", acelBias.y);
 	}
 
-	public void run() {
-		SmartDashboard.putString("Status", "Started");
-		double lastTime = Timer.getFPGATimestamp();
-		double time = lastTime;
-		double deltaTime;
-
-		while (!Thread.interrupted()) {
-			time = Timer.getFPGATimestamp();
-			deltaTime = time - lastTime;
-			acceleration = Vector2.of(xFilter.pidGet(), yFilter.pidGet());
-			velocity = acceleration.scale(deltaTime).add(velocity);
-			position = velocity.scale(deltaTime).rotate(-getHeading()).add(position);
-
-			lastTime = time;
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				break;
-			}
-		}
-	}
-
-	public void updateAcel() {
+	public void updateAccel() {
 		double timestamp = Timer.getFPGATimestamp();
 		double deltaTime = timestamp - lastTimestamp;
-		acceleration = Vector2.of(xFilter.pidGet(), yFilter.pidGet());
+		acceleration = Vector2.of(xFilter.calculate(getRawX()), yFilter.calculate(getRawY()));
 		velocity = acceleration.scale(deltaTime).rotate(-getHeading()).add(velocity);
 		position = velocity.scale(deltaTime).add(position);
 		lastTimestamp = timestamp;
 	}
 
-	@Override
-	public void calibrate() {
-		gyro.calibrate();
+	protected double getRawX() {
+		double x = accel.getX() - acelBias.x;
+		return (x > threshold || x < -threshold) ? x : 0;
 	}
 
-	//@Override
+	protected double getRawY() {
+		double y = accel.getY() - acelBias.y;
+		return (y > threshold || y < -threshold) ? y : 0;
+	}
+
+	@Override
+	public void calibrate() {
+		calibrateGyro();
+		calibrateAccel();
+	}
+
+	@Override
 	public double getRate() {
 		return gyro.getRate();
 	}

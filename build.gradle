@@ -51,7 +51,6 @@ dependencies {
     nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
 
-
     implementation wpi.deps.vendor.java()
     implementation 'net.java.dev.jna:jna:4.5.0'
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)

@@ -34,7 +34,7 @@ public class RopeCollector extends SubsystemBase {
 		return new Command() {
 			@Override
 			public void initialize() {
-				open();
+				RopeCollector.this.open();
 			}
 
 			@Override
@@ -48,7 +48,7 @@ public class RopeCollector extends SubsystemBase {
 		return new Command() {
 			@Override
 			public void initialize() {
-				close();
+				RopeCollector.this.close();
 			}
 
 			@Override

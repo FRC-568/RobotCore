@@ -35,7 +35,7 @@ public class GearBox extends SubsystemBase {
 		return new Command() {
 			@Override
 			public void initialize() {
-				open();
+				GearBox.this.open();
 			}
 
 			@Override
@@ -49,7 +49,7 @@ public class GearBox extends SubsystemBase {
 		return new Command() {
 			@Override
 			public void initialize() {
-				close();
+				GearBox.this.close();
 			}
 
 			@Override

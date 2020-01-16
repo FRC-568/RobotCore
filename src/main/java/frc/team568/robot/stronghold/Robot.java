@@ -109,7 +109,7 @@ public class Robot extends RobotBase {
 	public void robotInit() {
 		System.out.println("Robot Init");
 		referenceFrame.start();
-		referenceFrame.calabrateGyro();
+		referenceFrame.calibrateGyro();
 		referenceFrame.reset();
 
 		/* NIVision is now an external dependency - re-enable if needed.
