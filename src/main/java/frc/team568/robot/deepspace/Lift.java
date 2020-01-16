@@ -5,11 +5,11 @@ import java.util.function.BooleanSupplier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-//import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX.M
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team568.robot.RobotBase;
@@ -17,7 +17,6 @@ import frc.team568.robot.subsystems.SubsystemBase;
 
 class Lift extends SubsystemBase {
 	WPI_TalonSRX liftMotor;
-
 	DigitalInput homeSwitch;
 
 	// Minimum and maximum height
@@ -25,9 +24,6 @@ class Lift extends SubsystemBase {
 	private static double maxHeight = 999999999;
 
 	private NetworkTableEntry hatch1, hatch2, hatch3, cargo1, cargo2, cargo3;
-	
-	private int hatchFlag = 1;
-	private int cargoFlag = 1;
 
 	Lift(RobotBase robot) {
 		super(robot);
@@ -40,7 +36,8 @@ class Lift extends SubsystemBase {
 
 		homeSwitch = new DigitalInput(configInt("homeSwitch"));
 
-		SmartDashboard.putData("Reset Problem Encoder", new ResetProblemMotorEncoderCommand());
+		SmartDashboard.putData("Reset Problem Encoder",
+			new InstantCommand("Reset Problem Encoder", this, () -> liftMotor.setSelectedSensorPosition(0)));
 	}
 
 	@Override
@@ -106,11 +103,11 @@ class Lift extends SubsystemBase {
 		private final NetworkTableEntry targetEntry;
 		private double targetPosition = 0;
 		private BooleanSupplier condition;
+
 		MoveToCommand(final NetworkTableEntry targetEntry, BooleanSupplier finishedCondition){
 			requires(Lift.this);
 			this.targetEntry = targetEntry;
 			condition = finishedCondition;
-
 		}
 
 		@Override
@@ -150,29 +147,6 @@ class Lift extends SubsystemBase {
 		cargo1.setPersistent();
 		cargo2.setPersistent();
 		cargo3.setPersistent();
-	}
-
-	private class ResetProblemMotorEncoderCommand extends Command {
-			
-		ResetProblemMotorEncoderCommand(){
-				requires(Lift.this);
-	
-			}
-	
-			@Override
-			protected void initialize() {
-				liftMotor.setSelectedSensorPosition(0);
-			}
-	
-			@Override
-			protected void execute() {
-			
-			}
-	
-			@Override
-			protected boolean isFinished() {
-				return true;
-			}
 	}
 
 }

@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 
+// Temporarily hide 2020 deprecation warnings
+@SuppressWarnings("all")
 public class DriveTrain2018 extends SubsystemBase {
 	private Joystick joystick;
 	public PIDController drivePID;

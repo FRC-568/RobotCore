@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
+// Temporarily hide 2020 deprecation warnings
+@SuppressWarnings("all")
 public class PMW3901 extends SendableBase {
 	private static final CLibrary c = CLibrary.INSTANCE;
 	private static final HalLibrary hal = HalLibrary.INSTANCE;

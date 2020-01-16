@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
+// Temporarily hide 2020 deprecation warnings
+@SuppressWarnings("all")
 public class DriveTrain2019 extends SubsystemBase {
 	private Joystick joystick;
 	public PIDController drivePID;
@@ -155,12 +157,14 @@ public class DriveTrain2019 extends SubsystemBase {
 		return _headingLocked;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void lockHeading() {
 		drivePID.setSetpoint(getAngle());
 		drivePID.enable();
 		_headingLocked = true;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void releaseHeading() {
 		drivePID.disable();
 		_headingLocked = false;
@@ -193,15 +197,11 @@ public class DriveTrain2019 extends SubsystemBase {
 			fl.set(ControlMode.PercentOutput, speed + (-speedScale * speed));
 			fr.set(ControlMode.PercentOutput, speed + (speedScale * speed));
 		}
-		// System.out.println(gyro.getAngle());
 	}
 
 	public void driveExecute() {
 		fl.set(ControlMode.Position, driveTargetL);
 		fr.set(ControlMode.Position, driveTargetR);
-		// System.out.println("LEFT ERROR:" + fl.getClosedLoopError(0));
-		// System.out.println("RIGHT ERROR:" + fr.getClosedLoopError(0));
-
 	}
 
 	public boolean driveisFinished() {

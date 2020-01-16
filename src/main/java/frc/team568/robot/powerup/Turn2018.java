@@ -11,7 +11,6 @@ public class Turn2018 extends PIDCommand {
 	boolean atTarget;
 	double timeStamp;
 	private static final double TimeToCheck = .5;
-	// ReferenceFrame2017 ref;
 
 	public Turn2018(DriveTrain2018 dt, double degrees) {
 		super(0.04, 0.003, 0.0);
@@ -22,12 +21,8 @@ public class Turn2018 extends PIDCommand {
 
 	@Override
 	protected void initialize() {
-		System.out.println("TURNING " + degrees);
-
 		ra = dt.getAngle() + degrees;
 		setSetpoint(ra);
-		System.out.println("Ref ANGLE: " + ra);
-		// ref = Robot.getInstance().referenceFrame;
 	}
 
 	@Override
@@ -41,11 +36,12 @@ public class Turn2018 extends PIDCommand {
 	}
 
 	@Override
+	@SuppressWarnings("all")
 	protected boolean isFinished() {
-
 		if (Math.abs(getPIDController().getSetpoint() - dt.getAngle()) <= 5) {
 			if (atTarget) {
 				if ((Timer.getFPGATimestamp() - timeStamp) >= TimeToCheck) {
+					atTarget = false;
 					return true;
 				}
 			} else {
@@ -60,21 +56,17 @@ public class Turn2018 extends PIDCommand {
 
 	@Override
 	protected void end() {
-		System.out.println("turn Finished");
 		dt.stop();
-		// Timer.delay(1);
 	}
 
 	@Override
 	protected double returnPIDInput() {
 		return dt.getAngle();
-
 	}
 
 	@Override
 	protected void usePIDOutput(double output) {
 		speedScale = output;
-
 	}
 
 }

@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.team568.robot.RobotBase;
@@ -31,9 +30,6 @@ public class Robot extends RobotBase {
 	BlinkinLights lights;
 
 	// public UsbCamera cameraFront, cameraBack;
-
-	private boolean habMode = false;
-	private JoystickButton habModeButton;
 
 	public Robot() {
 		super("Deepspace");
@@ -96,91 +92,11 @@ public class Robot extends RobotBase {
 
 		button("clawToggle", 1, Xinput.A);
 
-		/*if (true || DriverStation.getInstance().getJoystickIsXbox(0)) { // Joystick Inputs for Xbox controller
- 
-			axis("forward", () -> button(0, Xinput.LeftBumper) ? 0 : -axis(0, Xinput.LeftStickY));
-			axis("turn", () -> button(0, Xinput.LeftBumper) || (Math.abs(axis(0, Xinput.RightStickX)) < 0.15) ? 0
-					: axis(0, Xinput.RightStickX));
-			button("shifterToggle", 0, Xinput.Y);
-			button("idleMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.A));
-			button("stopMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.B));
-			button("driveReverse", 0, Xinput.Back);
-
-			axis("climberFront", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.LeftStickY) : 0);
-			axis("climberBack", () -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.RightStickY) : 0);
-			axis("climberDrive",
-					() -> button(0, Xinput.LeftBumper) ? axis(0, Xinput.RightTrigger) - axis(0, Xinput.LeftTrigger)
-							: 0);
-
-			axis("lift", () -> button(0, Xinput.LeftBumper) ? 0
-					: axis(0, Xinput.RightTrigger) - axis(0, Xinput.LeftTrigger));
-
-			button("shpaaGrabberToggle", () -> button(0, Xinput.RightBumper) && button(0, Xinput.B));
-			button("shpaaExtenderToggle", () -> button(0, Xinput.RightBumper) && button(0, Xinput.X));
-
-			button("clawToggle", () -> button(0, Xinput.RightBumper) && button(0, Xinput.A));
-
-		} else { // Joystick inputs for driverstation
-
-			axis("forward", () -> thrusterAxis(axis(0, 0), button(1, 1)));
-			axis("turn", () -> axis(1, 0));
-			button("driveReverse", 0, 3);
-
-			axis("climberFront",
-			() -> habMode
-					? ((button(0, DriverStationInput.RightJoystickUp) ? 1 : 0)
-							+ (button(0, DriverStationInput.RightJoystickDown) ? -1 : 0))
-					: 0);
-			axis("climberBack",
-			() -> habMode
-					? ((button(0, DriverStationInput.RightJoystickRight) ? 1 : 0)
-							+ (button(0, DriverStationInput.RightJoystickLeft) ? -1 : 0))
-					: 0);
-			axis("climberDrive",
-			() -> (button(0, DriverStationInput.ButtonEight) ? 1 : 0)
-							+ (button(0, DriverStationInput.ButtonFour) ? -1 : 0)
-					);
-			axis("lift", () -> (button(0, DriverStationInput.RightJoystickUp) ? 1 : 0)
-					+ (button(0, DriverStationInput.RightJoystickDown) ? -1 : 0));
-			
-			
-			button("shpaaExtenderIn", () -> !habMode && button(0, DriverStationInput.RightJoystickLeft));
-			button("shpaaExtenderOut", () -> !habMode && button(0, DriverStationInput.RightJoystickRight));
-
-			button("clawClose", 0, DriverStationInput.ButtonTwo);
-			button("clawOpen", 0, DriverStationInput.ButtonSix);
-			button("shpaaGrabberClose", 0, DriverStationInput.ButtonThree);
-			button("shpaaGrabberOpen", 0, DriverStationInput.ButtonSeven);
-
-			button("liftTo1", 0, DriverStationInput.ButtonEleven);
-			button("liftTo2", 0, DriverStationInput.ButtonTen);
-			button("liftTo3,", 0, DriverStationInput.ButtonNine);
-			button("liftForCargo", 0, DriverStationInput.ButtonFive);
-
-		}
-
-		habModeButton = new JoystickButton(new Joystick(0), DriverStationInput.ButtonOne);
-		habModeButton.whenPressed(new Command() {
-
-			@Override
-			protected void initialize() {
-				habMode = !habMode;
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return true;
-			}
-
-		});*/
-
 		pdp = new PowerDistributionPanel();
 		compressor = new Compressor();
 		camera = new Camera();
 		spikeFront = new Relay(2);	
 		spikeBack = new Relay(3);
-		
-		
 
 		drive = addSubsystem(TalonSRXDrive::new);
 		shifter = addSubsystem(EvoDriveShifter::new);
@@ -193,21 +109,6 @@ public class Robot extends RobotBase {
 		camera.initCamera();
 		// cameraFront = CameraServer.getInstance().startAutomaticCapture(0);
 		// cameraBack = CameraServer.getInstance().startAutomaticCapture(1);
-	}
-
-	private boolean triggerWasActive = false;
-	private double thrusterNeutral = 0;
-	private double thrusterAxis(double axis, boolean trigger) {
-		if (trigger) {
-			if (!triggerWasActive) {
-				triggerWasActive = true;
-				thrusterNeutral = axis;
-			}
-			return -(axis - thrusterNeutral);
-		} else {
-			triggerWasActive = false;
-			return 0;
-		}
 	}
 
 	@Override
@@ -223,7 +124,6 @@ public class Robot extends RobotBase {
 			shpaa.setExtenderOut(false);
 			shpaa.setGrabberOpen(true);
 			shifter.shiftLow();
-
 		}
 	}
 
@@ -235,13 +135,11 @@ public class Robot extends RobotBase {
 		spikeBack.setDirection(Relay.Direction.kForward);
 
 		lights.setTeamColor();
-
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		
 		//camera.processImage();	
 	}
 
