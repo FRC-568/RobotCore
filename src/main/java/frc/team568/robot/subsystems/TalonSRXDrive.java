@@ -7,10 +7,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import frc.team568.robot.PIDController;
 import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
@@ -19,6 +19,7 @@ public class TalonSRXDrive extends DriveBase {
 	private double Ki = 0;
 	private double Kd = 0;
 	private double correction = 0;
+	private double prevAngle = 0;
 
 	private final DifferentialDrive drive;
 	private WPI_TalonSRX[] motorsL;
@@ -125,9 +126,7 @@ public class TalonSRXDrive extends DriveBase {
 	
 	public double getError() {
 
-		double error = 0;
-		
-		error = gyro.getAngle();
+		double error = gyro.getAngle() - prevAngle;
 
         return error;
 
@@ -241,7 +240,7 @@ public class TalonSRXDrive extends DriveBase {
 				
 				} else
 					reverseIsHeld = false;
-				
+
 				if (tankMode.getBoolean(false)) {
 
 					double left = axis("left");
@@ -280,21 +279,19 @@ public class TalonSRXDrive extends DriveBase {
 					if (driveReverse)
 						forward *= -1;
 						
-					if (forward != 0 && turn == 0) {
-		
-						pidDrive.setSetpoint(0);
-						pidDrive.setOutputRange(0, forward);
-						pidDrive.setInputRange(-90, 90);
-						pidDrive.enable();
-						
-						correction = pidDrive.performPID(getError());
-		
-					} else {
+					if (turn != 0) {
 
 						pidDrive.reset();
-						resetGyro();
-						resetSensors();
-						
+						prevAngle = gyro.getAngle();
+						correction = 0;
+
+					}
+					else {
+
+						// Going straight enough
+						pidDrive.setSetpoint(prevAngle);
+						correction = pidDrive.calculate(getError());
+		
 					}
 
 					if (safeMode)
@@ -323,7 +320,7 @@ public class TalonSRXDrive extends DriveBase {
 				builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
 				builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
 				builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
-				builder.addDoubleProperty("Correction", () -> pidDrive.performPID(), null);
+				builder.addDoubleProperty("Correction", () -> pidDrive.calculate(getError()), null);
 
 				tankMode = builder.getEntry("tankMode");
 				tankMode.setPersistent();
