@@ -1,14 +1,12 @@
 package frc.team568.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.Joystick;
-
-import frc.team568.robot.Xinput;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import frc.team568.robot.RobotBase;
+import frc.team568.robot.Xinput;
 
 public class MechyDrive extends SubsystemBase {
 
@@ -46,18 +44,18 @@ public class MechyDrive extends SubsystemBase {
 		addChild("FR Motor", fr);
 		addChild("BR Motor", br);
 
-		fl.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		fr.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		//fl.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		//fr.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		fl.setInverted(false);
 		bl.setInverted(false);
 		fr.setInverted(true);
 		br.setInverted(true);
 
-		fl.setSensorPhase(true);
-		fr.setSensorPhase(true);
+		//fl.setSensorPhase(true);
+		//fr.setSensorPhase(true);
 
-		bl.follow(fl);
-		br.follow(fr);
+		//bl.follow(fl);
+		//br.follow(fr);
 
 		fl.configNominalOutputForward(0, 0);
 		fl.configNominalOutputReverse(0, 0);
@@ -76,8 +74,7 @@ public class MechyDrive extends SubsystemBase {
 	}
 
 	public void reset() {
-		fl.setSelectedSensorPosition(0);
-		fr.setSelectedSensorPosition(0);
+		
 	}
 
 	@Override
@@ -97,7 +94,7 @@ public class MechyDrive extends SubsystemBase {
 			protected void execute() {
 
 				drive.driveCartesian(joystick.getRawAxis(Xinput.LeftStickY), joystick.getRawAxis(Xinput.LeftStickX), joystick.getRawAxis(Xinput.RightStickX));
-				
+
 			}
 
 			@Override
