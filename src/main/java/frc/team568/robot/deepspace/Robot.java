@@ -43,9 +43,9 @@ public class Robot extends RobotBase {
 
 		config("drive/useTankControls", true);
 
-		config("climber/motorDrive", 8);
-		config("climber/motorClimbFront", 6);
-		config("climber/motorClimbBack", 7);
+		//config("climber/motorDrive", 8);
+		//config("climber/motorClimbFront", 6);
+		//config("climber/motorClimbBack", 7);
 
 		config("shpaa/extenderOut", 7);
 		config("shpaa/extenderIn", 1);
