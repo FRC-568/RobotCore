@@ -112,9 +112,9 @@ public class TalonSRXDrive extends DriveBase {
 
 	private void configureGyro() {
 		
-		gyro = robot.getSubsystem(GyroSubsystem.class).getGyro();
-		gyro.calibrate();
-		gyro.reset();
+		//gyro = robot.getSubsystem(GyroSubsystem.class).getGyro();
+		//gyro.calibrate();
+		//gyro.reset();
 
 	}
 
@@ -278,7 +278,7 @@ public class TalonSRXDrive extends DriveBase {
 
 					if (driveReverse)
 						forward *= -1;
-						
+					/*
 					if (turn != 0) {
 
 						pidDrive.reset();
@@ -292,7 +292,7 @@ public class TalonSRXDrive extends DriveBase {
 						pidDrive.setSetpoint(prevAngle);
 						correction = pidDrive.calculate(getError());
 		
-					}
+					} */
 
 					if (safeMode)
 						arcadeDrive(forward * 0.5, turn * 0.5 + correction);						
@@ -320,7 +320,7 @@ public class TalonSRXDrive extends DriveBase {
 				builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
 				builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
 				builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
-				builder.addDoubleProperty("Correction", () -> pidDrive.calculate(getError()), null);
+				//builder.addDoubleProperty("Correction", () -> pidDrive.calculate(getError()), null);
 
 				tankMode = builder.getEntry("tankMode");
 				tankMode.setPersistent();
@@ -340,8 +340,8 @@ public class TalonSRXDrive extends DriveBase {
 		builder.addDoubleProperty("Right Velocity", () -> getVelocity(Side.RIGHT), null);
 		builder.addDoubleProperty("Average Velocity", () -> getVelocity(), null);
 		builder.addDoubleProperty("Average Distance", () -> getDistance(), null);
-		builder.addDoubleProperty("Gyro", () -> gyro.getAngle(), null);
-		builder.addDoubleProperty("Error", () -> getError(), null);
+		//builder.addDoubleProperty("Gyro", () -> gyro.getAngle(), null);
+		//builder.addDoubleProperty("Error", () -> getError(), null);
 	
 	}
 

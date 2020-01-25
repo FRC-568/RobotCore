@@ -43,9 +43,9 @@ public class Robot extends RobotBase {
 
 		config("drive/useTankControls", true);
 
-		//config("climber/motorDrive", 8);
-		//config("climber/motorClimbFront", 6);
-		//config("climber/motorClimbBack", 7);
+		config("climber/motorDrive", 8);
+		config("climber/motorClimbFront", 6);
+		config("climber/motorClimbBack", 7);
 
 		config("shpaa/extenderOut", 7);
 		config("shpaa/extenderIn", 1);
@@ -65,7 +65,7 @@ public class Robot extends RobotBase {
 		axis("turn", () -> (Math.abs(axis(0, Xinput.RightStickX)) < 0.15) ? 0 : axis(0, Xinput.RightStickX));
 		axis("left", () -> -axis(0 , Xinput.LeftStickY));
 		axis("right", () -> -axis(0, Xinput.RightStickY));
-		 pov("shifterToggle", 1, LEFT);
+		pov("shifterToggle", 1, LEFT);
 		button("idleMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.A));
 		button("stopMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.B));
 		button("driveReverse", 0, Xinput.Back);
@@ -73,8 +73,8 @@ public class Robot extends RobotBase {
 		button("launch", 0, Xinput.X);
 
 		axis("climberFront", () -> (Math.abs(axis(1, Xinput.LeftStickY)) < 0.15) ? 0 : axis(1, Xinput.LeftStickY));
-		//axis("climberBack", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
-		//axis("climberDrive", () -> (button(1, Xinput.RightBumper) ? 1 : 0) + (button(1, Xinput.LeftBumper) ? -1 : 0));
+		axis("climberBack", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
+		axis("climberDrive", () -> (button(1, Xinput.RightBumper) ? 1 : 0) + (button(1, Xinput.LeftBumper) ? -1 : 0));
 
 		button("bookmarkButton", 1, Xinput.Back);
 		button("tankModeToggle", 0, Xinput.Start);
