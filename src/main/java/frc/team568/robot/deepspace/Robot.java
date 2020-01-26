@@ -53,7 +53,7 @@ public class Robot extends RobotBase {
 		config("shpaa/grabberClose", 6);
 
 		config("claw/solenoidOpen", 4);
-		config("claw/solenoidClose", 5);
+		config("claw/solenoidClose", 3);
 
 		config("lift/motorLift", 5);
 		config("lift/homeSwitch", 0);
@@ -81,16 +81,15 @@ public class Robot extends RobotBase {
 		button("safeModeToggle", () -> button(0, Xinput.LeftStickIn) && button(0, Xinput.RightStickIn));
 		axis("lift", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
 		
-		
 		pov("moveToPosition1", 1, DOWN);
 		pov("moveToPosition2", 1, RIGHT);
 		pov("moveToPosition3", 1, UP);
 		button("liftForCargo", 1, Xinput.Y);
 
-		button("shpaaGrabberToggle", 1, Xinput.B);
+		button("shpaaGrabberToggle", 1, Xinput.A);
 		button("shpaaExtenderToggle", 1, Xinput.X);
 
-		button("clawToggle", 1, Xinput.A);
+		button("clawToggle", 1, Xinput.B);
 
 		pdp = new PowerDistributionPanel();
 		compressor = new Compressor();
