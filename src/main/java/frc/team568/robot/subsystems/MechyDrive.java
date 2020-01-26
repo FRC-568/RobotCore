@@ -47,16 +47,16 @@ public class MechyDrive extends SubsystemBase {
 		//fl.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		//fr.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		fl.setInverted(false);
-		bl.setInverted(false);
+		bl.setInverted(true);
 		fr.setInverted(true);
-		br.setInverted(true);
+		br.setInverted(false);
 
 		//fl.setSensorPhase(true);
 		//fr.setSensorPhase(true);
 
 		//bl.follow(fl);
 		//br.follow(fr);
-
+		
 		fl.configNominalOutputForward(0, 0);
 		fl.configNominalOutputReverse(0, 0);
 		fl.configPeakOutputForward(1, 0);
@@ -93,7 +93,31 @@ public class MechyDrive extends SubsystemBase {
 			@Override
 			protected void execute() {
 
-				drive.driveCartesian(joystick.getRawAxis(Xinput.LeftStickY), joystick.getRawAxis(Xinput.LeftStickX), joystick.getRawAxis(Xinput.RightStickX));
+				//drive.driveCartesian(joystick.getRawAxis(Xinput.LeftStickY), joystick.getRawAxis(Xinput.LeftStickX), joystick.getRawAxis(Xinput.RightStickX));
+
+				double r = Math.hypot(joystick.getRawAxis(Xinput.LeftStickX), joystick.getRawAxis(Xinput.LeftStickY));
+				double robotAngle = Math.atan2(joystick.getRawAxis(Xinput.LeftStickY), joystick.getRawAxis(Xinput.LeftStickX)) - Math.PI / 4;
+				double rightX = joystick.getRawAxis(Xinput.RightStickX);
+				final double v1 = r * Math.cos(robotAngle) + rightX;
+				final double v2 = r * Math.sin(robotAngle) - rightX;
+				final double v3 = r * Math.sin(robotAngle) + rightX;
+				final double v4 = r * Math.cos(robotAngle) - rightX;
+
+				if (joystick.getRawAxis(Xinput.LeftStickY) == 0 && joystick.getRawAxis(Xinput.LeftStickX) == 0 && joystick.getRawAxis(Xinput.RightStickX) == 0) {
+
+					fl.stopMotor();
+					fr.stopMotor();
+					bl.stopMotor();
+					br.stopMotor();
+
+				} else {
+					
+					fl.set(-v1);
+					fr.set(-v2);
+					bl.set(v3);
+					br.set(v4);
+
+				}
 
 			}
 
