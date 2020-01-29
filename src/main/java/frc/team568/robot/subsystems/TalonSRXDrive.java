@@ -268,7 +268,7 @@ public class TalonSRXDrive extends DriveBase {
 
 					double forward = axis("forward");
 					double turn = axis("turn");
-
+					correction = 0;
 					if (button("launch")) {
 
 						forward = 1;
@@ -297,7 +297,7 @@ public class TalonSRXDrive extends DriveBase {
 					if (safeMode)
 						arcadeDrive(forward * 0.5, turn * 0.5 + correction);						
 					else
-						arcadeDrive(forward, turn * 0.6 + correction);
+						arcadeDrive(forward, turn + correction);
 
 				}
 				if (button("stopMotors"))
