@@ -101,7 +101,7 @@ public class Robot extends RobotBase {
 		shifter = addSubsystem(EvoDriveShifter::new);
 		climber = addSubsystem(HabitatClimber::new);
 		lift = addSubsystem(Lift::new);
-		claw = addSubsystem(Claw::new);
+		//claw = addSubsystem(Claw::new);
 		shpaa = addSubsystem(Shpaa::new);
 
 		lights = addSubsystem(BlinkinLights::new);
