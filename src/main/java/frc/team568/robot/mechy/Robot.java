@@ -14,16 +14,16 @@ public class Robot extends RobotBase {
 	public Robot() {
 		super("Mechy");
 
-		port("mainJoystick", 0);
+		int mainJoystick = 0;
 
 		port("leftFrontMotor", 1);
 		port("rightFrontMotor", 2);
 		port("leftBackMotor", 3);
 		port("rightBackMotor", 4);
 
-		axis("forward", 0, Xinput.LeftStickY);
-		axis("side", 0, Xinput.LeftStickX);
-		axis("turn", 0, Xinput.RightStickX);
+		axis("forward", mainJoystick, Xinput.LeftStickY);
+		axis("side", mainJoystick, Xinput.LeftStickX);
+		axis("turn", mainJoystick, Xinput.RightStickX);
 
 		drive = addSubsystem(MechyDrive::new);
 

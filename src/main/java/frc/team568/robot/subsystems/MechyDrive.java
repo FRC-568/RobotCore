@@ -2,14 +2,11 @@ package frc.team568.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.Xinput;
 
 public class MechyDrive extends SubsystemBase {
 
-	private Joystick joystick;
 	private WPI_TalonSRX fl;
 	private WPI_TalonSRX bl;
 	private WPI_TalonSRX fr;
@@ -19,7 +16,6 @@ public class MechyDrive extends SubsystemBase {
 		super(robot);
 
 		initMotors();
-		joystick = new Joystick(port("mainJoystick"));
 
 		reset();
 	}
@@ -83,9 +79,9 @@ public class MechyDrive extends SubsystemBase {
 			protected void execute() {
 
 				// Mecanum drive
-				double r = Math.hypot(joystick.getRawAxis(Xinput.LeftStickX), joystick.getRawAxis(Xinput.LeftStickY));
-				double robotAngle = Math.atan2(-joystick.getRawAxis(Xinput.LeftStickY), joystick.getRawAxis(Xinput.LeftStickX)) - Math.PI / 4;
-				double rightX = joystick.getRawAxis(Xinput.RightStickX);
+				double r = Math.hypot(axis("side"), axis("forward"));
+				double robotAngle = Math.atan2(-axis("forward"), axis("side")) - Math.PI / 4;
+				double rightX = axis("turn");
 				final double v1 = -r * Math.cos(robotAngle) - rightX;
 				final double v2 = -r * Math.sin(robotAngle) + rightX;
 				final double v3 = -r * Math.sin(robotAngle) - rightX;
