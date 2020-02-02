@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.team568.robot.RobotBase;
 
@@ -25,7 +25,7 @@ public class TalonSRXDrive extends DriveBase {
 	private WPI_TalonSRX[] motorsL;
 	private WPI_TalonSRX[] motorsR;
 
-	private Gyro gyro;
+	private ADXRS450_Gyro gyro;
 
 	private PIDController pidDrive;
 
@@ -112,9 +112,8 @@ public class TalonSRXDrive extends DriveBase {
 
 	private void configureGyro() {
 		
-		//gyro = robot.getSubsystem(GyroSubsystem.class).getGyro();
-		//gyro.calibrate();
-		//gyro.reset();
+		gyro = new ADXRS450_Gyro();
+		gyro.reset();
 
 	}
 
