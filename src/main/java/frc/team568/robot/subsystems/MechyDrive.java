@@ -2,12 +2,10 @@ package frc.team568.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.controller.PIDController;
-
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.team568.robot.RobotBase;
 
 public class MechyDrive extends SubsystemBase {
@@ -18,12 +16,12 @@ public class MechyDrive extends SubsystemBase {
 	private double correction = 0;
 	private double prevAngle = 0;
 
-	private MecanumDrive drive;
-
 	private WPI_TalonSRX fl;
 	private WPI_TalonSRX bl;
 	private WPI_TalonSRX fr;
 	private WPI_TalonSRX br;
+
+	private boolean drivePOV = true;
 
 	private ADXRS450_Gyro gyro;
 
@@ -33,21 +31,11 @@ public class MechyDrive extends SubsystemBase {
 
 		super(robot);
 
-		drive = buildDrive();
+		initMotors();
 		configureGyro();
 		configurePID();
 
 		reset();
-
-	}
-
-	private MecanumDrive buildDrive() {
-
-		initMotors();
-		MecanumDrive d = new MecanumDrive(fl, bl, fr, br);
-		d.setRightSideInverted(false);
-
-		return d;
 
 	}
 
@@ -112,21 +100,40 @@ public class MechyDrive extends SubsystemBase {
 			@Override
 			protected void execute() {
 
-				// Mecanum drive
+				// toggle POV and field mode
+				if (button("driveModeToggle")) {
 
-				//drive.driveCartesian(-axis("side"), axis("forward"), -axis("turn"), gyro.getAngle());
+					drivePOV = !drivePOV;
+					gyro.reset();
 
+				}
+
+				// pid calculation
 				pidDrive.setSetpoint(prevAngle);
 				correction = pidDrive.calculate(gyro.getAngle());
 
+				// resets current gyro heading and pid
 				if (Math.abs(axis("turn")) > 0.1) {
+				
+					pidDrive.reset();
 					prevAngle = gyro.getAngle();
 					correction = 0;
+
 				}
 
+				// field oriented mode
+				double angleCompensation = 0;
+				if (!drivePOV) {
+					angleCompensation = Math.toRadians(gyro.getAngle());
+				}
+
+				// drive calculation
 				double r = Math.hypot(axis("side"), axis("forward"));
-				double robotAngle = Math.atan2(-axis("forward"), axis("side")) - Math.PI / 4;
+				double robotAngle = Math.atan2(-axis("forward"), axis("side")) - Math.PI / 4 - angleCompensation;
 				double rightX = axis("turn");
+				if (axis("forward") < 0) {
+					rightX *= -1;
+				}
 				final double v1 = -r * Math.cos(robotAngle) - rightX - correction;
 				final double v2 = -r * Math.sin(robotAngle) + rightX + correction;
 				final double v3 = -r * Math.sin(robotAngle) - rightX - correction;
@@ -151,6 +158,10 @@ public class MechyDrive extends SubsystemBase {
 	public void initSendable(SendableBuilder builder) {
 
 		super.initSendable(builder);
+		builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
+		builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
+		builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
+
 		builder.addDoubleProperty("Forward", () -> axis("forward"), null);
 		builder.addDoubleProperty("Side", () -> axis("side"), null);
 		builder.addDoubleProperty("Turn", () -> axis("turn"), null);

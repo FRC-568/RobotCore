@@ -25,6 +25,8 @@ public class Robot extends RobotBase {
 		axis("side", mainJoystick, Xinput.LeftStickX);
 		axis("turn", mainJoystick, Xinput.RightStickX);
 
+		button("driveModeToggle", mainJoystick, Xinput.Start);
+
 		drive = addSubsystem(MechyDrive::new);
 
 	}
