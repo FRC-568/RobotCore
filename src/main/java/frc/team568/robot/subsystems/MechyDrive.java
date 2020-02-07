@@ -15,6 +15,7 @@ public class MechyDrive extends SubsystemBase {
 	private double Kd = 0.002;
 	private double correction = 0;
 	private double prevAngle = 0;
+	private double angleCompensation = 0;
 
 	private WPI_TalonSRX fl;
 	private WPI_TalonSRX bl;
@@ -113,13 +114,13 @@ public class MechyDrive extends SubsystemBase {
 				correction = pidDrive.calculate(gyro.getAngle());
 
 				// resets current gyro heading and pid if turning or not moving
-				if (Math.abs(axis("turn")) > 0.1) {
+				if (Math.abs(axis("turn")) > 0.01) {
 				
 					pidDrive.reset();
 					prevAngle = gyro.getAngle();
 					correction = 0;
 
-				} else if (Math.abs(axis("forward")) < 0.1 && Math.abs(axis("side")) < 0.1) {
+				} else if (Math.abs(axis("forward")) < 0.01 && Math.abs(axis("side")) < 0.01) {
 
 					pidDrive.reset();
 					prevAngle = gyro.getAngle();
@@ -128,16 +129,14 @@ public class MechyDrive extends SubsystemBase {
 				}
 
 				// field oriented mode
-				double angleCompensation = 0;
+				angleCompensation = 0;
 				if (!drivePOV)
 					angleCompensation = Math.toRadians(gyro.getAngle());
 
 				// drive calculation
 				double r = Math.hypot(axis("side"), axis("forward"));
 				double robotAngle = Math.atan2(-axis("forward"), axis("side")) - Math.PI / 4 - angleCompensation;
-				double rightX = axis("turn");
-				if (axis("forward") < 0)
-					rightX *= -1;
+				double rightX = axis("turn") * 0.7;
 				final double v1 = -r * Math.cos(robotAngle) - rightX - correction;
 				final double v2 = -r * Math.sin(robotAngle) + rightX + correction;
 				final double v3 = -r * Math.sin(robotAngle) - rightX - correction;
@@ -170,7 +169,9 @@ public class MechyDrive extends SubsystemBase {
 		builder.addDoubleProperty("Side", () -> axis("side"), null);
 		builder.addDoubleProperty("Turn", () -> axis("turn"), null);
 		builder.addDoubleProperty("prevAngle", () -> prevAngle, null);
-	
+		builder.addBooleanProperty("isPOV", () -> drivePOV, null);
+		builder.addDoubleProperty("angleCompensation", () -> angleCompensation, null);
+		
 	}
 
 }
