@@ -112,9 +112,15 @@ public class MechyDrive extends SubsystemBase {
 				pidDrive.setSetpoint(prevAngle);
 				correction = pidDrive.calculate(gyro.getAngle());
 
-				// resets current gyro heading and pid
+				// resets current gyro heading and pid if turning or not moving
 				if (Math.abs(axis("turn")) > 0.1) {
 				
+					pidDrive.reset();
+					prevAngle = gyro.getAngle();
+					correction = 0;
+
+				} else if (Math.abs(axis("forward")) < 0.1 && Math.abs(axis("side")) < 0.1) {
+
 					pidDrive.reset();
 					prevAngle = gyro.getAngle();
 					correction = 0;
@@ -123,17 +129,15 @@ public class MechyDrive extends SubsystemBase {
 
 				// field oriented mode
 				double angleCompensation = 0;
-				if (!drivePOV) {
+				if (!drivePOV)
 					angleCompensation = Math.toRadians(gyro.getAngle());
-				}
 
 				// drive calculation
 				double r = Math.hypot(axis("side"), axis("forward"));
 				double robotAngle = Math.atan2(-axis("forward"), axis("side")) - Math.PI / 4 - angleCompensation;
 				double rightX = axis("turn");
-				if (axis("forward") < 0) {
+				if (axis("forward") < 0)
 					rightX *= -1;
-				}
 				final double v1 = -r * Math.cos(robotAngle) - rightX - correction;
 				final double v2 = -r * Math.sin(robotAngle) + rightX + correction;
 				final double v3 = -r * Math.sin(robotAngle) - rightX - correction;
