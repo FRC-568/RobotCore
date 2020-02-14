@@ -107,10 +107,6 @@ public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 		return position;
 	}
 
-	@Override
-	protected void initDefaultCommand() {
-	}
-
 	public void calibrateGyro() {
 		gyro.calibrate();
 	}
@@ -158,6 +154,13 @@ public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 	@Override
 	public double getRate() {
 		return gyro.getRate();
+	}
+
+	@Override
+	public void close() throws Exception {
+		stop();
+		gyro.close();
+		accel.close();
 	}
 
 }

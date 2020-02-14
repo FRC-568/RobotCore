@@ -7,10 +7,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
@@ -37,6 +38,7 @@ public class TalonSRXDrive extends DriveBase {
 		configureEncoder(motorsR[0]);
 		configureGyro();
 		configurePID();
+		setDefaultCommand(new DefaultCommand());
 	
 	}
 
@@ -48,6 +50,7 @@ public class TalonSRXDrive extends DriveBase {
 		configureEncoder(motorsR[0]);
 		configureGyro();
 		configurePID();
+		setDefaultCommand(new DefaultCommand());
 	
 	}
 
@@ -88,7 +91,7 @@ public class TalonSRXDrive extends DriveBase {
 
 		DifferentialDrive d = new DifferentialDrive(motorsL[0], motorsR[0]);
 		d.setRightSideInverted(false);
-		addChild(d);
+		SendableRegistry.addChild(this, TalonSRXDrive.this);
 		return d;
 
 	}
@@ -172,153 +175,142 @@ public class TalonSRXDrive extends DriveBase {
 
 	}
 
-	@Override
-	protected void initDefaultCommand() {
+	protected class DefaultCommand extends CommandBase {
+		double comboStartTime = 0;
+		boolean safeMode = configBoolean("enableSafeMode");
+		boolean alreadyToggled = false;
+		boolean driveReverse = false;
+		boolean reverseIsHeld = false;
 
-		setDefaultCommand(new Command() {
+		NetworkTableEntry tankMode;
 
-			double comboStartTime = 0;
-			boolean safeMode = configBoolean("enableSafeMode");
-			boolean alreadyToggled = false;
-			boolean driveReverse = false;
-			boolean reverseIsHeld = false;
+		DefaultCommand() { 
 
-			NetworkTableEntry tankMode;
+			addRequirements(TalonSRXDrive.this); 
+			SendableRegistry.addChild(TalonSRXDrive.this, this);
+		
+		}
 
-			{ 
+		@Override
+		public void initialize() {
+			System.out.println("Beginning teleop control - safemode is " + (safeMode ? "Enabled" : "Disabled") + ". Hold L3 + R3 5 seconds to toggle safe mode.");	
+		}
 
-				requires(TalonSRXDrive.this); 
-				TalonSRXDrive.this.addChild(this);
-			
+		@Override
+		public void execute() {
+
+			if (button("tankModeToggle")) {
+				tankMode.setBoolean(!tankMode.getBoolean(false));
 			}
 
-			@Override
-			protected void initialize() {
-				System.out.println("Beginning teleop control - safemode is " + (safeMode ? "Enabled" : "Disabled") + ". Hold L3 + R3 5 seconds to toggle safe mode.");	
+			if (button("safeModeToggle")) {
+
+				if (comboStartTime == 0)
+					comboStartTime = Timer.getFPGATimestamp();
+				else if (Timer.getFPGATimestamp() - comboStartTime >= 5.0 && !alreadyToggled) {
+
+					safeMode = !safeMode;
+					alreadyToggled = true;
+					System.out.println("Safemode is " + (safeMode ? "Enabled" : "Disabled") + ".");
+
+				}
+
+			} else {
+
+				comboStartTime = 0;
+				alreadyToggled = false;
+
 			}
 
-			@Override
-			protected void execute() {
-				
-				if (button("tankModeToggle")) {
-					tankMode.setBoolean(!tankMode.getBoolean(false));
+			if (button("driveReverse")) {
+
+				if (!reverseIsHeld)
+					driveReverse = !driveReverse;
+				reverseIsHeld = true;
+
+			} else
+				reverseIsHeld = false;
+
+			if (tankMode.getBoolean(false)) {
+
+				double left = axis("left");
+				double right = axis("right");
+
+				if (button("launch")) {
+					left = 1;
+					right = 1;
 				}
-				
-				if (button("safeModeToggle")) {
 
-					if (comboStartTime == 0)
-						comboStartTime = Timer.getFPGATimestamp();
-					else if (Timer.getFPGATimestamp() - comboStartTime >= 5.0 && !alreadyToggled) {
-					
-						safeMode = !safeMode;
-						alreadyToggled = true;
-						System.out.println("Safemode is " + (safeMode ? "Enabled" : "Disabled") + ".");
-					
-					}
+				if (driveReverse) {
 
-				} else {
+					double leftTemp = left * -1;
+					left = right * -1;
+					right = leftTemp;
 
-					comboStartTime = 0;
-					alreadyToggled = false;
-				
 				}
-				
-				if (button("driveReverse")) {
 
-					if (!reverseIsHeld)
-						driveReverse = !driveReverse;
-					reverseIsHeld = true;
-				
-				} else
-					reverseIsHeld = false;
+				if (safeMode)
+					tankDrive(left * 0.5, right * 0.5);
+				else
+					tankDrive(left, right);
 
-				if (tankMode.getBoolean(false)) {
+			} else {
 
-					double left = axis("left");
-					double right = axis("right");
+				double forward = axis("forward");
+				double turn = axis("turn");
+				correction = 0;
+				if (button("launch")) {
 
-					if(button("launch")) {
-						left = 1;
-						right = 1;
-					}
+					forward = 1;
+					turn = 0;
 
-					if (driveReverse) {
+				}
 
-						double leftTemp = left * -1;
-						left = right * -1;
-						right = leftTemp;
-					
-					}
-					
-					if (safeMode)
-						tankDrive(left * 0.5, right * 0.5);
-					else 
-						tankDrive(left, right);
+				if (driveReverse)
+					forward *= -1;
 
-				} else {
+				if (axis("forward") < 0) {
+					turn *= -1;
+				}
 
-					double forward = axis("forward");
-					double turn = axis("turn");
+				// pid calculations
+				pidDrive.setSetpoint(prevAngle);
+				correction = pidDrive.calculate(gyro.getAngle());
+				if (Math.abs(axis("turn")) < 0.1) {
+
+					pidDrive.reset();
+					prevAngle = gyro.getAngle();
 					correction = 0;
-					if (button("launch")) {
-
-						forward = 1;
-						turn = 0;
-				
-					}
-
-					if (driveReverse)
-						forward *= -1;
-
-					if (axis("forward") < 0) {
-						turn *= -1;
-					}
-					
-					// pid calculations
-					pidDrive.setSetpoint(prevAngle);
-					correction = pidDrive.calculate(gyro.getAngle());
-					if (Math.abs(axis("turn")) < 0.1) {
-
-						pidDrive.reset();
-						prevAngle = gyro.getAngle();
-						correction = 0;
-
-					}
-
-					if (safeMode)
-						arcadeDrive(forward * 0.5, turn * 0.5 + correction);						
-					else
-						arcadeDrive(forward, turn + correction);
 
 				}
-				if (button("stopMotors"))
-					drive.stopMotor();
-				else if (button("idleMotors"))
-					drive.arcadeDrive(0, 0, false);
-				
-			}
 
-			@Override
-			protected boolean isFinished() {
-				return false;
-			}
-
-			@Override
-			public void initSendable(SendableBuilder builder) {
-
-				super.initSendable(builder);
-				builder.setSmartDashboardType("Anti-Drift");
-				builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
-				builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
-				builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
-
-				tankMode = builder.getEntry("tankMode");
-				tankMode.setPersistent();
-				tankMode.setDefaultBoolean(false);
+				if (safeMode)
+					arcadeDrive(forward * 0.5, turn * 0.5 + correction);
+				else
+					arcadeDrive(forward, turn + correction);
 
 			}
+			if (button("stopMotors"))
+				drive.stopMotor();
+			else if (button("idleMotors"))
+				drive.arcadeDrive(0, 0, false);
 
-		});
+		}
+
+		@Override
+		public void initSendable(SendableBuilder builder) {
+
+			super.initSendable(builder);
+			builder.setSmartDashboardType("Anti-Drift");
+			builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
+			builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
+			builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
+
+			tankMode = builder.getEntry("tankMode");
+			tankMode.setPersistent();
+			tankMode.setDefaultBoolean(false);
+
+		}
 		
 	}
 

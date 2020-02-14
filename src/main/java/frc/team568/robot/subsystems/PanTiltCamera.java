@@ -2,7 +2,8 @@ package frc.team568.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.cameraserver.CameraServer;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
@@ -29,23 +30,20 @@ public class PanTiltCamera extends SubsystemBase {
 		cameraHorizontalServo.set(0.5);
 
 		CameraServer.getInstance().startAutomaticCapture(cameraServerPort);
+
+		initDefaultCommand();
 	}
 
-	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new Command() {
+		setDefaultCommand(new CommandBase() {
 
 			{
-				requires(PanTiltCamera.this);
+				addRequirements(PanTiltCamera.this);
+				SendableRegistry.addChild(PanTiltCamera.this, this);
 			}
 
 			@Override
-			protected void initialize() {
-
-			}
-
-			@Override
-			protected void execute() {
+			public void execute() {
 
 				// Rotate camera vertically
 				cameraVerticalServo.setAngle(cameraVerticalServo.getAngle() + joystick.getRawAxis(Xinput.LeftStickY));
@@ -55,10 +53,6 @@ public class PanTiltCamera extends SubsystemBase {
 			
 			}
 
-			@Override
-			protected boolean isFinished() {
-				return false;
-			}
 		});
 	}
 

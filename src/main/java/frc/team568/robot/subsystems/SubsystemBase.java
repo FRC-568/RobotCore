@@ -5,11 +5,10 @@ import frc.team568.robot.RobotBase;
 import java.util.Arrays;
 
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.command.Subsystem;
 
 import static edu.wpi.first.wpilibj.DriverStation.reportWarning;
 
-public abstract class SubsystemBase extends Subsystem {
+public abstract class SubsystemBase extends edu.wpi.first.wpilibj2.command.SubsystemBase {
 	public final RobotBase robot;
 	public final NetworkTable config;
 
@@ -19,9 +18,8 @@ public abstract class SubsystemBase extends Subsystem {
 	}
 
 	public SubsystemBase(String name, final RobotBase robot) {
-		super(name);
-		this.robot = robot;
-		config = robot.getConfig().getSubTable(getConfigName());
+		this(robot);
+		setName(name);
 	}
 
 	public Class<? extends SubsystemBase> getEffectiveClass() {
@@ -69,10 +67,6 @@ public abstract class SubsystemBase extends Subsystem {
 
 	protected double axis(String key) {
 		return robot.getControls().axis(key);
-	}
-	
-	@Override
-	protected void initDefaultCommand() {
 	}
 
 }

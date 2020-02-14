@@ -5,9 +5,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.GyroSubsystem;
@@ -47,12 +48,12 @@ public class WestCoastDrive extends SubsystemBase {
 		gyro = robot.getSubsystem(GyroSubsystem.class).getGyro();
 
 		reset();
+
+		setDefaultCommand(new DefaultCommand());
 	}
 
 	@Override
-	public void periodic() {
-		
-	}
+	public void periodic() {}
 
 	protected void initMotors() {
 		fl = new WPI_TalonSRX(port("leftFrontMotor"));
@@ -151,36 +152,22 @@ public class WestCoastDrive extends SubsystemBase {
 		fr.setSelectedSensorPosition(0);
 	}
 
-	@Override
-	protected void initDefaultCommand() {
-		setDefaultCommand(new Command() {
+	protected class DefaultCommand extends CommandBase {
 
-			{
-				requires(WestCoastDrive.this);
-			}
+		DefaultCommand() {
+			addRequirements(WestCoastDrive.this);
+			SendableRegistry.addChild(WestCoastDrive.this, this);
+		}
 
-			@Override
-			protected void initialize() {
-				
-			}
+		@Override
+		public void execute() {
+			double velocity = Math.max(Math.abs(fl.getSelectedSensorVelocity()),
+					Math.abs(fr.getSelectedSensorVelocity()));
 
-			@Override
-			protected void execute() {
-				double velocity = Math.max(Math.abs(fl.getSelectedSensorVelocity()), Math.abs(fr.getSelectedSensorVelocity()));
-
-				drive.curvatureDrive(
-					-joystick.getRawAxis(Xinput.LeftStickY),
-					joystick.getRawAxis(Xinput.RightStickX),
+			drive.curvatureDrive(-joystick.getRawAxis(Xinput.LeftStickY), joystick.getRawAxis(Xinput.RightStickX),
 					velocity < CURVATURE_MINIMUM_VELOCITY);
-			}
+		}
 
-			@Override
-			protected boolean isFinished() {
-				return false;
-			}
-
-		}); // End set default command
-
-	} // End init default command
+	}
 
 }
