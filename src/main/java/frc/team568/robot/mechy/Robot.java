@@ -1,10 +1,13 @@
 package frc.team568.robot.mechy;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.MechyDrive;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 public class Robot extends RobotBase {
 	
@@ -16,6 +19,8 @@ public class Robot extends RobotBase {
 
 		int mainJoystick = 0;
 
+		JoystickButton joystickStart = new JoystickButton(new Joystick(mainJoystick), Xinput.Start);
+
 		port("leftFrontMotor", 1);
 		port("rightFrontMotor", 2);
 		port("leftBackMotor", 3);
@@ -25,7 +30,14 @@ public class Robot extends RobotBase {
 		axis("side", mainJoystick, Xinput.LeftStickX);
 		axis("turn", mainJoystick, Xinput.RightStickX);
 
+		joystickStart.whenPressed(new InstantCommand(() -> {
+
+			drive.drivePOV = !drive.drivePOV;
+			drive.gyro.reset();
+
+		}));
 		button("driveModeToggle", mainJoystick, Xinput.Start);
+		button("safeModeToggle", () -> button(0, Xinput.LeftStickIn) && button(0, Xinput.RightStickIn));
 
 		drive = addSubsystem(MechyDrive::new);
 

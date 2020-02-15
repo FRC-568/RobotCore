@@ -15,7 +15,7 @@ import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
 	
-	private double Kp = 0.5;
+	private double Kp = 0.05;
 	private double Ki = 0;
 	private double Kd = 0;
 	private double correction = 0;
@@ -257,8 +257,8 @@ public class TalonSRXDrive extends DriveBase {
 
 				} else {
 
-					double forward = axis("forward");
-					double turn = axis("turn");
+					double forward = -axis("forward");
+					double turn = -axis("turn");
 					correction = 0;
 					if (button("launch")) {
 
@@ -277,18 +277,24 @@ public class TalonSRXDrive extends DriveBase {
 					// pid calculations
 					pidDrive.setSetpoint(prevAngle);
 					correction = pidDrive.calculate(gyro.getAngle());
-					if (Math.abs(axis("turn")) < 0.1) {
+					if (Math.abs(axis("turn")) > 0.05) {
 
 						pidDrive.reset();
 						prevAngle = gyro.getAngle();
 						correction = 0;
 
+					} else if (Math.abs(axis("forward")) < 0.05 && Math.abs(axis("side")) < 0.05) {
+
+						pidDrive.reset();
+						prevAngle = gyro.getAngle();
+						correction = 0;
+	
 					}
 
 					if (safeMode)
 						arcadeDrive(forward * 0.5, turn * 0.5 + correction);						
 					else
-						arcadeDrive(forward, turn + correction);
+						arcadeDrive(forward, turn * 0.7 + correction);
 
 				}
 				if (button("stopMotors"))

@@ -16,8 +16,8 @@ public class Robot extends RobotBase {
 
 		port("mainJoystick", 0);
 
-		config("drive/leftMotors", new Integer[]{0, 1});
-		config("drive/rightMotors", new Integer[] {2, 3});
+		config("drive/leftMotors", new Integer[]{2, 1});
+		config("drive/rightMotors", new Integer[] {4, 3});
 		config("drive/leftInverted", false);
 		config("drive/rightInverted", true);
 

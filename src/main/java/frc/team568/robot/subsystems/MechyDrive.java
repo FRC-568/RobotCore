@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.Timer;
+
 import frc.team568.robot.RobotBase;
 
 public class MechyDrive extends SubsystemBase {
@@ -22,11 +24,13 @@ public class MechyDrive extends SubsystemBase {
 	private WPI_TalonSRX fr;
 	private WPI_TalonSRX br;
 
-	private boolean drivePOV = true;
+	public boolean drivePOV = true;
 
-	private ADXRS450_Gyro gyro;
+	public ADXRS450_Gyro gyro;
 
 	private PIDController pidDrive;
+
+	private boolean safeMode = false;
 
 	public MechyDrive(RobotBase robot) {
 
@@ -89,6 +93,9 @@ public class MechyDrive extends SubsystemBase {
 	protected void initDefaultCommand() {
 		setDefaultCommand(new Command() {
 
+			double comboStartTime = 0;
+			boolean alreadyToggled = false;
+
 			{
 				requires(MechyDrive.this);
 			}
@@ -109,18 +116,37 @@ public class MechyDrive extends SubsystemBase {
 
 				}
 
+				if (button("safeModeToggle")) {
+
+					if (comboStartTime == 0)
+						comboStartTime = Timer.getFPGATimestamp();
+					else if (Timer.getFPGATimestamp() - comboStartTime >= 3.0 && !alreadyToggled) {
+					
+						safeMode = !safeMode;
+						alreadyToggled = true;
+						System.out.println("Safemode is " + (safeMode ? "Enabled" : "Disabled") + ".");
+					
+					}
+
+				} else {
+
+					comboStartTime = 0;
+					alreadyToggled = false;
+				
+				}
+
 				// pid calculation
 				pidDrive.setSetpoint(prevAngle);
 				correction = pidDrive.calculate(gyro.getAngle());
 
 				// resets current gyro heading and pid if turning or not moving
-				if (Math.abs(axis("turn")) > 0.01) {
+				if (Math.abs(axis("turn")) > 0.05) {
 				
 					pidDrive.reset();
 					prevAngle = gyro.getAngle();
 					correction = 0;
 
-				} else if (Math.abs(axis("forward")) < 0.01 && Math.abs(axis("side")) < 0.01) {
+				} else if (Math.abs(axis("forward")) < 0.05 && Math.abs(axis("side")) < 0.05) {
 
 					pidDrive.reset();
 					prevAngle = gyro.getAngle();
@@ -135,16 +161,21 @@ public class MechyDrive extends SubsystemBase {
 
 				// drive calculation
 				double r = Math.hypot(axis("side"), axis("forward"));
-				double robotAngle = Math.atan2(-axis("forward"), axis("side")) - Math.PI / 4 - angleCompensation;
+				double robotAngle = Math.atan2(-axis("forward"), axis("side")) - Math.PI / 4 + angleCompensation;
 				double rightX = axis("turn") * 0.7;
 				final double v1 = -r * Math.cos(robotAngle) - rightX - correction;
 				final double v2 = -r * Math.sin(robotAngle) + rightX + correction;
 				final double v3 = -r * Math.sin(robotAngle) - rightX - correction;
 				final double v4 = -r * Math.cos(robotAngle) + rightX + correction;
-				fl.set(v1);
-				fr.set(v2);
-				bl.set(v3);
-				br.set(v4);
+
+				double driveDamp = 1;
+				if (safeMode)
+					driveDamp = 0.5;
+
+				fl.set(v1 * driveDamp);
+				fr.set(v2 * driveDamp);
+				bl.set(v3 * driveDamp);
+				br.set(v4 * driveDamp);
 				
 			}
 
@@ -171,6 +202,11 @@ public class MechyDrive extends SubsystemBase {
 		builder.addDoubleProperty("prevAngle", () -> prevAngle, null);
 		builder.addBooleanProperty("isPOV", () -> drivePOV, null);
 		builder.addDoubleProperty("angleCompensation", () -> angleCompensation, null);
+		builder.addBooleanProperty("isSafeMode", () -> safeMode, null);
+		builder.addDoubleProperty("fl", () -> fl.get(), null);		
+		builder.addDoubleProperty("fr", () -> fr.get(), null);
+		builder.addDoubleProperty("bl", () -> bl.get(), null);
+		builder.addDoubleProperty("br", () -> br.get(), null);
 		
 	}
 
