@@ -27,6 +27,8 @@ public class Shooter extends SubsystemBase {
 	public static final double WIDTH_BETWEEN_TARGET = 39.125; //29.375; // inches //TODO need to find to width of the vision target
 	public static final double DISTANCE_CONSTANT = WIDTH_BETWEEN_TARGET * CAMERA_WIDTH / 0.2361111111 / 2; //5760  // 5738;
 
+	public static final double GOAL_HEIGHT = 96; //TODO measure height of the goal in inches
+	
 	private double distanceFromTarget;
 	private double distanceFromCenterY;
 	
@@ -138,6 +140,12 @@ public class Shooter extends SubsystemBase {
 	public double getShooterAngle() {
 
 		return 0;
+
+	}
+
+	public void setShooterAngle(double angle) {
+
+
 
 	}
 
