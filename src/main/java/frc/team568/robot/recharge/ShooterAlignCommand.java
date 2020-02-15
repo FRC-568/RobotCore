@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
 public class ShooterAlignCommand extends Command {
@@ -20,9 +21,9 @@ public class ShooterAlignCommand extends Command {
 	NetworkTableEntry directionEntry = targetDrivingData.getEntry("direction");
 	NetworkTableEntry errorEntry = targetDrivingData.getEntry("error");
 	
-	public ShooterAlignCommand(TalonSRXDrive drive) {
+	public ShooterAlignCommand(RobotBase robot, TalonSRXDrive drive) {
 		this.drive = drive;
-		tracker = new Shooter();
+		tracker = new Shooter(robot);
 	}
 	@Override
 	public void initialize() {
@@ -44,7 +45,7 @@ public class ShooterAlignCommand extends Command {
 			speedEntry.setDouble(driveSpeed);
 		}
 
-		if(!(tracker.distanceFromYPixels() == 0)) {
+		if (!(tracker.distanceFromYPixels() == 0)) {
 			double errorShooter = tracker.distanceFromYPixels() * KpShooter - MIN_COMMAND_SHOOTER;
 			tracker.rotateShooterSpeed(shooterRotateSpeed - errorShooter);
 

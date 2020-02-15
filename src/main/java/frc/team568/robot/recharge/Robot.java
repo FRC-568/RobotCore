@@ -2,30 +2,43 @@ package frc.team568.robot.recharge;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.TalonSRXDrive;
+import frc.team568.robot.recharge.Shooter;
 
 public class Robot extends RobotBase {
-	public TalonSRXDrive drive;
-	private Command autonomousCommand;
+
+	Shooter shooter;
+	TalonSRXDrive drive;
+	Command autonomousCommand;
 
 	public Robot() {
 		
 		super("Recharge");
 
-		port("mainJoystick", 0);
+		int mainController = 0;
 
 		config("drive/leftMotors", new Integer[]{2, 1});
 		config("drive/rightMotors", new Integer[] {4, 3});
 		config("drive/leftInverted", false);
 		config("drive/rightInverted", true);
+		
+		config("shooter/shooterL", 5);
+		config("shooter/shooterR", 6);
+		config("shooter/wheel", 7);
+		config("shooter/rotator", 8);
 
-		axis("forward", 0, Xinput.LeftStickY);
-		axis("turn", 0, Xinput.RightStickX);
-		axis("left", 0, Xinput.LeftStickY);
-		axis("right", 0, Xinput.RightStickY);
+		axis("forward", mainController, Xinput.LeftStickY);
+		axis("turn", mainController, Xinput.RightStickX);
+		axis("left", mainController, Xinput.LeftStickY);
+		axis("right", mainController, Xinput.RightStickY);
 
+		button("intake", mainController, Xinput.LeftBumper);
+		button("shoot", mainController, Xinput.RightBumper);
+
+		shooter = addSubsystem(Shooter::new);
 		drive = addSubsystem(TalonSRXDrive::new);
 
 	}
