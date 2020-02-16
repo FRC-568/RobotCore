@@ -5,14 +5,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 import frc.team568.robot.subsystems.SubsystemBase;
 
@@ -25,12 +22,27 @@ public class Shooter extends SubsystemBase {
 	public static final double CAMERA_CENTER = CAMERA_HEIGHT / 2;
     public static final double OFFSET_TO_FRONT = 0; //39 1/8; 34 5/8
 	public static final double WIDTH_BETWEEN_TARGET = 39.125; //29.375; // inches //TODO need to find to width of the vision target
+	public static final double HEIGHT_OF_TARGET = 97; //inches //TODO need to find height of the target in inches
 	public static final double DISTANCE_CONSTANT = WIDTH_BETWEEN_TARGET * CAMERA_WIDTH / 0.2361111111 / 2; //5760  // 5738;
+	public static final double INITIAL_VELOCITY = 10; //in inches per second
 
 	public static final double GOAL_HEIGHT = 96; //TODO measure height of the goal in inches
 	
+	private double v = INITIAL_VELOCITY;
+	private double d = getHorizontalDistanceFromTarget();
+	private double g = 10; //TODO figure out how to actually write 10 m/s/s //acceleration due to gravity
+
+	private double targetX = d;
+	private double targetY  = getActualHeight();
+	
+	private double shooterHeight = 5; //in //TODO figure out how to calcuate shooter height based on what angle it is rotated by
+	private double actualHeight = HEIGHT_OF_TARGET - shooterHeight; //calcuate height of target because shooter is off the ground;
+	private double horizontalDistanceFromTarget;
 	private double distanceFromTarget;
 	private double distanceFromCenterY;
+	private double calculatedAngle1;
+	private double calculatedAngle2;
+	private double currentShooterAngle;
 	
 	private NetworkTable res = NetworkTableInstance.getDefault().getTable("Resolution");
 	private NetworkTable coords = NetworkTableInstance.getDefault().getTable("Coordinates");
@@ -66,7 +78,6 @@ public class Shooter extends SubsystemBase {
 
 	// Drivetrain setup
 
-	Joystick controller0;
 	TalonSRXDrive drive;
 
 	public Shooter(RobotBase robot) {
@@ -85,11 +96,40 @@ public class Shooter extends SubsystemBase {
 		cheetoRotator = new WPI_TalonSRX(configInt("rotator"));
 	
 	}
-
+	
 	public void rotateShooterSpeed(double speed) {
 
 		cheetoRotator.set(speed);
 
+	}
+
+	public void shootShooter() {
+
+	}
+
+	public double calcuateAngle() {
+		calculatedAngle1 = Math.atan(Math.pow(v, 2) + Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(targetX, 2) + 2 * targetY * Math.pow(v, 2))));
+		calculatedAngle2 = Math.atan(Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(targetX, 2) + 2 * targetY * Math.pow(v, 2))));
+
+		return calculatedAngle1; //TODO figure out a way to calculate which angle is most optimal
+	}
+
+	public double getCurrentShooterAngle() {
+		//TODO figure out how to get current angle
+		currentShooterAngle = 35;
+		
+		return currentShooterAngle;
+	}
+
+	public double getHorizontalDistanceFromTarget() {
+		distanceFromTarget = distanceFromTarget();
+		horizontalDistanceFromTarget = (Math.sin(90) * distanceFromTarget);
+		
+		return horizontalDistanceFromTarget;
+	}
+
+	public double getActualHeight() {
+		return actualHeight;
 	}
 
 	public double getResX() {
@@ -169,9 +209,6 @@ public class Shooter extends SubsystemBase {
 		return angleToGoal;
 	}
 
-	public void alignToTarget(RobotBase robot) {
-		new JoystickButton(controller0, Xinput.X).whileActive(new ShooterAlignCommand(robot, drive));	
-	}
 
 	@Override
 	public void initDefaultCommand() {
