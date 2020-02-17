@@ -1,21 +1,17 @@
 package frc.team568.robot.recharge;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-
-
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.TalonSRXDrive;
-import frc.team568.robot.recharge.Shooter;
 
 public class Robot extends RobotBase {
 	RobotBase robot;
 	Shooter shooter;
 	TalonSRXDrive drive;
-	Joystick controller0;
 	Command autonomousCommand;
 
 	public Robot() {
@@ -41,10 +37,13 @@ public class Robot extends RobotBase {
 
 		button("intake", mainController, Xinput.LeftBumper);
 		button("shoot", mainController, Xinput.RightBumper);
+		button("rotateShooterUp", mainController, Xinput.Y);
+		button("rotateShooterDown", mainController, Xinput.A);
+
 		shooter = addSubsystem(Shooter::new);
 		drive = addSubsystem(TalonSRXDrive::new);
 
-		//new JoystickButton(controller0, Xinput.X).whileActive(new ShooterAlignCommand(drive, robot)); //don't know why this command isn't working
+		new JoystickButton(new Joystick(mainController), Xinput.X).whileActive(new ShooterAlignCommand(drive, robot)); //TODO check if this works
 
 	}
 

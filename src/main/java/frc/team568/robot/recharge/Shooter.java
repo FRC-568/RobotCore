@@ -5,13 +5,12 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-
+import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.command.Command;
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.subsystems.TalonSRXDrive;
 import frc.team568.robot.subsystems.SubsystemBase;
+import frc.team568.robot.subsystems.TalonSRXDrive;
 
 public class Shooter extends SubsystemBase {
 
@@ -70,11 +69,12 @@ public class Shooter extends SubsystemBase {
 	VictorSP shooterL;
 	VictorSP shooterR;
 	WPI_TalonSRX wheel;
-	WPI_TalonSRX cheetoRotator;
+	WPI_TalonSRX shooterRotator;
 
 	final double INTAKE_SPEED = 0.5;
 	final double SHOOT_SPEED = 1;
 	final double WHEEL_SPEED = 0.5;
+	final double ROTATOR_SPEED = 0.2;
 
 	// Drivetrain setup
 
@@ -93,13 +93,13 @@ public class Shooter extends SubsystemBase {
 		
 		wheel = new WPI_TalonSRX(configInt("wheel"));
 
-		cheetoRotator = new WPI_TalonSRX(configInt("rotator"));
+		shooterRotator = new WPI_TalonSRX(configInt("rotator"));
 	
 	}
 	
 	public void rotateShooterSpeed(double speed) {
 
-		cheetoRotator.set(speed);
+		shooterRotator.set(speed);
 
 	}
 
@@ -115,7 +115,8 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public double getCurrentShooterAngle() {
-		//TODO figure out how to get current angle
+		//TODO figure out how to get current angle 
+		//Use ratio between encoder value and angle?
 		currentShooterAngle = 35;
 		
 		return currentShooterAngle;
@@ -227,11 +228,11 @@ public class Shooter extends SubsystemBase {
 			@Override
 			protected void execute() {
 				
+				// Manually move shooter
 				if (button("intake")) {
 
 					shooter.set(INTAKE_SPEED);
 					wheel.set(WHEEL_SPEED);
-
 
 				} else if (button("shoot")) {
 
@@ -244,6 +245,13 @@ public class Shooter extends SubsystemBase {
 					wheel.set(0);
 
 				}
+
+				if (button("rotateShooterUp"))
+					shooterRotator.set(ROTATOR_SPEED);
+				else if (button("rotateShooterDown"))
+					shooterRotator.set(-ROTATOR_SPEED);
+				else
+					shooterRotator.set(0);
 
 			}
 
