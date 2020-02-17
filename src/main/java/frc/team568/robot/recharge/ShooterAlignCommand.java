@@ -44,7 +44,7 @@ public class ShooterAlignCommand extends Command {
 		double driveSpeed = MAX_SPEED_DRIVE * tracker.distanceFromTarget() / MAX_DISTANCE_DRIVE;
 		
 		double optimalAngle = tracker.calcuateAngle();
-		double currentAngle = tracker.getCurrentShooterAngle();
+		double currentAngle = tracker.getShooterAngle();
 		double shooterRotateSpeed = MAX_SPEED_SHOOTER * currentAngle;
 		
 		if (driveSpeed > MAX_SPEED_DRIVE) {
