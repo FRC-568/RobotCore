@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase {
 	public static final double WIDTH_BETWEEN_TARGET = 39.125; //29.375; // inches //TODO need to find to width of the vision target
 	public static final double HEIGHT_OF_TARGET = 97; //inches //TODO need to find height of the target in inches
 	public static final double DISTANCE_CONSTANT = WIDTH_BETWEEN_TARGET * CAMERA_WIDTH / 0.2361111111 / 2; //5760  // 5738;
-	public static final double INITIAL_VELOCITY = 10; //in inches per second
+	public static final double INITIAL_VELOCITY = 10; //in inches per second //TODO figure out initial velocity
 
 	public static final double GOAL_HEIGHT = 96; //TODO measure height of the goal in inches
 	
@@ -44,8 +44,11 @@ public class Shooter extends SubsystemBase {
 	private double calculatedAngle2;
 	private double currentShooterAngle;
 	
-	private NetworkTable res = NetworkTableInstance.getDefault().getTable("Resolution");
-	private NetworkTable coords = NetworkTableInstance.getDefault().getTable("Coordinates");
+	NetworkTable res = NetworkTableInstance.getDefault().getTable("Resolution");
+	NetworkTable coords = NetworkTableInstance.getDefault().getTable("Coordinates");
+	
+	NetworkTable targetDrivingData = NetworkTableInstance.getDefault().getTable("targetDrivingData");
+	NetworkTableEntry angleEntry = targetDrivingData.getEntry("Shooter Angle");
 
 	NetworkTableEntry resX;
 	NetworkTableEntry resY;
@@ -98,7 +101,6 @@ public class Shooter extends SubsystemBase {
 	}
 	
 	public void rotateShooterSpeed(double speed) {
-
 		cheetoRotator.set(speed);
 
 	}
@@ -111,7 +113,15 @@ public class Shooter extends SubsystemBase {
 		calculatedAngle1 = Math.atan(Math.pow(v, 2) + Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(targetX, 2) + 2 * targetY * Math.pow(v, 2))));
 		calculatedAngle2 = Math.atan(Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(targetX, 2) + 2 * targetY * Math.pow(v, 2))));
 
-		return calculatedAngle1; //TODO figure out a way to calculate which angle is most optimal
+		if(calculatedAngle1 < calculatedAngle2) {
+			angleEntry.setDouble(calculatedAngle1);
+
+			return calculatedAngle1; //TODO figure out a way to calculate which angle is most optimal
+		} else {
+			angleEntry.setDouble(calculatedAngle2);
+
+			return calculatedAngle2;
+		}	
 	}
 
 	public double getCurrentShooterAngle() {
@@ -178,15 +188,12 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public double getShooterAngle() {
-
+		//TODO figure out how to get shooter angle
 		return 0;
-
 	}
 
 	public void setShooterAngle(double angle) {
-
-
-
+		//TODO figure out how to set the shooter angle
 	}
 
 	public double getAngle() {
@@ -244,16 +251,12 @@ public class Shooter extends SubsystemBase {
 					wheel.set(0);
 
 				}
-
 			}
 
 			@Override
 			protected boolean isFinished() {
 				return false;
 			}
-
 		});
-
 	}
-
 }
