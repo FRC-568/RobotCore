@@ -35,8 +35,8 @@ public class Shooter extends SubsystemBase {
 	private double shooterAngle = 0; //TODO get shooter angle using encoders (in radians)
 	private double calculatedAngle = Math.asin(Math.sqrt(2 * GRAVITY * actualHeight) / INITIAL_VELOCITY); // calculated angle in radians
 	
-	private NetworkTable res = NetworkTableInstance.getDefault().getTable("Resolution");
-	private NetworkTable coords = NetworkTableInstance.getDefault().getTable("Coordinates");
+	NetworkTable res = NetworkTableInstance.getDefault().getTable("Resolution");
+	NetworkTable coords = NetworkTableInstance.getDefault().getTable("Coordinates");
 
 	NetworkTableEntry resX;
 	NetworkTableEntry resY;
@@ -161,9 +161,7 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public void setShooterAngle(double angle) {
-
 		//TODO set shooter angle using encoder
-
 	}
 
 	public double getAngle() {
@@ -235,9 +233,6 @@ public class Shooter extends SubsystemBase {
 			protected boolean isFinished() {
 				return false;
 			}
-
 		});
-
 	}
-
 }
