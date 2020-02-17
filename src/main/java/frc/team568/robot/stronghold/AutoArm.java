@@ -1,25 +1,35 @@
 package frc.team568.robot.stronghold;
 
-import frc.team568.robot.subsystems.Arms;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-import edu.wpi.first.wpilibj.command.TimedCommand;
-
-public class AutoArm extends TimedCommand {
+public class AutoArm extends CommandBase {
+	private final Timer timer = new Timer();
 	private final Arms arm;
 	
 	public AutoArm(Arms arm) {
-		super(2.0);
 		this.arm = arm;
 	}
 
 	@Override
-	protected void execute() {
+	public void initialize() {
+		timer.reset();
+		timer.start();
+	}
+
+	@Override
+	public void execute() {
 		arm.goDown();
 	}
 
 	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
 		arm.stop();
+	}
+
+	@Override
+	public boolean isFinished() {
+		return timer.hasPeriodPassed(2);
 	}
 
 }

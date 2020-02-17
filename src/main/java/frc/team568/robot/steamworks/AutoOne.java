@@ -1,19 +1,18 @@
 package frc.team568.robot.steamworks;
 
-import frc.team568.robot.commands.Drive2017;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.WaitCommand;
-
-public class AutoOne extends CommandGroup {
+public class AutoOne extends SequentialCommandGroup {
 
 	public AutoOne() {
-		addSequential(Robot.getInstance().gearBox.closeCommand());
-		addSequential(new Drive2017(110 - 24, .3));
-		addSequential(Robot.getInstance().gearBox.openCommand());
-		addSequential(new WaitCommand(1.5));
-		addSequential(new Drive2017(-10, -.2));
-		addSequential(Robot.getInstance().gearBox.closeCommand());
+		GearBox gearBox = Robot.getInstance().gearBox;
+		addCommands(gearBox.closeCommand(),
+			new Drive2017(110 - 24, .3),
+			gearBox.openCommand(),
+			new WaitCommand(1.5),
+			new Drive2017(-10, -.2),
+			gearBox.closeCommand());
 	}
 
 }

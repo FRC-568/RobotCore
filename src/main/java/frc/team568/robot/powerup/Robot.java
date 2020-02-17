@@ -1,19 +1,15 @@
 package frc.team568.robot.powerup;
 
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.commands.ClimbWithWinch;
-import frc.team568.robot.commands.UnClimb;
-import frc.team568.robot.subsystems.BlockHandler;
-import frc.team568.robot.subsystems.BlockLift2018;
 import frc.team568.robot.subsystems.WinchClimber;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class Robot extends RobotBase {
 	Command autonomousCommand;

@@ -1,8 +1,9 @@
-package frc.team568.robot.subsystems;
+package frc.team568.robot.powerup;
 
 import static frc.team568.util.Utilities.*;
 
 import frc.team568.robot.RobotBase;
+import frc.team568.robot.subsystems.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 

@@ -6,7 +6,8 @@ import frc.team568.robot.subsystems.SubsystemBase;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 class BlockIntake extends SubsystemBase {
 	public SpeedController intakeOne;
@@ -20,21 +21,16 @@ class BlockIntake extends SubsystemBase {
 	}
 
 	public Command getCommandBlockIn() {
-		return new Command() {
+		return new CommandBase() {
 			@Override
-			protected void execute() {
+			public void execute() {
 				intakeOne.set(1);
 				intakeTwo.set(-1);
 				Timer.delay(.5);
 			}
 
 			@Override
-			protected boolean isFinished() {
-				return false;
-			}
-
-			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				intakeOne.set(0);
 				intakeTwo.set(0);
 			}
@@ -42,21 +38,16 @@ class BlockIntake extends SubsystemBase {
 	}
 
 	public Command getCommandBlockOut() {
-		return new Command() {
+		return new CommandBase() {
 			@Override
-			protected void execute() {
+			public void execute() {
 				intakeOne.set(-1);
 				intakeTwo.set(1);
 				Timer.delay(.5);
 			}
 
 			@Override
-			protected boolean isFinished() {
-				return false;
-			}
-
-			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				intakeOne.set(0);
 				intakeTwo.set(0);
 			}

@@ -4,16 +4,12 @@ package frc.team568.robot.steamworks;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.grip.VisionProcessor;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.DriveTrain;
-import frc.team568.robot.subsystems.GearBox;
-import frc.team568.robot.subsystems.ReferenceFrame2017;
-import frc.team568.robot.subsystems.RopeCollector;
-import frc.team568.robot.subsystems.Shooter2017;
 import frc.team568.robot.subsystems.VisionTargetTracker;
 import frc.team568.robot.subsystems.WinchClimber;
 
@@ -119,7 +115,7 @@ public class Robot extends RobotBase {
 		}
 		// referenceFrame.reset();
 		// visionProcessor.start();
-		autonomousCommand.start();
+		autonomousCommand.schedule();
 
 	}
 

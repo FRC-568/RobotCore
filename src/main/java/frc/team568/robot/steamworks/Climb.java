@@ -1,13 +1,10 @@
-package frc.team568.robot.commands;
-
-import frc.team568.robot.steamworks.ControllerButtons;
-import frc.team568.robot.subsystems.Climber;
+package frc.team568.robot.steamworks;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class Climb extends Command {
+public class Climb extends CommandBase {
 	public Climber climber;
 	public Joystick controller2;
 	public ControllerButtons buttons;
@@ -19,7 +16,6 @@ public class Climb extends Command {
 	}
 
 	public void topClampIn() {
-
 		climber.topClampIn.set(true);
 		climber.topClampOut.set(false);
 	}
@@ -50,14 +46,14 @@ public class Climb extends Command {
 	}
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		// reacherIn();
 		// topClampIn();
 		// bottomClampIn();
 	}
 
 	@Override
-	protected void execute() {
+	public void execute() {
 		switch (climber.currentState) {
 		case RELAXED:
 			bottomClampOut();
@@ -101,26 +97,14 @@ public class Climb extends Command {
 	}
 
 	@Override
-	protected boolean isFinished() {
-		return false;
-	}
-
-	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
 		topClampOut();
 		bottomClampOut();
-		climber.isClimbing = false;
-		climber.currentState = Climber.State.BOTTOM_CLAMPED;
-		// reacher
-	}
-
-	@Override
-	protected void interrupted() {
-		topClampOut();
-		bottomClampOut();
-		// climber.isClimbing = false;
-		// climber.currentState = Climber.State.BOTTOM_CLAMPED;
-		// reacher
+		if (!interrupted) {
+			climber.isClimbing = false;
+			climber.currentState = Climber.State.BOTTOM_CLAMPED;
+			// reacher
+		}
 	}
 
 }

@@ -1,20 +1,19 @@
-package frc.team568.robot.commands;
+package frc.team568.robot.powerup;
 
-import frc.team568.robot.powerup.Robot;
 import frc.team568.robot.subsystems.WinchClimber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class ClimbWithWinch extends CommandBase {
+public class UnClimb extends CommandBase {
 	public WinchClimber winchClimber;
 
-	public ClimbWithWinch() {
+	public UnClimb() {
 		winchClimber = Robot.getInstance().climber;
 	}
 
 	@Override
 	public void execute() {
-		winchClimber.lift_m.set(-1);
+		winchClimber.lift_m.set(1);
 	}
 
 	@Override

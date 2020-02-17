@@ -1,24 +1,24 @@
 package frc.team568.robot.steamworks;
 
-import frc.team568.robot.commands.Drive2017;
 import frc.team568.robot.commands.MoveToVisionTarget;
-import frc.team568.robot.commands.Turn;
+//import frc.team568.robot.commands.Turn;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-public class AutoThree extends CommandGroup {
+public class AutoThree extends SequentialCommandGroup {
 
 	public AutoThree() {
-		addSequential(Robot.getInstance().gearBox.closeCommand());
-		addSequential(new Drive2017(79, .3));
-		addSequential(new Turn(40));
-		addSequential(new MoveToVisionTarget(Robot.getInstance().driveTrain, Robot.getInstance().gearTracker));
-		addSequential(new Drive2017(48, .3));
-		addSequential(Robot.getInstance().gearBox.openCommand());
-		addSequential(new WaitCommand(2));
-		addSequential(new Drive2017(-24, -.2));
-		addSequential(Robot.getInstance().gearBox.closeCommand());
+		GearBox gearBox = Robot.getInstance().gearBox;
+		addCommands(gearBox.closeCommand(),
+			new Drive2017(79, .3),
+			//new Turn(40), //need generic turn command to replace one adopted by powerup
+			new MoveToVisionTarget(Robot.getInstance().driveTrain, Robot.getInstance().gearTracker),
+			new Drive2017(48, .3),
+			gearBox.openCommand(),
+			new WaitCommand(2),
+			new Drive2017(-24, -.2),
+			gearBox.closeCommand());
 	}
 
 }

@@ -1,13 +1,10 @@
-package frc.team568.robot.commands;
-
-import frc.team568.robot.stronghold.Robot;
-import frc.team568.robot.subsystems.ArcadeDrive;
+package frc.team568.robot.stronghold;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class Drive2016 extends Command {
+public class Drive2016 extends CommandBase {
 	ArcadeDrive drive;
 	Timer timer;
 	double speed;
@@ -15,7 +12,7 @@ public class Drive2016 extends Command {
 	boolean forward;
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		drive = Robot.getInstance().arcadeDrive;
 		timer = new Timer();
 		speed = SmartDashboard.getNumber("Speed", 0.0);
@@ -26,7 +23,7 @@ public class Drive2016 extends Command {
 	}
 
 	@Override
-	protected void execute() {
+	public void execute() {
 		if (forward) {
 			drive.forwardWithGyro(speed);
 		} else if (!forward) {
@@ -35,20 +32,13 @@ public class Drive2016 extends Command {
 	}
 
 	@Override
-	protected boolean isFinished() {
-		if (timer.get() < delay)
-			return false;
-		else
-			return true;
+	public boolean isFinished() {
+		return timer.get() >= delay;
 	}
 
 	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
 		drive.halt();
-	}
-
-	@Override
-	protected void interrupted() {
 	}
 
 }

@@ -1,9 +1,7 @@
-package frc.team568.robot.subsystems;
+package frc.team568.robot.steamworks;
 
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.commands.Climb;
-import frc.team568.robot.steamworks.Robot;
-
+import frc.team568.robot.subsystems.SubsystemBase;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Climber extends SubsystemBase {

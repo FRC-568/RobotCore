@@ -1,12 +1,12 @@
-package frc.team568.robot.commands;
+package frc.team568.robot.powerup;
 
 import frc.team568.robot.powerup.DriveTrain2018;
 import frc.team568.robot.powerup.Robot;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class Turn extends Command {
+public class Turn extends CommandBase {
 	DriveTrain2018 drive;
 	double degrees;
 	double ra;
@@ -19,11 +19,10 @@ public class Turn extends Command {
 		System.out.println("Ref ANGLE: " + ra);
 	}
 
-	public Turn() {
-	}
+	public Turn() {}
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		drive = Robot.getInstance().driveTrain;
 		ra = drive.getAngle() + degrees;
 		System.out.println("Ref ANGLE: " + ra);
@@ -31,7 +30,7 @@ public class Turn extends Command {
 	}
 
 	@Override
-	protected void execute() {
+	public void execute() {
 		// SmartDashboard.putNumber("GYRO", drive.getAngle());
 		if (degrees > 0)
 			drive.turnRight(.3);
@@ -42,7 +41,7 @@ public class Turn extends Command {
 	}
 
 	@Override
-	protected boolean isFinished() {
+	public boolean isFinished() {
 		if (degrees < 0) {
 			return drive.getAngle() < (ra);
 		} else if (degrees > 0) {
@@ -53,7 +52,7 @@ public class Turn extends Command {
 	}
 
 	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
 		drive.stop();
 		Timer.delay(1);
 	}

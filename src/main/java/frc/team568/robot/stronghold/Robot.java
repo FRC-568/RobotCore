@@ -1,10 +1,7 @@
 package frc.team568.robot.stronghold;
 
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.subsystems.ArcadeDrive;
-import frc.team568.robot.subsystems.Arms;
 import frc.team568.robot.subsystems.ReferenceFrame2016;
-import frc.team568.robot.subsystems.Shooter2016;
 
 /* replace with OpenCV
 import com.ni.vision.NIVision;
@@ -15,9 +12,9 @@ import com.ni.vision.NIVision.ShapeMode;
 
 //import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class Robot extends RobotBase {
 	int session;
@@ -156,7 +153,7 @@ public class Robot extends RobotBase {
 			return;
 		}
 		referenceFrame.reset();
-		autonomousCommand.start();
+		autonomousCommand.schedule();
 	}
 
 	@Override

@@ -1,11 +1,12 @@
-package frc.team568.robot.subsystems;
+package frc.team568.robot.steamworks;
 
 import frc.team568.robot.RobotBase;
-
+import frc.team568.robot.subsystems.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class GearBox extends SubsystemBase {
 	public Solenoid gearPneumatic1;
@@ -32,31 +33,11 @@ public class GearBox extends SubsystemBase {
 	}
 
 	public Command openCommand() {
-		return new Command() {
-			@Override
-			public void initialize() {
-				GearBox.this.open();
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return true;
-			}
-		};
+		return new InstantCommand(this::open);
 	}
 
 	public Command closeCommand() {
-		return new Command() {
-			@Override
-			public void initialize() {
-				GearBox.this.close();
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return true;
-			}
-		};
+		return new InstantCommand(this::close);
 	}
 
 	public void hasGear() {

@@ -1,9 +1,6 @@
 package frc.team568.robot.powerup;
 
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.commands.Drive2018;
-import frc.team568.robot.subsystems.BlockHandler;
-import frc.team568.robot.subsystems.BlockLift2018;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 

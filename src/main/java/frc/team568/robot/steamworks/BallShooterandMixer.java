@@ -1,11 +1,9 @@
-package frc.team568.robot.commands;
-
-import frc.team568.robot.subsystems.Shooter2017;
+package frc.team568.robot.steamworks;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class BallShooterandMixer extends Command {
+public class BallShooterandMixer extends CommandBase {
 	Shooter2017 shooter;
 
 	public BallShooterandMixer(Shooter2017 shooter) {
@@ -13,13 +11,13 @@ public class BallShooterandMixer extends Command {
 	}
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		shooter.shootMotor.set(-(9.5 / 12));
 		Timer.delay(.5);
 	}
 
 	@Override
-	protected void execute() {
+	public void execute() {
 		// Timer.delay(1);
 		shooter.ballWranglerIn.set(true);
 		shooter.ballWranglerOut.set(false);
@@ -31,16 +29,10 @@ public class BallShooterandMixer extends Command {
 		Timer.delay(250);
 		shooter.gate.setAngle(0);
 		Timer.delay(250);
-
 	}
 
 	@Override
-	protected boolean isFinished() {
-		return false;
-	}
-
-	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
 		shooter.shootMotor.set(0);
 	}
 
