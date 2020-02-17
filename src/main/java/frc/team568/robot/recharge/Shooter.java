@@ -47,8 +47,10 @@ public class Shooter extends SubsystemBase {
 	NetworkTable res = NetworkTableInstance.getDefault().getTable("Resolution");
 	NetworkTable coords = NetworkTableInstance.getDefault().getTable("Coordinates");
 	
-	NetworkTable targetDrivingData = NetworkTableInstance.getDefault().getTable("targetDrivingData");
-	NetworkTableEntry angleEntry = targetDrivingData.getEntry("Shooter Angle");
+	NetworkTable angleData = NetworkTableInstance.getDefault().getTable("Angle Calculation Data");
+	NetworkTableEntry optimalAngleEntry = angleData.getEntry("Optimal Shooting Angle");
+	NetworkTableEntry potentialAngle1 = angleData.getEntry("Potential Angle 1");
+	NetworkTableEntry potentialAngle2 = angleData.getEntry("Potential Angle 2");
 
 	NetworkTableEntry resX;
 	NetworkTableEntry resY;
@@ -113,12 +115,15 @@ public class Shooter extends SubsystemBase {
 		calculatedAngle1 = Math.atan(Math.pow(v, 2) + Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(targetX, 2) + 2 * targetY * Math.pow(v, 2))));
 		calculatedAngle2 = Math.atan(Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(targetX, 2) + 2 * targetY * Math.pow(v, 2))));
 
+		potentialAngle1.setDouble(calculatedAngle1);
+		potentialAngle2.setDouble(calculatedAngle2);
+
 		if(calculatedAngle1 < calculatedAngle2) {
-			angleEntry.setDouble(calculatedAngle1);
+			optimalAngleEntry.setDouble(calculatedAngle1);
 
 			return calculatedAngle1; //TODO figure out a way to calculate which angle is most optimal
 		} else {
-			angleEntry.setDouble(calculatedAngle2);
+			optimalAngleEntry.setDouble(calculatedAngle2);
 
 			return calculatedAngle2;
 		}	
