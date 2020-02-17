@@ -2,7 +2,8 @@ package frc.team568.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 
 public class EvoDriveShifter extends SubsystemBase {
@@ -12,8 +13,9 @@ public class EvoDriveShifter extends SubsystemBase {
 	public EvoDriveShifter(final RobotBase robot) {
 		super(robot);
 		solenoid = new DoubleSolenoid(configInt("solenoidLow"), configInt("solenoidHigh"));
-		addChild(solenoid);
+		SendableRegistry.addChild(this, solenoid);
 		shiftLow();
+		initDefaultCommand();
 	}
 
 	@Override
@@ -39,20 +41,17 @@ public class EvoDriveShifter extends SubsystemBase {
 		return isHighGear;
 	}
 
-	@Override
 	public void initDefaultCommand() {
-		setDefaultCommand(new Command() {
+		setDefaultCommand(new CommandBase() {
 			boolean shiftIsHeld = false;
 
-			{ requires(EvoDriveShifter.this); }
-
-			@Override
-			protected void initialize() {
-				
+			{
+				addRequirements(EvoDriveShifter.this);
+				SendableRegistry.addChild(EvoDriveShifter.this, this);
 			}
 
 			@Override
-			protected void execute() {
+			public void execute() {
 				if(button("shifterToggle")) {
 					if(!shiftIsHeld)
 						shiftToggle();
@@ -60,11 +59,6 @@ public class EvoDriveShifter extends SubsystemBase {
 				} else {
 					shiftIsHeld = false;
 				}		
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return false;
 			}
 			
 		});

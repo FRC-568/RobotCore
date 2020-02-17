@@ -3,42 +3,23 @@ package frc.team568.robot.commands;
 import frc.team568.robot.powerup.Robot;
 import frc.team568.robot.subsystems.WinchClimber;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class UnClimb extends Command {
+public class UnClimb extends CommandBase {
 	public WinchClimber winchClimber;
 
 	public UnClimb() {
 		winchClimber = Robot.getInstance().climber;
-
 	}
 
 	@Override
-	protected void initialize() {
-
-	}
-
-	@Override
-	protected void execute() {
+	public void execute() {
 		winchClimber.lift_m.set(1);
-
 	}
 
 	@Override
-	protected boolean isFinished() {
-		return false;
-	}
-
-	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
 		winchClimber.lift_m.set(0);
-
-	}
-
-	@Override
-	protected void interrupted() {
-		end();
-
 	}
 
 }

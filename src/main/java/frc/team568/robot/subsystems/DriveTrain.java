@@ -3,19 +3,20 @@ package frc.team568.robot.subsystems;
 import frc.team568.robot.RobotBase;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.VictorSP;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-@SuppressWarnings("deprecation")
 public class DriveTrain extends SubsystemBase {
 	protected SpeedController leftFront;
 	protected SpeedController leftBack;
 	protected SpeedController rightFront;
 	protected SpeedController rightBack;
-	protected RobotDrive myDrive;
+	protected DifferentialDrive myDrive;
 
 	protected Joystick driveStick1;
 	private Gyro gyro;
@@ -34,10 +35,10 @@ public class DriveTrain extends SubsystemBase {
 		rightFront.setInverted(false);
 		rightBack.setInverted(false);
 
-		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
+		myDrive = new DifferentialDrive(new SpeedControllerGroup(leftFront, leftBack), new SpeedControllerGroup(rightFront, rightBack));
 
 		driveStick1 = new Joystick(0);
-
+		initDefaultCommand();
 	}
 
 	public void arcadeDrive() {
@@ -119,21 +120,16 @@ public class DriveTrain extends SubsystemBase {
 		myDrive.stopMotor();
 	}
 
-	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new Command() {
+		setDefaultCommand(new CommandBase() {
 			{
-				requires(DriveTrain.this);
+				addRequirements(DriveTrain.this);
+				SendableRegistry.addChild(DriveTrain.this, this);
 			}
 
 			@Override
-			protected void execute() {
+			public void execute() {
 				arcadeDrive();
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return false;
 			}
 		});
 	}

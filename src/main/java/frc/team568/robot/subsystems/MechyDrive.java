@@ -3,9 +3,10 @@ package frc.team568.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 
 public class MechyDrive extends SubsystemBase {
@@ -37,7 +38,7 @@ public class MechyDrive extends SubsystemBase {
 		configurePID();
 
 		reset();
-
+		initDefaultCommand();
 	}
 
 	private void initMotors() {
@@ -85,21 +86,16 @@ public class MechyDrive extends SubsystemBase {
 		
 	}
 
-	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new Command() {
+		setDefaultCommand(new CommandBase() {
 
 			{
-				requires(MechyDrive.this);
+				addRequirements(MechyDrive.this);
+				SendableRegistry.addChild(MechyDrive.this, this);
 			}
 
 			@Override
-			protected void initialize() {
-				
-			}
-
-			@Override
-			protected void execute() {
+			public void execute() {
 
 				// toggle POV and field mode
 				if (button("driveModeToggle")) {
@@ -146,11 +142,6 @@ public class MechyDrive extends SubsystemBase {
 				bl.set(v3);
 				br.set(v4);
 				
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return false;
 			}
 
 		}); // End set default command

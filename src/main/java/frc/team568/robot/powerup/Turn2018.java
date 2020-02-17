@@ -1,32 +1,34 @@
 package frc.team568.robot.powerup;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.PIDCommand;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class Turn2018 extends PIDCommand {
-	DriveTrain2018 dt;
-	double degrees;
+public class Turn2018 extends CommandBase {
+	final DriveTrain2018 dt;
+	final PIDController controller;
+	final double degrees;
 	double ra;
-	double speedScale;
 	boolean atTarget;
 	double timeStamp;
 	private static final double TimeToCheck = .5;
 
-	public Turn2018(DriveTrain2018 dt, double degrees) {
-		super(0.04, 0.003, 0.0);
+	public Turn2018(final DriveTrain2018 dt, final double degrees) {
 		this.dt = dt;
-		requires(dt);
+		this.controller = new PIDController(0.04, 0.003, 0.0);
+		addRequirements(dt);
 		this.degrees = degrees;
 	}
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		ra = dt.getAngle() + degrees;
-		setSetpoint(ra);
+		controller.setSetpoint(ra);
 	}
 
 	@Override
-	protected void execute() {
+	public void execute() {
+		double speedScale = controller.calculate(dt.getAngle());
 		if (degrees > 0)
 			dt.turnRight(.3 * speedScale);
 		else if (degrees < 0)
@@ -36,9 +38,8 @@ public class Turn2018 extends PIDCommand {
 	}
 
 	@Override
-	@SuppressWarnings("all")
-	protected boolean isFinished() {
-		if (Math.abs(getPIDController().getSetpoint() - dt.getAngle()) <= 5) {
+	public boolean isFinished() {
+		if (Math.abs(controller.getSetpoint() - dt.getAngle()) <= 5) {
 			if (atTarget) {
 				if ((Timer.getFPGATimestamp() - timeStamp) >= TimeToCheck) {
 					atTarget = false;
@@ -55,18 +56,8 @@ public class Turn2018 extends PIDCommand {
 	}
 
 	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
 		dt.stop();
-	}
-
-	@Override
-	protected double returnPIDInput() {
-		return dt.getAngle();
-	}
-
-	@Override
-	protected void usePIDOutput(double output) {
-		speedScale = output;
 	}
 
 }

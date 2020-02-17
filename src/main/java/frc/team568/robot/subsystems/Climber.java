@@ -32,11 +32,6 @@ public class Climber extends SubsystemBase {
 
 	}
 
-	@Override
-	protected void initDefaultCommand() {
-
-	}
-
 	public static enum State {
 		RELAXED, BOTTOM_CLAMPED, TOP_RELEASED, REACHED, TOP_CLAMPED, BOTTOM_RELEASED, LIFTED
 	}

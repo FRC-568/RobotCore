@@ -3,7 +3,8 @@ package frc.team568.robot.deepspace;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
 
@@ -22,32 +23,19 @@ class HabitatClimber extends SubsystemBase {
 		liftMotorFront.setNeutralMode(NeutralMode.Brake);
 		liftMotorBack.setNeutralMode(NeutralMode.Brake);
 
-		addChild(driveMotor);
-		addChild(liftMotorFront);
-		addChild(liftMotorBack);
+		SendableRegistry.addChild(this, driveMotor);
+		SendableRegistry.addChild(this, liftMotorFront);
+		SendableRegistry.addChild(this, liftMotorBack);
+
+		setDefaultCommand(new RunCommand(() -> {
+			liftMotorFront.set(axis("climberFront"));
+			liftMotorBack.set(axis("climberBack"));
+			driveMotor.set(axis("climberDrive"));
+		}, this));
 	}
 
 	@Override
 	public String getConfigName() {
 		return "climber";
-	}
-
-	@Override
-	public void initDefaultCommand() {
-		setDefaultCommand(new Command() {
-			{ requires(HabitatClimber.this); }
-
-			@Override
-			protected void execute() {
-				liftMotorFront.set(axis("climberFront"));
-				liftMotorBack.set(axis("climberBack"));
-				driveMotor.set(axis("climberDrive"));
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return false;
-			}
-		});
 	}
 }

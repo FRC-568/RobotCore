@@ -11,7 +11,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -161,7 +161,7 @@ public class Robot extends RobotBase {
 			autonomousCommand = new AutoTwo(this);
 		}
 		if (autonomousCommand != null)
-			autonomousCommand.start();
+			autonomousCommand.schedule();;
 
 	}
 
