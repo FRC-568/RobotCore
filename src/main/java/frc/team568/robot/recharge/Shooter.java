@@ -25,15 +25,15 @@ public class Shooter extends SubsystemBase {
 	public static final double DISTANCE_CONSTANT = WIDTH_BETWEEN_TARGET * CAMERA_WIDTH / 0.2361111111 / 2; //5760  // 5738;
 	public static final double INITIAL_VELOCITY = 100; //TODO find initial velocity in inches per second (by testing?)
 	public static final double SHOOTER_RADIUS = 10; //TODO find shooter radius in inches
-	public static final double SHOOTER_MOUNTED_HEIGHT = 10; //TODO find shooter height from ground to edge of shooter
+	public static final double SHOOTER_MOUNTED_HEIGHT = 10; //TODO find shooter height from ground to edge of shooter based on its angle
 	private static final double GRAVITY = 386.09; // 386.09 inches per second per second
 	
 	private double shooterHeight = SHOOTER_MOUNTED_HEIGHT + (SHOOTER_RADIUS - SHOOTER_RADIUS * Math.cos(getShooterAngle())); // assumes getShooterAngle to be in radius and units inches
-	private double actualHeight = HEIGHT_OF_TARGET - shooterHeight; //calcuate height of target because shooter is off the ground;
+	private double simulatedHeight = HEIGHT_OF_TARGET - shooterHeight; //calcuate height of target from the shooter height because shooter is off the ground;
 	private double distanceFromTarget;
 	private double distanceFromCenterY;
 	private double shooterAngle = 0; //TODO get shooter angle using encoders (in radians)
-	private double calculatedAngle = Math.asin(Math.sqrt(2 * GRAVITY * actualHeight) / INITIAL_VELOCITY); // calculated angle in radians
+	private double calculatedAngle = Math.asin(Math.sqrt(2 * GRAVITY * simulatedHeight) / INITIAL_VELOCITY); // calculated angle in radians
 	private double calculatedAngle1;
 	private double calculatedAngle2;
 	private double currentShooterAngle;
@@ -115,24 +115,33 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public double calcuateAngle() {
-
+		//angle in degrees
 		calculatedAngle1 = Math.atan(Math.pow(v, 2) + Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(targetX, 2) + 2 * targetY * Math.pow(v, 2))));
 		calculatedAngle2 = Math.atan(Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(targetX, 2) + 2 * targetY * Math.pow(v, 2))));
 
 		potentialAngle1.setDouble(calculatedAngle1);
 		potentialAngle2.setDouble(calculatedAngle2);
+	
+		if(calculatedAngle1 < 0 || calculatedAngle1 > 90) {
+			optimalAngleEntry.setDouble(-100);
+			return -100;
+		} if (calculatedAngle2 < 0 || calculatedAngle2 > 90) {
+			optimalAngleEntry.setDouble(-100);
+			return -100;
 
-		if(calculatedAngle1 < calculatedAngle2) {
-			optimalAngleEntry.setDouble(calculatedAngle1);
-			optimalAngleEntry.setDouble(calculatedAngle1);
-
-			return calculatedAngle1; //TODO figure out a way to calculate which angle is most optimal
 		} else {
-			optimalAngleEntry.setDouble(calculatedAngle2);
-			optimalAngleEntry.setDouble(calculatedAngle2);
+			if(calculatedAngle1 < calculatedAngle2) {
+				optimalAngleEntry.setDouble(calculatedAngle1);
+	
+				return calculatedAngle1; 
 
-			return calculatedAngle2;
+			} else {
+				optimalAngleEntry.setDouble(calculatedAngle2);
+	
+				return calculatedAngle2;
+			}
 		}
+		
 	}
 
 	public double getCurrentShooterAngle() {
@@ -148,7 +157,7 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public double getActualHeight() {
-		return actualHeight;
+		return simulatedHeight;
 	}
 
 	public double getResX() {
