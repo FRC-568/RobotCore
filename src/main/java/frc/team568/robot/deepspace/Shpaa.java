@@ -2,7 +2,8 @@ package frc.team568.robot.deepspace;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
 
@@ -15,6 +16,7 @@ class Shpaa extends SubsystemBase {
 
 		extender = new DoubleSolenoid(configInt("extenderOut"), configInt("extenderIn"));
 		grabber = new DoubleSolenoid(configInt("grabberOpen"), configInt("grabberClose"));
+		initDefaultCommand();
 	}
 
 	@Override
@@ -52,21 +54,18 @@ class Shpaa extends SubsystemBase {
 		setGrabberOpen(!getGrabberOpen());
 	}
 
-	@Override
 	public void initDefaultCommand() {
-		setDefaultCommand(new Command() {
+		setDefaultCommand(new CommandBase() {
 			boolean grabberIsHeld = false;
 			boolean extenderIsHeld = false;
 
-			{ requires(Shpaa.this); }
-
-			@Override
-			protected void initialize() {
-				
+			{
+				addRequirements(Shpaa.this);
+				SendableRegistry.addChild(Shpaa.this, this);
 			}
 
 			@Override
-			protected void execute() {
+			public void execute() {
 				if (button("shpaaGrabberToggle")) {
 					if (!grabberIsHeld)
 						toggleGrabber();
@@ -94,11 +93,6 @@ class Shpaa extends SubsystemBase {
 
 				if (button("shpaaExtenderIn"))
 					setExtenderOut(false);
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return false;
 			}
 			
 		});

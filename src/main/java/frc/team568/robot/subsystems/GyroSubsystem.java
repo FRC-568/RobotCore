@@ -1,5 +1,7 @@
 package frc.team568.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
@@ -13,7 +15,7 @@ public class GyroSubsystem extends SubsystemBase {
 		
 		super(robot);
 		gyro = new ADXRS450_Gyro();
-		addChild(gyro);
+		SendableRegistry.addChild(this, gyro);
 	
 	}
 

@@ -1,17 +1,19 @@
-package frc.team568.robot.subsystems;
+package frc.team568.robot.stronghold;
 
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.stronghold.Robot;
-
+import frc.team568.robot.subsystems.ReferenceFrame2016;
+import frc.team568.robot.subsystems.SubsystemBase;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-@SuppressWarnings("deprecation")
 public class ArcadeDrive extends SubsystemBase {
 	public final Robot robot;
 
@@ -20,8 +22,8 @@ public class ArcadeDrive extends SubsystemBase {
 	protected Joystick driveStickL;
 	protected Joystick driveStickR;
 
-	RobotDrive myRobot;
-	RobotDrive myDrive;
+	DifferentialDrive myRobot;
+	DifferentialDrive myDrive;
 
 	private final Gyro gyro;
 
@@ -43,10 +45,10 @@ public class ArcadeDrive extends SubsystemBase {
 		rightFront.setInverted(true);
 		rightBack.setInverted(true);
 
-		myDrive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
+		myDrive = new DifferentialDrive(new SpeedControllerGroup(leftFront, leftBack), new SpeedControllerGroup(rightFront, rightBack));
 		driveStickL = this.robot.oi.joyStick1;
 		driveStickR = this.robot.oi.joyStick3;
-
+		initDefaultCommand();
 	}
 
 	public void manualDrive() {
@@ -56,7 +58,7 @@ public class ArcadeDrive extends SubsystemBase {
 		}
 
 		if (robot.oi.trigger.get()) {
-			myDrive.arcadeDrive(driveStickL);
+			myDrive.arcadeDrive(driveStickL.getY(), driveStickL.getX());
 		} else {
 			halt();
 		}
@@ -203,22 +205,18 @@ public class ArcadeDrive extends SubsystemBase {
 		rightBack.set(0);
 	}
 
-	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new Command() {
+		setDefaultCommand(new CommandBase() {
 			{
-				requires(ArcadeDrive.this);
+				addRequirements(ArcadeDrive.this);
+				SendableRegistry.addChild(ArcadeDrive.this, this);
 			}
 
 			@Override
-			protected void execute() {
+			public void execute() {
 				manualDrive();
 			}
 
-			@Override
-			protected boolean isFinished() {
-				return false;
-			}
 		});
 	}
 

@@ -1,10 +1,7 @@
 package frc.team568.robot.stronghold;
 
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.subsystems.ArcadeDrive;
-import frc.team568.robot.subsystems.Arms;
 import frc.team568.robot.subsystems.ReferenceFrame2016;
-import frc.team568.robot.subsystems.Shooter2016;
 
 /* replace with OpenCV
 import com.ni.vision.NIVision;
@@ -15,9 +12,9 @@ import com.ni.vision.NIVision.ShapeMode;
 
 //import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends RobotBase {
 	int session;
@@ -139,7 +136,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void disabledPeriodic() {
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
@@ -156,12 +153,12 @@ public class Robot extends RobotBase {
 			return;
 		}
 		referenceFrame.reset();
-		autonomousCommand.start();
+		autonomousCommand.schedule();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
@@ -187,7 +184,7 @@ public class Robot extends RobotBase {
 		 * SmartDashboard.getNumber("TD");
 		 */
 
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 
 		/* NIVision is now an external dependency - will rework if needed in the future
 		NIVision.IMAQdxStartAcquisition(session);

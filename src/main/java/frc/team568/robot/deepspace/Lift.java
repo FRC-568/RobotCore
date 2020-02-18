@@ -8,9 +8,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
@@ -28,7 +29,7 @@ class Lift extends SubsystemBase {
 	Lift(RobotBase robot) {
 		super(robot);
 		liftMotor = new WPI_TalonSRX(configInt("motorLift"));
-		addChild(liftMotor);
+		SendableRegistry.addChild(this, liftMotor);
 
 		liftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 		liftMotor.setSensorPhase(true);
@@ -37,7 +38,8 @@ class Lift extends SubsystemBase {
 		homeSwitch = new DigitalInput(configInt("homeSwitch"));
 
 		SmartDashboard.putData("Reset Problem Encoder",
-			new InstantCommand("Reset Problem Encoder", this, () -> liftMotor.setSelectedSensorPosition(0)));
+			new InstantCommand(() -> liftMotor.setSelectedSensorPosition(0), this));
+		initDefaultCommand();
 	}
 
 	@Override
@@ -49,14 +51,16 @@ class Lift extends SubsystemBase {
 		return liftMotor.getSelectedSensorPosition();
 	}
 
-	@Override
 	public void initDefaultCommand() {
-		setDefaultCommand(new Command() {
+		setDefaultCommand(new CommandBase() {
 			
-			{ requires(Lift.this); }
+			{
+				addRequirements(Lift.this);
+				SendableRegistry.addChild(Lift.this, this);
+			}
 
 			@Override
-			protected void execute() {
+			public void execute() {
 				NetworkTableEntry target;
 				
 				if(button("liftToPosition1")) {
@@ -89,40 +93,35 @@ class Lift extends SubsystemBase {
 				//	liftMotor.setSelectedSensorPosition(0);
 			
 			}
-
-			@Override
-			protected boolean isFinished() {
-				return false;
-			}
 			
 		});
 
 	}
 
-	private class MoveToCommand extends Command {
+	private class MoveToCommand extends CommandBase {
 		private final NetworkTableEntry targetEntry;
 		private double targetPosition = 0;
 		private BooleanSupplier condition;
 
 		MoveToCommand(final NetworkTableEntry targetEntry, BooleanSupplier finishedCondition){
-			requires(Lift.this);
+			addRequirements(Lift.this);
 			this.targetEntry = targetEntry;
 			condition = finishedCondition;
 		}
 
 		@Override
-		protected void initialize() {
+		public void initialize() {
 			double pos = liftMotor.getSelectedSensorPosition();
 			targetPosition = targetEntry.getDouble(pos);
 		}
 
 		@Override
-		protected void execute() {
+		public void execute() {
 			liftMotor.set(ControlMode.Position, targetPosition);
 		}
 
 		@Override
-		protected boolean isFinished() {
+		public boolean isFinished() {
 			return condition.getAsBoolean();
 		}
 	}

@@ -1,20 +1,18 @@
-package frc.team568.robot.commands;
-
-import frc.team568.robot.subsystems.PistonRopeClimber;
+package frc.team568.robot.steamworks;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class PistonClimbTheRope extends Command {
+public class PistonClimbTheRope extends CommandBase {
 	protected final PistonRopeClimber climber;
 
 	public PistonClimbTheRope(PistonRopeClimber climber) {
 		this.climber = climber;
-		requires(climber);
+		addRequirements(climber);
 	}
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		switch (climber.currentState) {
 		case RELAXED:
 			climber.bottomClamp.grip();
@@ -58,25 +56,15 @@ public class PistonClimbTheRope extends Command {
 	}
 
 	@Override
-	protected void execute() {
-
-	}
-
-	@Override
-	protected boolean isFinished() {
+	public boolean isFinished() {
 		return true;
 	}
 
 	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
 		climber.topClamp.grip();
 		climber.bottomClamp.grip();
 		climber.currentState = PistonRopeClimber.State.BOTTOM_CLAMPED;
-	}
-
-	@Override
-	protected void interrupted() {
-		end();
 	}
 
 }

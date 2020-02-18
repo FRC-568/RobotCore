@@ -1,12 +1,9 @@
-package frc.team568.robot.commands;
-
-import frc.team568.robot.steamworks.Robot;
-import frc.team568.robot.subsystems.Shooter2017;
+package frc.team568.robot.steamworks;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class Shoot2017 extends Command {
+public class Shoot2017 extends CommandBase {
 	public Shooter2017 shooter;
 	private boolean gateState;
 	private double timeStamp;
@@ -14,20 +11,17 @@ public class Shoot2017 extends Command {
 
 	public Shoot2017() {
 		shooter = Robot.getInstance().shooter;
-
 	}
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		shooter.shootMotor.set(-(1.0));
 		gateState = false;
 		timeStamp = Timer.getFPGATimestamp();
-
 	}
 
 	@Override
-	protected void execute() {
-
+	public void execute() {
 		shooter.shootMotor.set(-(1));
 		if (!rampedUp) {
 			if ((Timer.getFPGATimestamp() - timeStamp) >= 1.75)
@@ -45,20 +39,10 @@ public class Shoot2017 extends Command {
 	}
 
 	@Override
-	protected boolean isFinished() {
-		return false;
-	}
-
-	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
 		shooter.shootMotor.set(0);
 		shooter.gate.setAngle(0);
 		gateState = false;
 		rampedUp = false;
-	}
-
-	@Override
-	protected void interrupted() {
-		end();
 	}
 }

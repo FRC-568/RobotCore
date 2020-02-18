@@ -4,11 +4,11 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
-public class ShooterAlignCommand extends Command {
+public class ShooterAlignCommand extends CommandBase {
 	TalonSRXDrive drive;
 	Shooter tracker;
 
@@ -29,10 +29,12 @@ public class ShooterAlignCommand extends Command {
 		this.drive = drive;
 		tracker = new Shooter(robot);
 	}
+
 	@Override
 	public void initialize() {
 		System.out.println("starting alignment");			
 	}
+
 	@Override
 	public void execute() {
 		final double KpDrive = 0.02;
@@ -89,9 +91,8 @@ public class ShooterAlignCommand extends Command {
 
 			}
 		}
-			
-
 	}
+	
 	@Override
 	public boolean isFinished() {
 		// if (tracker.returnGetAngle() <= 2 && tracker.returnGetAngle() >= -2) {

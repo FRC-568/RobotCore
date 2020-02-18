@@ -1,10 +1,10 @@
-package frc.team568.robot.subsystems;
+package frc.team568.robot.steamworks;
 
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.steamworks.Robot;
-
+import frc.team568.robot.subsystems.SubsystemBase;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RopeCollector extends SubsystemBase {
 	public Solenoid ropeClampIn;
@@ -31,31 +31,11 @@ public class RopeCollector extends SubsystemBase {
 	}
 
 	public Command openCommand() {
-		return new Command() {
-			@Override
-			public void initialize() {
-				RopeCollector.this.open();
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return true;
-			}
-		};
+		return new InstantCommand(this::open);
 	}
 
 	public Command closeCommand() {
-		return new Command() {
-			@Override
-			public void initialize() {
-				RopeCollector.this.close();
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return true;
-			}
-		};
+		return new InstantCommand(this::close);
 	}
 
 }

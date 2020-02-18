@@ -1,19 +1,15 @@
 package frc.team568.robot.powerup;
 
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.commands.ClimbWithWinch;
-import frc.team568.robot.commands.UnClimb;
-import frc.team568.robot.subsystems.BlockHandler;
-import frc.team568.robot.subsystems.BlockLift2018;
 import frc.team568.robot.subsystems.WinchClimber;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends RobotBase {
 	Command autonomousCommand;
@@ -64,12 +60,10 @@ public class Robot extends RobotBase {
 		blockIntake = addSubsystem(BlockHandler::new);
 		climber = addSubsystem(WinchClimber::new);
 		compressor = new Compressor();
-
 	}
 
 	@Override
 	public void robotInit() {
-
 		// SmartDashboard.putNumber("Turn.P", 0.05);
 		// SmartDashboard.putNumber("Turn.I", 0.003);
 		// SmartDashboard.putNumber("Turn.D", 0.0);
@@ -102,7 +96,6 @@ public class Robot extends RobotBase {
 		oi.blockLiftOut.whileHeld(blockIntake.getCommandBlockLiftOut());
 		oi.climbA.whileHeld(new ClimbWithWinch());
 		oi.unClimbA.whileHeld(new UnClimb());
-
 	}
 
 	@Override
@@ -112,9 +105,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void testPeriodic() {
-
-		Scheduler.getInstance().run();
-
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
@@ -123,18 +114,15 @@ public class Robot extends RobotBase {
 			autonomousCommand.cancel();
 			autonomousCommand = null;
 		}
-
 	}
 
 	@Override
 	public void disabledPeriodic() {
-
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
 	public void autonomousInit() {
-
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		int robotPos = (int) SmartDashboard.getNumber("Robot Position: ", 0);
@@ -161,8 +149,7 @@ public class Robot extends RobotBase {
 			autonomousCommand = new AutoTwo(this);
 		}
 		if (autonomousCommand != null)
-			autonomousCommand.start();
-
+			autonomousCommand.schedule();;
 	}
 
 	@Override
@@ -172,8 +159,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousPeriodic() {
-		Scheduler.getInstance().run();
-
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
@@ -183,8 +169,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void teleopPeriodic() {
-		Scheduler.getInstance().run();
-
+		CommandScheduler.getInstance().run();
 	}
 
 	public static Robot getInstance() {

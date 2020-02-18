@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.BlinkinLights;
@@ -138,7 +138,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousPeriodic() {
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 		//camera.processImage();	
 	}
 
@@ -155,7 +155,7 @@ public class Robot extends RobotBase {
 	@Override
 	// Called every 20 milliseconds in teleop
 	public void teleopPeriodic() { 
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
@@ -165,7 +165,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void testPeriodic() {
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
@@ -182,7 +182,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void disabledPeriodic() {
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 	}
 
 }

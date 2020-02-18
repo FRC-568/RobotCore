@@ -1,14 +1,13 @@
-package frc.team568.robot.commands;
+package frc.team568.robot.steamworks;
 
 import frc.team568.robot.steamworks.Robot;
 import frc.team568.robot.subsystems.DriveTrain;
-import frc.team568.robot.subsystems.ReferenceFrame2017;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class Drive2017 extends Command {
+public class Drive2017 extends CommandBase {
 	DriveTrain drive;
 	Timer timer;
 
@@ -24,7 +23,6 @@ public class Drive2017 extends Command {
 		inch = ref.motorEncoder.getDistance() + (distance);
 		this.speed = speed;
 		sign = distance;
-
 	}
 
 	public Drive2017() {
@@ -34,7 +32,7 @@ public class Drive2017 extends Command {
 	}
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		drive = Robot.getInstance().driveTrain;
 		timer = new Timer();
 		timer.reset();
@@ -45,13 +43,13 @@ public class Drive2017 extends Command {
 	}
 
 	@Override
-	protected void execute() {
+	public void execute() {
 		drive.forwardWithGyro(speed);
 		SmartDashboard.putNumber("GYRO", ref.getAngle());
 	}
 
 	@Override
-	protected boolean isFinished() {
+	public boolean isFinished() {
 		if (sign > 0)
 			return ref.motorEncoder.getDistance() > inch;
 		else
@@ -59,7 +57,7 @@ public class Drive2017 extends Command {
 	}
 
 	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
 		drive.halt();
 		Timer.delay(.5);
 	}

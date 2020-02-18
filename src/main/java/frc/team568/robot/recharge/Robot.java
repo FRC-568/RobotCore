@@ -1,9 +1,9 @@
 package frc.team568.robot.recharge;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.TalonSRXDrive;
@@ -15,7 +15,6 @@ public class Robot extends RobotBase {
 	Command autonomousCommand;
 
 	public Robot() {
-		
 		super("Recharge");
 
 		int mainController = 0;
@@ -43,7 +42,7 @@ public class Robot extends RobotBase {
 		shooter = addSubsystem(Shooter::new);
 		drive = addSubsystem(TalonSRXDrive::new);
 
-		new JoystickButton(new Joystick(mainController), Xinput.X).whileActive(new ShooterAlignCommand(drive, robot)); //TODO check if this works
+		new JoystickButton(new Joystick(mainController), Xinput.X).whenHeld(new ShooterAlignCommand(drive, robot)); //TODO check if this works
 
 	}
 
@@ -57,13 +56,12 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void teleopPeriodic() {
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
 	public void testPeriodic() {
-		Scheduler.getInstance().run();
-		
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
@@ -78,7 +76,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousPeriodic() {
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 	}
 
 }

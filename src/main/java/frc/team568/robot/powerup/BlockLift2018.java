@@ -1,15 +1,18 @@
-package frc.team568.robot.subsystems;
+package frc.team568.robot.powerup;
 
 import static frc.team568.util.Utilities.*;
 
 import frc.team568.robot.RobotBase;
+import frc.team568.robot.subsystems.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class BlockLift2018 extends SubsystemBase {
 	private static final int PPR = 2048; // Encoder set for 2048 pulses per rotation
@@ -37,6 +40,7 @@ public class BlockLift2018 extends SubsystemBase {
 		liftEncoder.setReverseDirection(true);
 		liftEncoder.setDistancePerPulse(1.0 / PPR); // base unit is one full rotation
 		liftEncoder.reset(); // ensure encoder is at zero
+		initDefaultCommand();
 	}
 
 	public double getPosition() {
@@ -86,15 +90,15 @@ public class BlockLift2018 extends SubsystemBase {
 	}
 
 	public Command getCommandMoveLiftTo(final double position) {
-		return new Command() {
+		return new CommandBase() {
 			private double startingPosition;
 
 			{
-				requires(BlockLift2018.this);
+				addRequirements(BlockLift2018.this);
 			}
 
 			@Override
-			protected void initialize() {
+			public void initialize() {
 				// target = positionToRaw(clamp(position, BOTTOM, TOP));
 				target = position;
 				hasTarget = true;
@@ -102,7 +106,7 @@ public class BlockLift2018 extends SubsystemBase {
 			}
 
 			@Override
-			protected void execute() {
+			public void execute() {
 				if (target > getPositionRaw())
 					setSpeed(RAISE_SPEED);
 				else if (target < getPositionRaw())
@@ -112,74 +116,69 @@ public class BlockLift2018 extends SubsystemBase {
 			}
 
 			@Override
-			protected boolean isFinished() {
+			public boolean isFinished() {
 				return (startingPosition <= target && getPositionRaw() >= target)
 						|| (startingPosition >= target && getPositionRaw() <= target);
 			}
 
 			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				stop();
 			}
 		};
 	}
 
 	public Command getCommandRaise() {
-		return new Command() {
+		return new CommandBase() {
 			{
-				requires(BlockLift2018.this);
+				addRequirements(BlockLift2018.this);
 			}
 
 			@Override
-			protected void execute() {
+			public void execute() {
 				setSpeed(RAISE_SPEED);
 				// System.out.println(getPositionRaw());
 			}
 
 			@Override
-			protected boolean isFinished() {
-				return false;
-			}
-
-			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				stop();
 			}
 		};
 	}
 
 	public Command getCommandLower() {
-		return new Command() {
+		return new CommandBase() {
 			{
-				requires(BlockLift2018.this);
+				addRequirements(BlockLift2018.this);
 			}
 
 			@Override
-			protected void execute() {
+			public void execute() {
 				setSpeed(LOWER_SPEED);
 			}
 
 			@Override
-			protected boolean isFinished() {
+			public boolean isFinished() {
 				return false;
 			}
 
 			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				stop();
 			}
 		};
 	}
 
-	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new Command() {
+		setDefaultCommand(new CommandBase() {
 			{
-				requires(BlockLift2018.this);
+				addRequirements(BlockLift2018.this);
+				SendableRegistry.addChild(BlockLift2018.this, this);
 			}
 
 			@Override
-			protected void execute() {
+			public void execute() {
 				boolean movingUp = liftEncoder.getDirection();
 				if (hasTarget) {
 					if (getPositionRaw() < target)
@@ -195,12 +194,7 @@ public class BlockLift2018 extends SubsystemBase {
 			}
 
 			@Override
-			protected boolean isFinished() {
-				return false;
-			}
-
-			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				stop();
 			}
 		});

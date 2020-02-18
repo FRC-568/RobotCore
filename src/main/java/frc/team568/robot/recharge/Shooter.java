@@ -7,7 +7,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.VictorSP;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
 import frc.team568.robot.subsystems.TalonSRXDrive;
@@ -101,7 +101,7 @@ public class Shooter extends SubsystemBase {
 		wheel = new WPI_TalonSRX(configInt("wheel"));
 
 		shooterRotator = new WPI_TalonSRX(configInt("rotator"));
-	
+		initDefaultCommand();
 	}
 	
 	public void rotateShooterSpeed(double speed) {
@@ -233,23 +233,16 @@ public class Shooter extends SubsystemBase {
 		return angleToGoal;
 	}
 
-
-	@Override
 	public void initDefaultCommand() {
 
-		setDefaultCommand(new Command() {
+		setDefaultCommand(new CommandBase() {
 
 			{
-				requires(Shooter.this);
+				addRequirements(Shooter.this);
 			}
 
 			@Override
-			protected void initialize() {
-				
-			}
-
-			@Override
-			protected void execute() {
+			public void execute() {
 				
 				// Manually move shooter
 				if (button("intake")) {
@@ -276,11 +269,6 @@ public class Shooter extends SubsystemBase {
 				else
 					shooterRotator.set(0);
 
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return false;
 			}
 
 		});

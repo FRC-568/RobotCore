@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 
 public class BlinkinLights extends SubsystemBase {
 	private Spark control;
@@ -16,7 +17,7 @@ public class BlinkinLights extends SubsystemBase {
 	public BlinkinLights(final RobotBase robot) {
 		super(robot);
 		control = new Spark(configInt("control"));
-		addChild(control);
+		SendableRegistry.addChild(this, control);
 		setColor(Color.PINK_HOT);
 		colorChooser = new SendableChooser<>();
 		for (Color color : Color.values()) {

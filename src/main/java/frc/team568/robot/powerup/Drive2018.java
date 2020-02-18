@@ -1,12 +1,10 @@
-package frc.team568.robot.commands;
+package frc.team568.robot.powerup;
 
 import static frc.team568.util.Utilities.*;
 
-import frc.team568.robot.powerup.DriveTrain2018;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-import edu.wpi.first.wpilibj.command.Command;
-
-public class Drive2018 extends Command {
+public class Drive2018 extends CommandBase {
 	private static final double CIRCUMFERENCE = 18.8496;
 	private static final double TPR = 4096; // Ticks per revolution
 	private static final double TO_TICKS = TPR / CIRCUMFERENCE; // To Ticks from inches
@@ -28,14 +26,14 @@ public class Drive2018 extends Command {
 
 	public Drive2018(DriveTrain2018 dt, double inches, double maxSpeed) {
 		this.dt = dt;
-		requires(dt);
+		addRequirements(dt);
 		// dt.resetGyro();
 		ticksToMove = inches * TO_TICKS;
 		this.maxSpeed = maxSpeed;
 	}
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		System.out.println("DRIVING " + ticksToMove + " TICKS");
 
 		// dt.resetDist();
@@ -48,18 +46,18 @@ public class Drive2018 extends Command {
 	}
 
 	@Override
-	protected void execute() {
+	public void execute() {
 		dt.driveDist(linearSpeedRamp(), targetTicks);
 		System.out.println(linearSpeedRamp());
 	}
 
 	@Override
-	protected boolean isFinished() {
+	public boolean isFinished() {
 		return Math.abs(targetTicks - dt.getDist()) <= TARGET_DEADZONE;
 	}
 
 	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
 		System.out.println("Drive Finished");
 		dt.releaseHeading();
 		dt.stop();

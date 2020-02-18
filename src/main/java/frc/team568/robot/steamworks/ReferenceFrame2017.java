@@ -1,4 +1,4 @@
-package frc.team568.robot.subsystems;
+package frc.team568.robot.steamworks;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.team568.robot.RobotBase;
+import frc.team568.robot.subsystems.SubsystemBase;
 import frc.team568.util.Vector2;
 
 public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
@@ -107,10 +108,6 @@ public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 		return position;
 	}
 
-	@Override
-	protected void initDefaultCommand() {
-	}
-
 	public void calibrateGyro() {
 		gyro.calibrate();
 	}
@@ -158,6 +155,13 @@ public class ReferenceFrame2017 extends SubsystemBase implements Gyro {
 	@Override
 	public double getRate() {
 		return gyro.getRate();
+	}
+
+	@Override
+	public void close() throws Exception {
+		stop();
+		gyro.close();
+		accel.close();
 	}
 
 }

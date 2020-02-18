@@ -1,11 +1,11 @@
-package frc.team568.robot.subsystems;
+package frc.team568.robot.stronghold;
 
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.stronghold.Robot;
-
+import frc.team568.robot.subsystems.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class Arms extends SubsystemBase {
 	Relay leftarm;
@@ -43,38 +43,38 @@ public class Arms extends SubsystemBase {
 	}
 	
 	public Command commandArmDown() {
-		return new Command() {
+		return new CommandBase() {
 			@Override
-			protected void execute() {
+			public void execute() {
 				goDown();
 			}
 
 			@Override
-			protected boolean isFinished() {
+			public boolean isFinished() {
 				return !Robot.getInstance().oi.armsDown.get();
 			}
 
 			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				stop();
 			}
 		};
 	}
 	
 	public Command commandArmUp() {
-		return new Command() {
+		return new CommandBase() {
 			@Override
-			protected void execute() {
+			public void execute() {
 				goUp();
 			}
 
 			@Override
-			protected boolean isFinished() {
+			public boolean isFinished() {
 				return !Robot.getInstance().oi.armsUp.get();
 			}
 
 			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				Robot.getInstance().arms.stop();
 			}
 		};

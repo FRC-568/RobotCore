@@ -1,13 +1,7 @@
-package frc.team568.robot.subsystems;
+package frc.team568.robot.stronghold;
 
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.commands.GetBall;
-import frc.team568.robot.commands.Shoot2016;
-import frc.team568.robot.commands.StopShoot;
-import frc.team568.robot.commands.TiltDownwards;
-import frc.team568.robot.commands.TiltUpwards;
-import frc.team568.robot.commands.Nudge;
-import frc.team568.robot.stronghold.Robot;
+import frc.team568.robot.subsystems.SubsystemBase;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;

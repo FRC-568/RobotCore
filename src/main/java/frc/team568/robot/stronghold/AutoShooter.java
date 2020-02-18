@@ -1,22 +1,19 @@
-package frc.team568.robot.commands;
-
-import frc.team568.robot.stronghold.Robot;
-import frc.team568.robot.subsystems.Shooter2016;
+package frc.team568.robot.stronghold;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class AutoShooter extends InstantCommand {
 	Shooter2016 shooter;
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		shooter = Robot.getInstance().shooter;
 	}
 
 	@Override
-	protected void execute() {
+	public void execute() {
 		if (SmartDashboard.getBoolean("Forward?", true)) {
 			shooter.tiltUp();
 			Timer.delay(.75);

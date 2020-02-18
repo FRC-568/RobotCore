@@ -12,16 +12,13 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
-// Temporarily hide 2020 deprecation warnings
-@SuppressWarnings("all")
 public class DriveTrain2019 extends SubsystemBase {
 	private Joystick joystick;
 	public PIDController drivePID;
@@ -64,24 +61,7 @@ public class DriveTrain2019 extends SubsystemBase {
 		addChild("FR Motor", fr);
 		addChild("BR Motor", br);
 
-		drivePID = new PIDController(.135, 0, .1, new PIDSource() {
-
-			@Override
-			public void setPIDSourceType(PIDSourceType pidSource) {
-
-			}
-
-			@Override
-			public PIDSourceType getPIDSourceType() {
-				return PIDSourceType.kDisplacement;
-			}
-
-			@Override
-			public double pidGet() {
-				return gyro.getAngle();
-			}
-
-		}, (output) -> drivePidOutput = output);
+		drivePID = new PIDController(0.135, 0, 0.1);
 
 		/*
 		 * right = new SpeedControllerGroup(fr, br); left = new SpeedControllerGroup(fl,
@@ -132,6 +112,14 @@ public class DriveTrain2019 extends SubsystemBase {
 
 		// Start in low gear
 		doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+
+		initDefaultCommand();
+	}
+
+	@Override
+	public void periodic() {
+		if (_headingLocked)
+			drivePidOutput = drivePID.calculate(gyro.getAngle());
 	}
 
 	public void resetDist() {
@@ -157,16 +145,12 @@ public class DriveTrain2019 extends SubsystemBase {
 		return _headingLocked;
 	}
 
-	@SuppressWarnings("deprecation")
 	public void lockHeading() {
 		drivePID.setSetpoint(getAngle());
-		drivePID.enable();
 		_headingLocked = true;
 	}
 
-	@SuppressWarnings("deprecation")
 	public void releaseHeading() {
-		drivePID.disable();
 		_headingLocked = false;
 	}
 
@@ -284,28 +268,25 @@ public class DriveTrain2019 extends SubsystemBase {
 		doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 
-	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new Command() {
+		setDefaultCommand(new CommandBase() {
 			double comboStartTime = 0;
 			boolean safeMode = true;
 			boolean alreadyToggled = false;
 
 			boolean isShiftHigh = false;
 
-			{
-				requires(DriveTrain2019.this);
-			}
+			{ addRequirements(DriveTrain2019.this); }
 
 			@Override
-			protected void initialize() {
+			public void initialize() {
 				System.out.println("Beginning teleop control - safemode is " + (safeMode ? "Enabled" : "Disabled")
 						+ ". Hold L3 + R3 5 seconds to toggle safe mode.");
 			}
 
 			@Override
 			// runs every 20 milliseconds
-			protected void execute() {
+			public void execute() {
 				if (joystick.getRawButton(Xinput.LeftStickIn) && joystick.getRawButton(Xinput.RightStickIn)) {
 					if (comboStartTime == 0)
 						comboStartTime = Timer.getFPGATimestamp();
@@ -338,11 +319,6 @@ public class DriveTrain2019 extends SubsystemBase {
 					}
 				}
 			}
-
-			@Override
-			protected boolean isFinished() {
-				return false;
-			}
 		});
 	}
 
@@ -361,61 +337,37 @@ public class DriveTrain2019 extends SubsystemBase {
 	}
 
 	public Command getCommandTurnBy(double degrees) {
-		return new PIDCommand(0.1, 0, 0) {
+		return new CommandBase() {
 			double targetAngle;
 
-			{
-				requires(DriveTrain2019.this);
-			}
+			{ addRequirements(DriveTrain2019.this); }
 
 			@Override
-			protected void initialize() {
+			public void initialize() {
 				resetGyro();
 				targetAngle = getAngle() + degrees;
-				setSetpoint(targetAngle);
 			}
-
+			
 			@Override
-			protected void execute() {
-				// SmartDashboard.putNumber("GYRO", ref.getAngle());
-				if (degrees > 0)
+			public void execute() {
+				double remainder = targetAngle - getAngle();
+				if (remainder > 5)
 					turnRight(.3);
-				else if (degrees < 0)
+				else if (remainder < -5)
 					turnLeft(.3);
 				else
 					stop();
 			}
 
 			@Override
-			protected boolean isFinished() {
-				if (degrees < 0) {
-					return getAngle() < (degrees - 5);
-				} else if (degrees > 0) {
-					return getAngle() > (degrees + 5);
-				} else
-					return true;
+			public boolean isFinished() {
+				return Math.abs(targetAngle - getAngle()) < 5;
 			}
 
 			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				stop();
-				Timer.delay(1);
 			}
-
-			@Override
-			protected double returnPIDInput() {
-				return getAngle();
-			}
-
-			@Override
-			protected void usePIDOutput(double output) {
-				if (degrees > 0)
-					turnRight(.3);
-				else if (degrees < 0)
-					turnLeft(.3);
-				else
-					stop();
-			}
-		};
+		}.andThen(new WaitCommand(1));
 	}
 }

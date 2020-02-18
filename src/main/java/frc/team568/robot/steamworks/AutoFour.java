@@ -1,14 +1,12 @@
 package frc.team568.robot.steamworks;
 
-import frc.team568.robot.commands.Drive2017;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
-
-public class AutoFour extends CommandGroup {
+public class AutoFour extends SequentialCommandGroup {
 
 	public AutoFour() {
-		addSequential(Robot.getInstance().gearBox.closeCommand());
-		addSequential(new Drive2017(70, .3));
+		addCommands(Robot.getInstance().gearBox.closeCommand(),
+			new Drive2017(70, .3));
 
 		// I added 20 extra ticks to go forward so get rid of them when you back
 		// to gear center auto

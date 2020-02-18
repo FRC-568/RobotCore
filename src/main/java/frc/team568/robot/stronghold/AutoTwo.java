@@ -1,16 +1,12 @@
 package frc.team568.robot.stronghold;
 
-import frc.team568.robot.commands.AutoShooter;
-import frc.team568.robot.commands.Drive2016;
-import frc.team568.robot.subsystems.Arms;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
-
-public class AutoTwo extends CommandGroup {
+public class AutoTwo extends SequentialCommandGroup {
 	public AutoTwo(Arms arm) {
-		addSequential(new AutoShooter());
-		addSequential(new AutoArm(arm));
-		addSequential(new Drive2016());
+		addCommands(new AutoShooter(),
+			new AutoArm(arm),
+			new Drive2016());
 	}
 
 }

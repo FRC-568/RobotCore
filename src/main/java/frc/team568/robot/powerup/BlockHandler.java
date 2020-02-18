@@ -1,13 +1,15 @@
-package frc.team568.robot.subsystems;
+package frc.team568.robot.powerup;
 
 import frc.team568.robot.RobotBase;
+import frc.team568.robot.subsystems.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.TimedCommand;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class BlockHandler extends SubsystemBase {
 	public SpeedController intakeOne;
@@ -30,7 +32,6 @@ public class BlockHandler extends SubsystemBase {
 		intakeTwo = new WPI_TalonSRX(port("intakeTwo"));
 
 		intakeOne.setInverted(true);
-
 	}
 
 	public void armOut() {
@@ -66,158 +67,97 @@ public class BlockHandler extends SubsystemBase {
 	public void allStop() {
 		intakeOne.set(0);
 		intakeTwo.set(0);
-
 	}
 
 	public Command getCommandArmIn() {
-		return new Command() {
-
-			@Override
-			protected void execute() {
-				armIn();
-
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return true;
-			}
-
-			@Override
-			protected void end() {
-
-			}
-		};
+		return new InstantCommand(this::armIn);
 	}
 
 	public Command getCommandArmOut() {
-		return new Command() {
-
-			@Override
-			protected void execute() {
-				armOut();
-
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return true;
-			}
-
-			@Override
-			protected void end() {
-
-			}
-		};
+		return new InstantCommand(this::armOut);
 	}
 
 	public Command getCommandBlockLiftIn() {
-		return new Command() {
+		return new CommandBase() {
 			@Override
-			protected void execute() {
+			public void execute() {
 				blockLiftIn();
 				// blockGrab();
-
 			}
 
 			@Override
-			protected boolean isFinished() {
-				return false;
-			}
-
-			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				allStop();
 			}
 		};
 	}
 
 	public Command getCommandBlockLiftIn(final double seconds) {
-		return new TimedCommand(seconds) {
+		return new CommandBase() {
 			@Override
-			protected void execute() {
+			public void execute() {
 				blockLiftIn();
 				// blockGrab();
 			}
 
 			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				allStop();
 			}
-		};
+		}.withTimeout(seconds);
 	}
 
 	public Command getCommandBlockLiftOut() {
-		return new Command() {
+		return new CommandBase() {
 			@Override
-			protected void execute() {
+			public void execute() {
 				blockLiftOut();
-
 			}
 
 			@Override
-			protected boolean isFinished() {
-				return false;
-			}
-
-			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				allStop();
 			}
 		};
 	}
 
 	public Command getCommandBlockLiftOut(final double seconds) {
-		return new TimedCommand(seconds) {
+		return new CommandBase() {
 			@Override
-			protected void execute() {
+			public void execute() {
 				blockLiftOut();
-
 			}
 
 			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				allStop();
 			}
-		};
+		}.withTimeout(seconds);
 	}
 
 	public Command getCommandBlockLiftOut2() {
-		return new Command() {
+		return new CommandBase() {
 			@Override
-			protected void execute() {
+			public void execute() {
 				blockLiftOut();
-
 			}
 
 			@Override
-			protected boolean isFinished() {
-				return false;
-			}
-
-			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				allStop();
 			}
 		};
 	}
 
 	public Command blockGrabCommand() {
-		return new Command() {
-
+		return new CommandBase() {
 			@Override
-			protected void execute() {
+			public void execute() {
 				blockGrab();
-
 			}
 
 			@Override
-			protected boolean isFinished() {
-				return false;
-			}
-
-			@Override
-			protected void end() {
+			public void end(boolean interrupted) {
 				blockRelease();
 			}
 		};

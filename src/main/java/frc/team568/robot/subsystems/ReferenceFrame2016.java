@@ -4,13 +4,13 @@ import edu.wpi.first.wpilibj.ADXL362;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.LinearFilter;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.util.Vector2;
 
-public class ReferenceFrame2016 extends Subsystem implements Gyro {
+public class ReferenceFrame2016 extends SubsystemBase implements Gyro {
 	public int calibrationSamples = 500;
 	public int calibrationSampleRate = 20;
 
@@ -94,10 +94,6 @@ public class ReferenceFrame2016 extends Subsystem implements Gyro {
 		return position;
 	}
 
-	@Override
-	protected void initDefaultCommand() {
-	}
-
 	public void calibrateGyro() {
 		gyro.calibrate();
 	}
@@ -145,6 +141,13 @@ public class ReferenceFrame2016 extends Subsystem implements Gyro {
 	//@Override
 	public double getRate() {
 		return gyro.getRate();
+	}
+
+	@Override
+	public void close() throws Exception {
+		stop();
+		gyro.close();
+		accel.close();
 	}
 
 }
