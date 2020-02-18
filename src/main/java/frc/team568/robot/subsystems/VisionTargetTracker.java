@@ -11,11 +11,11 @@ import frc.team568.grip.GearLifterTarget;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public final class VisionTargetTracker extends Subsystem {
+public final class VisionTargetTracker extends SubsystemBase {
 	public static final double OFFSET_TO_FRONT = 0;
 	public static final int CAMERA_WIDTH = 320; // 640;
 	public static final int CAMERA_HEIGHT = 240; // 480;
@@ -41,6 +41,7 @@ public final class VisionTargetTracker extends Subsystem {
 		camera = CameraServer.getInstance().startAutomaticCapture(cameraUsbPort);
 		cameraName = camera.getName();
 		camera.setResolution(CAMERA_WIDTH, CAMERA_HEIGHT);
+		initDefaultCommand();
 	}
 
 	public void processImage() {
@@ -95,21 +96,15 @@ public final class VisionTargetTracker extends Subsystem {
 		return angleToGoal;
 	}
 
-	@Override
 	protected void initDefaultCommand() {
-		class ImageProcessor extends Command {
+		class ImageProcessor extends CommandBase {
 			public ImageProcessor() {
-				requires(VisionTargetTracker.this);
+				addRequirements(VisionTargetTracker.this);
 			}
 
 			@Override
-			protected void execute() {
+			public void execute() {
 				// processImage();
-			}
-
-			@Override
-			protected boolean isFinished() {
-				return false;
 			}
 		}
 		setDefaultCommand(new ImageProcessor());

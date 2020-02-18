@@ -4,9 +4,9 @@ package frc.team568.robot.steamworks;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team568.grip.VisionProcessor;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.DriveTrain;
@@ -86,7 +86,6 @@ public class Robot extends RobotBase {
 		// compressor.start();
 
 		// SmartDashboard.putNumber("Kp", .15);
-
 	}
 
 	@Override
@@ -96,7 +95,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void disabledPeriodic() {
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
@@ -116,12 +115,11 @@ public class Robot extends RobotBase {
 		// referenceFrame.reset();
 		// visionProcessor.start();
 		autonomousCommand.schedule();
-
 	}
 
 	@Override
 	public void autonomousPeriodic() {
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 		SmartDashboard.putNumber("MotorEncoderTicks:", referenceFrame.motorEncoder.get());
 		SmartDashboard.putNumber("Frames", visionProcessor.processingTime);
 	}
@@ -135,12 +133,11 @@ public class Robot extends RobotBase {
 		// referenceFrame.motorEncoder.reset();
 		// imu.reset();
 		// referenceFrame.reset();
-
 	}
 
 	@Override
 	public void teleopPeriodic() {
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 
 		// SmartDashboard.putNumber("MotorEncoderTicks:",
 		// referenceFrame.motorEncoder.get());

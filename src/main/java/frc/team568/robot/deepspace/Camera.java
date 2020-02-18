@@ -4,7 +4,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
@@ -37,10 +37,10 @@ public class Camera {
 	}
 	
 	public void driveToTapeCommand() {
-		new JoystickButton(controller0, Xinput.X).whileActive(new TapeTrackerCommand(driveTrain));
+		new JoystickButton(controller0, Xinput.X).whenHeld(new TapeTrackerCommand(driveTrain));
 	}
 	public void toggleCameraCommand() {
-		new JoystickButton(controller0, Xinput.Back).whenPressed(new TapeTrackerCommand(driveTrain));
+		new JoystickButton(controller0, Xinput.Back).whenPressed(new CameraToggleCommand());
 	}
 
 	public void toggleCamera() {
@@ -50,7 +50,6 @@ public class Camera {
 	public void toggleCamera0() {
 		cameraInputPort = cameraInput.getEntry("Camera Port");
 		cameraInputPort.setNumber(0);
-
 	}
 
 	public Double returnCenterX() {

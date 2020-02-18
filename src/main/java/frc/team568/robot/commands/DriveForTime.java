@@ -3,46 +3,39 @@ package frc.team568.robot.commands;
 import frc.team568.robot.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.TimedCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class DriveForTime extends TimedCommand {
-
+public class DriveForTime extends CommandBase {
+	private final Timer timer = new Timer();
 	private final double speed;
 	private final double time;
 	private final DriveTrain driveTrain;
-	private double timeStamp;
 
 	public DriveForTime(double time, double speed, DriveTrain driveTrain) {
-		super(time);
 		this.time = time;
 		this.speed = speed;
 		this.driveTrain = driveTrain;
-
 	}
 
-	protected void execute() {
+	@Override
+	public void initialize() {
+		timer.reset();
+		timer.start();
+	}
+
+	public void execute() {
 		driveTrain.setSpeed(speed, speed);
-		timeStamp = Timer.getFPGATimestamp();
 	}
 
 	@Override
-	protected boolean isFinished() {
-		if (Timer.getFPGATimestamp() - timeStamp > time) {
-			return true;
-		}
-
-		return false;
+	public boolean isFinished() {
+		return timer.hasPeriodPassed(time);
 	}
 
 	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
+		timer.stop();
 		driveTrain.halt();
-	}
-
-	@Override
-	protected void interrupted() {
-
-		driveTrain.halt();// end();
 	}
 
 }

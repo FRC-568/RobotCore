@@ -3,10 +3,10 @@ package frc.team568.robot.deepspace;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
-public class TapeTrackerCommand extends Command {
+public class TapeTrackerCommand extends CommandBase {
 	TalonSRXDrive drive;
 	GripPipeline pipeline;
 	Camera tracker;
@@ -22,13 +22,14 @@ public class TapeTrackerCommand extends Command {
 		this.drive = drive;
 		tracker = new Camera();
 	}
+
 	@Override
 	public void initialize() {
 		System.out.println("starting tapeTrackerCommand");			
 	}
+
 	@Override
 	public void execute() {
-
 		final double Kp = .02;
 		double speed = MAX_SPEED * tracker.returnDistanceFromTarget() / MAX_DISTANCE;
 		if (speed > MAX_SPEED) {
@@ -58,9 +59,8 @@ public class TapeTrackerCommand extends Command {
 
 			}
 		}
-			
-
 	}
+	
 	@Override
 	public boolean isFinished() {
 		// if (tracker.returnGetAngle() <= 2 && tracker.returnGetAngle() >= -2) {

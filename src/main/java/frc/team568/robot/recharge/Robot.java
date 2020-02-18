@@ -1,7 +1,7 @@
 package frc.team568.robot.recharge;
 
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.TalonSRXDrive;
@@ -11,7 +11,6 @@ public class Robot extends RobotBase {
 	private Command autonomousCommand;
 
 	public Robot() {
-		
 		super("Recharge");
 
 		port("mainJoystick", 0);
@@ -27,7 +26,6 @@ public class Robot extends RobotBase {
 		axis("right", 0, Xinput.RightStickY);
 
 		drive = addSubsystem(TalonSRXDrive::new);
-
 	}
 
 	@Override
@@ -40,13 +38,12 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void teleopPeriodic() {
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
 	public void testPeriodic() {
-		Scheduler.getInstance().run();
-		
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
@@ -61,7 +58,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousPeriodic() {
-		Scheduler.getInstance().run();
+		CommandScheduler.getInstance().run();
 	}
 
 }
