@@ -336,8 +336,7 @@ public class TalonSRXDrive extends DriveBase {
 		builder.addDoubleProperty("Right Velocity", () -> getVelocity(Side.RIGHT), null);
 		builder.addDoubleProperty("Average Velocity", () -> getVelocity(), null);
 		builder.addDoubleProperty("Average Distance", () -> getDistance(), null);
-		//builder.addDoubleProperty("Gyro", () -> gyro.getAngle(), null);
-		//builder.addDoubleProperty("Error", () -> getError(), null);
+		builder.addDoubleProperty("Gyro", () -> gyro.getAngle(), null);
 	
 	}
 

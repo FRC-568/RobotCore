@@ -100,7 +100,7 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public double calcuateAngle() {
-		return calculatedAngle; //TODO figure out a way to calculate which angle is most optimal
+		return calculatedAngle;
 	}
 	
 	public double getHorizontalDistanceFromTarget() {
@@ -233,6 +233,9 @@ public class Shooter extends SubsystemBase {
 			protected boolean isFinished() {
 				return false;
 			}
+
 		});
+
 	}
+
 }
