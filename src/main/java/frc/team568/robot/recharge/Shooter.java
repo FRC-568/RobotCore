@@ -26,8 +26,8 @@ public class Shooter extends SubsystemBase {
 	public static final double INITIAL_VELOCITY = 100; //TODO find initial velocity in inches per second (by testing?)
 	public static final double SHOOTER_RADIUS = 10; //TODO find shooter radius in inches
 	public static final double SHOOTER_MOUNTED_HEIGHT = 10; //TODO find shooter height from ground to edge of shooter
-
-	private final double GRAVITY = 386.09; // 386.09 inches per second per second
+	private static final double GRAVITY = 386.09; // 386.09 inches per second per second
+	
 	private double shooterHeight = SHOOTER_MOUNTED_HEIGHT + (SHOOTER_RADIUS - SHOOTER_RADIUS * Math.cos(getShooterAngle())); // assumes getShooterAngle to be in radius and units inches
 	private double actualHeight = HEIGHT_OF_TARGET - shooterHeight; //calcuate height of target because shooter is off the ground;
 	private double distanceFromTarget;
@@ -36,6 +36,14 @@ public class Shooter extends SubsystemBase {
 	private double calculatedAngle = Math.asin(Math.sqrt(2 * GRAVITY * actualHeight) / INITIAL_VELOCITY); // calculated angle in radians
 	private double calculatedAngle1;
 	private double calculatedAngle2;
+	private double currentShooterAngle;
+
+	private double v = INITIAL_VELOCITY;
+	private double d = getHorizontalDistanceFromTarget();
+	private double g = GRAVITY; //TODO figure out how to actually write 10 m/s/s //acceleration due to gravity
+
+	private double targetX = d;
+	private double targetY  = getActualHeight();
 
 	NetworkTable res = NetworkTableInstance.getDefault().getTable("Resolution");
 	NetworkTable coords = NetworkTableInstance.getDefault().getTable("Coordinates");
@@ -54,8 +62,10 @@ public class Shooter extends SubsystemBase {
 	NetworkTableEntry boxWidth;
 	NetworkTableEntry boxHeight;
 	
-	NetworkTable targetDrivingData = NetworkTableInstance.getDefault().getTable("targetDrivingData");
-	NetworkTableEntry angleEntry = targetDrivingData.getEntry("Shooter Angle");
+	NetworkTable angleData = NetworkTableInstance.getDefault().getTable("Angle Calculation Data");
+	NetworkTableEntry optimalAngleEntry = angleData.getEntry("Optimal Shooting Angle");
+	NetworkTableEntry potentialAngle1 = angleData.getEntry("Potential Angle 1");
+	NetworkTableEntry potentialAngle2 = angleData.getEntry("Potential Angle 2");
 	
 	double resWidth;
 	double resHeight;
@@ -106,23 +116,32 @@ public class Shooter extends SubsystemBase {
 
 	public double calcuateAngle() {
 
-		/*Matthew's calculation
-		calculatedAngle1 = Math.atan(Math.pow(INITIAL_VELOCITY, 2) + Math.sqrt(Math.pow(INITIAL_VELOCITY, 4) - GRAVITY * Math.pow(getHorizontalDistanceFromTarget(), 2) + 2 * actualHeight * Math.pow(INITIAL_VELOCITY, 2)));
-		calculatedAngle2 = Math.atan(Math.pow(INITIAL_VELOCITY, 2) - Math.sqrt(Math.pow(INITIAL_VELOCITY, 4) - GRAVITY * (GRAVITY * Math.pow(getHorizontalDistanceFromTarget(), 2) + 2 * getHorizontalDistanceFromTarget() * Math.pow(INITIAL_VELOCITY, 2))));
+		calculatedAngle1 = Math.atan(Math.pow(v, 2) + Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(targetX, 2) + 2 * targetY * Math.pow(v, 2))));
+		calculatedAngle2 = Math.atan(Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(targetX, 2) + 2 * targetY * Math.pow(v, 2))));
+
+		potentialAngle1.setDouble(calculatedAngle1);
+		potentialAngle2.setDouble(calculatedAngle2);
 
 		if(calculatedAngle1 < calculatedAngle2) {
-			angleEntry.setDouble(calculatedAngle1);
+			optimalAngleEntry.setDouble(calculatedAngle1);
+			optimalAngleEntry.setDouble(calculatedAngle1);
 
 			return calculatedAngle1; //TODO figure out a way to calculate which angle is most optimal
 		} else {
-			angleEntry.setDouble(calculatedAngle2);
+			optimalAngleEntry.setDouble(calculatedAngle2);
+			optimalAngleEntry.setDouble(calculatedAngle2);
 
 			return calculatedAngle2;
 		}
-		*/
-
-		return calculatedAngle;
 	}
+
+	public double getCurrentShooterAngle() {
+		//TODO figure out how to get current angle
+		currentShooterAngle = 35;
+
+		return currentShooterAngle;
+	}
+
 	
 	public double getHorizontalDistanceFromTarget() {
 		return Math.cos(getShooterAngle()) * distanceFromTarget();
