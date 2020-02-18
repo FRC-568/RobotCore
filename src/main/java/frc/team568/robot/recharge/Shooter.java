@@ -21,14 +21,14 @@ public class Shooter extends SubsystemBase {
 	public static final double CAMERA_CENTER = CAMERA_HEIGHT / 2;
     public static final double OFFSET_TO_FRONT = 0; //39 1/8; 34 5/8
 	public static final double WIDTH_BETWEEN_TARGET = 39.125; //29.375; // inches //TODO need to find to width of the vision target
-	public static final double HEIGHT_OF_TARGET = (8 + (9/4) / 12) * 0.3048; // height of target in meters
+	public static final double HEIGHT_OF_TARGET = 98.25; // height of target in inches
 	public static final double DISTANCE_CONSTANT = WIDTH_BETWEEN_TARGET * CAMERA_WIDTH / 0.2361111111 / 2; //5760  // 5738;
-	public static final double INITIAL_VELOCITY = 10; //TODO find initial velocity in meters per second (by testing?)
-	public static final double SHOOTER_RADIUS = 1; //TODO find shooter radius in meters
-	public static final double SHOOTER_MOUNTED_HEIGHT = 1; //TODO find shooter height from ground to edge of shooter
+	public static final double INITIAL_VELOCITY = 100; //TODO find initial velocity in inches per second (by testing?)
+	public static final double SHOOTER_RADIUS = 10; //TODO find shooter radius in inches
+	public static final double SHOOTER_MOUNTED_HEIGHT = 10; //TODO find shooter height from ground to edge of shooter
 
-	private final double GRAVITY = 9.8; // 9.8 meters per second per second
-	private double shooterHeight = SHOOTER_MOUNTED_HEIGHT + (SHOOTER_RADIUS - SHOOTER_RADIUS * Math.cos(getShooterAngle())); // assumes getShooterAngle to be in radius and units meters
+	private final double GRAVITY = 386.09; // 386.09 inches per second per second
+	private double shooterHeight = SHOOTER_MOUNTED_HEIGHT + (SHOOTER_RADIUS - SHOOTER_RADIUS * Math.cos(getShooterAngle())); // assumes getShooterAngle to be in radius and units inches
 	private double actualHeight = HEIGHT_OF_TARGET - shooterHeight; //calcuate height of target because shooter is off the ground;
 	private double distanceFromTarget;
 	private double distanceFromCenterY;
