@@ -34,7 +34,9 @@ public class Shooter extends SubsystemBase {
 	private double distanceFromCenterY;
 	private double shooterAngle = 0; //TODO get shooter angle using encoders (in radians)
 	private double calculatedAngle = Math.asin(Math.sqrt(2 * GRAVITY * actualHeight) / INITIAL_VELOCITY); // calculated angle in radians
-	
+	private double calculatedAngle1;
+	private double calculatedAngle2;
+
 	NetworkTable res = NetworkTableInstance.getDefault().getTable("Resolution");
 	NetworkTable coords = NetworkTableInstance.getDefault().getTable("Coordinates");
 
@@ -51,6 +53,9 @@ public class Shooter extends SubsystemBase {
 
 	NetworkTableEntry boxWidth;
 	NetworkTableEntry boxHeight;
+	
+	NetworkTable targetDrivingData = NetworkTableInstance.getDefault().getTable("targetDrivingData");
+	NetworkTableEntry angleEntry = targetDrivingData.getEntry("Shooter Angle");
 	
 	double resWidth;
 	double resHeight;
@@ -100,6 +105,22 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public double calcuateAngle() {
+
+		/*Matthew's calculation
+		calculatedAngle1 = Math.atan(Math.pow(INITIAL_VELOCITY, 2) + Math.sqrt(Math.pow(INITIAL_VELOCITY, 4) - GRAVITY * Math.pow(getHorizontalDistanceFromTarget(), 2) + 2 * actualHeight * Math.pow(INITIAL_VELOCITY, 2)));
+		calculatedAngle2 = Math.atan(Math.pow(INITIAL_VELOCITY, 2) - Math.sqrt(Math.pow(INITIAL_VELOCITY, 4) - GRAVITY * (GRAVITY * Math.pow(getHorizontalDistanceFromTarget(), 2) + 2 * getHorizontalDistanceFromTarget() * Math.pow(INITIAL_VELOCITY, 2))));
+
+		if(calculatedAngle1 < calculatedAngle2) {
+			angleEntry.setDouble(calculatedAngle1);
+
+			return calculatedAngle1; //TODO figure out a way to calculate which angle is most optimal
+		} else {
+			angleEntry.setDouble(calculatedAngle2);
+
+			return calculatedAngle2;
+		}
+		*/
+
 		return calculatedAngle;
 	}
 	
