@@ -26,7 +26,7 @@ public class Shooter extends SubsystemBase {
 	public static final double DISTANCE_CONSTANT = WIDTH_BETWEEN_TARGET * CAMERA_WIDTH / 0.2361111111 / 2; //5760  // 5738;
 	public static final double INITIAL_VELOCITY = 100; //TODO find initial velocity in inches per second (by testing?)
 	public static final double SHOOTER_RADIUS = 10; //TODO find shooter radius in inches
-	public static final double SHOOTER_MOUNTED_HEIGHT = 10; //TODO find shooter height from ground to edge of shooter based on its angle
+	public static final double SHOOTER_MOUNTED_HEIGHT = 10; //TODO find shooter height from ground to edge of shooter
 	private static final double GRAVITY = 386.09; // 386.09 inches per second per second
 	
 	private double shooterHeight = SHOOTER_MOUNTED_HEIGHT + (SHOOTER_RADIUS - SHOOTER_RADIUS * Math.cos(getShooterAngle())); // assumes getShooterAngle to be in radius and units inches
@@ -37,11 +37,10 @@ public class Shooter extends SubsystemBase {
 	private double calculatedAngle = Math.asin(Math.sqrt(2 * GRAVITY * simulatedHeight) / INITIAL_VELOCITY); // calculated angle in radians
 	private double calculatedAngle1;
 	private double calculatedAngle2;
-	private double currentShooterAngle;
 
 	private double v = INITIAL_VELOCITY;
 	private double d = getHorizontalDistanceFromTarget();
-	private double g = GRAVITY; //TODO figure out how to actually write 10 m/s/s //acceleration due to gravity
+	private double g = GRAVITY;
 
 	private double targetX = d;
 	private double targetY  = getActualHeight();
@@ -153,14 +152,6 @@ public class Shooter extends SubsystemBase {
 		}
 		
 	}
-
-	public double getCurrentShooterAngle() {
-		//TODO figure out how to get current angle
-		currentShooterAngle = 35;
-
-		return currentShooterAngle;
-	}
-
 	
 	public double getHorizontalDistanceFromTarget() {
 		return Math.cos(getShooterAngle()) * distanceFromTarget();
