@@ -8,6 +8,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
@@ -284,5 +285,15 @@ public class Shooter extends SubsystemBase {
 		});
 
 	}
+
+	@Override
+		public void initSendable(SendableBuilder builder) {
+
+			super.initSendable(builder);
+			builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
+			builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
+			builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
+
+		}
 
 }
