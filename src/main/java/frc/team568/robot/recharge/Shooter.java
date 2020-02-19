@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
@@ -83,6 +84,12 @@ public class Shooter extends SubsystemBase {
 	final double WHEEL_SPEED = 0.5;
 	final double ROTATOR_SPEED = 0.2;
 
+	// PID setup
+	private PIDController pidShooterRotate;
+	private double Kp = 0.03;
+	private double Ki = 0.003;
+	private double Kd = 0.003;
+
 	// Drivetrain setup
 
 	TalonSRXDrive drive;
@@ -101,6 +108,9 @@ public class Shooter extends SubsystemBase {
 		wheel = new WPI_TalonSRX(configInt("wheel"));
 
 		shooterRotator = new WPI_TalonSRX(configInt("rotator"));
+
+		pidShooterRotate = new PIDController(Kp, Ki, Kd);
+
 		initDefaultCommand();
 	}
 	
@@ -210,7 +220,16 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public void setShooterAngle(double angle) {
-		//TODO set shooter angle using encoder
+
+		pidShooterRotate.reset();
+		pidShooterRotate.setSetpoint(angle);
+		pidShooterRotate.setTolerance(5);
+
+		do 
+			wheel.set(pidShooterRotate.calculate(getShooterAngle())); 
+		while (!pidShooterRotate.atSetpoint());
+		wheel.set(0);
+
 	}
 
 	public double getAngle() {
