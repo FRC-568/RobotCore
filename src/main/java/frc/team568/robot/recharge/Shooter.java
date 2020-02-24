@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
+import frc.team568.robot.subsystems.DriveBase;
 import frc.team568.robot.subsystems.SubsystemBase;
-import frc.team568.robot.subsystems.TalonSRXDrive;
 
 public class Shooter extends SubsystemBase {
 
@@ -91,14 +91,12 @@ public class Shooter extends SubsystemBase {
 	private double Kd = 0.003;
 
 	// Drivetrain setup
-
-	TalonSRXDrive drive;
+	private DriveBase drive;
 
 	public Shooter(RobotBase robot) {
-
 		super(robot);
-		drive = new TalonSRXDrive(robot);
 
+		this.drive = robot.getSubsystem(DriveBase.class);
 		shooterL = new VictorSP(configInt("shooterL"));
 		shooterR = new VictorSP(configInt("shooterR"));
 		shooterL.setInverted(true);

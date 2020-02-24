@@ -1,61 +1,38 @@
 package frc.team568.robot.subsystems;
 
+import static edu.wpi.first.networktables.EntryListenerFlags.*;
+
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+
 import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
-	
-	private double Kp = 0.05;
-	private double Ki = 0;
-	private double Kd = 0;
-	private double correction = 0;
-	private double prevAngle = 0;
-
-	private final DifferentialDrive drive;
+	private static final double SPEED_MAX = 1.0;
+	private static final double SPEED_SAFE = 0.5;
+	public final DifferentialDrive drive;
+	private Gyro gyro;
 	private WPI_TalonSRX[] motorsL;
 	private WPI_TalonSRX[] motorsR;
-
-	private ADXRS450_Gyro gyro;
-
-	private PIDController pidDrive;
+	private NetworkTableEntry reversedEntry;
+	private NetworkTableEntry tankControlsEntry;
+	private NetworkTableEntry safeModeEntry;
 
 	public TalonSRXDrive(final RobotBase robot) {
-
 		super(robot);
 		drive = buildDrive();
 		configureEncoder(motorsL[0]);
 		configureEncoder(motorsR[0]);
-		configureGyro();
-		configurePID();
-		setDefaultCommand(new DefaultCommand());
-	
-	}
-
-	public TalonSRXDrive(String name, final RobotBase robot) {
-		
-		super(name, robot);
-		drive = buildDrive();
-		configureEncoder(motorsL[0]);
-		configureEncoder(motorsR[0]);
-		configureGyro();
-		configurePID();
-		setDefaultCommand(new DefaultCommand());
-	
 	}
 
 	private DifferentialDrive buildDrive() {
-		
 		boolean invert;
 		int[] ports;
 
@@ -63,7 +40,6 @@ public class TalonSRXDrive extends DriveBase {
 		invert = configBoolean("leftInverted");
 		motorsL = new WPI_TalonSRX[ports.length];
 		for (int i = 0; i < motorsL.length; i++) {
-
 			motorsL[i] = new WPI_TalonSRX(ports[i]);
 			motorsL[i].setInverted(invert);
 			motorsL[i].setNeutralMode(NeutralMode.Coast);
@@ -71,14 +47,12 @@ public class TalonSRXDrive extends DriveBase {
 			motorsL[i].configContinuousCurrentLimit(27);
 			if (i > 0)
 				motorsL[i].follow(motorsL[0]);
-
 		}
 
 		ports = configIntArray("rightMotors");
 		invert = configBoolean("rightInverted");
 		motorsR = new WPI_TalonSRX[ports.length];
 		for (int i = 0; i < motorsR.length; i++) {
-
 			motorsR[i] = new WPI_TalonSRX(ports[i]);
 			motorsR[i].setInverted(invert);
 			motorsR[i].setNeutralMode(NeutralMode.Coast);
@@ -86,59 +60,48 @@ public class TalonSRXDrive extends DriveBase {
 			motorsR[i].configContinuousCurrentLimit(27);
 			if (i > 0)
 				motorsR[i].follow(motorsR[0]);
-
 		}
 
 		DifferentialDrive d = new DifferentialDrive(motorsL[0], motorsR[0]);
 		d.setRightSideInverted(false);
-		SendableRegistry.addChild(this, TalonSRXDrive.this);
+		SendableRegistry.addChild(this, d);
 		return d;
-
 	}
 
 	private void configureEncoder(WPI_TalonSRX talon) {
-
 		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 		talon.setSensorPhase(true);
-
-		talon.configNominalOutputForward(0);
-		talon.configNominalOutputReverse(0);
-		talon.configPeakOutputForward(1);
-		talon.configPeakOutputReverse(-1);
-
-		talon.config_kF(0, 0.465);
-		talon.config_kP(0, 0.1);
-		talon.config_kI(0, 0);
-		talon.config_kD(0, 0);
-	
 	}
 
-	private void configureGyro() {
-		
-		gyro = new ADXRS450_Gyro();
-		gyro.reset();
-
-	}
-
-	private void configurePID() {
-
-		pidDrive = new PIDController(Kp, Ki, Kd);
-
+	public TalonSRXDrive withGyro(final Gyro gyro) {
+		this.gyro = gyro;
+		return this;
 	}
 	
 	@Override
 	public void tankDrive(double leftValue, double rightValue, boolean squareInputs) {
+		if (getIsReversed()){
+			double leftTemp = leftValue;
+			leftValue = rightValue * -1;
+			rightValue = leftTemp * -1;
+		}
 		drive.tankDrive(leftValue, rightValue, squareInputs);
 	}
 
 	@Override
 	public void arcadeDrive(double moveValue, double rotateValue, boolean squareInputs) {
+		if (getIsReversed())
+			moveValue *= -1;
 		drive.arcadeDrive(moveValue, rotateValue, squareInputs);
 	}
 
 	@Override
 	public double getHeading() {
-		return 0;
+		return gyro != null ? gyro.getAngle() : 0;
+	}
+
+	public double getTurnRate() {
+		return gyro != null ? gyro.getRate() : 0;
 	}
 
 	@Override
@@ -163,168 +126,73 @@ public class TalonSRXDrive extends DriveBase {
 
 	@Override
 	public void resetSensors() {
-
 		motorsL[0].setSelectedSensorPosition(0);
 		motorsR[0].setSelectedSensorPosition(0);
-
+		if (gyro != null)
+			gyro.reset();
 	}
 
-	public void resetGyro() {
-
-		gyro.reset();
-
+	public boolean getIsReversed() {
+		return reversedEntry.getBoolean(false);
 	}
 
-	protected class DefaultCommand extends CommandBase {
-		double comboStartTime = 0;
-		boolean safeMode = configBoolean("enableSafeMode");
-		boolean alreadyToggled = false;
-		boolean driveReverse = false;
-		boolean reverseIsHeld = false;
+	public void setIsReversed(boolean reverse) {
+		reversedEntry.setBoolean(reverse);
+	}
 
-		NetworkTableEntry tankMode;
+	public void toggleIsReversed() {
+		setIsReversed(!getIsReversed());;
+	}
 
-		DefaultCommand() { 
+	public boolean getTankControls() {
+		return tankControlsEntry.getBoolean(false);
+	}
 
-			addRequirements(TalonSRXDrive.this); 
-			SendableRegistry.addChild(TalonSRXDrive.this, this);
-		
-		}
+	public void setTankControls(boolean reverse) {
+		tankControlsEntry.setBoolean(reverse);
+	}
 
-		@Override
-		public void initialize() {
-			System.out.println("Beginning teleop control - safemode is " + (safeMode ? "Enabled" : "Disabled") + ". Hold L3 + R3 5 seconds to toggle safe mode.");	
-		}
+	public void toggleTankControls() {
+		setTankControls(!getTankControls());;
+	}
 
-		@Override
-		public void execute() {
+	public boolean getSafeMode() {
+		return safeModeEntry.getBoolean(false);
+	}
 
-			if (button("tankModeToggle")) {
-				tankMode.setBoolean(!tankMode.getBoolean(false));
-			}
+	public void setSafeMode(boolean enabled) {
+		safeModeEntry.setBoolean(enabled);
+		// update handled by listener in initSendable()
+	}
 
-			if (button("safeModeToggle")) {
-
-				if (comboStartTime == 0)
-					comboStartTime = Timer.getFPGATimestamp();
-				else if (Timer.getFPGATimestamp() - comboStartTime >= 5.0 && !alreadyToggled) {
-
-					safeMode = !safeMode;
-					alreadyToggled = true;
-					System.out.println("Safemode is " + (safeMode ? "Enabled" : "Disabled") + ".");
-
-				}
-
-			} else {
-
-				comboStartTime = 0;
-				alreadyToggled = false;
-
-			}
-
-			if (button("driveReverse")) {
-
-				if (!reverseIsHeld)
-					driveReverse = !driveReverse;
-				reverseIsHeld = true;
-
-			} else
-				reverseIsHeld = false;
-
-			if (tankMode.getBoolean(false)) {
-
-				double left = axis("left");
-				double right = axis("right");
-
-				if(button("launch")) {
-					left = 1;
-					right = 1;
-				}
-
-				if (driveReverse) {
-
-					double leftTemp = left * -1;
-					left = right * -1;
-					right = leftTemp;
-				
-				}
-				
-				if (safeMode)
-					tankDrive(left * 0.5, right * 0.5);
-				else 
-					tankDrive(left, right);
-
-			} else {
-
-				double forward = -axis("forward");
-				double turn = -axis("turn");
-				correction = 0;
-				if (button("launch")) {
-
-					forward = 1;
-					turn = 0;
-
-				}
-
-				if (driveReverse)
-					forward *= -1;
-
-				if (axis("forward") < 0) {
-					turn *= -1;
-				}
-
-				// pid calculations
-				pidDrive.setSetpoint(prevAngle);
-				correction = pidDrive.calculate(gyro.getAngle());
-				if (Math.abs(axis("turn")) < 0.05
-						|| (Math.abs(axis("forward")) < 0.05 && Math.abs(axis("side")) < 0.05)) {
-
-					pidDrive.reset();
-					prevAngle = gyro.getAngle();
-					correction = 0;
-
-				}
-
-				if (safeMode)
-					arcadeDrive(forward * 0.5, turn * 0.5 + correction);
-				else
-					arcadeDrive(forward, turn * 0.7 + correction);
-
-			}
-			if (button("stopMotors"))
-				drive.stopMotor();
-			else if (button("idleMotors"))
-				drive.arcadeDrive(0, 0, false);
-
-		}
-
-		@Override
-		public void initSendable(SendableBuilder builder) {
-
-			super.initSendable(builder);
-			builder.setSmartDashboardType("Anti-Drift");
-			builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
-			builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
-			builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
-
-			tankMode = builder.getEntry("tankMode");
-			tankMode.setPersistent();
-			tankMode.setDefaultBoolean(false);
-
-		}
-		
+	public void toggleSafeMode() {
+		setSafeMode(!getSafeMode());
 	}
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
-
 		super.initSendable(builder);
+
 		builder.addDoubleProperty("Left Velocity", () -> getVelocity(Side.LEFT), null);
 		builder.addDoubleProperty("Right Velocity", () -> getVelocity(Side.RIGHT), null);
 		builder.addDoubleProperty("Average Velocity", () -> getVelocity(), null);
 		builder.addDoubleProperty("Average Distance", () -> getDistance(), null);
-		builder.addDoubleProperty("Gyro", () -> gyro.getAngle(), null);
-	
+
+		reversedEntry = builder.getEntry("Reverse Direction");
+		reversedEntry.setDefaultBoolean(false);
+		reversedEntry.setPersistent();
+
+		tankControlsEntry = builder.getEntry("Tank Controls");
+		tankControlsEntry.setDefaultBoolean(false);
+		tankControlsEntry.setPersistent();
+
+		safeModeEntry = builder.getEntry("Safe Mode");
+		safeModeEntry.setDefaultBoolean(false);
+		safeModeEntry.setPersistent();
+		safeModeEntry.addListener(e -> {
+			drive.setMaxOutput(e.value.getBoolean() ? SPEED_SAFE : SPEED_MAX);
+			System.out.println("Safemode is " + (getSafeMode() ? "Enabled" : "Disabled") + ".");
+		}, kNew | kUpdate | kLocal | kImmediate);
 	}
 
 }

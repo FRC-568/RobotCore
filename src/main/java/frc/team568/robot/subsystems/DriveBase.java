@@ -13,6 +13,8 @@ public abstract class DriveBase extends SubsystemBase {
 		super(name, robot);
 	}
 
+	public enum Input { FORWARD, STRAFE, TURN, TANK_LEFT, TANK_RIGHT }
+
 	@Override
 	public Class<? extends SubsystemBase> getEffectiveClass() {
 		return DriveBase.class;
@@ -48,6 +50,8 @@ public abstract class DriveBase extends SubsystemBase {
 	}
 
 	public abstract double getHeading();
+
+	public abstract double getTurnRate();
 
 	public abstract double getVelocity();
 

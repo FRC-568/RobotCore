@@ -1,15 +1,28 @@
 package frc.team568.robot.deepspace;
 
+import static edu.wpi.first.wpilibj.XboxController.Button.*;
+import static frc.team568.robot.XinputController.Direction.*;
+
+import java.util.Map;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
+import frc.team568.robot.XinputController;
+import frc.team568.robot.commands.TalonSRXDriveDefaultCommand;
 import frc.team568.robot.subsystems.BlinkinLights;
 import frc.team568.robot.subsystems.BlinkinLights.Color;
+import frc.team568.robot.subsystems.DriveBase.Input;
 import frc.team568.robot.subsystems.EvoDriveShifter;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
@@ -17,6 +30,7 @@ public class Robot extends RobotBase {
 	Command autonomousCommand;
 	PowerDistributionPanel pdp;
 	Compressor compressor;
+	Gyro gyro = new ADXRS450_Gyro();
 
 	TalonSRXDrive drive;
 	EvoDriveShifter shifter;
@@ -28,6 +42,9 @@ public class Robot extends RobotBase {
 	Shpaa shpaa;
 	Camera camera;
 	BlinkinLights lights;
+
+	XinputController driver = new XinputController(0);
+	XinputController copilot = new XinputController(1);
 
 	// public UsbCamera cameraFront, cameraBack;
 
@@ -61,24 +78,41 @@ public class Robot extends RobotBase {
 		config("blinkin/control", 8);
 		//camera LED ring is on PWM 7
 
-		axis("forward", () -> -axis(0 , Xinput.LeftStickY));
-		axis("turn", () -> (Math.abs(axis(0, Xinput.RightStickX)) < 0.15) ? 0 : axis(0, Xinput.RightStickX));
-		axis("left", () -> -axis(0 , Xinput.LeftStickY));
-		axis("right", () -> -axis(0, Xinput.RightStickY));
-		pov("shifterToggle", 1, LEFT);
-		button("idleMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.A));
-		button("stopMotors", () -> !button(0, Xinput.RightBumper) && button(0, Xinput.B));
-		button("driveReverse", 0, Xinput.Back);
+		// redline shifter high <-> low gear
+		copilot.getButton(kLeft).whenPressed(shifter::shiftToggle);
 
-		button("launch", 0, Xinput.X);
+		// let motors coast (if configured)
+		driver.getButton(kBumperRight)
+			.and(driver.getButton(kA))
+			.whileActiveContinuous(
+				() -> drive.arcadeDrive(0, 0),
+				drive);
+		
+		// stop. now.
+		driver.getButton(kBumperRight)
+			.and(driver.getButton(kB))
+			.whileActiveContinuous(
+				drive.drive::stopMotor,
+				drive);
+		
+		// reverse driving direction
+		driver.getButton(kBack).whenPressed(drive::toggleIsReversed);
+
+		// launch mode - full speed forward
+		driver.getButton(kX).whileActiveContinuous(() -> drive.arcadeDrive(1, 0), drive);
 
 		axis("climberFront", () -> (Math.abs(axis(1, Xinput.LeftStickY)) < 0.15) ? 0 : axis(1, Xinput.LeftStickY));
 		axis("climberBack", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
 		axis("climberDrive", () -> (button(1, Xinput.RightBumper) ? 1 : 0) + (button(1, Xinput.LeftBumper) ? -1 : 0));
 
 		button("bookmarkButton", 1, Xinput.Back);
-		button("tankModeToggle", 0, Xinput.Start);
-		button("safeModeToggle", () -> button(0, Xinput.LeftStickIn) && button(0, Xinput.RightStickIn));
+		driver.getButton(kStart).whenPressed(drive::toggleTankControls);
+		driver.getButton(kStickLeft)
+			.and(driver.getButton(kStickRight))
+			.whileActiveOnce(new SequentialCommandGroup(
+				new WaitCommand(5),
+				new InstantCommand(drive::toggleSafeMode)
+			));
 		axis("lift", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
 		
 		pov("moveToPosition1", 1, DOWN);
@@ -97,7 +131,14 @@ public class Robot extends RobotBase {
 		spikeFront = new Relay(2);	
 		spikeBack = new Relay(3);
 
-		drive = addSubsystem(TalonSRXDrive::new);
+		drive = addSubsystem(TalonSRXDrive::new).withGyro(gyro);
+		drive.setDefaultCommand(new TalonSRXDriveDefaultCommand(drive, Map.of(
+			Input.FORWARD, () -> -driver.getY(Hand.kLeft),
+			Input.TURN, () -> Math.abs(driver.getX(Hand.kRight)) < 0.15 ? 0 : driver.getX(Hand.kRight) * 0.7,
+			Input.TANK_LEFT, () -> -driver.getY(Hand.kLeft),
+			Input.TANK_RIGHT, () -> -driver.getY(Hand.kRight)
+		)));
+
 		shifter = addSubsystem(EvoDriveShifter::new);
 		climber = addSubsystem(HabitatClimber::new);
 		lift = addSubsystem(Lift::new);
@@ -184,5 +225,4 @@ public class Robot extends RobotBase {
 	public void disabledPeriodic() {
 		CommandScheduler.getInstance().run();
 	}
-
 }

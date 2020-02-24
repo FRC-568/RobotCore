@@ -1,48 +1,57 @@
 package frc.team568.robot.bart;
 
+import static edu.wpi.first.wpilibj.XboxController.Button.*;
+
+import java.util.Map;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.Xinput;
-import frc.team568.robot.subsystems.GyroSubsystem;
+import frc.team568.robot.XinputController;
+import frc.team568.robot.commands.TalonSRXDriveDefaultCommand;
 import frc.team568.robot.subsystems.PanTiltCamera;
 import frc.team568.robot.subsystems.TalonSRXDrive;
+import frc.team568.robot.subsystems.DriveBase.Input;
 
 public class Robot extends RobotBase {
 	public TalonSRXDrive drive;
 	public PanTiltCamera camera;
 	private Command autonomousCommand;
+	XinputController driver = new XinputController(0);
 
 	public Robot() {
 		super("Bart");
-
-		final int mainControllerPort = 0;
 
 		config("drive/leftMotors", new Integer[]{1, 2});
 		config("drive/rightMotors", new Integer[] {3, 4});
 		config("drive/leftInverted", false);
 		config("drive/rightInverted", true);
 
-		axis("forward", mainControllerPort, Xinput.LeftStickY);
-		axis("turn", mainControllerPort, Xinput.RightStickX);
-		axis("left", mainControllerPort, Xinput.LeftStickY);
-		axis("right", mainControllerPort, Xinput.RightStickY);
+		driver.getButton(kBack).whenPressed(drive::toggleIsReversed);
+		driver.getButton(kStart).whenPressed(drive::toggleTankControls);
+		driver.getButton(kStickLeft)
+			.and(driver.getButton(kStickRight))
+			.whileActiveOnce(new SequentialCommandGroup(
+				new WaitCommand(5),
+				new InstantCommand(drive::toggleSafeMode)
+			));
 
-		button("driveReverse", 0, Xinput.Back);
-		button("tankModeToggle", 0, Xinput.Start);
-		button("safeModeToggle", () -> button(mainControllerPort, Xinput.LeftStickIn) && button(mainControllerPort, Xinput.RightStickIn));
-
-		addSubsystem(GyroSubsystem::new);
 		drive = addSubsystem(TalonSRXDrive::new);
-
+		drive.setDefaultCommand(new TalonSRXDriveDefaultCommand(drive, Map.of(
+			Input.FORWARD, () -> -driver.getY(Hand.kLeft),
+			Input.TURN, () -> driver.getX(Hand.kRight),
+			Input.TANK_LEFT, () -> -driver.getY(Hand.kLeft),
+			Input.TANK_RIGHT, () -> -driver.getY(Hand.kRight)
+		)));
 	}
 
 	@Override
 	public void teleopInit() {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
-		drive.resetSensors();
-		drive.resetGyro();
 	}
 
 	@Override
@@ -53,7 +62,6 @@ public class Robot extends RobotBase {
 	@Override
 	public void testPeriodic() {
 		CommandScheduler.getInstance().run();
-		
 	}
 
 	@Override
@@ -72,5 +80,4 @@ public class Robot extends RobotBase {
 	public void autonomousPeriodic() {
 		CommandScheduler.getInstance().run();
 	}
-
 }
