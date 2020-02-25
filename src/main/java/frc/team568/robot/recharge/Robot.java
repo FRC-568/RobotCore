@@ -63,7 +63,7 @@ public class Robot extends RobotBase {
 		)));
 
 		shooter = addSubsystem(Shooter::new);
-		driver.getButton(kX).whenHeld(new ShooterAlignCommand(drive, robot)); //TODO check if this works
+		driver.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive)); //TODO check if this works
 	}
 
 	@Override

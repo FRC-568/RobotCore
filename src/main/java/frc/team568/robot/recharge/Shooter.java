@@ -232,13 +232,9 @@ public class Shooter extends SubsystemBase {
 		double distanceFromCenterPixels = ((getCenterX() / 2) - (CAMERA_WIDTH / 2));
 		// Converts pixels to inches using the constant from above.
 		double distanceFromCenterInch = distanceFromCenterPixels * constant;
-		// math brought to you buy Chris and Jones
-		angleToGoal = Math.atan(distanceFromCenterInch / distanceFromTarget());
-		angleToGoal = Math.toDegrees(angleToGoal);
-		// prints angle
-		// System.out.println("Angle: " + angleToGoal);
-			
-		//SmartDashboard.putNumber("angleToGoal", angleToGoal);
+		// math brought to you by Chris and Jones
+		angleToGoal = Math.toDegrees(Math.atan(distanceFromCenterInch / distanceFromTarget()));
+
 		return angleToGoal;
 	}
 
