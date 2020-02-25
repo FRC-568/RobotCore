@@ -26,7 +26,7 @@ public class DriveForward extends CommandBase {
 
 	@Override
 	public boolean isFinished() {
-		return timer.hasPeriodPassed(time);
+		return timer.hasElapsed(time);
 	}
 
 	@Override

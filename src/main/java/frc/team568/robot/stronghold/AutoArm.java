@@ -29,7 +29,7 @@ public class AutoArm extends CommandBase {
 
 	@Override
 	public boolean isFinished() {
-		return timer.hasPeriodPassed(2);
+		return timer.hasElapsed(2);
 	}
 
 }
