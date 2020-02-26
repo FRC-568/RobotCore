@@ -24,6 +24,7 @@ import frc.team568.robot.subsystems.DriveBase.Input;
 public class Robot extends RobotBase {
 	RobotBase robot;
 	Shooter shooter;
+	Intake intake;
 	TalonSRXDrive drive;
 	Gyro gyro = new ADXRS450_Gyro();
 	Compressor compressor;
@@ -75,8 +76,10 @@ public class Robot extends RobotBase {
 			Input.TANK_RIGHT, () -> -driver.getY(Hand.kRight)
 		)));
 
-		//shooter = addSubsystem(Shooter::new);
-		//driver.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive)); //TODO check if this works
+		shooter = addSubsystem(Shooter::new);
+		intake = addSubsystem(Intake::new);
+
+		driver.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive)); //TODO check if this works
 	}
 
 	@Override
