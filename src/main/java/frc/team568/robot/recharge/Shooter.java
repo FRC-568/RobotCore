@@ -111,6 +111,7 @@ public class Shooter extends SubsystemBase {
 	// PDP
 	private PowerDistributionPanel pdp;
 	private double shooterCompensation = 0;
+	private final double MAX_CURRENT = 100000; //TODO find max current for shooter
 
 	// Drivetrain setup
 	private DriveBase drive;
@@ -293,7 +294,9 @@ public class Shooter extends SubsystemBase {
 
 					shooterL.set(SHOOT_SPEED + shooterCompensation);
 					shooterR.set(SHOOT_SPEED - shooterCompensation);
-					wheel.set(WHEEL_SPEED);
+					
+					if ((Math.abs(shooterLCurrent - shooterRCurrent) < 50) && (shooterLCurrent >= MAX_CURRENT && shooterRCurrent >= MAX_CURRENT))
+						wheel.set(WHEEL_SPEED);
 
 				} else {
 
