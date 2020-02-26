@@ -126,6 +126,7 @@ public class Shooter extends SubsystemBase {
 		pidShooterRotate = new PIDController(Kp, Ki, Kd);
 
 		initDefaultCommand();
+		
 	}
 	
 	public void rotateShooterSpeed(double speed) {

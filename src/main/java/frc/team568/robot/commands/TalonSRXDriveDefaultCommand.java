@@ -29,7 +29,7 @@ public class TalonSRXDriveDefaultCommand extends CommandBase {
 		} else {
 			drive.arcadeDrive(
 				axis(Input.FORWARD),
-				axis(Input.TURN) - kP * drive.getTurnRate());
+				axis(Input.TURN));// - kP * drive.getTurnRate());
 		}
 	}
 

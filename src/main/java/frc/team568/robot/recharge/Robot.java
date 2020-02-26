@@ -6,11 +6,14 @@ import java.util.Map;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.Compressor;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.XinputController;
@@ -23,6 +26,7 @@ public class Robot extends RobotBase {
 	Shooter shooter;
 	TalonSRXDrive drive;
 	Gyro gyro = new ADXRS450_Gyro();
+	Compressor compressor;
 	Command autonomousCommand;
 	XinputController driver = new XinputController(0);
 
@@ -41,10 +45,19 @@ public class Robot extends RobotBase {
 		config("shooter/wheel", 7);
 		config("shooter/rotator", 8);
 
+		config("intake/intakeWheels", 9);
+		config("intake/extenderLeftIn", 10);
+		config("intake/extenderLeftOut", 11);
+		config("intake/extenderRightIn", 12);
+		config("intake/extenderRightOut", 13);
+
+		button("intakeExtenderToggle", mainController, Xinput.B);
 		button("intake", mainController, Xinput.LeftBumper);
 		button("shoot", mainController, Xinput.RightBumper);
 		button("rotateShooterUp", mainController, Xinput.Y);
 		button("rotateShooterDown", mainController, Xinput.A);
+
+		compressor = new Compressor();
 
 		drive = addSubsystem(TalonSRXDrive::new).withGyro(gyro);
 		driver.getButton(kBack).whenPressed(drive::toggleIsReversed);
@@ -62,14 +75,15 @@ public class Robot extends RobotBase {
 			Input.TANK_RIGHT, () -> -driver.getY(Hand.kRight)
 		)));
 
-		shooter = addSubsystem(Shooter::new);
-		driver.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive)); //TODO check if this works
+		//shooter = addSubsystem(Shooter::new);
+		//driver.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive)); //TODO check if this works
 	}
 
 	@Override
 	public void teleopInit() {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
+		compressor.setClosedLoopControl(true);
 		drive.resetSensors();
 		gyro.reset();
 	}
@@ -86,12 +100,12 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void disabledInit() {
-		
+		compressor.setClosedLoopControl(false);
 	}
 
 	@Override
 	public void autonomousInit() {
-		
+		compressor.setClosedLoopControl(true);
 	}
 
 	@Override
