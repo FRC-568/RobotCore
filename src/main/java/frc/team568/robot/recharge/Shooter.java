@@ -26,7 +26,7 @@ public class Shooter extends SubsystemBase {
 	public static final double HEIGHT_OF_TARGET = 98.25; // height of target in inches
 	public static final double DISTANCE_CONSTANT = WIDTH_BETWEEN_TARGET * CAMERA_WIDTH / 0.2361111111 / 2; //5760  // 5738;
 	public static final double INITIAL_VELOCITY = 100; //TODO find initial velocity in inches per second (by testing?)
-	public static final double SHOOTER_RADIUS = 10; //TODO find shooter radius in inches
+	public static final double SHOOTER_RADIUS = 8;
 	public static final double SHOOTER_MOUNTED_HEIGHT = 10; //TODO find shooter height from ground to edge of shooter
 	private static final double GRAVITY = 386.09; // 386.09 inches per second per second
 	
@@ -45,6 +45,22 @@ public class Shooter extends SubsystemBase {
 
 	private double targetX = d;
 	private double targetY  = getActualHeight();
+
+	//calculations with air resistance
+	private double pi = 3.414592654;
+	private double e = 2.718281828;
+	private double a; //angle
+	private double m = 5; // mass in grams
+	private double p = 1.225; //density of fluid in kg/m^3
+	private double asubv = 0.25; //projected surface area in the y direction
+	private double asubh = 0.25; //projecdtd surface areas in the x direction
+	private double csubv = 0.47; //drag coefficient in y direction use reference sheet / trial and error
+	private double csubh = 0.47; //drag coefficient in the x direction use reference sheet / trial and error
+
+	private double n = (pi / 180) * a;
+	private double ksubv = 0.5 * p * asubv * csubv;
+	private double ksubh = 0.5 * p * asubh * csubh;
+	private double t = (m / (ksubh * v * Math.cos(n))) * (Math.pow(e, ((ksubh * 5))));
 
 	NetworkTable res = NetworkTableInstance.getDefault().getTable("Resolution");
 	NetworkTable coords = NetworkTableInstance.getDefault().getTable("Coordinates");
