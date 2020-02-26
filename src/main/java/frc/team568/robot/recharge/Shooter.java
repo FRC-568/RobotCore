@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.DriveBase;
 import frc.team568.robot.subsystems.SubsystemBase;
@@ -106,6 +108,10 @@ public class Shooter extends SubsystemBase {
 	private double Ki = 0.003;
 	private double Kd = 0.003;
 
+	// PDP
+	private PowerDistributionPanel pdp;
+	private double shooterCompensation = 0;
+
 	// Drivetrain setup
 	private DriveBase drive;
 
@@ -124,6 +130,8 @@ public class Shooter extends SubsystemBase {
 		shooterRotator = new WPI_TalonSRX(configInt("rotator"));
 
 		pidShooterRotate = new PIDController(Kp, Ki, Kd);
+
+		pdp = new PowerDistributionPanel();
 
 		initDefaultCommand();
 		
@@ -274,13 +282,24 @@ public class Shooter extends SubsystemBase {
 
 				} else if (button("shoot")) {
 
-					shooter.set(SHOOT_SPEED);
+					double shooterLCurrent = pdp.getCurrent(configInt("shooterL"));
+					double shooterRCurrent = pdp.getCurrent(configInt("shooterR"));
+					final double COMPENSATION_CHANGE = 0.001;
+
+					if (shooterLCurrent > shooterRCurrent)
+						shooterCompensation -= COMPENSATION_CHANGE;
+					else
+						shooterCompensation += COMPENSATION_CHANGE;
+
+					shooterL.set(SHOOT_SPEED + shooterCompensation);
+					shooterR.set(SHOOT_SPEED - shooterCompensation);
 					wheel.set(WHEEL_SPEED);
 
 				} else {
 
 					shooter.set(0);
 					wheel.set(0);
+					shooterCompensation = 0;
 
 				}
 
