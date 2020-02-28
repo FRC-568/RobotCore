@@ -1,15 +1,23 @@
 package frc.team568.robot.deepspace;
 
-import static edu.wpi.first.wpilibj.XboxController.Button.*;
-import static frc.team568.robot.XinputController.Direction.*;
+import static edu.wpi.first.wpilibj.XboxController.Button.kA;
+import static edu.wpi.first.wpilibj.XboxController.Button.kB;
+import static edu.wpi.first.wpilibj.XboxController.Button.kBack;
+import static edu.wpi.first.wpilibj.XboxController.Button.kBumperRight;
+import static edu.wpi.first.wpilibj.XboxController.Button.kStart;
+import static edu.wpi.first.wpilibj.XboxController.Button.kStickLeft;
+import static edu.wpi.first.wpilibj.XboxController.Button.kStickRight;
+import static edu.wpi.first.wpilibj.XboxController.Button.kX;
+import static frc.team568.robot.XinputController.Direction.kLeft;
 
 import java.util.Map;
+
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;

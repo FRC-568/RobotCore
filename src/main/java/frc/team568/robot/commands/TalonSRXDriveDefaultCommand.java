@@ -3,10 +3,9 @@ package frc.team568.robot.commands;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj.controller.PIDController;
-
 import frc.team568.robot.subsystems.DriveBase.Input;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
@@ -37,7 +36,7 @@ public class TalonSRXDriveDefaultCommand extends CommandBase {
 				axis(Input.TANK_RIGHT));
 	
 		} else {
-
+/*
 			// pid calculation
 			pidDrive.setSetpoint(prevAngle);
 			double correction = pidDrive.calculate(drive.getHeading());
@@ -55,11 +54,11 @@ public class TalonSRXDriveDefaultCommand extends CommandBase {
 				prevAngle = drive.getHeading();
 				correction = 0;
 
-			}
+			}*/
 
 			drive.arcadeDrive(
 				axis(Input.FORWARD),
-				axis(Input.TURN) + correction);
+				axis(Input.TURN));// + correction);
 		
 		}
 	

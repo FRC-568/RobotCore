@@ -1,6 +1,9 @@
 package frc.team568.robot.subsystems;
 
-import static edu.wpi.first.networktables.EntryListenerFlags.*;
+import static edu.wpi.first.networktables.EntryListenerFlags.kImmediate;
+import static edu.wpi.first.networktables.EntryListenerFlags.kLocal;
+import static edu.wpi.first.networktables.EntryListenerFlags.kNew;
+import static edu.wpi.first.networktables.EntryListenerFlags.kUpdate;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -11,7 +14,6 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
-
 import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
@@ -44,6 +46,7 @@ public class TalonSRXDrive extends DriveBase {
 			motorsL[i].setInverted(invert);
 			motorsL[i].setNeutralMode(NeutralMode.Coast);
 			//motorsL[i].configOpenloopRamp(0.2);
+			motorsL[i].configPeakCurrentLimit(27);
 			motorsL[i].configContinuousCurrentLimit(27);
 			if (i > 0)
 				motorsL[i].follow(motorsL[0]);
@@ -57,6 +60,7 @@ public class TalonSRXDrive extends DriveBase {
 			motorsR[i].setInverted(invert);
 			motorsR[i].setNeutralMode(NeutralMode.Coast);
 			//motorsL[i].configOpenloopRamp(0.2);
+			motorsR[i].configPeakCurrentLimit(27);
 			motorsR[i].configContinuousCurrentLimit(27);
 			if (i > 0)
 				motorsR[i].follow(motorsR[0]);
@@ -125,11 +129,11 @@ public class TalonSRXDrive extends DriveBase {
 	}
 
 	@Override
-	public void resetSensors() {
+	public void resetSensors() {/*
 		motorsL[0].setSelectedSensorPosition(0);
 		motorsR[0].setSelectedSensorPosition(0);
 		if (gyro != null)
-			gyro.reset();
+			gyro.reset();*/
 	}
 
 	public boolean getIsReversed() {
@@ -172,12 +176,12 @@ public class TalonSRXDrive extends DriveBase {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
-
+/*
 		builder.addDoubleProperty("Left Velocity", () -> getVelocity(Side.LEFT), null);
 		builder.addDoubleProperty("Right Velocity", () -> getVelocity(Side.RIGHT), null);
 		builder.addDoubleProperty("Average Velocity", () -> getVelocity(), null);
 		builder.addDoubleProperty("Average Distance", () -> getDistance(), null);
-
+*/
 		reversedEntry = builder.getEntry("Reverse Direction");
 		reversedEntry.setDefaultBoolean(false);
 		reversedEntry.setPersistent();
@@ -193,6 +197,7 @@ public class TalonSRXDrive extends DriveBase {
 			drive.setMaxOutput(e.value.getBoolean() ? SPEED_SAFE : SPEED_MAX);
 			System.out.println("Safemode is " + (getSafeMode() ? "Enabled" : "Disabled") + ".");
 		}, kNew | kUpdate | kLocal | kImmediate);
+
 	}
 
 }

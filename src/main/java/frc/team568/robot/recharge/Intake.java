@@ -1,8 +1,9 @@
 package frc.team568.robot.recharge;
 
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
@@ -12,7 +13,7 @@ public class Intake extends SubsystemBase {
 	private final double INTAKE_SPEED = 0.7;
 	private double intakePressedHold = 0;
 
-	private VictorSP intakeWheels;
+	private VictorSPX intakeWheels;
 	private DoubleSolenoid extenderLeft;
 	private DoubleSolenoid extenderRight;
 
@@ -20,7 +21,7 @@ public class Intake extends SubsystemBase {
 
 		super(robot);
 
-		intakeWheels = new VictorSP(configInt("intakeWheels"));
+		intakeWheels = new VictorSPX(configInt("intakeWheels"));
 		
 		extenderLeft = new DoubleSolenoid(configInt("extenderLeftOut"), configInt("extenderLeftIn"));
 		extenderRight = new DoubleSolenoid(configInt("extenderRightOut"), configInt("extenderRightIn"));
@@ -45,7 +46,7 @@ public class Intake extends SubsystemBase {
 				// wheels
 				if (button("intake")) {
 
-					intakeWheels.set(INTAKE_SPEED);
+					//intakeWheels.set(INTAKE_SPEED);
 
 				}
 

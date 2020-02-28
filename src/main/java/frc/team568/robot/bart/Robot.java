@@ -1,8 +1,12 @@
 package frc.team568.robot.bart;
 
-import static edu.wpi.first.wpilibj.XboxController.Button.*;
+import static edu.wpi.first.wpilibj.XboxController.Button.kBack;
+import static edu.wpi.first.wpilibj.XboxController.Button.kStart;
+import static edu.wpi.first.wpilibj.XboxController.Button.kStickLeft;
+import static edu.wpi.first.wpilibj.XboxController.Button.kStickRight;
 
 import java.util.Map;
+
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -12,9 +16,9 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.XinputController;
 import frc.team568.robot.commands.TalonSRXDriveDefaultCommand;
+import frc.team568.robot.subsystems.DriveBase.Input;
 import frc.team568.robot.subsystems.PanTiltCamera;
 import frc.team568.robot.subsystems.TalonSRXDrive;
-import frc.team568.robot.subsystems.DriveBase.Input;
 
 public class Robot extends RobotBase {
 	public TalonSRXDrive drive;
@@ -25,8 +29,8 @@ public class Robot extends RobotBase {
 	public Robot() {
 		super("Bart");
 
-		config("drive/leftMotors", new Integer[]{1, 2});
-		config("drive/rightMotors", new Integer[] {3, 4});
+		config("drive/leftMotors", new Integer[]{15, 14});
+		config("drive/rightMotors", new Integer[] {13, 12});
 		config("drive/leftInverted", false);
 		config("drive/rightInverted", true);
 

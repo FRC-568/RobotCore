@@ -1,17 +1,16 @@
 package frc.team568.robot.recharge;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
-
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.DriveBase;
 import frc.team568.robot.subsystems.SubsystemBase;
@@ -91,9 +90,8 @@ public class Shooter extends SubsystemBase {
 
 	// Motor setup
 
-	SpeedControllerGroup shooter;
-	VictorSP shooterL;
-	VictorSP shooterR;
+	VictorSPX shooterL;
+	VictorSPX shooterR;
 	WPI_TalonSRX wheel;
 	WPI_TalonSRX shooterRotator;
 
@@ -120,11 +118,10 @@ public class Shooter extends SubsystemBase {
 		super(robot);
 
 		this.drive = robot.getSubsystem(DriveBase.class);
-		shooterL = new VictorSP(configInt("shooterL"));
-		shooterR = new VictorSP(configInt("shooterR"));
+		shooterL = new VictorSPX(configInt("shooterL"));
+		shooterR = new VictorSPX(configInt("shooterR"));
 		shooterL.setInverted(true);
 		shooterR.setInverted(false);
-		shooter = new SpeedControllerGroup(shooterL, shooterR);
 		
 		wheel = new WPI_TalonSRX(configInt("wheel"));
 
@@ -278,8 +275,10 @@ public class Shooter extends SubsystemBase {
 				// Manually move shooter
 				if (button("intake")) {
 
-					shooter.set(INTAKE_SPEED);
-					wheel.set(WHEEL_SPEED);
+					shooterL.set(ControlMode.PercentOutput, INTAKE_SPEED);
+					shooterR.set(ControlMode.PercentOutput, INTAKE_SPEED);
+
+					wheel.set(ControlMode.PercentOutput, WHEEL_SPEED);
 
 				} else if (button("shoot")) {
 
@@ -292,15 +291,16 @@ public class Shooter extends SubsystemBase {
 					else
 						shooterCompensation += COMPENSATION_CHANGE;
 
-					shooterL.set(SHOOT_SPEED + shooterCompensation);
-					shooterR.set(SHOOT_SPEED - shooterCompensation);
+					shooterL.set(ControlMode.PercentOutput, SHOOT_SPEED + shooterCompensation);
+					shooterR.set(ControlMode.PercentOutput, SHOOT_SPEED - shooterCompensation);
 					
 					if ((Math.abs(shooterLCurrent - shooterRCurrent) < 50) && (shooterLCurrent >= MAX_CURRENT && shooterRCurrent >= MAX_CURRENT))
 						wheel.set(WHEEL_SPEED);
 
 				} else {
 
-					shooter.set(0);
+					shooterL.set(ControlMode.PercentOutput, 0);
+					shooterR.set(ControlMode.PercentOutput, 0);
 					wheel.set(0);
 					shooterCompensation = 0;
 
