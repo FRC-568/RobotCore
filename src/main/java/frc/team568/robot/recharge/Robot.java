@@ -58,7 +58,7 @@ public class Robot extends RobotBase {
 		button("rotateShooterUp", mainController, Xinput.Y);
 		button("rotateShooterDown", mainController, Xinput.A);
 
-		compressor = new Compressor();
+		//compressor = new Compressor();
 
 		drive = addSubsystem(TalonSRXDrive::new).withGyro(gyro);
 		driver.getButton(kBack).whenPressed(drive::toggleIsReversed);
@@ -76,17 +76,18 @@ public class Robot extends RobotBase {
 			Input.TANK_RIGHT, () -> -driver.getY(Hand.kRight)
 		)));
 
-		shooter = addSubsystem(Shooter::new);
-		intake = addSubsystem(Intake::new);
+		//shooter = addSubsystem(Shooter::new);
+		//intake = addSubsystem(Intake::new);
 
-		driver.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive)); //TODO check if this works
+		//driver.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive)); //TODO check if this works
+	
 	}
 
 	@Override
 	public void teleopInit() {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
-		compressor.setClosedLoopControl(true);
+		//compressor.setClosedLoopControl(true);
 		drive.resetSensors();
 		gyro.reset();
 	}
@@ -103,12 +104,12 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void disabledInit() {
-		compressor.setClosedLoopControl(false);
+		//compressor.setClosedLoopControl(false);
 	}
 
 	@Override
 	public void autonomousInit() {
-		compressor.setClosedLoopControl(true);
+		//compressor.setClosedLoopControl(true);
 	}
 
 	@Override
