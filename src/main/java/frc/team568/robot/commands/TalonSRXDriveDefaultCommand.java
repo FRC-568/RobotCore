@@ -58,7 +58,7 @@ public class TalonSRXDriveDefaultCommand extends CommandBase {
 
 			drive.arcadeDrive(
 				axis(Input.FORWARD),
-				axis(Input.TURN));// + correction);
+				axis(Input.TURN) * 0.6);// + correction);
 		
 		}
 	

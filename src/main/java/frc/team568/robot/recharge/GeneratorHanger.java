@@ -1,35 +1,26 @@
 package frc.team568.robot.recharge;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
 
 public class GeneratorHanger extends SubsystemBase {
 
-	private final double PULLER_SPEED = 0.5;
+	private final double PULLER_SPEED = 0.3;
 
-	private DoubleSolenoid hangerExtenderL;
-	private DoubleSolenoid hangerExtenderR;
-
-	private VictorSPX hangerPullerL;
-	private VictorSPX hangerPullerR;
-	private VictorSPX shifterWheel;
+	private WPI_TalonSRX hangerPullerL;
+	private WPI_TalonSRX hangerPullerR;
 
 	public GeneratorHanger(RobotBase robot) {
 
 		super(robot);
 
-		hangerExtenderL = new DoubleSolenoid(configInt("extenderHangLeftOut"), configInt("extenderHangLeftIn"));
-		hangerExtenderR = new DoubleSolenoid(configInt("extenderHangRightOut"), configInt("extenderHangRightIn"));
-
-		hangerPullerL = new VictorSPX(configInt("hangerPullerL"));
-		hangerPullerR = new VictorSPX(configInt("hangerPullerR"));
-		shifterWheel = new VictorSPX(configInt("shifterWheel"));
+		hangerPullerL = new WPI_TalonSRX(configInt("hangerPullerL"));
+		hangerPullerR = new WPI_TalonSRX(configInt("hangerPullerR"));
+		hangerPullerL.setInverted(false);
+		hangerPullerR.setInverted(true);
 
 		initDefaultCommand();
 
@@ -48,12 +39,18 @@ public class GeneratorHanger extends SubsystemBase {
 
 				if (button("hangerUp")) {
 
-					hangerExtenderL.set(Value.kForward);
-					hangerPullerL.set(ControlMode.PercentOutput, PULLER_SPEED);
+					hangerPullerL.set(-PULLER_SPEED);
+					hangerPullerR.set(-PULLER_SPEED);
 
 				} else if (button("hangerDown")) {
 
-					
+					hangerPullerL.set(PULLER_SPEED);
+					hangerPullerR.set(PULLER_SPEED);
+
+				} else {
+
+					hangerPullerL.set(axis("hangerL") * 0.3);
+					hangerPullerR.set(axis("hangerR") * 0.3);
 
 				}
 
@@ -61,6 +58,11 @@ public class GeneratorHanger extends SubsystemBase {
 		
 		});
 
+	}
+
+	@Override
+	public String getConfigName() {
+		return "hanger";
 	}
 
 }

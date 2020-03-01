@@ -1,16 +1,16 @@
 package frc.team568.robot.recharge;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
 
 public class Intake extends SubsystemBase {
 
-	private final double INTAKE_SPEED = 0.7;
+	private final double INTAKE_SPEED = -1;
 	private double intakePressedHold = 0;
 
 	private VictorSPX intakeWheels;
@@ -23,10 +23,10 @@ public class Intake extends SubsystemBase {
 
 		intakeWheels = new VictorSPX(configInt("intakeWheels"));
 		
-		extenderLeft = new DoubleSolenoid(configInt("extenderLeftOut"), configInt("extenderLeftIn"));
-		extenderRight = new DoubleSolenoid(configInt("extenderRightOut"), configInt("extenderRightIn"));
-		extenderLeft.set(Value.kReverse);
-		extenderRight.set(Value.kReverse);
+		//extenderLeft = new DoubleSolenoid(configInt("extenderLeftOut"), configInt("extenderLeftIn"));
+		//extenderRight = new DoubleSolenoid(configInt("extenderRightOut"), configInt("extenderRightIn"));
+		//extenderLeft.set(Value.kReverse);
+		//extenderRight.set(Value.kReverse);
 
 		initDefaultCommand();
 
@@ -44,12 +44,11 @@ public class Intake extends SubsystemBase {
 			public void execute() {
 
 				// wheels
-				if (button("intake")) {
-
-					//intakeWheels.set(INTAKE_SPEED);
-
-				}
-
+				if (button("intake"))
+					intakeWheels.set(ControlMode.PercentOutput, INTAKE_SPEED);
+				else 
+					intakeWheels.set(ControlMode.PercentOutput, 0);
+/*
 				// solenoids
 				if (button("intakeExtenderToggle"))
 					intakePressedHold++;
@@ -70,11 +69,16 @@ public class Intake extends SubsystemBase {
 					}
 
 				}
-			
+*/			
 			}
 
 		});
 
+	}
+
+	@Override
+	public String getConfigName() {
+		return "intake";
 	}
 
 }

@@ -108,8 +108,8 @@ public class Shooter extends SubsystemBase {
 
 	// PDP
 	private PowerDistributionPanel pdp;
-	private double shooterCompensation = 0;
-	private final double MAX_CURRENT = 100000; //TODO find max current for shooter
+	private double shooterLCompensation = 0;
+	private double shooterRCompensation = 0;
 
 	// Drivetrain setup
 	private DriveBase drive;
@@ -285,16 +285,23 @@ public class Shooter extends SubsystemBase {
 					double shooterLCurrent = pdp.getCurrent(configInt("shooterL"));
 					double shooterRCurrent = pdp.getCurrent(configInt("shooterR"));
 					final double COMPENSATION_CHANGE = 0.001;
-
-					if (shooterLCurrent > shooterRCurrent)
-						shooterCompensation -= COMPENSATION_CHANGE;
+					final double SHOOTER_L_GOAL = 20;
+					final double SHOOTER_R_GOAL = 20;
+/*
+					if (shooterLCurrent > SHOOTER_L_GOAL)
+						shooterLCompensation -= COMPENSATION_CHANGE;
 					else
-						shooterCompensation += COMPENSATION_CHANGE;
+						shooterLCompensation += COMPENSATION_CHANGE;
 
-					shooterL.set(ControlMode.PercentOutput, SHOOT_SPEED + shooterCompensation);
-					shooterR.set(ControlMode.PercentOutput, SHOOT_SPEED - shooterCompensation);
+					if (shooterRCurrent > SHOOTER_R_GOAL)
+						shooterRCompensation -= COMPENSATION_CHANGE;
+					else
+						shooterRCompensation += COMPENSATION_CHANGE;
+*/
+					shooterL.set(ControlMode.PercentOutput, SHOOT_SPEED + shooterLCompensation);
+					shooterR.set(ControlMode.PercentOutput, SHOOT_SPEED + shooterRCompensation);
 					
-					if ((Math.abs(shooterLCurrent - shooterRCurrent) < 50) && (shooterLCurrent >= MAX_CURRENT && shooterRCurrent >= MAX_CURRENT))
+					if ((Math.abs(shooterLCurrent - SHOOTER_L_GOAL) < 1) && (Math.abs(shooterRCurrent - SHOOTER_R_GOAL) < 1))
 						wheel.set(WHEEL_SPEED);
 
 				} else {
@@ -302,7 +309,8 @@ public class Shooter extends SubsystemBase {
 					shooterL.set(ControlMode.PercentOutput, 0);
 					shooterR.set(ControlMode.PercentOutput, 0);
 					wheel.set(0);
-					shooterCompensation = 0;
+					shooterLCompensation = 0;
+					shooterRCompensation = 0;
 
 				}
 
@@ -320,13 +328,18 @@ public class Shooter extends SubsystemBase {
 	}
 
 	@Override
-		public void initSendable(SendableBuilder builder) {
+	public void initSendable(SendableBuilder builder) {
 
-			super.initSendable(builder);
-			builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
-			builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
-			builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
+		super.initSendable(builder);
+		builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
+		builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
+		builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
 
-		}
+	}
+
+	@Override
+	public String getConfigName() {
+		return "shooter";
+	}
 
 }

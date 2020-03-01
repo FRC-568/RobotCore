@@ -46,7 +46,7 @@ public class TalonSRXDrive extends DriveBase {
 			motorsL[i].setInverted(invert);
 			motorsL[i].setNeutralMode(NeutralMode.Coast);
 			//motorsL[i].configOpenloopRamp(0.2);
-			motorsL[i].configPeakCurrentLimit(27);
+			motorsL[i].configPeakCurrentLimit(20);
 			motorsL[i].configContinuousCurrentLimit(27);
 			if (i > 0)
 				motorsL[i].follow(motorsL[0]);
@@ -60,7 +60,7 @@ public class TalonSRXDrive extends DriveBase {
 			motorsR[i].setInverted(invert);
 			motorsR[i].setNeutralMode(NeutralMode.Coast);
 			//motorsL[i].configOpenloopRamp(0.2);
-			motorsR[i].configPeakCurrentLimit(27);
+			motorsR[i].configPeakCurrentLimit(20);
 			motorsR[i].configContinuousCurrentLimit(27);
 			if (i > 0)
 				motorsR[i].follow(motorsR[0]);

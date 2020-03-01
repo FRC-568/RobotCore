@@ -26,6 +26,7 @@ public class Robot extends RobotBase {
 	RobotBase robot;
 	Shooter shooter;
 	Intake intake;
+	GeneratorHanger hanger;
 	TalonSRXDrive drive;
 	//Gyro gyro = new ADXRS450_Gyro();
 	Compressor compressor;
@@ -49,19 +50,14 @@ public class Robot extends RobotBase {
 		config("shooter/wheel", 7);
 		config("shooter/rotator", 8);
 
-		config("intake/intakeWheels", 9);
-		config("intake/extenderLeftIn", 10);
-		config("intake/extenderLeftOut", 11);
+		config("intake/intakeWheels", 3);
+		config("intake/extenderLeftIn", 200);
+		config("intake/extenderLeftOut", 3356);
 		config("intake/extenderRightIn", 12);
 		config("intake/extenderRightOut", 13);
 
-		config("hanger/extenderHangLeftIn", 14);
-		config("hanger/extenderHangLeftOut", 15);
-		config("hanger/extenderHangRightIn", 16);
-		config("hanger/extenderHangRightOut", 17);
-		config("hanger/hangerPullerL", 18);
-		config("hanger/hangerPullerR", 19);
-		config("hanger/shifterWheel", 20);
+		config("hanger/hangerPullerL", 7);
+		config("hanger/hangerPullerR", 8);
 
 		button("intakeExtenderToggle", mainController, Xinput.B);
 		button("intake", mainController, Xinput.LeftBumper);
@@ -70,6 +66,9 @@ public class Robot extends RobotBase {
 		button("rotateShooterDown", mainController, Xinput.A);
 		button("hangerUp", secondaryController, Xinput.Y);
 		button("hangerDown", secondaryController, Xinput.A);
+
+		axis("hangerL", secondaryController, Xinput.LeftStickY);
+		axis("hangerR", secondaryController, Xinput.RightStickY);
 
 		//compressor = new Compressor();
 		pdp = new PowerDistributionPanel();
@@ -92,7 +91,8 @@ public class Robot extends RobotBase {
 		)));
 
 		//shooter = addSubsystem(Shooter::new);
-		//intake = addSubsystem(Intake::new);
+		hanger = addSubsystem(GeneratorHanger::new);
+		intake = addSubsystem(Intake::new);
 
 		//driver.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive)); //TODO check if this works
 	
