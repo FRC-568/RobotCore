@@ -12,9 +12,9 @@ public abstract class SubsystemBase extends edu.wpi.first.wpilibj2.command.Subsy
 	public final RobotBase robot;
 	public final NetworkTable config;
 
-	public SubsystemBase(final RobotBase robot) {
-		this.robot = robot;
-		config = robot.getConfig().getSubTable(getConfigName());
+	public SubsystemBase(final edu.wpi.first.wpilibj.RobotBase robot2) {
+		this.robot = (RobotBase) robot2;
+		config = ((RobotBase) robot2).getConfig().getSubTable(getConfigName());
 	}
 
 	public SubsystemBase(String name, final RobotBase robot) {
