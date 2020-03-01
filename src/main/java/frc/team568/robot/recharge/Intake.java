@@ -10,7 +10,7 @@ import frc.team568.robot.subsystems.SubsystemBase;
 
 public class Intake extends SubsystemBase {
 
-	private final double INTAKE_SPEED = -1;
+	private final double INTAKE_SPEED = 1;
 	private double intakePressedHold = 0;
 
 	private VictorSPX intakeWheels;

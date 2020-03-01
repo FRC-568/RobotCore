@@ -10,17 +10,14 @@ public class GeneratorHanger extends SubsystemBase {
 
 	private final double PULLER_SPEED = 0.3;
 
-	private WPI_TalonSRX hangerPullerL;
-	private WPI_TalonSRX hangerPullerR;
+	private WPI_TalonSRX hangerPuller;
 
 	public GeneratorHanger(RobotBase robot) {
 
 		super(robot);
 
-		hangerPullerL = new WPI_TalonSRX(configInt("hangerPullerL"));
-		hangerPullerR = new WPI_TalonSRX(configInt("hangerPullerR"));
-		hangerPullerL.setInverted(false);
-		hangerPullerR.setInverted(true);
+		hangerPuller = new WPI_TalonSRX(configInt("hangerPuller"));
+		hangerPuller.setInverted(true);
 
 		initDefaultCommand();
 
@@ -39,18 +36,15 @@ public class GeneratorHanger extends SubsystemBase {
 
 				if (button("hangerUp")) {
 
-					hangerPullerL.set(-PULLER_SPEED);
-					hangerPullerR.set(-PULLER_SPEED);
+					hangerPuller.set(-PULLER_SPEED);
 
 				} else if (button("hangerDown")) {
 
-					hangerPullerL.set(PULLER_SPEED);
-					hangerPullerR.set(PULLER_SPEED);
+					hangerPuller.set(PULLER_SPEED);
 
 				} else {
 
-					hangerPullerL.set(axis("hangerL") * 0.3);
-					hangerPullerR.set(axis("hangerR") * 0.3);
+					hangerPuller.set(axis("hangerL") * 0.3);
 
 				}
 

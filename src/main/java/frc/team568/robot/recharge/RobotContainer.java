@@ -14,28 +14,26 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.team568.robot.Constants.AutoConstants;
 import frc.team568.robot.Constants.DriveConstants;
-import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
 public class RobotContainer {
 	TalonSRXDrive drive; 
-	public RobotContainer(RobotBase robot) {
-		drive = new TalonSRXDrive(robot);
+	public RobotContainer(TalonSRXDrive drive) {
+		this.drive = drive;
 	}
-
 
 	public Command getAutonomousCommand() {
 		
-		String trajectoryJSON = "paths/YourPath.wpilib.json";
+		final String trajectoryJSON = "paths/YourPath.wpilib.json";
 		Trajectory trajectory = null;
 		try {
-			Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+			final Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
 			trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
 		}
 
-			RamseteCommand ramseteCommand = new RamseteCommand(
+			final RamseteCommand ramseteCommand = new RamseteCommand(
 				trajectory,
 				drive::getPose,
 				new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
@@ -51,7 +49,8 @@ public class RobotContainer {
 				drive
 			);
 			
-				// Run path following command, then stop at the end.
-				return ramseteCommand.andThen(() -> drive.tankDriveVolts(0, 0));
-		}	
+			// Run path following command, then stop at the end.
+			return ramseteCommand.andThen(() -> drive.tankDriveVolts(0, 0));
+	}	
+	
 }

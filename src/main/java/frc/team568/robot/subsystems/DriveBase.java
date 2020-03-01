@@ -53,13 +53,13 @@ public abstract class DriveBase extends SubsystemBase {
 
 	public abstract double getTurnRate();
 
-	public abstract double getVelocity();
+	public abstract double getVelocityInTicks();
 
-	public abstract double getVelocity(Side side);
+	public abstract double getVelocityInTicks(Side side);
 
-	public abstract double getDistance();
+	public abstract double getDistanceInTicks();
 
-	public abstract double getDistance(Side side);
+	public abstract double getDistanceInTicks(Side side);
 
 	public abstract void resetSensors();
 

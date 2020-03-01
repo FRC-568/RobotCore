@@ -27,7 +27,6 @@ public class Robot extends RobotBase {
 	int drivingControllerPort = 0;
 	int mechanismControllerPort = 1;
 
-	RobotBase robot;
 	Shooter shooter;
 	Intake intake;
 	GeneratorHanger hanger;
@@ -61,8 +60,7 @@ public class Robot extends RobotBase {
 		config("intake/extenderRightIn", 12);
 		config("intake/extenderRightOut", 13);
 
-		config("hanger/hangerPullerL", 1);
-		config("hanger/hangerPullerR", 8);
+		config("hanger/hangerPuller", 1);
 
 		button("intakeExtenderToggle", drivingControllerPort, Xinput.B);
 		button("intake", drivingControllerPort, Xinput.LeftBumper);
@@ -75,7 +73,7 @@ public class Robot extends RobotBase {
 		axis("hangerL", mechanismControllerPort, Xinput.LeftStickY);
 		axis("hangerR", mechanismControllerPort, Xinput.RightStickY);
 
-		//compressor = new Compressor();
+		compressor = new Compressor();
 		pdp = new PowerDistributionPanel();
 
 		//drive = addSubsystem(TalonSRXDrive::new).withGyro(gyro);
@@ -95,7 +93,7 @@ public class Robot extends RobotBase {
 			Input.TANK_RIGHT, () -> -driverController.getY(Hand.kRight)
 		)));
 
-		//robotContainer = new RobotContainer(robot);
+		//robotContainer = new RobotContainer(drive);
 
 		shooter = addSubsystem(Shooter::new);
 		//hanger = addSubsystem(GeneratorHanger::new);
@@ -110,7 +108,7 @@ public class Robot extends RobotBase {
 	public void teleopInit() {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
-		//compressor.setClosedLoopControl(true);
+		compressor.setClosedLoopControl(true);
 		drive.resetSensors();
 		//gyro.reset();
 	}
@@ -127,12 +125,12 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void disabledInit() {
-		//compressor.setClosedLoopControl(false);
+		compressor.setClosedLoopControl(false);
 	}
 
 	@Override
 	public void autonomousInit() {
-		//compressor.setClosedLoopControl(true);
+		compressor.setClosedLoopControl(true);
 	}
 
 	@Override

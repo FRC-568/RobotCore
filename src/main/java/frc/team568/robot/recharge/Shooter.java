@@ -287,8 +287,7 @@ public class Shooter extends SubsystemBase {
 				} else if (button("shoot")) {
 
 					final double COMPENSATION_CHANGE = 0.001;
-					final double SHOOTER_L_GOAL = 20;
-					final double SHOOTER_R_GOAL = 20;
+					final double SHOOTER_GOAL = 100;
 
 					if (shooterL.getSelectedSensorVelocity() > shooterR.getSelectedSensorVelocity())
 						shooterCompensation -= COMPENSATION_CHANGE;
@@ -298,8 +297,8 @@ public class Shooter extends SubsystemBase {
 					shooterL.set(SHOOT_SPEED - shooterCompensation);
 					shooterR.set(SHOOT_SPEED + shooterCompensation);
 
-					//if ((Math.abs(shooterLCurrent - SHOOTER_L_GOAL) < 1) && (Math.abs(shooterRCurrent - SHOOTER_R_GOAL) < 1))
-					wheel.set(ControlMode.PercentOutput, -WHEEL_SPEED);
+					if ((Math.abs(shooterL.getSelectedSensorVelocity()) < SHOOTER_GOAL) && (Math.abs(shooterR.getSelectedSensorVelocity()) < SHOOTER_GOAL))
+						wheel.set(ControlMode.PercentOutput, -WHEEL_SPEED);
 
 				} else {
 
@@ -330,6 +329,8 @@ public class Shooter extends SubsystemBase {
 		builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
 		builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
 		builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
+		builder.addDoubleProperty("ShooterL Velocity", () -> shooterL.getSelectedSensorVelocity(), null);
+		builder.addDoubleProperty("ShooterR Velocity", () -> shooterR.getSelectedSensorVelocity(), null);
 
 	}
 
