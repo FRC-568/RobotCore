@@ -1,20 +1,19 @@
 package frc.team568.robot.subsystems;
 
-import frc.team568.robot.RobotBase;
+import static edu.wpi.first.wpilibj.DriverStation.reportWarning;
 
 import java.util.Arrays;
 
 import edu.wpi.first.networktables.NetworkTable;
-
-import static edu.wpi.first.wpilibj.DriverStation.reportWarning;
+import frc.team568.robot.RobotBase;
 
 public abstract class SubsystemBase extends edu.wpi.first.wpilibj2.command.SubsystemBase {
 	public final RobotBase robot;
 	public final NetworkTable config;
 
-	public SubsystemBase(final edu.wpi.first.wpilibj.RobotBase robot2) {
-		this.robot = (RobotBase) robot2;
-		config = ((RobotBase) robot2).getConfig().getSubTable(getConfigName());
+	public SubsystemBase(final RobotBase robot) {
+		this.robot = robot;
+		config = robot.getConfig().getSubTable(getConfigName());
 	}
 
 	public SubsystemBase(String name, final RobotBase robot) {

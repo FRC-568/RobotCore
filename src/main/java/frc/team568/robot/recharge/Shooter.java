@@ -1,6 +1,7 @@
 package frc.team568.robot.recharge;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -31,21 +32,21 @@ public class Shooter extends SubsystemBase {
 	public static final double SHOOTER_MOUNTED_HEIGHT = 10; //TODO find shooter height from ground to edge of shooter
 	private static final double GRAVITY = 386.09; // 386.09 inches per second per second
 	
-	private double shooterHeight = SHOOTER_MOUNTED_HEIGHT + (SHOOTER_RADIUS - SHOOTER_RADIUS * Math.cos(getShooterAngle())); // assumes getShooterAngle to be in radius and units inches
-	private double simulatedHeight = HEIGHT_OF_TARGET - shooterHeight; //calcuate height of target from the shooter height because shooter is off the ground;
+	//private double shooterHeight = SHOOTER_MOUNTED_HEIGHT + (SHOOTER_RADIUS - SHOOTER_RADIUS * Math.cos(getShooterAngle())); // assumes getShooterAngle to be in radius and units inches
+	//private double simulatedHeight = HEIGHT_OF_TARGET - shooterHeight; //calcuate height of target from the shooter height because shooter is off the ground;
 	private double distanceFromTarget;
 	private double distanceFromCenterY;
 	private double shooterAngle = 0; //TODO get shooter angle using encoders (in radians)
-	private double calculatedAngle = Math.asin(Math.sqrt(2 * GRAVITY * simulatedHeight) / INITIAL_VELOCITY); // calculated angle in radians
+	//private double calculatedAngle = Math.asin(Math.sqrt(2 * GRAVITY * simulatedHeight) / INITIAL_VELOCITY); // calculated angle in radians
 	private double calculatedAngle1;
 	private double calculatedAngle2;
 
 	private double v = INITIAL_VELOCITY;
-	private double d = getHorizontalDistanceFromTarget();
+	//private double d = getHorizontalDistanceFromTarget();
 	private double g = GRAVITY;
 
-	private double targetX = d;
-	private double targetY  = getActualHeight();
+	//private double targetX = d;
+	//private double targetY  = getActualHeight();
 
 	//calculations with air resistance
 	private double pi = 3.414592654;
@@ -90,15 +91,15 @@ public class Shooter extends SubsystemBase {
 
 	// Motor setup
 
-	VictorSPX shooterL;
-	VictorSPX shooterR;
-	WPI_TalonSRX wheel;
+	WPI_TalonSRX shooterL;
+	WPI_TalonSRX shooterR;
+	VictorSPX wheel;
 	WPI_TalonSRX shooterRotator;
 
 	final double INTAKE_SPEED = 0.5;
-	final double SHOOT_SPEED = 1;
-	final double WHEEL_SPEED = 0.5;
-	final double ROTATOR_SPEED = 0.2;
+	final double SHOOT_SPEED = -1;
+	final double WHEEL_SPEED = 1;
+	final double ROTATOR_SPEED = 0.5;
 
 	// PID setup
 	private PIDController pidShooterRotate;
@@ -108,8 +109,7 @@ public class Shooter extends SubsystemBase {
 
 	// PDP
 	private PowerDistributionPanel pdp;
-	private double shooterLCompensation = 0;
-	private double shooterRCompensation = 0;
+	private double shooterCompensation = 0;
 
 	// Drivetrain setup
 	private DriveBase drive;
@@ -118,12 +118,16 @@ public class Shooter extends SubsystemBase {
 		super(robot);
 
 		this.drive = robot.getSubsystem(DriveBase.class);
-		shooterL = new VictorSPX(configInt("shooterL"));
-		shooterR = new VictorSPX(configInt("shooterR"));
+		shooterL = new WPI_TalonSRX(configInt("shooterL"));
+		shooterR = new WPI_TalonSRX(configInt("shooterR"));
 		shooterL.setInverted(true);
 		shooterR.setInverted(false);
-		
-		wheel = new WPI_TalonSRX(configInt("wheel"));
+		shooterL.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+		shooterL.setSensorPhase(true);
+		shooterR.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+		shooterR.setSensorPhase(true);
+
+		wheel = new VictorSPX(configInt("wheel"));
 
 		shooterRotator = new WPI_TalonSRX(configInt("rotator"));
 
@@ -134,7 +138,7 @@ public class Shooter extends SubsystemBase {
 		initDefaultCommand();
 		
 	}
-	
+/*
 	public void rotateShooterSpeed(double speed) {
 
 		shooterRotator.set(speed);
@@ -260,7 +264,7 @@ public class Shooter extends SubsystemBase {
 
 		return angleToGoal;
 	}
-
+*/
 	public void initDefaultCommand() {
 
 		setDefaultCommand(new CommandBase() {
@@ -275,42 +279,34 @@ public class Shooter extends SubsystemBase {
 				// Manually move shooter
 				if (button("intake")) {
 
-					shooterL.set(ControlMode.PercentOutput, INTAKE_SPEED);
-					shooterR.set(ControlMode.PercentOutput, INTAKE_SPEED);
+					shooterL.set(INTAKE_SPEED);
+					shooterR.set(INTAKE_SPEED);
 
 					wheel.set(ControlMode.PercentOutput, WHEEL_SPEED);
 
 				} else if (button("shoot")) {
 
-					double shooterLCurrent = pdp.getCurrent(configInt("shooterL"));
-					double shooterRCurrent = pdp.getCurrent(configInt("shooterR"));
 					final double COMPENSATION_CHANGE = 0.001;
 					final double SHOOTER_L_GOAL = 20;
 					final double SHOOTER_R_GOAL = 20;
-/*
-					if (shooterLCurrent > SHOOTER_L_GOAL)
-						shooterLCompensation -= COMPENSATION_CHANGE;
-					else
-						shooterLCompensation += COMPENSATION_CHANGE;
 
-					if (shooterRCurrent > SHOOTER_R_GOAL)
-						shooterRCompensation -= COMPENSATION_CHANGE;
+					if (shooterL.getSelectedSensorVelocity() > shooterR.getSelectedSensorVelocity())
+						shooterCompensation -= COMPENSATION_CHANGE;
 					else
-						shooterRCompensation += COMPENSATION_CHANGE;
-*/
-					shooterL.set(ControlMode.PercentOutput, SHOOT_SPEED + shooterLCompensation);
-					shooterR.set(ControlMode.PercentOutput, SHOOT_SPEED + shooterRCompensation);
-					
-					if ((Math.abs(shooterLCurrent - SHOOTER_L_GOAL) < 1) && (Math.abs(shooterRCurrent - SHOOTER_R_GOAL) < 1))
-						wheel.set(WHEEL_SPEED);
+						shooterCompensation += COMPENSATION_CHANGE;
+
+					shooterL.set(SHOOT_SPEED - shooterCompensation);
+					shooterR.set(SHOOT_SPEED + shooterCompensation);
+
+					//if ((Math.abs(shooterLCurrent - SHOOTER_L_GOAL) < 1) && (Math.abs(shooterRCurrent - SHOOTER_R_GOAL) < 1))
+					wheel.set(ControlMode.PercentOutput, -WHEEL_SPEED);
 
 				} else {
 
-					shooterL.set(ControlMode.PercentOutput, 0);
-					shooterR.set(ControlMode.PercentOutput, 0);
-					wheel.set(0);
-					shooterLCompensation = 0;
-					shooterRCompensation = 0;
+					shooterL.set(0);
+					shooterR.set(0);
+					wheel.set(ControlMode.PercentOutput, 0);
+					shooterCompensation = 0;
 
 				}
 

@@ -5,7 +5,7 @@ import frc.team568.robot.RobotBase;
 public abstract class DriveBase extends SubsystemBase {
 	private double _wheelDiameter = 6.0;
 
-	public DriveBase(final edu.wpi.first.wpilibj.RobotBase robot) {
+	public DriveBase(final RobotBase robot) {
 		super(robot);
 	}
 

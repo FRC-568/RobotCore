@@ -5,25 +5,21 @@ import java.nio.file.Path;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.team568.robot.Constants.AutoConstants;
 import frc.team568.robot.Constants.DriveConstants;
+import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
 public class RobotContainer {
 	TalonSRXDrive drive; 
 	public RobotContainer(RobotBase robot) {
-
 		drive = new TalonSRXDrive(robot);
 	}
 

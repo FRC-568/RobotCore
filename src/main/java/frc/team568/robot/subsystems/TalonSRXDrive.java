@@ -13,15 +13,15 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
-import frc.team568.robot.RobotBase;
 import frc.team568.robot.Constants.DriveConstants;
+import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
 	private static final double SPEED_MAX = 1.0;
@@ -43,7 +43,7 @@ public class TalonSRXDrive extends DriveBase {
 	private DifferentialDriveOdometry odometry;
 
 
-	public TalonSRXDrive(final edu.wpi.first.wpilibj.RobotBase robot) {
+	public TalonSRXDrive(final RobotBase robot) {
 		super(robot);
 		drive = buildDrive();
 		configureEncoder(motorsL[0]);
@@ -223,36 +223,36 @@ public class TalonSRXDrive extends DriveBase {
 		drive.arcadeDrive(moveValue, rotateValue, squareInputs);
 	}
 
-	// @Override
-	// public double getHeading() {
-	// 	return gyro != null ? gyro.getAngle() : 0;
-	// }
+	@Override
+	public double getHeading() {
+		return gyro != null ? gyro.getAngle() : 0;
+	}
 
-	// public double getTurnRate() {
-	// 	return gyro != null ? gyro.getRate() : 0;
-	// }
+	public double getTurnRate() {
+		return gyro != null ? gyro.getRate() : 0;
+	}
 
 	public void zeroHeading() {
-		gyro.reset();
-	  }
-	
-	  /**
-	   * Returns the heading of the robot.
-	   *
-	   * @return the robot's heading in degrees, from -180 to 180
-	   */
-	  public double getHeading() {
-		return Math.IEEEremainder(gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-	  }
-	
-	  /**
-	   * Returns the turn rate of the robot.
-	   *
-	   * @return The turn rate of the robot, in degrees per second
-	   */
-	  public double getTurnRate() {
-		return gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-	  }
+		//gyro.reset();
+	}
+
+	/**
+	 * Returns the heading of the robot.
+	 *
+	 * @return the robot's heading in degrees, from -180 to 180
+	 */
+	//public double getHeading() {
+		//return Math.IEEEremainder(gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+	//}
+
+	/**
+	 * Returns the turn rate of the robot.
+	 *
+	 * @return The turn rate of the robot, in degrees per second
+	 */
+	//public double getTurnRate() {
+		//return gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+	//}
 	
 
 	@Override

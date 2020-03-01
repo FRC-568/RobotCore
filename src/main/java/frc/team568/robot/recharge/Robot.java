@@ -4,29 +4,23 @@ import static edu.wpi.first.wpilibj.XboxController.Button.kBack;
 import static edu.wpi.first.wpilibj.XboxController.Button.kStart;
 import static edu.wpi.first.wpilibj.XboxController.Button.kStickLeft;
 import static edu.wpi.first.wpilibj.XboxController.Button.kStickRight;
-import static edu.wpi.first.wpilibj.XboxController.Button.kY;
-import static edu.wpi.first.wpilibj.XboxController.Button.kX;
-
 
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.XinputController;
 import frc.team568.robot.commands.TalonSRXDriveDefaultCommand;
 import frc.team568.robot.subsystems.DriveBase.Input;
 import frc.team568.robot.subsystems.TalonSRXDrive;
-import frc.team568.robot.recharge.RobotContainer;
 
 public class Robot extends RobotBase {
 
@@ -57,17 +51,17 @@ public class Robot extends RobotBase {
 		config("drive/rightInverted", true);
 		
 		config("shooter/shooterL", 5);
-		config("shooter/shooterR", 6);
-		config("shooter/wheel", 7);
-		config("shooter/rotator", 8);
+		config("shooter/shooterR", 7);
+		config("shooter/wheel", 3);
+		config("shooter/rotator", 4);
 
-		config("intake/intakeWheels", 3);
+		config("intake/intakeWheels", 2);
 		config("intake/extenderLeftIn", 200);
 		config("intake/extenderLeftOut", 3356);
 		config("intake/extenderRightIn", 12);
 		config("intake/extenderRightOut", 13);
 
-		config("hanger/hangerPullerL", 7);
+		config("hanger/hangerPullerL", 1);
 		config("hanger/hangerPullerR", 8);
 
 		button("intakeExtenderToggle", drivingControllerPort, Xinput.B);
@@ -101,14 +95,14 @@ public class Robot extends RobotBase {
 			Input.TANK_RIGHT, () -> -driverController.getY(Hand.kRight)
 		)));
 
-		robotContainer = new RobotContainer(robot);
+		//robotContainer = new RobotContainer(robot);
 
-		//shooter = addSubsystem(Shooter::new);
-		hanger = addSubsystem(GeneratorHanger::new);
+		shooter = addSubsystem(Shooter::new);
+		//hanger = addSubsystem(GeneratorHanger::new);
 		intake = addSubsystem(Intake::new);
 
-		driverController.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive)); //TODO check if this works
-		driverController.getButton(kY).whenPressed(robotContainer.getAutonomousCommand());
+		//driverController.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive)); //TODO check if this works
+		//driverController.getButton(kY).whenPressed(robotContainer.getAutonomousCommand());
 	
 	}
 
