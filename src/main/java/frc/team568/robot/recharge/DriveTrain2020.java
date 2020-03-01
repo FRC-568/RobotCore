@@ -1,9 +1,10 @@
-package frc.team568.robot.deepspace;
+package frc.team568.robot.recharge;
 
 import static frc.team568.util.Utilities.*;
 
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
+import frc.team568.robot.recharge.Constants.DriveConstants;
 import frc.team568.robot.subsystems.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -12,20 +13,27 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Encoder;
 
-public class DriveTrain2019 extends SubsystemBase {
-	private Joystick joystick;
+public class DriveTrain2020 extends SubsystemBase {
+	private final Joystick joystick;
 	public PIDController drivePID;
-	private ADXRS450_Gyro gyro;
+	private final ADXRS450_Gyro gyro;
 	private double drivePidOutput;
 	private boolean _headingLocked = false;
-	private DoubleSolenoid doubleSolenoid;
+	private final DoubleSolenoid doubleSolenoid;
 
 	// INCHES
 	private static final double CIRCUMFERENCE = 18.8496;
@@ -45,7 +53,20 @@ public class DriveTrain2019 extends SubsystemBase {
 	int driveTargetL;
 	int driveTargetR;
 
-	public DriveTrain2019(RobotBase robot) {
+	// speedcontroller groups
+	private final SpeedControllerGroup leftMotors;
+	private final SpeedControllerGroup rightMotors;
+
+	// encoders
+	private final Encoder leftEncoder;
+	private final Encoder rightEncoder;
+	// drive
+	DifferentialDrive drive;
+
+	// Odometry class for tracking robot pose
+	private final DifferentialDriveOdometry odometry;
+
+	public DriveTrain2020(final RobotBase robot) {
 		super(robot);
 
 		gyro = new ADXRS450_Gyro();
@@ -60,6 +81,26 @@ public class DriveTrain2019 extends SubsystemBase {
 		addChild("BL Motor", bl);
 		addChild("FR Motor", fr);
 		addChild("BR Motor", br);
+
+		// speedcotroller groups for atonomous
+		leftMotors = new SpeedControllerGroup(fl, bl);
+		rightMotors = new SpeedControllerGroup(fr, br);
+
+		// The left-side drive encoder
+		leftEncoder = new Encoder(DriveConstants.kLeftEncoderPorts[0], DriveConstants.kLeftEncoderPorts[1],
+				DriveConstants.kLeftEncoderReversed);
+
+		// The right-side drive encoder
+		rightEncoder = new Encoder(DriveConstants.kRightEncoderPorts[0], DriveConstants.kRightEncoderPorts[1],
+				DriveConstants.kRightEncoderReversed);
+
+		drive = new DifferentialDrive(leftMotors, rightMotors);
+
+		leftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
+		rightEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
+
+		resetEncoders();
+		odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
 		drivePID = new PIDController(0.135, 0, 0.1);
 
@@ -116,8 +157,133 @@ public class DriveTrain2019 extends SubsystemBase {
 		initDefaultCommand();
 	}
 
+	/**
+	 * Returns the currently-estimated pose of the robot.
+	 *
+	 * @return The pose.
+	 */
+	public Pose2d getPose() {
+		return odometry.getPoseMeters();
+	}
+
+	/**
+	 * Returns the current wheel speeds of the robot.
+	 *
+	 * @return The current wheel speeds.
+	 */
+	public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+		return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
+	}
+
+	/**
+	 * Resets the odometry to the specified pose.
+	 *
+	 * @param pose The pose to which to set the odometry.
+	 */
+	public void resetOdometry(final Pose2d pose) {
+		resetEncoders();
+		odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+	}
+
+	/**
+	 * Drives the robot using arcade controls.
+	 *
+	 * @param fwd the commanded forward movement
+	 * @param rot the commanded rotation
+	 */
+	public void arcadeDrive(final double fwd, final double rot) {
+		drive.arcadeDrive(fwd, rot);
+	}
+
+	/**
+	 * Controls the left and right sides of the drive directly with voltages.
+	 *
+	 * @param leftVolts  the commanded left output
+	 * @param rightVolts the commanded right output
+	 */
+	public void tankDriveVolts(final double leftVolts, final double rightVolts) {
+		leftMotors.setVoltage(leftVolts);
+		rightMotors.setVoltage(-rightVolts);
+		drive.feed();
+	}
+
+	/**
+	 * Resets the drive encoders to currently read a position of 0.
+	 */
+	public void resetEncoders() {
+		leftEncoder.reset();
+		rightEncoder.reset();
+	}
+
+	/**
+	 * Gets the average distance of the two encoders.
+	 *
+	 * @return the average of the two encoder readings
+	 */
+	public double getAverageEncoderDistance() {
+		return (leftEncoder.getDistance() + rightEncoder.getDistance()) / 2.0;
+	}
+
+	/**
+	 * Gets the left drive encoder.
+	 *
+	 * @return the left drive encoder
+	 */
+	public Encoder getLeftEncoder() {
+		return leftEncoder;
+	}
+
+	/**
+	 * Gets the right drive encoder.
+	 *
+	 * @return the right drive encoder
+	 */
+	public Encoder getRightEncoder() {
+		return rightEncoder;
+	}
+
+	/**
+	 * Sets the max output of the drive. Useful for scaling the drive to drive more
+	 * slowly.
+	 *
+	 * @param maxOutput the maximum output to which the drive will be constrained
+	 */
+	public void setMaxOutput(final double maxOutput) {
+		drive.setMaxOutput(maxOutput);
+	}
+
+	/**
+	 * Zeroes the heading of the robot.
+	 */
+	public void zeroHeading() {
+		gyro.reset();
+	}
+
+	/**
+	 * Returns the heading of the robot.
+	 *
+	 * @return the robot's heading in degrees, from -180 to 180
+	 */
+	public double getHeading() {
+		return Math.IEEEremainder(gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+	}
+
+	/**
+	 * Returns the turn rate of the robot.
+	 *
+	 * @return The turn rate of the robot, in degrees per second
+	 */
+	public double getTurnRate() {
+		return gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+	}
+
+
+
 	@Override
 	public void periodic() {
+		// Update the odometry in the periodic block
+		odometry.update(Rotation2d.fromDegrees(getHeading()), leftEncoder.getDistance(), rightEncoder.getDistance());
+	
 		if (_headingLocked)
 			drivePidOutput = drivePID.calculate(gyro.getAngle());
 	}
@@ -154,23 +320,23 @@ public class DriveTrain2019 extends SubsystemBase {
 		_headingLocked = false;
 	}
 
-	public void driveDist(double dist, int speed, int accel) {
-		int ticks = (int) (dist * TO_TICKS);
-		int flCurrPos = fl.getSensorCollection().getQuadraturePosition();
-		int frCurrPos = fr.getSensorCollection().getQuadraturePosition();
+	public void driveDist(final double dist, final int speed, final int accel) {
+		final int ticks = (int) (dist * TO_TICKS);
+		final int flCurrPos = fl.getSensorCollection().getQuadraturePosition();
+		final int frCurrPos = fr.getSensorCollection().getQuadraturePosition();
 
 		driveTargetL = flCurrPos + ticks;
 		driveTargetR = frCurrPos + ticks;
 
 		fl.configMotionCruiseVelocity(speed, 10);
 		fr.configMotionCruiseVelocity(speed, 10);
-		
+
 		fl.configMotionAcceleration(accel, 10);
 		fr.configMotionAcceleration(accel, 10);
 	}
 
-	public void driveDist(double speed, double dist) {
-		double speedScale = drivePidOutput;
+	public void driveDist(final double speed, final double dist) {
+		final double speedScale = drivePidOutput;
 
 		// if (targetPercent >= .75)
 		// speed = speed * (1 - targetPercent);
@@ -206,12 +372,12 @@ public class DriveTrain2019 extends SubsystemBase {
 		fr.set(ControlMode.PercentOutput, 0);
 	}
 
-	public void setSpeed(double leftValue, double rightValue) {
+	public void setSpeed(final double leftValue, final double rightValue) {
 		fl.set(leftValue);
 		fr.set(rightValue);
 	}
 
-	public void arcadeDrive(double xSpeed, double zRotation, boolean squaredInputs) {
+	public void arcadeDrive(double xSpeed, double zRotation, final boolean squaredInputs) {
 		final double m_deadband = 0.2;
 
 		xSpeed = clamp(xSpeed, -1, 1);
@@ -230,7 +396,7 @@ public class DriveTrain2019 extends SubsystemBase {
 		double leftMotorOutput;
 		double rightMotorOutput;
 
-		double maxInput = Math.copySign(Math.max(Math.abs(xSpeed), Math.abs(zRotation)), xSpeed);
+		final double maxInput = Math.copySign(Math.max(Math.abs(xSpeed), Math.abs(zRotation)), xSpeed);
 
 		if (xSpeed >= 0.0) {
 			// First quadrant, else second quadrant
@@ -276,7 +442,9 @@ public class DriveTrain2019 extends SubsystemBase {
 
 			boolean isShiftHigh = false;
 
-			{ addRequirements(DriveTrain2019.this); }
+			{
+				addRequirements(DriveTrain2020.this);
+			}
 
 			@Override
 			public void initialize() {
@@ -303,9 +471,11 @@ public class DriveTrain2019 extends SubsystemBase {
 				}
 
 				if (safeMode)
-					arcadeDrive(-joystick.getRawAxis(Xinput.LeftStickY) * 0.5, joystick.getRawAxis(Xinput.RightStickX) * 0.5, false);
+					arcadeDrive(-joystick.getRawAxis(Xinput.LeftStickY) * 0.5,
+							joystick.getRawAxis(Xinput.RightStickX) * 0.5, false);
 				else
-					arcadeDrive(-joystick.getRawAxis(Xinput.LeftStickY), joystick.getRawAxis(Xinput.RightStickX) * 0.6, false);
+					arcadeDrive(-joystick.getRawAxis(Xinput.LeftStickY), joystick.getRawAxis(Xinput.RightStickX) * 0.6,
+							false);
 
 				if (joystick.getRawButton(Xinput.LeftBumper)) {
 					if (!isShiftHigh) {
@@ -322,12 +492,12 @@ public class DriveTrain2019 extends SubsystemBase {
 		});
 	}
 
-	public void turnRight(double speed) {
+	public void turnRight(final double speed) {
 		fl.set(ControlMode.PercentOutput, speed);
 		fr.set(ControlMode.PercentOutput, -speed);
 	}
 
-	public void turnLeft(double speed) {
+	public void turnLeft(final double speed) {
 		fl.set(ControlMode.PercentOutput, -speed);
 		fr.set(ControlMode.PercentOutput, speed);
 	}
@@ -336,21 +506,23 @@ public class DriveTrain2019 extends SubsystemBase {
 		return gyro.getAngle();
 	}
 
-	public Command getCommandTurnBy(double degrees) {
+	public Command getCommandTurnBy(final double degrees) {
 		return new CommandBase() {
 			double targetAngle;
 
-			{ addRequirements(DriveTrain2019.this); }
+			{
+				addRequirements(DriveTrain2020.this);
+			}
 
 			@Override
 			public void initialize() {
 				resetGyro();
 				targetAngle = getAngle() + degrees;
 			}
-			
+
 			@Override
 			public void execute() {
-				double remainder = targetAngle - getAngle();
+				final double remainder = targetAngle - getAngle();
 				if (remainder > 5)
 					turnRight(.3);
 				else if (remainder < -5)
@@ -365,7 +537,7 @@ public class DriveTrain2019 extends SubsystemBase {
 			}
 
 			@Override
-			public void end(boolean interrupted) {
+			public void end(final boolean interrupted) {
 				stop();
 			}
 		}.andThen(new WaitCommand(1));
