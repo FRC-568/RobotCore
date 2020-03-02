@@ -32,8 +32,8 @@ public class Shooter extends SubsystemBase {
 	public static final double SHOOTER_MOUNTED_HEIGHT = 10; //TODO find shooter height from ground to edge of shooter
 	private static final double GRAVITY = 386.09; // 386.09 inches per second per second
 	
-	//private double shooterHeight = SHOOTER_MOUNTED_HEIGHT + (SHOOTER_RADIUS - SHOOTER_RADIUS * Math.cos(getShooterAngle())); // assumes getShooterAngle to be in radius and units inches
-	//private double simulatedHeight = HEIGHT_OF_TARGET - shooterHeight; //calcuate height of target from the shooter height because shooter is off the ground;
+	private double shooterHeight = SHOOTER_MOUNTED_HEIGHT + (SHOOTER_RADIUS - SHOOTER_RADIUS * Math.cos(getShooterAngle())); // assumes getShooterAngle to be in radius and units inches
+	private double simulatedHeight = HEIGHT_OF_TARGET - shooterHeight; //calcuate height of target from the shooter height because shooter is off the ground;
 	private double distanceFromTarget;
 	private double distanceFromCenterY;
 	private double shooterAngle = 0; //TODO get shooter angle using encoders (in radians)
@@ -42,11 +42,11 @@ public class Shooter extends SubsystemBase {
 	private double calculatedAngle2;
 
 	private double v = INITIAL_VELOCITY;
-	//private double d = getHorizontalDistanceFromTarget();
+	private double d;
 	private double g = GRAVITY;
 
-	//private double targetX = d;
-	//private double targetY  = getActualHeight();
+	private double targetX = d;
+	private double targetY;
 
 	//calculations with air resistance
 	private double pi = 3.414592654;
@@ -135,17 +135,16 @@ public class Shooter extends SubsystemBase {
 
 		pdp = new PowerDistributionPanel();
 
+		d = getHorizontalDistanceFromTarget();
+		targetY  = getActualHeight();
+
 		initDefaultCommand();
 		
 	}
-/*
+
 	public void rotateShooterSpeed(double speed) {
 
 		shooterRotator.set(speed);
-
-	}
-
-	public void shootShooter() {
 
 	}
 
@@ -243,9 +242,9 @@ public class Shooter extends SubsystemBase {
 		pidShooterRotate.setTolerance(5);
 
 		do 
-			wheel.set(pidShooterRotate.calculate(getShooterAngle())); 
+			wheel.set(ControlMode.PercentOutput, pidShooterRotate.calculate(getShooterAngle())); 
 		while (!pidShooterRotate.atSetpoint());
-		wheel.set(0);
+		wheel.set(ControlMode.PercentOutput, 0);
 
 	}
 
@@ -264,7 +263,7 @@ public class Shooter extends SubsystemBase {
 
 		return angleToGoal;
 	}
-*/
+
 	public void initDefaultCommand() {
 
 		setDefaultCommand(new CommandBase() {
