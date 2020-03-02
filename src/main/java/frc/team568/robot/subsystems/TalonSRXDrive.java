@@ -92,7 +92,7 @@ public class TalonSRXDrive extends DriveBase {
 	}
 
 	
-		@Override
+	@Override
 	public void periodic() {
 		// Update the odometry in the periodic block
 		odometry.update(Rotation2d.fromDegrees(getHeading()), getDistanceInTicks(),
@@ -237,6 +237,14 @@ public class TalonSRXDrive extends DriveBase {
 	public void resetSensors() {
 		motorsL[0].setSelectedSensorPosition(0);
 		motorsR[0].setSelectedSensorPosition(0);
+	}
+
+	public void setSpeed(double speed) {
+		drive.arcadeDrive(speed, 0);
+	}
+
+	public void halt() {
+		drive.stopMotor();
 	}
 
 	public boolean getIsReversed() {

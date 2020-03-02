@@ -44,7 +44,7 @@ public class Intake extends SubsystemBase {
 			public void execute() {
 
 				// wheels
-				if (button("intake"))
+				if (button("intake") && !button("shoot"))
 					intakeWheels.set(ControlMode.PercentOutput, INTAKE_SPEED);
 				else 
 					intakeWheels.set(ControlMode.PercentOutput, 0);

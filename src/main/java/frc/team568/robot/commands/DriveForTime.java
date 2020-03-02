@@ -1,17 +1,16 @@
 package frc.team568.robot.commands;
 
-import frc.team568.robot.subsystems.DriveTrain;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.team568.robot.subsystems.TalonSRXDrive;
 
 public class DriveForTime extends CommandBase {
 	private final Timer timer = new Timer();
 	private final double speed;
 	private final double time;
-	private final DriveTrain driveTrain;
+	private final TalonSRXDrive driveTrain;
 
-	public DriveForTime(double time, double speed, DriveTrain driveTrain) {
+	public DriveForTime(double time, double speed, TalonSRXDrive driveTrain) {
 		this.time = time;
 		this.speed = speed;
 		this.driveTrain = driveTrain;
@@ -24,7 +23,7 @@ public class DriveForTime extends CommandBase {
 	}
 
 	public void execute() {
-		driveTrain.setSpeed(speed, speed);
+		driveTrain.setSpeed(0.7);
 	}
 
 	@Override

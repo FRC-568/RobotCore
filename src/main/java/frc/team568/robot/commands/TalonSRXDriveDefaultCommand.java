@@ -36,7 +36,7 @@ public class TalonSRXDriveDefaultCommand extends CommandBase {
 				axis(Input.TANK_RIGHT));
 	
 		} else {
-/*
+
 			// pid calculation
 			pidDrive.setSetpoint(prevAngle);
 			double correction = pidDrive.calculate(drive.getHeading());
@@ -54,7 +54,7 @@ public class TalonSRXDriveDefaultCommand extends CommandBase {
 				prevAngle = drive.getHeading();
 				correction = 0;
 
-			}*/
+			}
 
 			drive.arcadeDrive(
 				axis(Input.FORWARD),

@@ -7,9 +7,11 @@ import static edu.wpi.first.wpilibj.XboxController.Button.kStickRight;
 
 import java.util.Map;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.XinputController;
+import frc.team568.robot.commands.DriveForTime;
 import frc.team568.robot.commands.TalonSRXDriveDefaultCommand;
 import frc.team568.robot.subsystems.DriveBase.Input;
 import frc.team568.robot.subsystems.TalonSRXDrive;
@@ -31,9 +34,10 @@ public class Robot extends RobotBase {
 	Intake intake;
 	GeneratorHanger hanger;
 	
+	DriveForTime autonomousDriveForTime;
 	TalonSRXDrive drive;
 	RobotContainer robotContainer;
-	//Gyro gyro = new ADXRS450_Gyro();
+	Gyro gyro = new ADXRS450_Gyro();
 	Compressor compressor;
 	Command autonomousCommand;
 	XinputController driverController = new XinputController(drivingControllerPort);
@@ -55,12 +59,15 @@ public class Robot extends RobotBase {
 		config("shooter/rotator", 4);
 
 		config("intake/intakeWheels", 2);
-		config("intake/extenderLeftIn", 200);
-		config("intake/extenderLeftOut", 3356);
-		config("intake/extenderRightIn", 12);
-		config("intake/extenderRightOut", 13);
+		config("intake/extenderLeftIn", 1);
+		config("intake/extenderLeftOut", 6);
+		config("intake/extenderRightIn", 7);
+		config("intake/extenderRightOut", 0);
 
-		config("hanger/hangerPuller", 1);
+		config("hanger/hangerPuller", 5);
+
+		config("spinner/spinner", 1);
+		config("spinner/extendSpinner", 2);
 
 		button("intakeExtenderToggle", drivingControllerPort, Xinput.B);
 		button("intake", drivingControllerPort, Xinput.LeftBumper);
@@ -69,6 +76,7 @@ public class Robot extends RobotBase {
 		button("rotateShooterDown", drivingControllerPort, Xinput.A);
 		button("hangerUp", mechanismControllerPort, Xinput.Y);
 		button("hangerDown", mechanismControllerPort, Xinput.A);
+		button("spin", mechanismControllerPort, Xinput.B);
 
 		axis("hangerL", mechanismControllerPort, Xinput.LeftStickY);
 		axis("hangerR", mechanismControllerPort, Xinput.RightStickY);
@@ -76,8 +84,8 @@ public class Robot extends RobotBase {
 		compressor = new Compressor();
 		pdp = new PowerDistributionPanel();
 
-		//drive = addSubsystem(TalonSRXDrive::new).withGyro(gyro);
-		drive = addSubsystem(TalonSRXDrive::new);
+		drive = addSubsystem(TalonSRXDrive::new).withGyro(gyro);
+		//drive = addSubsystem(TalonSRXDrive::new);
 		driverController.getButton(kBack).whenPressed(drive::toggleIsReversed);
 		driverController.getButton(kStart).whenPressed(drive::toggleTankControls);
 		driverController.getButton(kStickLeft)
@@ -93,9 +101,11 @@ public class Robot extends RobotBase {
 			Input.TANK_RIGHT, () -> -driverController.getY(Hand.kRight)
 		)));
 
+		autonomousDriveForTime = new DriveForTime(3, 1, drive);
+
 		//robotContainer = new RobotContainer(drive);
 
-		shooter = addSubsystem(Shooter::new);
+		//shooter = addSubsystem(Shooter::new);
 		//hanger = addSubsystem(GeneratorHanger::new);
 		intake = addSubsystem(Intake::new);
 
@@ -108,7 +118,7 @@ public class Robot extends RobotBase {
 	public void teleopInit() {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
-		compressor.setClosedLoopControl(true);
+		//compressor.setClosedLoopControl(true);
 		drive.resetSensors();
 		//gyro.reset();
 	}
@@ -131,6 +141,7 @@ public class Robot extends RobotBase {
 	@Override
 	public void autonomousInit() {
 		compressor.setClosedLoopControl(true);
+		autonomousDriveForTime.schedule();
 	}
 
 	@Override

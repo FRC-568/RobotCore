@@ -1,9 +1,13 @@
 package frc.team568.robot.recharge;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.team568.robot.subsystems.TalonSRXDrive;
 
 public class ShooterAlignCommand extends CommandBase {
-	/*
+	
 	final TalonSRXDrive drive;
 	final Shooter shooter;
 
@@ -73,5 +77,5 @@ public class ShooterAlignCommand extends CommandBase {
 		directionEntry = builder.getEntry("direction");
 		errorEntry = builder.getEntry("error");
 	}
-	*/
+	
 }

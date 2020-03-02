@@ -24,7 +24,7 @@ public class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		
-		final String trajectoryJSON = "paths/YourPath.wpilib.json";
+		final String trajectoryJSON = "PathWeaver/pathweaver.json";
 		Trajectory trajectory = null;
 		try {
 			final Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
@@ -33,24 +33,24 @@ public class RobotContainer {
 			DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
 		}
 
-			final RamseteCommand ramseteCommand = new RamseteCommand(
-				trajectory,
-				drive::getPose,
-				new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-				new SimpleMotorFeedforward(DriveConstants.ksVolts,
-											DriveConstants.kvVoltSecondsPerMeter,
-											DriveConstants.kaVoltSecondsSquaredPerMeter),
-				DriveConstants.kDriveKinematics,
-				drive::getWheelSpeeds,
-				new PIDController(DriveConstants.kPDriveVel, 0, 0),
-				new PIDController(DriveConstants.kPDriveVel, 0, 0),
-				// RamseteCommand passes volts to the callback
-				drive::tankDriveVolts,
-				drive
-			);
-			
-			// Run path following command, then stop at the end.
-			return ramseteCommand.andThen(() -> drive.tankDriveVolts(0, 0));
+		final RamseteCommand ramseteCommand = new RamseteCommand(
+			trajectory,
+			drive::getPose,
+			new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+			new SimpleMotorFeedforward(DriveConstants.ksVolts,
+										DriveConstants.kvVoltSecondsPerMeter,
+										DriveConstants.kaVoltSecondsSquaredPerMeter),
+			DriveConstants.kDriveKinematics,
+			drive::getWheelSpeeds,
+			new PIDController(DriveConstants.kPDriveVel, 0, 0),
+			new PIDController(DriveConstants.kPDriveVel, 0, 0),
+			// RamseteCommand passes volts to the callback
+			drive::tankDriveVolts,
+			drive
+		);
+		
+		// Run path following command, then stop at the end.
+		return ramseteCommand.andThen(() -> drive.tankDriveVolts(0, 0));
 	}	
 	
 }

@@ -1,7 +1,5 @@
 package frc.team568.robot.subsystems;
 
-import frc.team568.robot.RobotBase;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -10,6 +8,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.team568.robot.RobotBase;
 
 public class DriveTrain extends SubsystemBase {
 	protected SpeedController leftFront;
