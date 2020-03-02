@@ -28,7 +28,11 @@ public class ShooterAlignCommand extends CommandBase {
 
 	@Override
 	public void execute() {
-		final double KpDrive = 0.02;
+		//System.out.println("hihello");
+		System.out.println(shooter.getAngle());
+		//drive.arcadeDrive(0.5, 0);
+		
+		final double KpDrive = 0.03;
 		final double MIN_COMMAND_DRIVE = 0.05;
 		//shooter
 		final double KpShooter = 0.02;
@@ -39,29 +43,36 @@ public class ShooterAlignCommand extends CommandBase {
 			0,
 			MAX_SPEED_DRIVE);
 		
-		double optimalAngle = shooter.calcuateAngle();
-		double currentAngle = shooter.getShooterAngle();
-		double shooterRotateSpeed = MAX_SPEED_SHOOTER * currentAngle;
+		// double optimalAngle = shooter.calcuateAngle();
+		// double currentAngle = shooter.getShooterAngle();
+		// double shooterRotateSpeed = MAX_SPEED_SHOOTER * currentAngle;
 
-		if (optimalAngle != currentAngle) {
-			double errorShooter = currentAngle * KpShooter - MIN_COMMAND_SHOOTER;
-			shooter.rotateShooterSpeed(shooterRotateSpeed - errorShooter);
-			rotationEntry.setDouble(shooterRotateSpeed);
-		} else {
-			shooter.rotateShooterSpeed(0);
-			rotationEntry.setDouble(0);
-		}
+		// if (optimalAngle != currentAngle) {
+		// 	double errorShooter = currentAngle * KpShooter - MIN_COMMAND_SHOOTER;
+		// 	shooter.rotateShooterSpeed(shooterRotateSpeed - errorShooter);
+		// 	//rotationEntry.setDouble(shooterRotateSpeed);
+		// } else {
+		// 	shooter.rotateShooterSpeed(0);
+		// 	//rotationEntry.setDouble(0);
+		// }
 
-		if (Math.abs(shooter.getAngle()) <= 2) {
+		while(Math.abs(shooter.distanceFromTarget()) >= 160) {
+		if ((Math.abs(shooter.getAngle()) >= 5) && (Math.abs(shooter.getAngle()) <= 8)) {
 			drive.tankDrive(targetSpeed, targetSpeed);
-		} else {
+		} else if (Math.abs(shooter.getAngle()) < 5){
 			double errorDrive = shooter.getAngle() * KpDrive - MIN_COMMAND_DRIVE;
 			drive.tankDrive(targetSpeed - errorDrive, targetSpeed + errorDrive);
-			
-			directionEntry.setString(errorDrive > 0 ? "left" : "right");
-			errorEntry.setDouble(errorDrive);
+		} else if (Math.abs(shooter.getAngle()) > 8) {
+			double errorDrive = shooter.getAngle() * KpDrive - MIN_COMMAND_DRIVE;
+			drive.tankDrive(targetSpeed + errorDrive - 0.1, targetSpeed - errorDrive - 0.1);
+
 		}
 	}
+			//directionEntry.setString(errorDrive > 0 ? "left" : "right");
+			//errorEntry.setDouble(errorDrive);
+	}
+		
+	
 	
 	@Override
 	public boolean isFinished() {

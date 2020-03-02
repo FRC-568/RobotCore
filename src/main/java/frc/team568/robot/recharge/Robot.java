@@ -4,6 +4,7 @@ import static edu.wpi.first.wpilibj.XboxController.Button.kBack;
 import static edu.wpi.first.wpilibj.XboxController.Button.kStart;
 import static edu.wpi.first.wpilibj.XboxController.Button.kStickLeft;
 import static edu.wpi.first.wpilibj.XboxController.Button.kStickRight;
+import static edu.wpi.first.wpilibj.XboxController.Button.kX;
 
 import java.util.Map;
 
@@ -69,17 +70,15 @@ public class Robot extends RobotBase {
 		config("spinner/spinner", 1);
 		config("spinner/extendSpinner", 2);
 
-		button("intakeExtenderToggle", drivingControllerPort, Xinput.B);
-		button("intake", drivingControllerPort, Xinput.LeftBumper);
-		button("shoot", drivingControllerPort, Xinput.RightBumper);
-		button("rotateShooterUp", drivingControllerPort, Xinput.Y);
-		button("rotateShooterDown", drivingControllerPort, Xinput.A);
+		button("intakeExtenderToggle", mechanismControllerPort, Xinput.B);
+		button("intake", mechanismControllerPort, Xinput.LeftBumper);
+		button("outTake", mechanismControllerPort, Xinput.X);
+		button("shoot", mechanismControllerPort, Xinput.RightBumper);
 		button("hangerUp", mechanismControllerPort, Xinput.Y);
 		button("hangerDown", mechanismControllerPort, Xinput.A);
 		button("spin", mechanismControllerPort, Xinput.B);
 
-		axis("hangerL", mechanismControllerPort, Xinput.LeftStickY);
-		axis("hangerR", mechanismControllerPort, Xinput.RightStickY);
+		axis("rotateShooter", mechanismControllerPort, Xinput.LeftStickY);
 
 		compressor = new Compressor();
 		pdp = new PowerDistributionPanel();
@@ -105,11 +104,11 @@ public class Robot extends RobotBase {
 
 		//robotContainer = new RobotContainer(drive);
 
-		//shooter = addSubsystem(Shooter::new);
+		shooter = addSubsystem(Shooter::new);
 		//hanger = addSubsystem(GeneratorHanger::new);
 		intake = addSubsystem(Intake::new);
 
-		//driverController.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive)); //TODO check if this works
+		driverController.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive)); //TODO check if this works
 		//driverController.getButton(kY).whenPressed(robotContainer.getAutonomousCommand());
 	
 	}
@@ -118,14 +117,15 @@ public class Robot extends RobotBase {
 	public void teleopInit() {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
-		//compressor.setClosedLoopControl(true);
+		compressor.setClosedLoopControl(true);
 		drive.resetSensors();
-		//gyro.reset();
+		gyro.reset();
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		CommandScheduler.getInstance().run();
+		System.out.println(shooter.distanceFromTarget());
 	}
 
 	@Override
@@ -148,4 +148,5 @@ public class Robot extends RobotBase {
 	public void autonomousPeriodic() {
 		CommandScheduler.getInstance().run();
 	}
+
 }

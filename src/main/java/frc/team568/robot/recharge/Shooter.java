@@ -1,7 +1,6 @@
 package frc.team568.robot.recharge;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -27,17 +26,16 @@ public class Shooter extends SubsystemBase {
 	public static final double WIDTH_BETWEEN_TARGET = 39.125; //29.375; // inches //TODO need to find to width of the vision target
 	public static final double HEIGHT_OF_TARGET = 98.25; // height of target in inches
 	public static final double DISTANCE_CONSTANT = WIDTH_BETWEEN_TARGET * CAMERA_WIDTH / 0.2361111111 / 2; //5760  // 5738;
-	public static final double INITIAL_VELOCITY = 100; //TODO find initial velocity in inches per second (by testing?)
+	public static final double INITIAL_VELOCITY = 500; //TODO find initial velocity in inches per second (by testing?)
 	public static final double SHOOTER_RADIUS = 8;
 	public static final double SHOOTER_MOUNTED_HEIGHT = 10; //TODO find shooter height from ground to edge of shooter
 	private static final double GRAVITY = 386.09; // 386.09 inches per second per second
 	
-	private double shooterHeight = SHOOTER_MOUNTED_HEIGHT + (SHOOTER_RADIUS - SHOOTER_RADIUS * Math.cos(getShooterAngle())); // assumes getShooterAngle to be in radius and units inches
+	private double shooterHeight;
 	private double simulatedHeight = HEIGHT_OF_TARGET - shooterHeight; //calcuate height of target from the shooter height because shooter is off the ground;
 	private double distanceFromTarget;
 	private double distanceFromCenterY;
-	private double shooterAngle = 0; //TODO get shooter angle using encoders (in radians)
-	//private double calculatedAngle = Math.asin(Math.sqrt(2 * GRAVITY * simulatedHeight) / INITIAL_VELOCITY); // calculated angle in radians
+	private double calculatedAngle = Math.asin(Math.sqrt(2 * GRAVITY * simulatedHeight) / INITIAL_VELOCITY); // calculated angle in radians
 	private double calculatedAngle1;
 	private double calculatedAngle2;
 
@@ -64,8 +62,8 @@ public class Shooter extends SubsystemBase {
 	private double ksubh = 0.5 * p * asubh * csubh;
 	private double t = (m / (ksubh * v * Math.cos(n))) * (Math.pow(e, ((ksubh * 5))));
 
-	NetworkTable res = NetworkTableInstance.getDefault().getTable("Resolution");
-	NetworkTable coords = NetworkTableInstance.getDefault().getTable("Coordinates");
+	NetworkTable res = NetworkTableInstance.getDefault().getTable("resolution");
+	NetworkTable coords = NetworkTableInstance.getDefault().getTable("coordinates");
 
 	NetworkTableEntry resX;
 	NetworkTableEntry resY;
@@ -98,8 +96,7 @@ public class Shooter extends SubsystemBase {
 
 	final double INTAKE_SPEED = 0.5;
 	final double SHOOT_SPEED = -1;
-	final double WHEEL_SPEED = 1;
-	final double ROTATOR_SPEED = 0.5;
+	final double WHEEL_SPEED = -1;
 
 	// PID setup
 	private PIDController pidShooterRotate;
@@ -109,7 +106,8 @@ public class Shooter extends SubsystemBase {
 
 	// PDP
 	private PowerDistributionPanel pdp;
-	private double shooterCompensation = 0;
+	private double shooterLCompensation = 0;
+	private double shooterRCompensation = 0;
 
 	// Drivetrain setup
 	private DriveBase drive;
@@ -122,9 +120,7 @@ public class Shooter extends SubsystemBase {
 		shooterR = new WPI_TalonSRX(configInt("shooterR"));
 		shooterL.setInverted(true);
 		shooterR.setInverted(false);
-		shooterL.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 		shooterL.setSensorPhase(true);
-		shooterR.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 		shooterR.setSensorPhase(true);
 
 		wheel = new VictorSPX(configInt("wheel"));
@@ -137,6 +133,7 @@ public class Shooter extends SubsystemBase {
 
 		d = getHorizontalDistanceFromTarget();
 		targetY  = getActualHeight();
+		shooterHeight = SHOOTER_MOUNTED_HEIGHT + (SHOOTER_RADIUS - SHOOTER_RADIUS * Math.cos(getShooterAngle())); // assumes getShooterAngle to be in radius and units inches
 
 		initDefaultCommand();
 		
@@ -153,29 +150,29 @@ public class Shooter extends SubsystemBase {
 		calculatedAngle1 = Math.atan(Math.pow(v, 2) + Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(targetX, 2) + 2 * targetY * Math.pow(v, 2))));
 		calculatedAngle2 = Math.atan(Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(targetX, 2) + 2 * targetY * Math.pow(v, 2))));
 
-		potentialAngle1.setDouble(calculatedAngle1);
-		potentialAngle2.setDouble(calculatedAngle2);
+		//potentialAngle1.setDouble(calculatedAngle1);
+		//potentialAngle2.setDouble(calculatedAngle2);
 	
-		if(calculatedAngle1 < 0 || calculatedAngle1 > 90) {
-			optimalAngleEntry.setDouble(-100);
-			return -100;
-		} if (calculatedAngle2 < 0 || calculatedAngle2 > 90) {
-			optimalAngleEntry.setDouble(-100);
-			return -100;
+		// if(calculatedAngle1 < 0 || calculatedAngle1 > 90) {
+		// 	optimalAngleEntry.setDouble(-100);
+		// 	return -100;
+		// } if (calculatedAngle2 < 0 || calculatedAngle2 > 90) {
+		// 	optimalAngleEntry.setDouble(-100);
+		// 	return -100;
 
-		} else {
-			if(calculatedAngle1 < calculatedAngle2) {
-				optimalAngleEntry.setDouble(calculatedAngle1);
+		// } else {
+		// 	if(calculatedAngle1 < calculatedAngle2) {
+		// 		optimalAngleEntry.setDouble(calculatedAngle1);
 	
-				return calculatedAngle1; 
+		// 		return calculatedAngle1; 
 
-			} else {
-				optimalAngleEntry.setDouble(calculatedAngle2);
+		// 	} else {
+		// 		optimalAngleEntry.setDouble(calculatedAngle2);
 	
-				return calculatedAngle2;
-			}
-		}
-		
+		// 		return calculatedAngle2;
+		// 	}
+		// }
+		return 47;
 	}
 	
 	public double getHorizontalDistanceFromTarget() {
@@ -232,7 +229,7 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public double getShooterAngle() {
-		return shooterAngle;
+		return Math.PI/4; //TODO: get shooter angle
 	}
 
 	public void setShooterAngle(double angle) {
@@ -275,6 +272,9 @@ public class Shooter extends SubsystemBase {
 			@Override
 			public void execute() {
 				
+				double shooterLCurrent = pdp.getCurrent(configInt("shooterL"));
+				double shooterRCurrent = pdp.getCurrent(configInt("shooterR"));
+
 				// Manually move shooter
 				if (button("intake")) {
 
@@ -285,35 +285,37 @@ public class Shooter extends SubsystemBase {
 
 				} else if (button("shoot")) {
 
-					final double COMPENSATION_CHANGE = 0.001;
-					final double SHOOTER_GOAL = 100;
+					final double COMPENSATION_CHANGE = 0.01;
+					final double SHOOTER_L_GOAL = 20;
+					final double SHOOTER_R_GOAL = 20;
 
-					if (shooterL.getSelectedSensorVelocity() > shooterR.getSelectedSensorVelocity())
-						shooterCompensation -= COMPENSATION_CHANGE;
+					if (shooterLCurrent > SHOOTER_L_GOAL)
+						shooterLCompensation += COMPENSATION_CHANGE;
 					else
-						shooterCompensation += COMPENSATION_CHANGE;
+						shooterLCompensation -= COMPENSATION_CHANGE;
 
-					shooterL.set(SHOOT_SPEED - shooterCompensation);
-					shooterR.set(SHOOT_SPEED + shooterCompensation);
+					if (shooterRCurrent > SHOOTER_L_GOAL)
+						shooterRCompensation += COMPENSATION_CHANGE;
+					else
+						shooterRCompensation -= COMPENSATION_CHANGE;
 
-					if ((Math.abs(shooterL.getSelectedSensorVelocity()) < SHOOTER_GOAL) && (Math.abs(shooterR.getSelectedSensorVelocity()) < SHOOTER_GOAL))
+					shooterL.set(SHOOT_SPEED + shooterLCompensation);
+					shooterR.set(SHOOT_SPEED + shooterRCompensation);
+
+					if ((Math.abs(shooterL.getSelectedSensorVelocity() - SHOOTER_L_GOAL) < 1 && (Math.abs(shooterR.getSelectedSensorVelocity() - SHOOTER_R_GOAL) < 1)))
 						wheel.set(ControlMode.PercentOutput, -WHEEL_SPEED);
 
 				} else {
-
+					
 					shooterL.set(0);
 					shooterR.set(0);
 					wheel.set(ControlMode.PercentOutput, 0);
-					shooterCompensation = 0;
+					shooterLCompensation = 0;
+					shooterRCompensation = 0;
 
 				}
 
-				if (button("rotateShooterUp"))
-					shooterRotator.set(ROTATOR_SPEED);
-				else if (button("rotateShooterDown"))
-					shooterRotator.set(-ROTATOR_SPEED);
-				else
-					shooterRotator.set(0);
+				shooterRotator.set(axis("rotateShooter") * 0.3);
 
 			}
 

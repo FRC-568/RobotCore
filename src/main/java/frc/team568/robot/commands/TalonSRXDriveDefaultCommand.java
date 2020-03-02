@@ -13,9 +13,10 @@ public class TalonSRXDriveDefaultCommand extends CommandBase {
 	final TalonSRXDrive drive;
 	Map<Input, DoubleSupplier> inputMap;
 
-	private double kP = 0.05;
+	private double kP = 0.1;
 	private double prevAngle = 0;
 	private PIDController pidDrive;
+	private double correction = 0;
 
 	public TalonSRXDriveDefaultCommand(final TalonSRXDrive drive, Map<Input, DoubleSupplier> inputMap) {
 		this.drive = drive;
@@ -39,7 +40,7 @@ public class TalonSRXDriveDefaultCommand extends CommandBase {
 
 			// pid calculation
 			pidDrive.setSetpoint(prevAngle);
-			double correction = pidDrive.calculate(drive.getHeading());
+			correction = pidDrive.calculate(drive.getHeading());
 
 			// resets current gyro heading and pid if turning or not moving
 			if (Math.abs(axis(Input.TURN)) > 0.05) {
@@ -58,7 +59,7 @@ public class TalonSRXDriveDefaultCommand extends CommandBase {
 
 			drive.arcadeDrive(
 				axis(Input.FORWARD),
-				axis(Input.TURN) * 0.6);// + correction);
+				axis(Input.TURN) * 0.75 + correction);
 		
 		}
 	
@@ -72,5 +73,7 @@ public class TalonSRXDriveDefaultCommand extends CommandBase {
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
 		builder.addDoubleProperty("P", () -> kP, p -> this.kP = p);
+		builder.addDoubleProperty("correction", () -> correction, null);
 	}
+
 }
