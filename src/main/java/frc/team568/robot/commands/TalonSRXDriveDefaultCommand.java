@@ -29,7 +29,7 @@ public class TalonSRXDriveDefaultCommand extends CommandBase {
 
 	@Override
 	public void execute() {
-
+		System.out.println(correction);
 		if (drive.getTankControls()) {
 
 			drive.tankDrive(
@@ -59,7 +59,7 @@ public class TalonSRXDriveDefaultCommand extends CommandBase {
 
 			drive.arcadeDrive(
 				axis(Input.FORWARD),
-				axis(Input.TURN) * 0.75 + correction);
+				axis(Input.TURN) * 0.80);// + correction);
 		
 		}
 	

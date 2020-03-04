@@ -42,10 +42,6 @@ public class GeneratorHanger extends SubsystemBase {
 
 					hangerPuller.set(PULLER_SPEED);
 
-				} else {
-
-					hangerPuller.set(axis("hangerL") * 0.3);
-
 				}
 
 			}

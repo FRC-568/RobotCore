@@ -57,17 +57,18 @@ public class ShooterAlignCommand extends CommandBase {
 		// }
 
 		while(Math.abs(shooter.distanceFromTarget()) >= 160) {
-		if ((Math.abs(shooter.getAngle()) >= 5) && (Math.abs(shooter.getAngle()) <= 8)) {
-			drive.tankDrive(targetSpeed, targetSpeed);
-		} else if (Math.abs(shooter.getAngle()) < 5){
-			double errorDrive = shooter.getAngle() * KpDrive - MIN_COMMAND_DRIVE;
-			drive.tankDrive(targetSpeed - errorDrive, targetSpeed + errorDrive);
-		} else if (Math.abs(shooter.getAngle()) > 8) {
-			double errorDrive = shooter.getAngle() * KpDrive - MIN_COMMAND_DRIVE;
-			drive.tankDrive(targetSpeed + errorDrive - 0.1, targetSpeed - errorDrive - 0.1);
+		
+			if ((Math.abs(shooter.getAngle()) >= 5) && (Math.abs(shooter.getAngle()) <= 8)) {
+				drive.tankDrive(targetSpeed, targetSpeed);
+			} else if (Math.abs(shooter.getAngle()) < 5){
+				double errorDrive = shooter.getAngle() * KpDrive - MIN_COMMAND_DRIVE;
+				drive.tankDrive(targetSpeed - errorDrive, targetSpeed + errorDrive);
+			} else if (Math.abs(shooter.getAngle()) > 8) {
+				double errorDrive = shooter.getAngle() * KpDrive - MIN_COMMAND_DRIVE;
+				drive.tankDrive(targetSpeed + errorDrive - 0.1, targetSpeed - errorDrive - 0.1);
 
+			}
 		}
-	}
 			//directionEntry.setString(errorDrive > 0 ? "left" : "right");
 			//errorEntry.setDouble(errorDrive);
 	}

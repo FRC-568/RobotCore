@@ -42,7 +42,7 @@ public class Robot extends RobotBase {
 	Compressor compressor;
 	Command autonomousCommand;
 	XinputController driverController = new XinputController(drivingControllerPort);
-	XinputController mechanismController = new XinputController(mechanismControllerPort);
+	XinputController mechanismController = new XinputController(mechanismControllerPort); 
 
 	PowerDistributionPanel pdp;
 
@@ -77,6 +77,7 @@ public class Robot extends RobotBase {
 		button("hangerUp", mechanismControllerPort, Xinput.Y);
 		button("hangerDown", mechanismControllerPort, Xinput.A);
 		button("spin", mechanismControllerPort, Xinput.B);
+		button("stopIntake", mechanismControllerPort, Xinput.Y);
 
 		axis("rotateShooter", mechanismControllerPort, Xinput.LeftStickY);
 
@@ -100,7 +101,7 @@ public class Robot extends RobotBase {
 			Input.TANK_RIGHT, () -> -driverController.getY(Hand.kRight)
 		)));
 
-		autonomousDriveForTime = new DriveForTime(3, 1, drive);
+		autonomousDriveForTime = new DriveForTime(2, 1, drive);
 
 		//robotContainer = new RobotContainer(drive);
 
