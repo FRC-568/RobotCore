@@ -58,12 +58,12 @@ public class ShooterAlignCommand extends CommandBase {
 
 		while(Math.abs(shooter.distanceFromTarget()) >= 160) {
 		
-			if ((Math.abs(shooter.getAngle()) >= 5) && (Math.abs(shooter.getAngle()) <= 8)) {
+			if ((Math.abs(shooter.getAngle()) >= 338) && (Math.abs(shooter.getAngle()) <= 342)) {
 				drive.tankDrive(targetSpeed, targetSpeed);
-			} else if (Math.abs(shooter.getAngle()) < 5){
+			} else if (Math.abs(shooter.getAngle()) < 338){
 				double errorDrive = shooter.getAngle() * KpDrive - MIN_COMMAND_DRIVE;
 				drive.tankDrive(targetSpeed - errorDrive, targetSpeed + errorDrive);
-			} else if (Math.abs(shooter.getAngle()) > 8) {
+			} else if (Math.abs(shooter.getAngle()) > 342) {
 				double errorDrive = shooter.getAngle() * KpDrive - MIN_COMMAND_DRIVE;
 				drive.tankDrive(targetSpeed + errorDrive - 0.1, targetSpeed - errorDrive - 0.1);
 

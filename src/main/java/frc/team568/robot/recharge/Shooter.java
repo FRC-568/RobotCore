@@ -222,8 +222,15 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public double distanceFromTarget() {
-		// distance constant divided by length between centers of contours
-		distanceFromTarget = DISTANCE_CONSTANT / getCenterX();
+		// // distance constant divided by length between centers of contours
+		// distanceFromTarget = DISTANCE_CONSTANT / getCenterX();
+		
+		double width = 60; //inches // width of the target box
+
+		boxWidth = coords.getEntry("boxWidth");
+		double boxWidthentry = boxWidth.getDouble(-1);
+		distanceFromTarget = (width * 333.82) / boxWidthentry; // 333.82 is the focal length of the microsoft lifecam in px
+		
 		return distanceFromTarget - OFFSET_TO_FRONT;
 	}
 
@@ -271,17 +278,26 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public double getAngle() {
-		// 13.3133853031in is for the distance from center to center from goal, then
-		// divide by lengthBetweenCenters in pixels to get proportion
-		double constant = WIDTH_BETWEEN_TARGET / getCenterX();
-		double angleToGoal = 0;
+		// double h = (CAMERA_WIDTH / 2) / Math.tan(68.5 / 2);
+		// double degreesPerPixel = Math.atan(1 / h);
+		// double pixelsPerDegree = 1 / degreesPerPixel;
 
-		// this calculates the distance from the center of goal to center of webcam
-		double distanceFromCenterPixels = ((getCenterX() / 2) - (CAMERA_WIDTH / 2));
-		// Converts pixels to inches using the constant from above.
-		double distanceFromCenterInch = distanceFromCenterPixels * constant;
-		// math brought to you by Chris and Jones
-		angleToGoal = Math.toDegrees(Math.atan(distanceFromCenterInch / distanceFromTarget()));
+		// double angleToGoal = getCenterX() * degreesPerPixel;
+
+		double angleToGoal = getCenterX();
+
+
+		// // 13.3133853031in is for the distance from center to center from goal, then
+		// // divide by lengthBetweenCenters in pixels to get proportion
+		// double constant = WIDTH_BETWEEN_TARGET / getCenterX();
+		// double angleToGoal = 0;
+
+		// // this calculates the distance from the center of goal to center of webcam
+		// double distanceFromCenterPixels = ((getCenterX() / 2) - (CAMERA_WIDTH / 2));
+		// // Converts pixels to inches using the constant from above.
+		// double distanceFromCenterInch = distanceFromCenterPixels * constant;
+		// // math brought to you by Chris and Jones
+		// angleToGoal = Math.toDegrees(Math.atan(distanceFromCenterInch / distanceFromTarget()));
 
 		return angleToGoal;
 	}
