@@ -4,9 +4,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class AutoFour extends SequentialCommandGroup {
 
-	public AutoFour() {
-		addCommands(Robot.getInstance().gearBox.closeCommand(),
-			new Drive2017(70, .3));
+	public AutoFour(Robot robot) {
+		addCommands(robot.gearBox.closeCommand(),
+			new Drive2017(70, .3, robot.driveTrain, robot.referenceFrame));
 
 		// I added 20 extra ticks to go forward so get rid of them when you back
 		// to gear center auto

@@ -1,7 +1,6 @@
 package frc.team568.robot.stronghold;
 
 import frc.team568.robot.RobotBase;
-import frc.team568.robot.stronghold.Robot;
 import frc.team568.robot.subsystems.ReferenceFrame2016;
 import frc.team568.robot.subsystems.SubsystemBase;
 import edu.wpi.first.wpilibj.Joystick;
@@ -72,10 +71,9 @@ public class ArcadeDrive extends SubsystemBase {
 		}
 
 		Kp = .015;
-		double error = Robot.getInstance().referenceFrame.getAngle() * Kp;
+		double error = gyro.getAngle() * Kp;
 
-		if (Robot.getInstance().referenceFrame.getAngle() <= 5
-				&& Robot.getInstance().referenceFrame.getAngle() >= -5) {
+		if (gyro.getAngle() <= 5 && gyro.getAngle() >= -5) {
 			leftFront.set(speed);
 			leftBack.set(speed);
 			rightFront.set(speed);
@@ -97,11 +95,11 @@ public class ArcadeDrive extends SubsystemBase {
 		}
 
 		Kp = .015;
-		double error = Robot.getInstance().referenceFrame.getAngle() * Kp;
+		double error = gyro.getAngle() * Kp;
 		speed = -speed;
 
-		if (Robot.getInstance().referenceFrame.getAngle() <= 5
-				&& Robot.getInstance().referenceFrame.getAngle() >= -5) {
+		if (gyro.getAngle() <= 5
+				&& gyro.getAngle() >= -5) {
 			leftFront.set(speed);
 			leftBack.set(speed);
 			rightFront.set(speed);

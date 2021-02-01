@@ -26,7 +26,8 @@ public class Climber extends SubsystemBase {
 
 		currentState = State.RELAXED;
 
-		Robot.getInstance().oi.climb.whileHeld(new Climb(this));
+		//command should be added from the Robot
+		//Robot.getInstance().oi.climb.whileHeld(new Climb(this));
 
 	}
 

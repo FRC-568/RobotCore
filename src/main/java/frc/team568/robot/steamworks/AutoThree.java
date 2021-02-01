@@ -8,16 +8,16 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class AutoThree extends SequentialCommandGroup {
 
-	public AutoThree() {
-		GearBox gearBox = Robot.getInstance().gearBox;
+	public AutoThree(Robot robot) {
+		GearBox gearBox = robot.gearBox;
 		addCommands(gearBox.closeCommand(),
-			new Drive2017(79, .3),
+			new Drive2017(79, .3, robot.driveTrain, robot.referenceFrame),
 			//new Turn(40), //need generic turn command to replace one adopted by powerup
-			new MoveToVisionTarget(Robot.getInstance().driveTrain, Robot.getInstance().gearTracker),
-			new Drive2017(48, .3),
+			new MoveToVisionTarget(robot.driveTrain, robot.gearTracker),
+			new Drive2017(48, .3, robot.driveTrain, robot.referenceFrame),
 			gearBox.openCommand(),
 			new WaitCommand(2),
-			new Drive2017(-24, -.2),
+			new Drive2017(-24, -.2, robot.driveTrain, robot.referenceFrame),
 			gearBox.closeCommand());
 	}
 

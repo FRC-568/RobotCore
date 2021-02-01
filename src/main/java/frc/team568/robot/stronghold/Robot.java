@@ -53,19 +53,19 @@ public class Robot extends RobotBase {
 
 	/*
 	 * double Pan; double Tilt; double BoxSize;
-	 * 
+	 *
 	 * double KI; double KP; double KD; double TiltKP; double TiltKD; double
 	 * TiltKI; double ErrSum; double Err2; double Err; double Pow; boolean LL;
 	 * boolean LR;
-	 * 
+	 *
 	 * double tiltErr; double tiltErr2; double tiltPow;
 	 */
 
 	public Robot() {
 		super("stronghold");
-		
+
 		instance = this;
-		
+
 		port("nudge", 8);
 		port("leftFrontMotor", 4);
 		port("leftBackMotor", 5);
@@ -83,7 +83,7 @@ public class Robot extends RobotBase {
 		port("joy1Pos", 0);
 		port("joy2Pos", 1);
 		port("joy3Pos", 2);
-		
+
 		port("CrateBot.leftFront", 0);
 		port("CrateBot.leftBack", 1);
 		port("CrateBot.rightFront", 2);
@@ -92,7 +92,7 @@ public class Robot extends RobotBase {
 		port("CrateBot.brake", 2);
 		port("CrateBot.lifterMotor", 5);
 		port("CrateBot.lowZoneMotor", 8);
-		
+
 		oi = new OI();
 		// aim = new AimingPID(0.001, 0, 0);
 		arcadeDrive = addSubsystem(ArcadeDrive::new);
@@ -100,6 +100,16 @@ public class Robot extends RobotBase {
 		arms = addSubsystem(Arms::new);
 		referenceFrame = addSubsystem(ReferenceFrame2016::new);
 		time = new Timer();
+
+		oi.armsUp.whenHeld(arms.commandArmUp());
+		oi.armsDown.whenHeld(arms.commandArmDown());
+
+		oi.shootFour.whenPressed(new Shoot2016(shooter));
+		oi.shootFive.whenPressed(new GetBall(shooter));
+		oi.shootTwo.whenHeld(new TiltDownwards(shooter));
+		oi.shootThree.whenHeld(new TiltUpwards(shooter));
+		oi.shootOne.whenPressed(new Nudge(shooter));
+		oi.shootSix.whenPressed(new StopShoot(shooter));
 	}
 
 	@Override
@@ -114,7 +124,7 @@ public class Robot extends RobotBase {
 		session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		NIVision.IMAQdxConfigureGrab(session);
 		*/
-		
+
 		/*
 		 * SmartDashboard.putNumber("P", 2.00); SmartDashboard.putNumber("I",
 		 * 0.700); SmartDashboard.putNumber("D", 0);
@@ -144,10 +154,10 @@ public class Robot extends RobotBase {
 		int autonomousNumber = (int) SmartDashboard.getNumber("Autonomous #", 1.0);
 		switch(autonomousNumber) {
 		case 1:
-			autonomousCommand = new AutoOne();
+			autonomousCommand = new AutoOne(this);
 			break;
 		case 2:
-			autonomousCommand = new AutoTwo(arms);
+			autonomousCommand = new AutoTwo(this);
 			break;
 		default:
 			return;
@@ -201,7 +211,7 @@ public class Robot extends RobotBase {
 		 * SmartDashboard.putNumber("Acel Y", referanceFrame2.getAcel().y);
 		 * SmartDashboard.putNumber("Acel X", referanceFrame2.getAcel().x);
 		 * SmartDashboard.putNumber("Encoder", encoder.getDistance());
-		 * 
+		 *
 		 * KP = SmartDashboard.getNumber("P"); KI =
 		 * SmartDashboard.getNumber("I"); KD = SmartDashboard.getNumber("D");
 		 * TiltKP = SmartDashboard.getNumber("TP"); TiltKI =
@@ -214,9 +224,9 @@ public class Robot extends RobotBase {
 		 * System.out.println(server.getNumber("COG_X", 0.0));
 		 * System.out.println(server.getNumber("COG_Y", 0.0)); } catch
 		 * (TableKeyNotDefinedException ex) {
-		 * 
+		 *
 		 * }
-		 * 
+		 *
 		 * if (rightStick.getRawButton(3)) { Pan =
 		 * SmartDashboard.getNumber("COG_X"); Tilt =
 		 * SmartDashboard.getNumber("COG_Y"); BoxSize =
@@ -228,22 +238,22 @@ public class Robot extends RobotBase {
 		 * else { LL = true; LR = false; } SmartDashboard.putNumber("ERR", Err);
 		 * SmartDashboard.putNumber("Pow", Pow);
 		 * SmartDashboard.putNumber("Size", BoxSize);
-		 * 
+		 *
 		 * if (Math.abs(Err) < 100) { // ErrSum = 0; if (BoxSize < 100)
 		 * DarwinsRobot.tankDrive(-.5, -.5);
-		 * 
+		 *
 		 * tiltErr = 240 - Tilt; tiltErr2 = tiltErr; tiltPow = tiltErr * (TiltKP
 		 * / 1000) + tiltPow * (TiltKI / 1000)+ (tiltErr - tiltErr2) * (TiltKD /
 		 * 1000); bob.set(tiltPow); sam.set(tiltPow);
 		 * SmartDashboard.putNumber("TiltPow", tiltPow);
-		 * 
+		 *
 		 * }
-		 * 
+		 *
 		 * }
-		 * 
+		 *
 		 * else { bob.set(0); sam.set(0); if (LL) { DarwinsRobot.tankDrive(-.55,
 		 * .55); } if (LR) { DarwinsRobot.tankDrive(.55, -.55); } }
-		 * 
+		 *
 		 * }
 		 */
 	}

@@ -38,7 +38,7 @@ public class Robot extends RobotBase {
 
 	public Robot() {
 		super("steamworks");
-		
+
 		instance = this;
 
 		port("leftFrontMotor", 1);
@@ -66,6 +66,9 @@ public class Robot extends RobotBase {
 		// compressor = new Compressor();
 
 		// blockIntake = new BlockIntake(this);
+
+		oi.openRopeClamp.whenPressed(ropeCollector.openCommand());
+		oi.closeRopeClamp.whenPressed(ropeCollector.closeCommand());
 	}
 
 	@Override
@@ -104,13 +107,13 @@ public class Robot extends RobotBase {
 		// imu.reset();
 
 		if (SmartDashboard.getNumber("Autonomous #", 0) == 1) {
-			autonomousCommand = new AutoOne();
+			autonomousCommand = new AutoOne(this);
 		} else if (SmartDashboard.getNumber("Autonomous #", 0) == 2) {
-			autonomousCommand = new AutoTwo();
+			autonomousCommand = new AutoTwo(this);
 		} else if (SmartDashboard.getNumber("Autonomous #", 0) == 3) {
-			autonomousCommand = new AutoThree();
+			autonomousCommand = new AutoThree(this);
 		} else if (SmartDashboard.getNumber("Autonomous #", 0) == 4) {
-			autonomousCommand = new AutoFour();
+			autonomousCommand = new AutoFour(this);
 		}
 		// referenceFrame.reset();
 		// visionProcessor.start();

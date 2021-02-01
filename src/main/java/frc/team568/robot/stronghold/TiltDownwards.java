@@ -5,20 +5,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class TiltDownwards extends CommandBase {
 	Shooter2016 shooter;
 
-	@Override
-	public void initialize() {
-		shooter = Robot.getInstance().shooter;
+	public TiltDownwards(Shooter2016 shooter) {
+		this.shooter = shooter;
 	}
 
 	@Override
 	public void execute() {
 		shooter.tiltDown();
-		System.out.println("Tilt down");
-	}
-
-	@Override
-	public boolean isFinished() {
-		return !Robot.getInstance().oi.shootTwo.get();
 	}
 
 	@Override

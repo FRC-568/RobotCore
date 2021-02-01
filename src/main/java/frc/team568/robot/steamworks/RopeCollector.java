@@ -12,12 +12,9 @@ public class RopeCollector extends SubsystemBase {
 
 	public RopeCollector(final RobotBase robot) {
 		super(robot);
-		
+
 		ropeClampIn = new Solenoid(port("ropeClampIn"));
 		ropeClampOut = new Solenoid(port("ropeClampOut"));
-
-		Robot.getInstance().oi.openRopeClamp.whenPressed(this.openCommand());
-		Robot.getInstance().oi.closeRopeClamp.whenPressed(this.closeCommand());
 	}
 
 	public void open() {

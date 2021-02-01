@@ -11,9 +11,12 @@ public class Drive2016 extends CommandBase {
 	double delay;
 	boolean forward;
 
+	public Drive2016(ArcadeDrive drive) {
+		this.drive = drive;
+	}
+
 	@Override
 	public void initialize() {
-		drive = Robot.getInstance().arcadeDrive;
 		timer = new Timer();
 		speed = SmartDashboard.getNumber("Speed", 0.0);
 		delay = SmartDashboard.getNumber("Time?", 0.0);

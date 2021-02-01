@@ -1,24 +1,17 @@
 package frc.team568.robot.stronghold;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class StopShoot extends CommandBase {
+public class StopShoot extends InstantCommand {
 	Shooter2016 shooter;
 
-	@Override
-	public void initialize() {
-		shooter = Robot.getInstance().shooter;
+	public StopShoot(Shooter2016 shooter) {
+		this.shooter = shooter;
 	}
 
 	@Override
 	public void execute() {
-		System.out.println("Stop Shoot");
 		shooter.stopShooter();
-	}
-
-	@Override
-	public boolean isFinished() {
-		return true;
 	}
 
 }

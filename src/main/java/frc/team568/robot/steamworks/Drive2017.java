@@ -1,6 +1,5 @@
 package frc.team568.robot.steamworks;
 
-import frc.team568.robot.steamworks.Robot;
 import frc.team568.robot.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -18,22 +17,16 @@ public class Drive2017 extends CommandBase {
 	ReferenceFrame2017 ref;
 	double sign;
 
-	public Drive2017(double distance, double speed) {
-		ref = Robot.getInstance().referenceFrame;
+	public Drive2017(double distance, double speed, DriveTrain drive, ReferenceFrame2017 ref) {
+		this.drive = drive;
+		this.ref = ref;
 		inch = ref.motorEncoder.getDistance() + (distance);
 		this.speed = speed;
 		sign = distance;
 	}
 
-	public Drive2017() {
-		ref = Robot.getInstance().referenceFrame;
-		SmartDashboard.getNumber("Speed", 0);
-		inch = 0;
-	}
-
 	@Override
 	public void initialize() {
-		drive = Robot.getInstance().driveTrain;
 		timer = new Timer();
 		timer.reset();
 		timer.start();

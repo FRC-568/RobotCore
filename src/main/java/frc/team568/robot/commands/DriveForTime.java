@@ -23,7 +23,7 @@ public class DriveForTime extends CommandBase {
 	}
 
 	public void execute() {
-		driveTrain.setSpeed(0.7);
+		driveTrain.setSpeed(speed);
 	}
 
 	@Override

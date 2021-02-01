@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class UnClimb extends CommandBase {
 	public WinchClimber winchClimber;
 
-	public UnClimb() {
-		winchClimber = Robot.getInstance().climber;
+	public UnClimb(WinchClimber winchClimber) {
+		this.winchClimber = winchClimber;
 	}
 
 	@Override

@@ -9,8 +9,8 @@ public class Shoot2017 extends CommandBase {
 	private double timeStamp;
 	private boolean rampedUp;
 
-	public Shoot2017() {
-		shooter = Robot.getInstance().shooter;
+	public Shoot2017(Shooter2017 shooter) {
+		this.shooter = shooter;
 	}
 
 	@Override

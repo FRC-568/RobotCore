@@ -5,13 +5,13 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class AutoOne extends SequentialCommandGroup {
 
-	public AutoOne() {
-		GearBox gearBox = Robot.getInstance().gearBox;
+	public AutoOne(Robot robot) {
+		GearBox gearBox = robot.gearBox;
 		addCommands(gearBox.closeCommand(),
-			new Drive2017(110 - 24, .3),
+			new Drive2017(110 - 24, .3, robot.driveTrain, robot.referenceFrame),
 			gearBox.openCommand(),
 			new WaitCommand(1.5),
-			new Drive2017(-10, -.2),
+			new Drive2017(-10, -.2, robot.driveTrain, robot.referenceFrame),
 			gearBox.closeCommand());
 	}
 

@@ -1,24 +1,17 @@
 package frc.team568.robot.stronghold;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class Nudge extends CommandBase {
+public class Nudge extends InstantCommand {
 	Shooter2016 shooter;
 
-	@Override
-	public void initialize() {
-		shooter = Robot.getInstance().shooter;
+	public Nudge(Shooter2016 shooter) {
+		this.shooter = shooter;
 	}
 
 	@Override
 	public void execute() {
 		shooter.nudge();
-		System.out.println("Nudge");
-	}
-
-	@Override
-	public boolean isFinished() {
-		return true;
 	}
 
 	@Override

@@ -30,7 +30,7 @@ public class Robot extends RobotBase {
 
 	public Robot() {
 		super("powerup");
-		
+
 		port("leftFrontMotor", 1);
 		port("leftBackMotor", 2);
 		port("rightFrontMotor", 3);
@@ -86,15 +86,15 @@ public class Robot extends RobotBase {
 		oi.armIn.whileHeld(blockIntake.getCommandArmIn());
 		oi.armOut.whileHeld(blockIntake.getCommandArmOut());
 
-		oi.climb.whileHeld(new ClimbWithWinch());
-		oi.unClimb.whileHeld(new UnClimb());
+		oi.climb.whileHeld(new ClimbWithWinch(climber));
+		oi.unClimb.whileHeld(new UnClimb(climber));
 
 		oi.liftUpA.whileHeld(blockLift.getCommandRaise());
 		oi.liftDownA.whileHeld(blockLift.getCommandLower());
 		oi.blockLiftIn.whileHeld(blockIntake.getCommandBlockLiftIn());
 		oi.blockLiftOut.whileHeld(blockIntake.getCommandBlockLiftOut());
-		oi.climbA.whileHeld(new ClimbWithWinch());
-		oi.unClimbA.whileHeld(new UnClimb());
+		oi.climbA.whileHeld(new ClimbWithWinch(climber));
+		oi.unClimbA.whileHeld(new UnClimb(climber));
 	}
 
 	@Override

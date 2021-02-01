@@ -7,9 +7,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class AutoShooter extends InstantCommand {
 	Shooter2016 shooter;
 
-	@Override
-	public void initialize() {
-		shooter = Robot.getInstance().shooter;
+	public AutoShooter(Shooter2016 shooter) {
+		this.shooter = shooter;
 	}
 
 	@Override

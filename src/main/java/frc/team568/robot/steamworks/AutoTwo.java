@@ -7,19 +7,17 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class AutoTwo extends SequentialCommandGroup {
-	Shooter2017 shooter;
 
-	public AutoTwo() {
-		addCommands(Robot.getInstance().gearBox.closeCommand(),
-			new Drive2017(79, .3),
+	public AutoTwo(Robot robot) {
+		addCommands(robot.gearBox.closeCommand(),
+			new Drive2017(79, .3, robot.driveTrain, robot.referenceFrame),
 			//new Turn(-40), //need generric turn command to replace on adopted by powerup
-			new MoveToVisionTarget(Robot.getInstance().driveTrain, Robot.getInstance().gearTracker),
-			new Drive2017(48, .3),
-			Robot.getInstance().gearBox.openCommand(),
+			new MoveToVisionTarget(robot.driveTrain, robot.gearTracker),
+			new Drive2017(48, .3, robot.driveTrain, robot.referenceFrame),
+			robot.gearBox.openCommand(),
 			new WaitCommand(2),
-			new Drive2017(-24, -.2),
-			Robot.getInstance().gearBox.closeCommand());
-
+			new Drive2017(-24, -.2, robot.driveTrain, robot.referenceFrame),
+			robot.gearBox.closeCommand());
 	}
 
 }

@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
-import frc.team568.robot.subsystems.GyroSubsystem;
-import frc.team568.robot.subsystems.SubsystemBase;
 
 public class WestCoastDrive extends SubsystemBase {
 
@@ -42,7 +40,7 @@ public class WestCoastDrive extends SubsystemBase {
 		initMotors();
 		drive = new DifferentialDrive(new SpeedControllerGroup(fl, bl), new SpeedControllerGroup(fr, br));
 		drive.setRightSideInverted(false);
-		
+
 		joystick = new Joystick(port("mainJoystick"));
 
 		gyro = robot.getSubsystem(GyroSubsystem.class).getGyro();

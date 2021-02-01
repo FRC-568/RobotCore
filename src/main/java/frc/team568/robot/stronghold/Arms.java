@@ -15,14 +15,11 @@ public class Arms extends SubsystemBase {
 
 	public Arms(final RobotBase robot) {
 		super(robot);
-		
+
 		leftarm = new Relay(port("spike1"));
 		rightarm = new Relay(port("spike2"));
 		topLimmitSwitch = new DigitalInput(port("topLimmitSwitch"));
 		bottomLimmitSwitch = new DigitalInput(port("bottomLimmitSwitch"));
-
-		Robot.getInstance().oi.armsUp.whileHeld(commandArmUp());
-		Robot.getInstance().oi.armsDown.whileHeld(commandArmDown());
 	}
 
 	public void goDown() {
@@ -41,7 +38,7 @@ public class Arms extends SubsystemBase {
 		rightarm.set(Relay.Value.kOff);
 		System.out.println("stop");
 	}
-	
+
 	public Command commandArmDown() {
 		return new CommandBase() {
 			@Override
@@ -50,17 +47,12 @@ public class Arms extends SubsystemBase {
 			}
 
 			@Override
-			public boolean isFinished() {
-				return !Robot.getInstance().oi.armsDown.get();
-			}
-
-			@Override
 			public void end(boolean interrupted) {
 				stop();
 			}
 		};
 	}
-	
+
 	public Command commandArmUp() {
 		return new CommandBase() {
 			@Override
@@ -69,13 +61,8 @@ public class Arms extends SubsystemBase {
 			}
 
 			@Override
-			public boolean isFinished() {
-				return !Robot.getInstance().oi.armsUp.get();
-			}
-
-			@Override
 			public void end(boolean interrupted) {
-				Robot.getInstance().arms.stop();
+				stop();
 			}
 		};
 	}
