@@ -4,20 +4,20 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 
 public class TwoMotorDrive extends SubsystemBase {
-
-	private DifferentialDrive drive;
 	
 	private PowerDistributionPanel pdp;
 
 	private WPI_TalonSRX leftMotor;
 	private WPI_TalonSRX rightMotor;
+
+	private double maxLeftCurrent = 0;
+	private double maxRightCurrent = 0;
 
 	private boolean safeMode = false;
 
@@ -29,7 +29,6 @@ public class TwoMotorDrive extends SubsystemBase {
 		initMotors();
 
 		pdp = new PowerDistributionPanel();
-		drive = new DifferentialDrive(leftMotor, rightMotor);
 
 		reset();
 		initDefaultCommand();
@@ -137,7 +136,19 @@ public class TwoMotorDrive extends SubsystemBase {
 					driveDamp = 0.5;
 
 				// Arcade Drive
-				drive.arcadeDrive(axis("forward") * driveDamp, axis("turn") * 0.8 * driveDamp);
+				double leftPower = axis("forward") + axis("turn");
+				double rightPower = axis("forward") - axis("turn");
+				double max = Math.max(leftPower, rightPower);
+				leftPower /= max;
+				rightPower /= max;
+
+				// Set motor powers
+				leftMotor.set(leftPower * driveDamp);
+				rightMotor.set(rightPower * driveDamp);
+
+				// Set the maximum current
+				if (maxLeftCurrent < getLeftCurrent()) maxLeftCurrent = getLeftCurrent();
+				if (maxRightCurrent < getRightCurrent()) maxRightCurrent = getRightCurrent();
 				
 			}
 
@@ -161,6 +172,8 @@ public class TwoMotorDrive extends SubsystemBase {
 		builder.addDoubleProperty("Right Motor Position", () -> getRightPos(), null);
 		builder.addDoubleProperty("Left Motor Current", () -> getLeftCurrent(), null);
 		builder.addDoubleProperty("Right Motor Current", () -> getRightCurrent(), null);
+		builder.addDoubleProperty("Maximum Left Motor Current", () -> maxLeftCurrent, null);
+		builder.addDoubleProperty("Maximum Right Motor Current", () -> maxRightCurrent, null);
 		
 	}
 
