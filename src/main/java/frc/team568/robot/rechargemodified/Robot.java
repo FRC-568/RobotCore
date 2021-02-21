@@ -26,10 +26,10 @@ public class Robot extends RobotBase {
 		super("Recharge");
 
 		// Mapping the ports
-		port("leftMotor", 4);
-		port("rightMotor", 5);
-		port("leftShooter", 6);
-		port("rightShooter", 7);
+		port("leftMotor", 12);
+		port("rightMotor", 13);
+		port("leftShooter", 14);
+		port("rightShooter", 15);
 
 		// Mapping the controls
 		button("safeModeToggle", () -> button(0, Xinput.LeftStickIn) && button(0, Xinput.RightStickIn));
