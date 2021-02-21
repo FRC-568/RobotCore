@@ -62,8 +62,7 @@ public class TalonSRXDrive extends DriveBase {
 			motorsL[i].configOpenloopRamp(1);
 			motorsL[i].configPeakCurrentLimit(20);
 			motorsL[i].configContinuousCurrentLimit(27);
-			if (i > 0)
-				motorsL[i].follow(motorsL[0]);
+			if (i > 0) motorsL[i].follow(motorsL[0]);
 		}
 
 		ports = configIntArray("rightMotors");
