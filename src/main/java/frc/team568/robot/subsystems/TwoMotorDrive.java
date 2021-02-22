@@ -30,7 +30,6 @@ public class TwoMotorDrive extends SubsystemBase {
 
 		pdp = new PowerDistributionPanel();
 
-		reset();
 		initDefaultCommand();
 		
 	}
@@ -50,14 +49,6 @@ public class TwoMotorDrive extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		
-	}
-
-	public void stop() {
-
-	}
-
-	public void reset() {
 		
 	}
 
