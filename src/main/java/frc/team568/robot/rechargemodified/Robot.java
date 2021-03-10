@@ -12,7 +12,7 @@ import frc.team568.robot.subsystems.TwoMotorDrive;
 public class Robot extends RobotBase {
 
 	final int drivingControllerPort = 0;
-	
+
 	TwoMotorDrive drive;
 	Gyro gyro = new ADXRS450_Gyro();
 	Shooter shooter;
@@ -21,8 +21,8 @@ public class Robot extends RobotBase {
 	XinputController driverController = new XinputController(drivingControllerPort);
 
 	public Robot() {
-		
-		super("Recharge");
+
+		super("Recharge2");
 
 		// Mapping the ports
 		port("leftMotor", 1);
@@ -40,7 +40,7 @@ public class Robot extends RobotBase {
 		drive = addSubsystem(TwoMotorDrive::new);
 		//shooter = addSubsystem(Shooter::new);
 		//compressor = new Compressor();
-	
+
 	}
 
 	@Override
