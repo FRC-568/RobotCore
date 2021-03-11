@@ -129,9 +129,13 @@ public class TwoMotorDrive extends SubsystemBase {
 				// Arcade Drive
 				double leftPower = axis("forward") + axis("turn");
 				double rightPower = axis("forward") - axis("turn");
-				double max = Math.max(leftPower, rightPower);
-				leftPower /= max;
-				rightPower /= max;
+				double max = Math.max(Math.abs(leftPower), Math.abs(rightPower));
+				if (max > 1.0) {
+
+					leftPower /= max;
+					rightPower /= max;
+
+				}
 
 				// Set motor powers
 				leftMotor.set(leftPower * driveDamp);
