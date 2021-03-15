@@ -57,7 +57,7 @@ public class Shooter extends SubsystemBase {
 		addChild("Lifter", lifter);
 
 		leftShooter.setInverted(true);
-		rightShooter.setInverted(false);
+		rightShooter.setInverted(true);
 		lifter.setInverted(false);
 		
 	}
