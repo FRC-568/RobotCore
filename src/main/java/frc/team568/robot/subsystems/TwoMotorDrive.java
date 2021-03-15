@@ -2,8 +2,10 @@ package frc.team568.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -15,6 +17,8 @@ public class TwoMotorDrive extends SubsystemBase {
 
 	private WPI_TalonSRX leftMotor;
 	private WPI_TalonSRX rightMotor;
+
+	private Gyro gyro = new ADXRS450_Gyro();
 
 	private double maxLeftCurrent = 0;
 	private double maxRightCurrent = 0;
@@ -52,37 +56,75 @@ public class TwoMotorDrive extends SubsystemBase {
 		
 	}
 
-	private double getLeftVel() {
+	public void resetGyro() {
+
+		gyro.reset();
+
+	}
+
+	public double getAngle() {
+
+		return gyro.getAngle();
+
+	}
+
+	public void resetMotors() {
+
+		leftMotor.setSelectedSensorPosition(0);
+		rightMotor.setSelectedSensorPosition(0);
+
+	}
+
+	public void stop() {
+
+		leftMotor.set(0);
+		rightMotor.set(0);
+
+	}
+
+	public void setLeft(double val) {
+
+		leftMotor.set(val);
+
+	}
+
+	public void setRight(double val) {
+
+		rightMotor.set(val);
+
+	}
+
+	public double getLeftVel() {
 
 		return leftMotor.getSelectedSensorVelocity();
 
 	}
 
-	private double getRightVel() {
+	public double getRightVel() {
 
 		return rightMotor.getSelectedSensorVelocity();
 
 	}
 
-	private int getLeftPos() {
+	public int getLeftPos() {
 
 		return leftMotor.getSelectedSensorPosition();
 
 	}
 	
-	private int getRightPos() {
+	public int getRightPos() {
 
 		return rightMotor.getSelectedSensorPosition();
 
 	}
 
-	private double getLeftCurrent() {
+	public double getLeftCurrent() {
 
 		return pdp.getCurrent(port("leftMotor"));
 
 	}
 
-	private double getRightCurrent() {
+	public double getRightCurrent() {
 
 		return pdp.getCurrent(port("rightMotor"));
 
