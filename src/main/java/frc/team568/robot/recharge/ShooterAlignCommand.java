@@ -83,7 +83,9 @@ public class ShooterAlignCommand extends CommandBase {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
+		
 		super.initSendable(builder);
+		
 		builder.addDoubleProperty("Target Speed", () -> targetSpeed, null);
 		rotationEntry = builder.getEntry("rotate speed");
 		directionEntry = builder.getEntry("direction");

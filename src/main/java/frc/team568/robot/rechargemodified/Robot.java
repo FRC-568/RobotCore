@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.XinputController;
+import frc.team568.robot.subsystems.Limelight;
 import frc.team568.robot.subsystems.TwoMotorDrive;
 
 public class Robot extends RobotBase {
@@ -16,7 +17,7 @@ public class Robot extends RobotBase {
 	TwoMotorDrive drive;
 	Gyro gyro = new ADXRS450_Gyro();
 	Shooter shooter;
-	//Compressor compressor;
+	Limelight limelight;
 	Command autonomousCommand;
 	XinputController driverController = new XinputController(drivingControllerPort);
 
@@ -29,6 +30,7 @@ public class Robot extends RobotBase {
 		port("rightMotor", 3);
 		port("leftShooter", 14);
 		port("rightShooter", 15);
+		port("lifter", 2);
 
 		// Mapping the controls
 		button("safeModeToggle", () -> button(0, Xinput.LeftStickIn) && button(0, Xinput.RightStickIn));
@@ -38,17 +40,18 @@ public class Robot extends RobotBase {
 
 		// Subsystems
 		drive = addSubsystem(TwoMotorDrive::new);
-		//shooter = addSubsystem(Shooter::new);
-		//compressor = new Compressor();
+		limelight = addSubsystem(Limelight::new);
+		shooter = addSubsystem(Shooter::new);
 
 	}
 
 	@Override
 	public void teleopInit() {
+
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
-		//compressor.setClosedLoopControl(true);
 		gyro.reset();
+		
 	}
 
 	@Override
@@ -63,12 +66,12 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void disabledInit() {
-		//compressor.setClosedLoopControl(false);
+
 	}
 
 	@Override
 	public void autonomousInit() {
-		//compressor.setClosedLoopControl(true);
+
 	}
 
 	@Override
