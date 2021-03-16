@@ -22,6 +22,12 @@ public final class Xinput {
 	public static final int RightStickX = 4;
 	public static final int RightStickY = 5;
 
+	// POV
+	public static final int Up = 0;
+	public static final int Down = 180;
+	public static final int Right = 90;
+	public static final int Left = 270;
+
 	private Xinput() {}
 
 }

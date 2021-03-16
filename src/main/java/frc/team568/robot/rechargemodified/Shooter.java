@@ -3,6 +3,7 @@ package frc.team568.robot.rechargemodified;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
@@ -16,6 +17,14 @@ public class Shooter extends SubsystemBase {
 	private WPI_TalonFX leftShooter;
 	private WPI_TalonFX rightShooter;
 	private WPI_TalonFX lifter;
+	private WPI_TalonFX aimer;
+	private static final double AIMER_POW = 0.4;
+
+	// Servos
+	private Servo hatch;
+	private boolean hatchOnce = true;
+	private static final double HATCH_OPEN_POS = 1;
+	private static final double HATCH_CLOSE_POS = 0;
 
 	// Timer
 	private Timer timer = new Timer();
@@ -32,33 +41,34 @@ public class Shooter extends SubsystemBase {
 
 	// Final variables
 	private static final double SHOOT_POW = 1;
-	private static final double LIFTER_POW = 0.2;
+	private static final double LIFTER_POW = 0.6;
 	private static final double LIFTER_HIGH = 5000;
 
 	public Shooter(RobotBase robot) {
 
 		super(robot);
 
-		// Initialize code
-		initMotors();
-
-		initDefaultCommand();
-		
-	}
-
-	private void initMotors() {
-		
+		// Initialize motors
 		leftShooter = new WPI_TalonFX(port("leftShooter"));
 		rightShooter = new WPI_TalonFX(port("rightShooter"));
 		lifter = new WPI_TalonFX(port("lifter"));
+		aimer = new WPI_TalonFX(port("aimer"));
 
 		addChild("Left Shooter", leftShooter);
 		addChild("Right Shooter", rightShooter);
 		addChild("Lifter", lifter);
+		addChild("Aimer", aimer);
 
 		leftShooter.setInverted(true);
 		rightShooter.setInverted(true);
-		lifter.setInverted(false);
+		lifter.setInverted(true);
+		aimer.setInverted(false);
+
+		// Initializer servo
+		hatch = new Servo(port("hatch"));
+		hatch.set(HATCH_OPEN_POS);
+
+		initDefaultCommand();
 		
 	}
 
@@ -146,9 +156,11 @@ public class Shooter extends SubsystemBase {
 
 					} else {
 
+					/*
 						// If above threshold speed and below max height, lift magazine
 						if (getLifterPos() < LIFTER_HIGH) lifter.set(LIFTER_POW);
 						else lifter.set(0);
+						*/
 
 					}
 
@@ -164,10 +176,65 @@ public class Shooter extends SubsystemBase {
 
 					// Detect if shoot button pressed once
 					pressedOnce = false;
-
+/*
 					// Lower magazine when not shooting
 					if (getLifterPos() > 0) lifter.set(-LIFTER_POW);
 					else lifter.set(0);
+					*/
+
+				}
+
+				if (button("lift")) {
+
+					lifter.set(LIFTER_POW);
+
+				} else if (button("lower")) {
+
+					lifter.set(-LIFTER_POW);
+
+				} else {
+
+					lifter.set(0);
+
+				}
+
+				if (button("extendAimer")) {
+
+					aimer.set(AIMER_POW);
+
+				} else if (button("retractAimer")) {
+
+					aimer.set(-AIMER_POW);
+
+				} else {
+
+					aimer.set(0);
+
+				}
+
+				// Open/close hatch
+				if (button("toggleHatch")) {
+
+					if (hatchOnce) {
+
+						hatchOnce = false;
+
+						if (hatch.get() == HATCH_OPEN_POS) {
+
+							hatch.set(HATCH_CLOSE_POS);
+
+						} else {
+						
+							hatch.set(HATCH_OPEN_POS);
+
+						}
+
+					}
+
+				} else {
+
+					// Turn hatchOnce to true after button is not pressed
+					hatchOnce = true;
 
 				}
 				
@@ -188,10 +255,12 @@ public class Shooter extends SubsystemBase {
 		builder.addDoubleProperty("Left Shooter Position", () -> getLeftPos(), null);
 		builder.addDoubleProperty("Right Shooter Velocity", () -> getRightVel(), null);
 		builder.addDoubleProperty("Right Shooter Position", () -> getRightPos(), null);
+		builder.addDoubleProperty("Lifter Position", () -> getLifterPos(), null);
 		builder.addDoubleProperty("Left Shooter Velocity (m/s)", () -> getLeftVelMPS(), null);
 		builder.addDoubleProperty("Right Shooter Velocity (m/s)", () -> getRightVelMPS(), null);
 		builder.addDoubleProperty("Time Below Threshold (m/s)", () -> belowThresholdTime, null);
 		builder.addDoubleProperty("Shoot Threshold Speed (m/s)", () -> thresholdSpeed, (value) -> thresholdSpeed = value);
+		builder.addDoubleProperty("Hatch Position", () -> hatch.get(), null);
 		
 	}
 
