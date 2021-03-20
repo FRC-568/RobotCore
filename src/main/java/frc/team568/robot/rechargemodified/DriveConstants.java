@@ -14,4 +14,8 @@ public class DriveConstants {
 	public static final double I_TURN = 0.001;
 	public static final double D_TURN = 0;
 
+	public static final double P_ANGLE = 0.05;
+	public static final double I_ANGLE = 0.001;
+	public static final double D_ANGLE = 0;
+
 }

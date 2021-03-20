@@ -9,6 +9,11 @@ public class Limelight extends SubsystemBase {
 
 	private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 
+	// Variables for calculations
+	private double cameraHeight = 0;
+	private double cameraAngle = 0;
+	private double targetHeight = 0;
+
 	public Limelight(RobotBase robot) {
 
 		super(robot);
@@ -60,7 +65,25 @@ public class Limelight extends SubsystemBase {
 
 	}
 
-	public double getDistance(double cameraHeight, double cameraAngle, double targetHeight) {
+	public void setCameraHeight(double cameraHeight) {
+
+		this.cameraHeight = cameraHeight;
+
+	}
+
+	public void setCameraAngle(double cameraAngle) {
+
+		this.cameraAngle = cameraAngle;
+
+	}
+
+	public void setTargetHeight(double targetHeight) {
+
+		this.targetHeight = targetHeight;
+
+	}
+
+	public double getDistance() {
 
 		return (targetHeight - cameraHeight) / Math.tan(Math.toRadians(cameraAngle) + Math.toRadians(getOffsetY()));
 
@@ -77,7 +100,8 @@ public class Limelight extends SubsystemBase {
 		builder.addDoubleProperty("Area", () -> getTargetArea(), null);
 		builder.addDoubleProperty("Skew", () -> getSkew(), null);
 		builder.addDoubleProperty("Pipeline", () -> getPipe(), null);
-		
+		builder.addDoubleProperty("Distance", () -> getDistance(), null);
+
 	}
 
 }

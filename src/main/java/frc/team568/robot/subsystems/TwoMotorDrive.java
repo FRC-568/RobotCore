@@ -11,19 +11,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 
-public class TwoMotorDrive extends SubsystemBase {
+public abstract class TwoMotorDrive extends SubsystemBase {
 	
-	private PowerDistributionPanel pdp;
+	protected PowerDistributionPanel pdp;
 
-	private WPI_TalonSRX leftMotor;
-	private WPI_TalonSRX rightMotor;
+	protected WPI_TalonSRX leftMotor;
+	protected WPI_TalonSRX rightMotor;
 
-	private Gyro gyro = new ADXRS450_Gyro();
+	protected Gyro gyro = new ADXRS450_Gyro();
 
-	private double maxLeftCurrent = 0;
-	private double maxRightCurrent = 0;
+	protected double maxLeftCurrent = 0;
+	protected double maxRightCurrent = 0;
 
-	private boolean safeMode = false;
+	protected boolean safeMode = false;
+
+	protected boolean overrrideMode = false;
 
 	public TwoMotorDrive(RobotBase robot) {
 
@@ -180,18 +182,27 @@ public class TwoMotorDrive extends SubsystemBase {
 				}
 
 				// Set motor powers
-				leftMotor.set(leftPower * driveDamp);
-				rightMotor.set(rightPower * driveDamp);
+				if (!overrrideMode) {
+
+					leftMotor.set(leftPower * driveDamp);
+					rightMotor.set(rightPower * driveDamp);
+
+				}
 
 				// Set the maximum current
 				if (maxLeftCurrent < getLeftCurrent()) maxLeftCurrent = getLeftCurrent();
 				if (maxRightCurrent < getRightCurrent()) maxRightCurrent = getRightCurrent();
 				
+				// Custom updates
+				update();
+
 			}
 
 		}); // End set default command
 
 	} // End init default command
+
+	protected abstract void update();
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
