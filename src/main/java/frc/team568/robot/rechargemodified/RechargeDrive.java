@@ -41,7 +41,7 @@ public class RechargeDrive extends TwoMotorDrive {
 	@Override
 	public void update() {
 
-		if (button("shootAim") && !aimMode) {
+		if (button("shootAim") && !aimMode && limelight.isTargetValid()) {
 
 			aimMode = true;
 
@@ -80,8 +80,8 @@ public class RechargeDrive extends TwoMotorDrive {
 			pidDrive.setTolerance(1);
 
 			// Set output limit
-			double angleCorrection = MathUtil.clamp(pidAngle.calculate(angle), -1.0, 1.0);
-			double driveCorrection = MathUtil.clamp(pidDrive.calculate(distance), -1.0, 1.0);
+			double angleCorrection = MathUtil.clamp(pidAngle.calculate(angle), -0.3, 0.3);
+			double driveCorrection = MathUtil.clamp(pidDrive.calculate(distance), -0.3, 0.3);
 
 			// Calculate
 			double powerL = angleCorrection + driveCorrection;

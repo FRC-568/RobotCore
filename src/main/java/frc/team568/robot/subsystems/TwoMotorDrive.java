@@ -18,7 +18,7 @@ public abstract class TwoMotorDrive extends SubsystemBase {
 	protected WPI_TalonSRX leftMotor;
 	protected WPI_TalonSRX rightMotor;
 
-	protected Gyro gyro = new ADXRS450_Gyro();
+	protected Gyro gyro;
 
 	protected double maxLeftCurrent = 0;
 	protected double maxRightCurrent = 0;
@@ -31,12 +31,12 @@ public abstract class TwoMotorDrive extends SubsystemBase {
 
 		super(robot);
 
+		gyro = new ADXRS450_Gyro();
+
 		// Initialize code
 		initMotors();
 
 		pdp = new PowerDistributionPanel();
-
-		initDefaultCommand();
 		
 	}
 
@@ -48,8 +48,8 @@ public abstract class TwoMotorDrive extends SubsystemBase {
 		addChild("Left Motor", leftMotor);
 		addChild("Right Motor", rightMotor);
 
-		leftMotor.setInverted(true);
-		rightMotor.setInverted(false);
+		leftMotor.setInverted(false);
+		rightMotor.setInverted(true);
 		
 	}
 
@@ -66,7 +66,7 @@ public abstract class TwoMotorDrive extends SubsystemBase {
 
 	public double getAngle() {
 
-		return gyro.getAngle();
+		return gyro != null ? gyro.getAngle() : 579475;
 
 	}
 
@@ -79,8 +79,8 @@ public abstract class TwoMotorDrive extends SubsystemBase {
 
 	public void stop() {
 
-		leftMotor.set(0);
-		rightMotor.set(0);
+		setLeft(0);
+		setRight(0);
 
 	}
 
@@ -132,7 +132,7 @@ public abstract class TwoMotorDrive extends SubsystemBase {
 
 	}
 
-	protected void initDefaultCommand() {
+	public void initDefaultCommand() {
 		setDefaultCommand(new CommandBase() {
 
 			double comboStartTime = 0;
@@ -171,8 +171,8 @@ public abstract class TwoMotorDrive extends SubsystemBase {
 					driveDamp = 0.5;
 
 				// Arcade Drive
-				double leftPower = axis("forward") + axis("turn");
-				double rightPower = axis("forward") - axis("turn");
+				double leftPower = axis("forward") - axis("turn") * 0.5;
+				double rightPower = axis("forward") + axis("turn") * 0.5;
 				double max = Math.max(Math.abs(leftPower), Math.abs(rightPower));
 				if (max > 1.0) {
 
@@ -184,8 +184,17 @@ public abstract class TwoMotorDrive extends SubsystemBase {
 				// Set motor powers
 				if (!overrrideMode) {
 
-					leftMotor.set(leftPower * driveDamp);
-					rightMotor.set(rightPower * driveDamp);
+					int opR;
+					int opL;
+
+					if (rightPower > 0) opR = 1;
+					else opR = -1;
+
+					if (leftPower > 0) opL = 1;
+					else opL = -1;
+
+					leftMotor.set(opL * Math.pow(leftPower * driveDamp, 2));
+					rightMotor.set(opR * Math.pow(rightPower * driveDamp, 2));
 
 				}
 
@@ -212,6 +221,7 @@ public abstract class TwoMotorDrive extends SubsystemBase {
 		builder.addDoubleProperty("Forward", () -> axis("forward"), null);
 		builder.addDoubleProperty("Side", () -> axis("side"), null);
 		builder.addDoubleProperty("Turn", () -> axis("turn"), null);
+		builder.addDoubleProperty("Angle", () -> getAngle(), null);
 		builder.addDoubleProperty("Left Motor Power", () -> leftMotor.get(), null);
 		builder.addDoubleProperty("Right Motor Power", () -> rightMotor.get(), null);
 		builder.addDoubleProperty("Left Motor Velocity", () -> getLeftVel(), null);

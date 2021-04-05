@@ -4,6 +4,9 @@ import static frc.team568.robot.rechargemodified.DriveConstants.D_TURN;
 import static frc.team568.robot.rechargemodified.DriveConstants.I_TURN;
 import static frc.team568.robot.rechargemodified.DriveConstants.P_TURN;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
@@ -11,6 +14,8 @@ import frc.team568.robot.subsystems.TwoMotorDrive;
 
 public class Turn extends CommandBase {
 	
+	private NetworkTableEntry isFinEntry;
+
 	private final TwoMotorDrive drive;
 	private final double angle;
 	private final double speed;
@@ -29,6 +34,11 @@ public class Turn extends CommandBase {
 	@Override
 	public void initialize() {
 		
+		// Set up network table entries
+		NetworkTable table = NetworkTableInstance.getDefault().getTable("Turn");
+		isFinEntry = table.getEntry("isFinished");
+		isFinEntry.setBoolean(false);
+
 		// Reset robot
 		drive.resetGyro();
 		drive.resetMotors();
@@ -49,8 +59,8 @@ public class Turn extends CommandBase {
 		double power = MathUtil.clamp(pidTurn.calculate(drive.getAngle()), -speed, speed);
 
 		// Set motor powers
-		drive.setLeft(power);
-		drive.setRight(-power);
+		drive.setLeft(-power);
+		drive.setRight(power);
 	
 	}
 
@@ -64,6 +74,10 @@ public class Turn extends CommandBase {
 	@Override
 	public void end(boolean interrupted) {
 
+		// Update network table entry
+		isFinEntry.setBoolean(true);
+
+		// Reset the robot
 		drive.stop();
 		drive.resetGyro();
 		drive.resetMotors();

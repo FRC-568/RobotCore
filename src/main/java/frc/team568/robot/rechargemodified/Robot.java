@@ -33,13 +33,14 @@ public class Robot extends RobotBase {
 		port("lifter", 13);
 		port("hatch", 0);
 		port("aimer", 12);
+		//port("pot", 11);
 
 		// Mapping the controls
 		pov("extendAimer", drivingControllerPort, Xinput.Up);
 		pov("retractAimer", drivingControllerPort, Xinput.Down);
 		button("safeModeToggle", () -> button(0, Xinput.LeftStickIn) && button(0, Xinput.RightStickIn));
 		button("shoot", drivingControllerPort, Xinput.RightBumper);
-		button("shootAim", drivingControllerPort, Xinput.LeftBumper);
+		//button("shootAim", drivingControllerPort, Xinput.LeftBumper);
 		button("toggleHatch", drivingControllerPort, Xinput.B);
 		button("lift", drivingControllerPort, Xinput.Y);
 		button("lower", drivingControllerPort, Xinput.A);
@@ -52,7 +53,7 @@ public class Robot extends RobotBase {
 		shooter = addSubsystem(Shooter::new);
 
 		// Setup limelight
-		limelight.setCameraAngle(20);
+		limelight.setCameraAngle(3);
 		limelight.setCameraHeight(20);
 		limelight.setTargetHeight(98.25);
 
@@ -69,7 +70,9 @@ public class Robot extends RobotBase {
 
 		if (auto != null)
 			auto.cancel();
-		gyro.reset();
+		//gyro.reset();
+		drive.resetMotors();
+		drive.initDefaultCommand();
 		
 	}
 
@@ -90,7 +93,11 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousInit() {
+		
 		auto.schedule();
+		drive.resetMotors();
+		gyro.reset();
+
 	}
 
 	@Override

@@ -2,9 +2,11 @@ package frc.team568.robot.rechargemodified;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -18,6 +20,7 @@ public class Shooter extends SubsystemBase {
 	private WPI_TalonFX rightShooter;
 	private WPI_TalonFX lifter;
 	private WPI_TalonFX aimer;
+	private AnalogPotentiometer pot;
 	private static final double AIMER_POW = 0.4;
 
 	// Servos
@@ -25,6 +28,9 @@ public class Shooter extends SubsystemBase {
 	private boolean hatchOnce = true;
 	private static final double HATCH_OPEN_POS = 1;
 	private static final double HATCH_CLOSE_POS = 0;
+
+	// PID Controller
+	private PIDController pidHood = new PIDController(0.001, 0.001, 0);
 
 	// Timer
 	private Timer timer = new Timer();
@@ -54,6 +60,9 @@ public class Shooter extends SubsystemBase {
 		lifter = new WPI_TalonFX(port("lifter"));
 		aimer = new WPI_TalonFX(port("aimer"));
 
+		// Initialize pot
+		//pot = new AnalogPotentiometer(port("pot"), 60, 0);
+
 		addChild("Left Shooter", leftShooter);
 		addChild("Right Shooter", rightShooter);
 		addChild("Lifter", lifter);
@@ -74,48 +83,54 @@ public class Shooter extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		
+
 	}
 
-	private double getLeftVel() {
+	public double getLeftVel() {
 
 		return leftShooter.getSelectedSensorVelocity();
 
 	}
 
-	private double getRightVel() {
+	public double getRightVel() {
 
 		return rightShooter.getSelectedSensorVelocity();
 
 	}
 
-	private double getLeftVelMPS() {
+	public double getLeftVelMPS() {
 
 		return getLeftVel() * (10.0 / CPR) * WHEEL_CIRCUMFERENCE * (1 / GEAR_RATIO);
 
 	}
 
-	private double getRightVelMPS() {
+	public double getRightVelMPS() {
 
 		return getRightVel() * (10.0 / CPR) * WHEEL_CIRCUMFERENCE * (1 / GEAR_RATIO);
 
 	}
 
-	private int getLeftPos() {
+	public int getLeftPos() {
 
 		return leftShooter.getSelectedSensorPosition();
 
 	}
 	
-	private int getRightPos() {
+	public int getRightPos() {
 
 		return rightShooter.getSelectedSensorPosition();
 
 	}
 
-	private int getLifterPos() {
+	public int getLifterPos() {
 
 		return lifter.getSelectedSensorPosition();
+
+	}
+
+	public void setHoodPos() {
+
+
 
 	}
 
