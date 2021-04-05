@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 
-public abstract class TwoMotorDrive extends SubsystemBase {
+public class TwoMotorDrive extends SubsystemBase {
 	
 	protected PowerDistributionPanel pdp;
 
@@ -201,17 +201,12 @@ public abstract class TwoMotorDrive extends SubsystemBase {
 				// Set the maximum current
 				if (maxLeftCurrent < getLeftCurrent()) maxLeftCurrent = getLeftCurrent();
 				if (maxRightCurrent < getRightCurrent()) maxRightCurrent = getRightCurrent();
-				
-				// Custom updates
-				update();
 
 			}
 
 		}); // End set default command
 
 	} // End init default command
-
-	protected abstract void update();
 
 	@Override
 	public void initSendable(SendableBuilder builder) {

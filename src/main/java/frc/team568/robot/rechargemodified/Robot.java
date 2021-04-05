@@ -7,12 +7,13 @@ import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.XinputController;
 import frc.team568.robot.subsystems.Limelight;
+import frc.team568.robot.subsystems.TwoMotorDrive;
 
 public class Robot extends RobotBase {
 
 	final int drivingControllerPort = 0;
 
-	RechargeDrive drive;
+	TwoMotorDrive drive;
 	Gyro gyro = new ADXRS450_Gyro();
 	Shooter shooter;
 	Limelight limelight;
@@ -33,14 +34,13 @@ public class Robot extends RobotBase {
 		port("lifter", 13);
 		port("hatch", 0);
 		port("aimer", 12);
-		//port("pot", 11);
+		//port("pot", 0);
 
 		// Mapping the controls
 		pov("extendAimer", drivingControllerPort, Xinput.Up);
 		pov("retractAimer", drivingControllerPort, Xinput.Down);
 		button("safeModeToggle", () -> button(0, Xinput.LeftStickIn) && button(0, Xinput.RightStickIn));
 		button("shoot", drivingControllerPort, Xinput.RightBumper);
-		//button("shootAim", drivingControllerPort, Xinput.LeftBumper);
 		button("toggleHatch", drivingControllerPort, Xinput.B);
 		button("lift", drivingControllerPort, Xinput.Y);
 		button("lower", drivingControllerPort, Xinput.A);
@@ -48,17 +48,15 @@ public class Robot extends RobotBase {
 		axis("turn", drivingControllerPort, Xinput.RightStickX);
 
 		// Subsystems
-		drive = addSubsystem(RechargeDrive::new);
+		drive = addSubsystem(TwoMotorDrive::new);
 		limelight = addSubsystem(Limelight::new);
 		shooter = addSubsystem(Shooter::new);
+		shooter.initLimelight(limelight);
 
 		// Setup limelight
 		limelight.setCameraAngle(3);
 		limelight.setCameraHeight(20);
 		limelight.setTargetHeight(98.25);
-
-		// Setup drive
-		drive.getSubsystems(limelight, shooter);
 
 		// Initialize autonomous
 		auto = new Barrel(drive);

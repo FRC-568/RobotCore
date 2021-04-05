@@ -3,14 +3,15 @@ package frc.team568.robot.rechargemodified;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.team568.robot.RobotBase;
+import frc.team568.robot.subsystems.Limelight;
 import frc.team568.robot.subsystems.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
@@ -20,8 +21,13 @@ public class Shooter extends SubsystemBase {
 	private WPI_TalonFX rightShooter;
 	private WPI_TalonFX lifter;
 	private WPI_TalonFX aimer;
+
+	// Potentiometer
 	private AnalogPotentiometer pot;
 	private static final double AIMER_POW = 0.4;
+
+	// Limelight
+	private Limelight limelight;
 
 	// Servos
 	private Servo hatch;
@@ -31,12 +37,14 @@ public class Shooter extends SubsystemBase {
 
 	// PID Controller
 	private PIDController pidHood = new PIDController(0.001, 0.001, 0);
+	private final double TOLERANCE = 1;
 
 	// Timer
 	private Timer timer = new Timer();
 	private boolean pressedOnce = false;
 	private double belowThresholdTime = 0;
 	private double thresholdSpeed = 9; // In m/s
+	private final double SHOOT_DELAY = 1.0;
 
 	// Calculation variables
 	private static final double CPR = 2048;
@@ -77,12 +85,21 @@ public class Shooter extends SubsystemBase {
 		hatch = new Servo(port("hatch"));
 		hatch.set(HATCH_OPEN_POS);
 
+		// Initialize PID
+		pidHood.setTolerance(TOLERANCE);
+
 		initDefaultCommand();
 		
 	}
 
 	@Override
 	public void periodic() {
+
+	}
+
+	public void initLimelight(Limelight limelight) {
+
+		this.limelight = limelight;
 
 	}
 
@@ -128,13 +145,28 @@ public class Shooter extends SubsystemBase {
 
 	}
 
-	public void setHoodPos() {
+	public double getHoodPos() {
 
+		return pot.get();
 
+	}
+
+	public void setHoodPos(double pos) {
+
+		pidHood.setSetpoint(pos);
+		double power = MathUtil.clamp(pidHood.calculate(getHoodPos()), -AIMER_POW, AIMER_POW);
+		aimer.set(power);
+
+	}
+
+	private double calculateHoodPosition(double dist) {
+
+		return 0;
 
 	}
 
 	protected void initDefaultCommand() {
+
 		setDefaultCommand(new CommandBase() {
 
 			{
@@ -145,16 +177,17 @@ public class Shooter extends SubsystemBase {
 			@Override
 			public void execute() {
 				
+				// Automatically set hood position
+				//setHoodPos(calculateHoodPosition(limelight.getDistance()));
+
 				// If the shoot button is pressed, run the motors
 				if (button("shoot")) {
 
 					// Set motor power
-					double voltage = RobotController.getBatteryVoltage();
-					final double POW_PER_VOLT = 0.1;
-					double correction = (13 - voltage) * POW_PER_VOLT;
-					leftShooter.set(SHOOT_POW + correction);
-					rightShooter.set(SHOOT_POW + correction);
+					leftShooter.set(SHOOT_POW);
+					rightShooter.set(SHOOT_POW);
 					
+					// Only run if pressed once
 					if (!pressedOnce) {
 
 						pressedOnce = true;
@@ -164,20 +197,14 @@ public class Shooter extends SubsystemBase {
 
 					}
 
-					if ((getLeftVelMPS() + getRightVelMPS()) / 2 < thresholdSpeed) {
-
-						// If the average MPS lower than threshold speed, continue counting
+					// If the average MPS lower than threshold speed, continue counting
+					if ((getLeftVelMPS() + getRightVelMPS()) / 2 < thresholdSpeed)
 						belowThresholdTime = timer.get();
-
-					} else {
-
-					/*
-						// If above threshold speed and below max height, lift magazine
-						if (getLifterPos() < LIFTER_HIGH) lifter.set(LIFTER_POW);
-						else lifter.set(0);
-						*/
-
-					}
+/*		
+					// If time is above threshold and lifter not too high
+					if (timer.get() > SHOOT_DELAY && getLifterPos() < LIFTER_HIGH) lifter.set(LIFTER_POW);
+					else lifter.set(0);
+*/
 
 				} else {
 
@@ -195,37 +222,18 @@ public class Shooter extends SubsystemBase {
 					// Lower magazine when not shooting
 					if (getLifterPos() > 0) lifter.set(-LIFTER_POW);
 					else lifter.set(0);
-					*/
-
+*/
 				}
 
-				if (button("lift")) {
+				// Manually control lifter
+				if (button("lift"))	lifter.set(LIFTER_POW);
+				else if (button("lower")) lifter.set(-LIFTER_POW);
+				else lifter.set(0);
 
-					lifter.set(LIFTER_POW);
-
-				} else if (button("lower")) {
-
-					lifter.set(-LIFTER_POW);
-
-				} else {
-
-					lifter.set(0);
-
-				}
-
-				if (button("extendAimer")) {
-
-					aimer.set(AIMER_POW);
-
-				} else if (button("retractAimer")) {
-
-					aimer.set(-AIMER_POW);
-
-				} else {
-
-					aimer.set(0);
-
-				}
+				// Manually aim shooter
+				if (button("extendAimer")) aimer.set(AIMER_POW);
+				else if (button("retractAimer")) aimer.set(-AIMER_POW);
+				else aimer.set(0);
 
 				// Open/close hatch
 				if (button("toggleHatch")) {
@@ -276,6 +284,7 @@ public class Shooter extends SubsystemBase {
 		builder.addDoubleProperty("Time Below Threshold (m/s)", () -> belowThresholdTime, null);
 		builder.addDoubleProperty("Shoot Threshold Speed (m/s)", () -> thresholdSpeed, (value) -> thresholdSpeed = value);
 		builder.addDoubleProperty("Hatch Position", () -> hatch.get(), null);
+		builder.addDoubleProperty("Hood Position", () -> getHoodPos(), null);
 		
 	}
 

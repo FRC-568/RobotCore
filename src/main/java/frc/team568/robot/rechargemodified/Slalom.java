@@ -2,10 +2,11 @@ package frc.team568.robot.rechargemodified;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.team568.robot.commands.DriveDistance;
+import frc.team568.robot.subsystems.TwoMotorDrive;
 
 public class Slalom extends SequentialCommandGroup {
 	
-	public Slalom(RechargeDrive drive) {
+	public Slalom(TwoMotorDrive drive) {
 
 		addCommands(
 			
