@@ -19,7 +19,7 @@ public class Robot extends RobotBase {
 
 	XinputController driverController = new XinputController(drivingControllerPort);
 
-	AutoNav auto;
+	Barrel auto;
 
 	public Robot() {
 
@@ -61,7 +61,7 @@ public class Robot extends RobotBase {
 		drive.getSubsystems(limelight, shooter);
 
 		// Initialize autonomous
-		auto = new AutoNav(drive);
+		auto = new Barrel(drive);
 
 	}
 
