@@ -34,16 +34,20 @@ public class Robot extends RobotBase {
 		port("lifter", 13);
 		port("hatch", 0);
 		port("aimer", 12);
-		//port("pot", 0);
+		port("pot", 0);
+		port("limit", 0);
 
 		// Mapping the controls
 		pov("extendAimer", drivingControllerPort, Xinput.Up);
 		pov("retractAimer", drivingControllerPort, Xinput.Down);
 		button("safeModeToggle", () -> button(0, Xinput.LeftStickIn) && button(0, Xinput.RightStickIn));
 		button("shoot", drivingControllerPort, Xinput.RightBumper);
-		button("toggleHatch", drivingControllerPort, Xinput.B);
-		button("lift", drivingControllerPort, Xinput.Y);
-		button("lower", drivingControllerPort, Xinput.A);
+		button("green", drivingControllerPort, Xinput.A);
+		button("yellow", drivingControllerPort, Xinput.Y);
+		button("def", drivingControllerPort, Xinput.B);
+		//button("toggleHatch", drivingControllerPort, Xinput.B);
+		//button("lift", drivingControllerPort, Xinput.Y);
+		//button("lower", drivingControllerPort, Xinput.A);
 		axis("forward", drivingControllerPort, Xinput.LeftStickY);
 		axis("turn", drivingControllerPort, Xinput.RightStickX);
 
@@ -52,10 +56,11 @@ public class Robot extends RobotBase {
 		limelight = addSubsystem(Limelight::new);
 		shooter = addSubsystem(Shooter::new);
 		shooter.initLimelight(limelight);
+		shooter.getDrive(drive);
 
 		// Setup limelight
-		limelight.setCameraAngle(3);
-		limelight.setCameraHeight(20);
+		limelight.setCameraAngle(0.5);
+		limelight.setCameraHeight(32);
 		limelight.setTargetHeight(98.25);
 
 		// Initialize autonomous

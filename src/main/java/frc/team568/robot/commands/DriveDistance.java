@@ -7,9 +7,7 @@ import static frc.team568.robot.rechargemodified.DriveConstants.P_DRIVE;
 import static frc.team568.robot.rechargemodified.DriveConstants.TPR;
 import static frc.team568.robot.rechargemodified.DriveConstants.WHEEL_CIRCUMFERENCE;
 
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -27,7 +25,7 @@ public class DriveDistance extends CommandBase {
 
 	private final PIDController pidSpeedL = new PIDController(P_DRIVE, I_DRIVE, D_DRIVE);
 	private final PIDController pidSpeedR = new PIDController(P_DRIVE, I_DRIVE, D_DRIVE);
-	private final double TOLERANCE = 800;
+	private final double TOLERANCE = 2000;
 
 	public DriveDistance(TwoMotorDrive drive, double distanceL, double distanceR, double speed) {
 
@@ -40,14 +38,9 @@ public class DriveDistance extends CommandBase {
 
 	@Override
 	public void initialize() {
-		
-		// Set up network table entries
-		NetworkTable table = NetworkTableInstance.getDefault().getTable("Drive Distance");
-		isFinEntry = table.getEntry("isFinished");
-		isFinEntry.setBoolean(false);
 
 		// Reset robot
-		drive.resetGyro();
+		//drive.resetGyro();
 		drive.resetMotors();
 		pidSpeedL.reset();
 		pidSpeedR.reset();
@@ -77,6 +70,7 @@ public class DriveDistance extends CommandBase {
 		double powerL = MathUtil.clamp(pidSpeedL.calculate(drive.getLeftPos()), -speed * ratio, speed * ratio);
 		double powerR = MathUtil.clamp(pidSpeedR.calculate(drive.getRightPos()), -speed, speed);
 
+		
 		// Set motor powers
 		drive.setLeft(powerL);
 		drive.setRight(powerR);

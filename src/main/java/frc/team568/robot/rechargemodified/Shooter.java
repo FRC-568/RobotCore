@@ -1,8 +1,12 @@
 package frc.team568.robot.rechargemodified;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -13,6 +17,7 @@ import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.Limelight;
 import frc.team568.robot.subsystems.SubsystemBase;
+import frc.team568.robot.subsystems.TwoMotorDrive;
 
 public class Shooter extends SubsystemBase {
 
@@ -21,10 +26,23 @@ public class Shooter extends SubsystemBase {
 	private WPI_TalonFX rightShooter;
 	private WPI_TalonFX lifter;
 	private WPI_TalonFX aimer;
+	private TwoMotorDrive drive;
+	private final double MIN_POWER = 0.05;
+	private final double TURN_P = 0.1;
 
-	// Potentiometer
-	private AnalogPotentiometer pot;
+	private enum MODES { green, yellow, def };
+	private MODES hoodMode = MODES.def;
+	private final int GREEN_POS = 559;
+	private final int YELLOW_POS = 616;
+	private final int BLUE_POS = 619;
+	private final int RED_POS = 620;
+
+	// Sensors
+	private AnalogInput pot;
 	private static final double AIMER_POW = 0.4;
+	private static final int DEFAULT_AIMER = 620;
+	private DigitalInput limit;
+	private List<Integer> potPos = new ArrayList<Integer>();
 
 	// Limelight
 	private Limelight limelight;
@@ -36,8 +54,8 @@ public class Shooter extends SubsystemBase {
 	private static final double HATCH_CLOSE_POS = 0;
 
 	// PID Controller
-	private PIDController pidHood = new PIDController(0.001, 0.001, 0);
-	private final double TOLERANCE = 1;
+	private PIDController pidHood = new PIDController(0.006, 0.0001, 0);
+	private final double TOLERANCE = 2;
 
 	// Timer
 	private Timer timer = new Timer();
@@ -55,8 +73,8 @@ public class Shooter extends SubsystemBase {
 
 	// Final variables
 	private static final double SHOOT_POW = 1;
-	private static final double LIFTER_POW = 0.6;
-	private static final double LIFTER_HIGH = 5000;
+	private static final double LIFTER_POW = 0.4;
+	private static final int LIFTER_HIGH = -17500;
 
 	public Shooter(RobotBase robot) {
 
@@ -69,7 +87,12 @@ public class Shooter extends SubsystemBase {
 		aimer = new WPI_TalonFX(port("aimer"));
 
 		// Initialize pot
-		//pot = new AnalogPotentiometer(port("pot"), 60, 0);
+		pot = new AnalogInput(port("pot"));
+		pot.setOversampleBits(4);
+		pot.setAverageBits(4);
+
+		// Initialize limit switch
+		limit = new DigitalInput(port("limit"));
 
 		addChild("Left Shooter", leftShooter);
 		addChild("Right Shooter", rightShooter);
@@ -89,6 +112,12 @@ public class Shooter extends SubsystemBase {
 		pidHood.setTolerance(TOLERANCE);
 
 		initDefaultCommand();
+		
+	}
+
+	public void getDrive(TwoMotorDrive drive) {
+
+		this.drive = drive;
 		
 	}
 
@@ -147,7 +176,7 @@ public class Shooter extends SubsystemBase {
 
 	public double getHoodPos() {
 
-		return pot.get();
+		return potPos.stream().mapToInt(val -> val).average().orElse(0.0);
 
 	}
 
@@ -159,9 +188,17 @@ public class Shooter extends SubsystemBase {
 
 	}
 
-	private double calculateHoodPosition(double dist) {
+	private int calculateHoodPosition(double dist) {
 
-		return 0;
+		if (limelight.getDistance() >= 150 && limelight.getDistance() < 210) {
+
+			return BLUE_POS;
+
+		} else if (limelight.getDistance() >= 210 && limelight.getDistance() <= 270) {
+
+			return RED_POS;
+
+		} else return DEFAULT_AIMER;
 
 	}
 
@@ -176,12 +213,47 @@ public class Shooter extends SubsystemBase {
 
 			@Override
 			public void execute() {
-				
+
+				if (button("green")) hoodMode = MODES.green;
+				if (button("yellow")) hoodMode = MODES.yellow;
+				if (button("def")) hoodMode = MODES.def;
+
+				if (pot.getAverageValue() > 500) potPos.add(pot.getAverageValue());
+				if (potPos.size() > 100) potPos.remove(0);
+
+				// Set encoder position using limit switch
+				if (!limit.get()) lifter.setSelectedSensorPosition(LIFTER_HIGH);
+
 				// Automatically set hood position
-				//setHoodPos(calculateHoodPosition(limelight.getDistance()));
+				if (hoodMode == MODES.def) {
+
+					// Manually aim shooter
+					if (button("extendAimer")) {
+					
+						aimer.set(AIMER_POW);
+					
+					}
+					else if (button("retractAimer")) {
+					
+						aimer.set(-AIMER_POW);
+
+					}
+					else aimer.set(0);
+
+				} else if (hoodMode == MODES.green) {
+
+					setHoodPos(GREEN_POS);
+
+				} else {
+
+					setHoodPos(YELLOW_POS);
+
+				}
 
 				// If the shoot button is pressed, run the motors
 				if (button("shoot")) {
+
+					hatch.set(HATCH_CLOSE_POS);
 
 					// Set motor power
 					leftShooter.set(SHOOT_POW);
@@ -200,13 +272,14 @@ public class Shooter extends SubsystemBase {
 					// If the average MPS lower than threshold speed, continue counting
 					if ((getLeftVelMPS() + getRightVelMPS()) / 2 < thresholdSpeed)
 						belowThresholdTime = timer.get();
-/*		
+
 					// If time is above threshold and lifter not too high
-					if (timer.get() > SHOOT_DELAY && getLifterPos() < LIFTER_HIGH) lifter.set(LIFTER_POW);
+					if (timer.get() > SHOOT_DELAY && limit.get()) lifter.set(LIFTER_POW);
 					else lifter.set(0);
-*/
 
 				} else {
+
+					hatch.set(HATCH_OPEN_POS);
 
 					// Stop shooter
 					leftShooter.set(0);
@@ -218,23 +291,23 @@ public class Shooter extends SubsystemBase {
 
 					// Detect if shoot button pressed once
 					pressedOnce = false;
-/*
-					// Lower magazine when not shooting
-					if (getLifterPos() > 0) lifter.set(-LIFTER_POW);
-					else lifter.set(0);
-*/
-				}
 
+					// Stop overriding drive
+					//drive.stopOverride();
+
+					// Lower magazine when not shooting
+				 	if (getLifterPos() < 0) lifter.set(-LIFTER_POW);
+					else lifter.set(0);
+
+				}
+/*
 				// Manually control lifter
 				if (button("lift"))	lifter.set(LIFTER_POW);
 				else if (button("lower")) lifter.set(-LIFTER_POW);
 				else lifter.set(0);
-
-				// Manually aim shooter
-				if (button("extendAimer")) aimer.set(AIMER_POW);
-				else if (button("retractAimer")) aimer.set(-AIMER_POW);
-				else aimer.set(0);
-
+*/
+				
+/*
 				// Open/close hatch
 				if (button("toggleHatch")) {
 
@@ -260,6 +333,7 @@ public class Shooter extends SubsystemBase {
 					hatchOnce = true;
 
 				}
+				*/
 				
 			}
 
@@ -285,6 +359,10 @@ public class Shooter extends SubsystemBase {
 		builder.addDoubleProperty("Shoot Threshold Speed (m/s)", () -> thresholdSpeed, (value) -> thresholdSpeed = value);
 		builder.addDoubleProperty("Hatch Position", () -> hatch.get(), null);
 		builder.addDoubleProperty("Hood Position", () -> getHoodPos(), null);
+		builder.addBooleanProperty("Limit", () -> limit.get(), null);
+
+		if (hoodMode == MODES.def) builder.addBooleanProperty("DEF", () -> true, null);
+		else builder.addBooleanProperty("DEF", () -> false, null);
 		
 	}
 
