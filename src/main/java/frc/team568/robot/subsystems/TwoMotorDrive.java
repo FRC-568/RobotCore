@@ -3,6 +3,7 @@ package frc.team568.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
@@ -12,15 +13,15 @@ import frc.team568.robot.RobotBase;
 
 public class TwoMotorDrive extends SubsystemBase {
 	
-	//protected PowerDistributionPanel pdp;
+	protected PowerDistributionPanel pdp;
 
 	protected WPI_TalonSRX leftMotor;
 	protected WPI_TalonSRX rightMotor;
 
 	protected Gyro gyro = new ADXRS450_Gyro();
 
-	//protected double maxLeftCurrent = 0;
-	//protected double maxRightCurrent = 0;
+	protected double maxLeftCurrent = 0;
+	protected double maxRightCurrent = 0;
 
 	private boolean override = false;
 
@@ -33,7 +34,7 @@ public class TwoMotorDrive extends SubsystemBase {
 		// Initialize code
 		initMotors();
 
-		//pdp = new PowerDistributionPanel();
+		pdp = new PowerDistributionPanel();
 		
 	}
 
@@ -128,18 +129,18 @@ public class TwoMotorDrive extends SubsystemBase {
 		return rightMotor.getSelectedSensorPosition();
 
 	}
-/*
+
 	public double getLeftCurrent() {
 
 		return pdp.getCurrent(port("leftMotor"));
 
-	}*/
-/*
+	}
+
 	public double getRightCurrent() {
 
 		return pdp.getCurrent(port("rightMotor"));
 
-	}*/
+	}
 
 	public void initDefaultCommand() {
 		setDefaultCommand(new CommandBase() {
@@ -197,11 +198,10 @@ public class TwoMotorDrive extends SubsystemBase {
 					rightMotor.set(rightPower * driveDamp * 0.7);
 
 				}
-/*
+
 				// Set the maximum current
 				if (maxLeftCurrent < getLeftCurrent()) maxLeftCurrent = getLeftCurrent();
 				if (maxRightCurrent < getRightCurrent()) maxRightCurrent = getRightCurrent();
-				*/
 
 			}
 
@@ -224,10 +224,10 @@ public class TwoMotorDrive extends SubsystemBase {
 		builder.addDoubleProperty("Left Motor Position", () -> getLeftPos(), null);
 		builder.addDoubleProperty("Right Motor Velocity", () -> getRightVel(), null);
 		builder.addDoubleProperty("Right Motor Position", () -> getRightPos(), null);
-		//builder.addDoubleProperty("Left Motor Current", () -> getLeftCurrent(), null);
-		//builder.addDoubleProperty("Right Motor Current", () -> getRightCurrent(), null);
-		//builder.addDoubleProperty("Maximum Left Motor Current", () -> maxLeftCurrent, null);
-		//builder.addDoubleProperty("Maximum Right Motor Current", () -> maxRightCurrent, null);
+		builder.addDoubleProperty("Left Motor Current", () -> getLeftCurrent(), null);
+		builder.addDoubleProperty("Right Motor Current", () -> getRightCurrent(), null);
+		builder.addDoubleProperty("Maximum Left Motor Current", () -> maxLeftCurrent, null);
+		builder.addDoubleProperty("Maximum Right Motor Current", () -> maxRightCurrent, null);
 		
 	}
 
