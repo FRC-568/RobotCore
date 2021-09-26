@@ -7,7 +7,6 @@ import static frc.team568.robot.rechargemodified.DriveConstants.P_DRIVE;
 import static frc.team568.robot.rechargemodified.DriveConstants.TPR;
 import static frc.team568.robot.rechargemodified.DriveConstants.WHEEL_CIRCUMFERENCE;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -15,8 +14,6 @@ import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.team568.robot.subsystems.TwoMotorDrive;
 
 public class DriveDistance extends CommandBase {
-	
-	private NetworkTableEntry isFinEntry;
 
 	private final TwoMotorDrive drive;
 	private final double speed;
