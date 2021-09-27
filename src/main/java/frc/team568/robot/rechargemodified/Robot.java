@@ -1,12 +1,9 @@
 package frc.team568.robot.rechargemodified;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.XinputController;
-import frc.team568.robot.subsystems.Limelight;
 import frc.team568.robot.subsystems.TwoMotorDrive;
 
 public class Robot extends RobotBase {
@@ -14,9 +11,9 @@ public class Robot extends RobotBase {
 	final int drivingControllerPort = 0;
 
 	TwoMotorDrive drive;
-	Gyro gyro = new ADXRS450_Gyro();
+	//Gyro gyro = new ADXRS450_Gyro();
 	Shooter shooter;
-	Limelight limelight;
+	//Limelight limelight;
 
 	XinputController driverController = new XinputController(drivingControllerPort);
 
@@ -53,15 +50,15 @@ public class Robot extends RobotBase {
 
 		// Subsystems
 		drive = addSubsystem(TwoMotorDrive::new);
-		limelight = addSubsystem(Limelight::new);
+		//limelight = addSubsystem(Limelight::new);
 		shooter = addSubsystem(Shooter::new);
-		shooter.initLimelight(limelight);
+		//shooter.initLimelight(limelight);
 		shooter.getDrive(drive);
 
 		// Setup limelight
-		limelight.setCameraAngle(0.5);
-		limelight.setCameraHeight(32);
-		limelight.setTargetHeight(98.25);
+		//limelight.setCameraAngle(0.5);
+		//limelight.setCameraHeight(32);
+		//limelight.setTargetHeight(98.25);
 
 		// Initialize autonomous
 		auto = new Barrel(drive);
@@ -99,7 +96,7 @@ public class Robot extends RobotBase {
 		
 		auto.schedule();
 		drive.resetMotors();
-		gyro.reset();
+		//gyro.reset();
 
 	}
 

@@ -118,13 +118,13 @@ public class TwoMotorDrive extends SubsystemBase {
 
 	}
 
-	public int getLeftPos() {
+	public double getLeftPos() {
 
 		return leftMotor.getSelectedSensorPosition();
 
 	}
 	
-	public int getRightPos() {
+	public double getRightPos() {
 
 		return rightMotor.getSelectedSensorPosition();
 

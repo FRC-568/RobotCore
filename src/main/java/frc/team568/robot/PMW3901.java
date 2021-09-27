@@ -4,13 +4,20 @@
 
 package frc.team568.robot;
 
-import static frc.team568.robot.PMW3901.Magic.*;
-import static frc.team568.robot.PMW3901.Register.*;
+import static frc.team568.robot.PMW3901.Magic.INVERSE_PRODUCT_ID_CODE;
+import static frc.team568.robot.PMW3901.Magic.POWER_UP_RESET_CODE;
+import static frc.team568.robot.PMW3901.Magic.PRODUCT_ID_CODE;
+import static frc.team568.robot.PMW3901.Register.DELTA_X_H;
+import static frc.team568.robot.PMW3901.Register.DELTA_X_L;
+import static frc.team568.robot.PMW3901.Register.DELTA_Y_H;
+import static frc.team568.robot.PMW3901.Register.DELTA_Y_L;
+import static frc.team568.robot.PMW3901.Register.INVERSE_PRODUCT_ID;
+import static frc.team568.robot.PMW3901.Register.MOTION;
+import static frc.team568.robot.PMW3901.Register.POWER_UP_RESET;
+import static frc.team568.robot.PMW3901.Register.PRODUCT_ID;
 
 import java.util.Arrays;
 import java.util.List;
-
-import frc.team568.util.Vector2;
 
 import com.sun.jna.Library;
 import com.sun.jna.Memory;
@@ -24,6 +31,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import frc.team568.util.Vector2;
 
 // Temporarily hide 2020 deprecation warnings
 @SuppressWarnings("all")

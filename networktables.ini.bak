@@ -1,0 +1,12 @@
+[NetworkTables Storage 3.0]
+string "/Preferences/.type"="RobotPreferences"
+double "/Preferences/Recharge2/ports/aimer"=12
+double "/Preferences/Recharge2/ports/hatch"=0
+double "/Preferences/Recharge2/ports/leftMotor"=3
+double "/Preferences/Recharge2/ports/leftShooter"=0
+double "/Preferences/Recharge2/ports/lifter"=13
+double "/Preferences/Recharge2/ports/limit"=0
+double "/Preferences/Recharge2/ports/pot"=0
+double "/Preferences/Recharge2/ports/rightMotor"=2
+double "/Preferences/Recharge2/ports/rightShooter"=1
+string "/Recharge2/.type"="RobotPreferences"

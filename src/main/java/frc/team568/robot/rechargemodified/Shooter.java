@@ -156,19 +156,19 @@ public class Shooter extends SubsystemBase {
 
 	}
 
-	public int getLeftPos() {
+	public double getLeftPos() {
 
 		return leftShooter.getSelectedSensorPosition();
 
 	}
 	
-	public int getRightPos() {
+	public double getRightPos() {
 
 		return rightShooter.getSelectedSensorPosition();
 
 	}
 
-	public int getLifterPos() {
+	public double getLifterPos() {
 
 		return lifter.getSelectedSensorPosition();
 
