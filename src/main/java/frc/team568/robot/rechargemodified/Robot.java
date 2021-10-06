@@ -12,12 +12,12 @@ public class Robot extends RobotBase {
 
 	TwoMotorDrive drive;
 	//Gyro gyro = new ADXRS450_Gyro();
-	Shooter shooter;
+	//Shooter shooter;
 	//Limelight limelight;
 
 	XinputController driverController = new XinputController(drivingControllerPort);
 
-	Barrel auto;
+	//Barrel auto;
 
 	public Robot() {
 
@@ -51,9 +51,9 @@ public class Robot extends RobotBase {
 		// Subsystems
 		drive = addSubsystem(TwoMotorDrive::new);
 		//limelight = addSubsystem(Limelight::new);
-		shooter = addSubsystem(Shooter::new);
+		//shooter = addSubsystem(Shooter::new);
 		//shooter.initLimelight(limelight);
-		shooter.getDrive(drive);
+		//shooter.getDrive(drive);
 
 		// Setup limelight
 		//limelight.setCameraAngle(0.5);
@@ -61,15 +61,15 @@ public class Robot extends RobotBase {
 		//limelight.setTargetHeight(98.25);
 
 		// Initialize autonomous
-		auto = new Barrel(drive);
+		//auto = new Barrel(drive);
 
 	}
 
 	@Override
 	public void teleopInit() {
 
-		if (auto != null)
-			auto.cancel();
+		//if (auto != null)
+		//	auto.cancel();
 		//gyro.reset();
 		drive.resetMotors();
 		drive.initDefaultCommand();
@@ -94,7 +94,7 @@ public class Robot extends RobotBase {
 	@Override
 	public void autonomousInit() {
 		
-		auto.schedule();
+		//auto.schedule();
 		drive.resetMotors();
 		//gyro.reset();
 

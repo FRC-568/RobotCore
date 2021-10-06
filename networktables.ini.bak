@@ -1,5 +1,10 @@
 [NetworkTables Storage 3.0]
+string "/Mechy/.type"="RobotPreferences"
 string "/Preferences/.type"="RobotPreferences"
+double "/Preferences/Mechy/ports/leftBackMotor"=3
+double "/Preferences/Mechy/ports/leftFrontMotor"=1
+double "/Preferences/Mechy/ports/rightBackMotor"=4
+double "/Preferences/Mechy/ports/rightFrontMotor"=2
 double "/Preferences/Recharge2/ports/aimer"=12
 double "/Preferences/Recharge2/ports/hatch"=0
 double "/Preferences/Recharge2/ports/leftMotor"=3
