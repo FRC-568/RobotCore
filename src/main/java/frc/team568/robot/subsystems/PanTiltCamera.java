@@ -2,7 +2,7 @@ package frc.team568.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.cameraserver.CameraServer;
 import frc.team568.robot.RobotBase;
@@ -29,7 +29,7 @@ public class PanTiltCamera extends SubsystemBase {
 		cameraVerticalServo.set(0.5);
 		cameraHorizontalServo.set(0.5);
 
-		CameraServer.getInstance().startAutomaticCapture(cameraServerPort);
+		CameraServer.startAutomaticCapture(cameraServerPort);
 
 		initDefaultCommand();
 	}

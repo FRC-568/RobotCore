@@ -1,8 +1,9 @@
 package frc.team568.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import frc.team568.robot.RobotBase;
 
 public class EvoDriveShifter extends SubsystemBase {
@@ -11,7 +12,7 @@ public class EvoDriveShifter extends SubsystemBase {
 
 	public EvoDriveShifter(final RobotBase robot) {
 		super(robot);
-		solenoid = new DoubleSolenoid(configInt("solenoidLow"), configInt("solenoidHigh"));
+		solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, configInt("solenoidLow"), configInt("solenoidHigh"));
 		SendableRegistry.addChild(this, solenoid);
 		shiftLow();
 	}

@@ -1,11 +1,13 @@
 package frc.team568.robot.recharge;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpiutil.math.MathUtil;
+import edu.wpi.first.math.MathUtil;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
+@SuppressWarnings("unused")
 public class ShooterAlignCommand extends CommandBase {
 	
 	final TalonSRXDrive drive;
@@ -87,9 +89,12 @@ public class ShooterAlignCommand extends CommandBase {
 		super.initSendable(builder);
 		
 		builder.addDoubleProperty("Target Speed", () -> targetSpeed, null);
-		rotationEntry = builder.getEntry("rotate speed");
-		directionEntry = builder.getEntry("direction");
-		errorEntry = builder.getEntry("error");
+		if (builder instanceof SendableBuilderImpl) {
+			SendableBuilderImpl bi = (SendableBuilderImpl)builder;
+			rotationEntry = bi.getEntry("rotate speed");
+			directionEntry = bi.getEntry("direction");
+			errorEntry = bi.getEntry("error");
+		}
 	}
 	
 }

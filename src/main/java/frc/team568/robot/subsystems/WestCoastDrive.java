@@ -4,10 +4,10 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
@@ -38,8 +38,7 @@ public class WestCoastDrive extends SubsystemBase {
 		super(robot);
 
 		initMotors();
-		drive = new DifferentialDrive(new SpeedControllerGroup(fl, bl), new SpeedControllerGroup(fr, br));
-		drive.setRightSideInverted(false);
+		drive = new DifferentialDrive(new MotorControllerGroup(fl, bl), new MotorControllerGroup(fr, br));
 
 		joystick = new Joystick(port("mainJoystick"));
 

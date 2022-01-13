@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
 
+@SuppressWarnings("unused")
 public class Intake extends SubsystemBase {
 
 	private final double INTAKE_SPEED = 1;

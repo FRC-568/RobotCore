@@ -1,20 +1,20 @@
 package frc.team568.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 
 public class DriveTrain extends SubsystemBase {
-	protected SpeedController leftFront;
-	protected SpeedController leftBack;
-	protected SpeedController rightFront;
-	protected SpeedController rightBack;
+	protected MotorController leftFront;
+	protected MotorController leftBack;
+	protected MotorController rightFront;
+	protected MotorController rightBack;
 	protected DifferentialDrive myDrive;
 
 	protected Joystick driveStick1;
@@ -34,7 +34,7 @@ public class DriveTrain extends SubsystemBase {
 		rightFront.setInverted(false);
 		rightBack.setInverted(false);
 
-		myDrive = new DifferentialDrive(new SpeedControllerGroup(leftFront, leftBack), new SpeedControllerGroup(rightFront, rightBack));
+		myDrive = new DifferentialDrive(new MotorControllerGroup(leftFront, leftBack), new MotorControllerGroup(rightFront, rightBack));
 
 		driveStick1 = new Joystick(0);
 		initDefaultCommand();

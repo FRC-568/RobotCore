@@ -2,16 +2,16 @@ package frc.team568.robot.recharge;
 
 import static edu.wpi.first.wpilibj.XboxController.Button.kBack;
 import static edu.wpi.first.wpilibj.XboxController.Button.kStart;
-import static edu.wpi.first.wpilibj.XboxController.Button.kStickLeft;
-import static edu.wpi.first.wpilibj.XboxController.Button.kStickRight;
+import static edu.wpi.first.wpilibj.XboxController.Button.kLeftStick;
+import static edu.wpi.first.wpilibj.XboxController.Button.kRightStick;
 import static edu.wpi.first.wpilibj.XboxController.Button.kX;
 
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -44,7 +44,7 @@ public class Robot extends RobotBase {
 	XinputController driverController = new XinputController(drivingControllerPort);
 	XinputController mechanismController = new XinputController(mechanismControllerPort); 
 
-	PowerDistributionPanel pdp;
+	PowerDistribution pdp;
 
 	public Robot() {
 		super("Recharge");
@@ -81,24 +81,24 @@ public class Robot extends RobotBase {
 
 		axis("rotateShooter", mechanismControllerPort, Xinput.LeftStickY);
 
-		compressor = new Compressor();
-		pdp = new PowerDistributionPanel();
+		compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+		pdp = new PowerDistribution();
 
 		drive = addSubsystem(TalonSRXDrive::new).withGyro(gyro);
 		//drive = addSubsystem(TalonSRXDrive::new);
 		driverController.getButton(kBack).whenPressed(drive::toggleIsReversed);
 		driverController.getButton(kStart).whenPressed(drive::toggleTankControls);
-		driverController.getButton(kStickLeft)
-			.and(driverController.getButton(kStickRight))
+		driverController.getButton(kLeftStick)
+			.and(driverController.getButton(kRightStick))
 			.whileActiveOnce(new SequentialCommandGroup(
 				new WaitCommand(5),
 				new InstantCommand(drive::toggleSafeMode)
 			));
 		drive.setDefaultCommand(new TalonSRXDriveDefaultCommand(drive, Map.of(
-			Input.FORWARD, () -> -driverController.getY(Hand.kLeft),
-			Input.TURN, () -> driverController.getX(Hand.kRight),
-			Input.TANK_LEFT, () -> -driverController.getY(Hand.kLeft),
-			Input.TANK_RIGHT, () -> -driverController.getY(Hand.kRight)
+			Input.FORWARD, () -> -driverController.getLeftY(),
+			Input.TURN, () -> driverController.getRightX(),
+			Input.TANK_LEFT, () -> -driverController.getLeftY(),
+			Input.TANK_RIGHT, () -> -driverController.getRightY()
 		)));
 
 		autonomousDriveForTime = new DriveForTime(2, 1, drive);
@@ -118,7 +118,7 @@ public class Robot extends RobotBase {
 	public void teleopInit() {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
-		compressor.setClosedLoopControl(true);
+		compressor.enableDigital();
 		drive.resetSensors();
 		gyro.reset();
 	}
@@ -136,12 +136,12 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void disabledInit() {
-		compressor.setClosedLoopControl(false);
+		compressor.disable();
 	}
 
 	@Override
 	public void autonomousInit() {
-		compressor.setClosedLoopControl(true);
+		compressor.enableDigital();
 		autonomousDriveForTime.schedule();
 	}
 

@@ -4,10 +4,10 @@ import frc.team568.robot.RobotBase;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 public class WinchClimber extends SubsystemBase {
-	public SpeedController lift_m;
+	public MotorController lift_m;
 
 	public WinchClimber(final RobotBase robot) {
 		super(robot);

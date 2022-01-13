@@ -3,11 +3,11 @@ package frc.team568.robot.subsystems;
 import frc.team568.robot.RobotBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.util.sendable.SendableRegistry;
 
 public class BlinkinLights extends SubsystemBase {
 	private Spark control;
@@ -44,7 +44,7 @@ public class BlinkinLights extends SubsystemBase {
 
 	public void setTeamColor() {
 		Color teamColor;
-		switch (DriverStation.getInstance().getAlliance()) {
+		switch (DriverStation.getAlliance()) {
 		case Blue:
 			teamColor = Color.BLUE;
 			break;
@@ -67,7 +67,7 @@ public class BlinkinLights extends SubsystemBase {
 			SendableBuilderImpl ccBuilder = new SendableBuilderImpl();
 			ccBuilder.setTable(chooserTable);
 			colorChooser.initSendable(ccBuilder);
-			ccBuilder.updateTable();
+			ccBuilder.update();
 			ccBuilder.addStringProperty("selected", () -> getColor().name(), name -> setColor(Color.valueOf(name)));
 			ccBuilder.startListeners();
 			chooserTable.getEntry(".name").setString("Light Color");

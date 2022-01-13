@@ -7,9 +7,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
-public final class ControlMapper {
-	private static final DriverStation ds = DriverStation.getInstance();
-	
+public final class ControlMapper {	
 	private Map<String, BooleanSupplier> buttonMap = new HashMap<>();
 	private Map<String, DoubleSupplier> axisMap = new HashMap<>();
 
@@ -20,11 +18,11 @@ public final class ControlMapper {
 	}
 
 	public void bindButton(String key, int controller, int button) {
-		bindButton(key, () -> ds.getStickButton(controller, button));
+		bindButton(key, () -> DriverStation.getStickButton(controller, button));
 	}
 
 	public void bindPOVButton(String key, int controller, int direction) {
-		bindButton(key, () -> ds.getStickPOV(controller, 0) == direction);
+		bindButton(key, () -> DriverStation.getStickPOV(controller, 0) == direction);
 	}
 
 	public void bindAxis(String key, DoubleSupplier supplier) {
@@ -32,7 +30,7 @@ public final class ControlMapper {
 	}
 
 	public void bindAxis(String key, int controller, int axis) {
-		bindAxis(key, () -> ds.getStickAxis(controller, axis));
+		bindAxis(key, () -> DriverStation.getStickAxis(controller, axis));
 	}
 
 	public boolean button(String key) {

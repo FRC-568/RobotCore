@@ -16,8 +16,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public abstract class RobotBase extends TimedRobot implements PortMapper {
-	private static final Preferences preferences = Preferences.getInstance();
-
 	private final Map<Class<? extends Subsystem>, Subsystem> subsystems;
 	private final String _name;
 	private final NetworkTable config;
@@ -40,9 +38,9 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 	@Override
 	public int getPort(String name) {
 		String path = getName() + "/ports/" + name;
-		if(!preferences.containsKey(path))
+		if(!Preferences.containsKey(path))
 			throw new RuntimeException("A Subsystem has requested the port mapping '" + name + "', but it is not defined.");
-		return preferences.getInt(path, -1);
+		return Preferences.getInt(path, -1);
 	}
 
 	public final String getName() {
@@ -53,11 +51,11 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 	public Map<String, Integer> getPortMap() {
 		String prefix = getName() + "/ports/";
 
-		return preferences.getKeys().stream()
+		return Preferences.getKeys().stream()
 		.filter(key -> key.startsWith(prefix))
 		.collect(Collectors.toUnmodifiableMap(
 			key -> key.substring(prefix.length()),
-			value -> preferences.getInt(value, -1)));
+			value -> Preferences.getInt(value, -1)));
 	}
 
 	public NetworkTable getConfig() {
@@ -77,7 +75,7 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 	}
 
 	protected boolean button(int controller, int button) {
-		return DriverStation.getInstance().getStickButton(controller, button);
+		return DriverStation.getStickButton(controller, button);
 	}
 
 	protected void pov(String key, int controller, int direction) {
@@ -89,7 +87,7 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 	}
 
 	protected boolean pov(int controller, int direction) {
-		return DriverStation.getInstance().getStickPOV(controller, 0) == direction;
+		return DriverStation.getStickPOV(controller, 0) == direction;
 	}
 
 	protected void axis(String key, int controller, int axis) {
@@ -101,12 +99,12 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 	}
 
 	protected double axis(int controller, int axis) {
-		return DriverStation.getInstance().getStickAxis(controller, axis);
+		return DriverStation.getStickAxis(controller, axis);
 	}
 	
 	//Adds a new port mapping - call in the constructor before initializing subsystems
 	protected void port(String name, int port) {
-		preferences.putInt(getName() + "/ports/" + name, port);
+		Preferences.setInt(getName() + "/ports/" + name, port);
 	}
 	
 	// Set Subsystem configuration - call in the constructor before initializing subsystems

@@ -2,12 +2,11 @@ package frc.team568.robot.bart;
 
 import static edu.wpi.first.wpilibj.XboxController.Button.kBack;
 import static edu.wpi.first.wpilibj.XboxController.Button.kStart;
-import static edu.wpi.first.wpilibj.XboxController.Button.kStickLeft;
-import static edu.wpi.first.wpilibj.XboxController.Button.kStickRight;
+import static edu.wpi.first.wpilibj.XboxController.Button.kLeftStick;
+import static edu.wpi.first.wpilibj.XboxController.Button.kRightStick;
 
 import java.util.Map;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -36,8 +35,8 @@ public class Robot extends RobotBase {
 
 		driver.getButton(kBack).whenPressed(drive::toggleIsReversed);
 		driver.getButton(kStart).whenPressed(drive::toggleTankControls);
-		driver.getButton(kStickLeft)
-			.and(driver.getButton(kStickRight))
+		driver.getButton(kLeftStick)
+			.and(driver.getButton(kRightStick))
 			.whileActiveOnce(new SequentialCommandGroup(
 				new WaitCommand(5),
 				new InstantCommand(drive::toggleSafeMode)
@@ -45,10 +44,10 @@ public class Robot extends RobotBase {
 
 		drive = addSubsystem(TalonSRXDrive::new);
 		drive.setDefaultCommand(new TalonSRXDriveDefaultCommand(drive, Map.of(
-			Input.FORWARD, () -> -driver.getY(Hand.kLeft),
-			Input.TURN, () -> driver.getX(Hand.kRight),
-			Input.TANK_LEFT, () -> -driver.getY(Hand.kLeft),
-			Input.TANK_RIGHT, () -> -driver.getY(Hand.kRight)
+			Input.FORWARD, () -> -driver.getLeftY(),
+			Input.TURN, () -> driver.getRightX(),
+			Input.TANK_LEFT, () -> -driver.getLeftY(),
+			Input.TANK_RIGHT, () -> -driver.getRightY()
 		)));
 	}
 

@@ -8,14 +8,15 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.DriveBase;
 import frc.team568.robot.subsystems.SubsystemBase;
 
+@SuppressWarnings("unused")
 public class Shooter extends SubsystemBase {
 
 	// Camera setup
@@ -114,7 +115,7 @@ public class Shooter extends SubsystemBase {
 	private double Kd = 0.003;
 
 	// PDP
-	private PowerDistributionPanel pdp;
+	private PowerDistribution pdp;
 	private double shooterLCompensation = 0;
 	private double shooterRCompensation = 0;
 
@@ -139,7 +140,7 @@ public class Shooter extends SubsystemBase {
 
 		pidShooterRotate = new PIDController(Kp, Ki, Kd);
 
-		pdp = new PowerDistributionPanel();
+		pdp = new PowerDistribution();
 
 		d = getHorizontalDistanceFromTarget();
 		targetY  = getActualHeight();

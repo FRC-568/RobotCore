@@ -8,7 +8,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
-import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,7 +41,7 @@ public class VisionProcessor {
 	public VisionProcessor(final int cameraUsbPort) {
 		matOriginal = new Mat();
 		pipeline = new GearLifterTarget();
-		camera = CameraServer.getInstance().startAutomaticCapture(cameraUsbPort);
+		camera = CameraServer.startAutomaticCapture(cameraUsbPort);
 		cameraName = camera.getName();
 		camera.setResolution(CAMERA_WIDTH, CAMERA_HEIGHT);
 	}
@@ -70,7 +70,7 @@ public class VisionProcessor {
 	}
 
 	public void processImage() {
-		CameraServer.getInstance().getVideo(cameraName).grabFrame(matOriginal);
+		CameraServer.getVideo(cameraName).grabFrame(matOriginal);
 		pipeline.process(matOriginal);
 		returnCenterX();
 	}

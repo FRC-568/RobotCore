@@ -3,6 +3,7 @@ package frc.team568.robot.recharge;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.RobotBase;
@@ -19,7 +20,7 @@ public class ColorSpinner extends SubsystemBase {
 
 		super(robot);
 
-		extendSpinner = new Solenoid(configInt("extendSpinner"));
+		extendSpinner = new Solenoid(PneumaticsModuleType.CTREPCM, configInt("extendSpinner"));
 		colorSpinner = new VictorSPX(configInt("spinner"));
 
 		initDefaultCommand();

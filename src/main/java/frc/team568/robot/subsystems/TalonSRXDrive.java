@@ -10,15 +10,16 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
@@ -32,8 +33,8 @@ public class TalonSRXDrive extends DriveBase {
 	private NetworkTableEntry tankControlsEntry;
 	private NetworkTableEntry safeModeEntry;
 
-	private SpeedControllerGroup leftMotors;
-	private SpeedControllerGroup rightMotors;
+	private MotorControllerGroup leftMotors;
+	private MotorControllerGroup rightMotors;
 
 	private DifferentialDriveOdometry odometry;
 
@@ -81,11 +82,10 @@ public class TalonSRXDrive extends DriveBase {
 		}
 
 		DifferentialDrive d = new DifferentialDrive(motorsL[0], motorsR[0]);
-		d.setRightSideInverted(false);
 		SendableRegistry.addChild(this, d);
 
-		leftMotors = new SpeedControllerGroup(motorsL[0], motorsL[1]);
-		rightMotors = new SpeedControllerGroup(motorsR[0], motorsR[1]);
+		leftMotors = new MotorControllerGroup(motorsL[0], motorsL[1]);
+		rightMotors = new MotorControllerGroup(motorsR[0], motorsR[1]);
 
 		odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 	 
@@ -294,22 +294,25 @@ public class TalonSRXDrive extends DriveBase {
 		builder.addDoubleProperty("Average Velocity", () -> getVelocityInTicks(), null);
 		builder.addDoubleProperty("Average Distance", () -> getDistanceInTicks(), null);
 
-		reversedEntry = builder.getEntry("Reverse Direction");
-		reversedEntry.setDefaultBoolean(false);
-		reversedEntry.setPersistent();
+		if (builder instanceof SendableBuilderImpl) {
+			SendableBuilderImpl bi = (SendableBuilderImpl)builder;
+			
+			reversedEntry = bi.getEntry("Reverse Direction");
+			reversedEntry.setDefaultBoolean(false);
+			reversedEntry.setPersistent();
 
-		tankControlsEntry = builder.getEntry("Tank Controls");
-		tankControlsEntry.setDefaultBoolean(false);
-		tankControlsEntry.setPersistent();
+			tankControlsEntry = bi.getEntry("Tank Controls");
+			tankControlsEntry.setDefaultBoolean(false);
+			tankControlsEntry.setPersistent();
 
-		safeModeEntry = builder.getEntry("Safe Mode");
-		safeModeEntry.setDefaultBoolean(false);
-		safeModeEntry.setPersistent();
-		safeModeEntry.addListener(e -> {
-			drive.setMaxOutput(e.value.getBoolean() ? SPEED_SAFE : SPEED_MAX);
-			System.out.println("Safemode is " + (getSafeMode() ? "Enabled" : "Disabled") + ".");
-		}, kNew | kUpdate | kLocal | kImmediate);
-
+			safeModeEntry = bi.getEntry("Safe Mode");
+			safeModeEntry.setDefaultBoolean(false);
+			safeModeEntry.setPersistent();
+			safeModeEntry.addListener(e -> {
+				drive.setMaxOutput(e.value.getBoolean() ? SPEED_SAFE : SPEED_MAX);
+				System.out.println("Safemode is " + (getSafeMode() ? "Enabled" : "Disabled") + ".");
+			}, kNew | kUpdate | kLocal | kImmediate);
+		}
 	}
 
 }

@@ -7,14 +7,13 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
-@SuppressWarnings("deprecation")
 public class Processing {
 
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
 	}
 	// Process for GRIP
 	static LiftTracker tracker;
@@ -34,11 +33,7 @@ public class Processing {
 	static double[] centerX;
 
 	public static void main(String[] args) {
-		NetworkTable.setClientMode();
-		NetworkTable.setTeam(1806);
-		NetworkTable.setIPAddress("roborio-1806-frc.local");
-		NetworkTable.initialize();
-		table = NetworkTable.getTable("LiftTracker");
+		table = NetworkTableInstance.getDefault().getTable("LiftTracker");
 
 		while (shouldRun) {
 			try {
@@ -77,9 +72,9 @@ public class Processing {
 			tracker.process(matOriginal);
 			returnCenterX();
 			System.out.println(getAngle());
-			table.putNumber("distanceFromTarget", distanceFromTarget());
-			table.putNumber("angleFromGoal", getAngle());
-			table.putNumberArray("centerX", centerX);
+			table.getEntry("distanceFromTarget").setDouble(distanceFromTarget());
+			table.getEntry("angleFromGoal").setDouble(getAngle());
+			table.getEntry("centerX").setDoubleArray(centerX);
 			videoCapture.read(matOriginal);
 		}
 

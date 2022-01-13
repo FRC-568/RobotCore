@@ -5,11 +5,11 @@ import java.nio.file.Path;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 
 
-
+@SuppressWarnings("unused")
 public class Pathing {
 	private static final int k_ticks_per_rev = 1024;
 	private static final double k_wheel_diameter = 4.0 / 12.0;

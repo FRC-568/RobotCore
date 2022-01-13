@@ -1,10 +1,10 @@
 package frc.team568.util;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-@SuppressWarnings("deprecation")
 public class PID {
 	double Pan;
 	double Tilt;
@@ -38,12 +38,12 @@ public void pidtest(){
 	KI = SmartDashboard.getNumber("I", 0.7);
 	KD = SmartDashboard.getNumber("D", 0.0);
 
-	NetworkTable visionTable = NetworkTable.getTable("SmartDashboard");
+	NetworkTable visionTable = NetworkTableInstance.getDefault().getTable("SmartDashboard");
 	try
 	{
-		System.out.println(visionTable.getNumber("centerX", 0.0));
-		System.out.println(visionTable.getNumber("centerY", 0.0));
-		System.out.println(visionTable.getNumber("area", 0.0));
+		System.out.println(visionTable.getEntry("centerX").getNumber(0.0));
+		System.out.println(visionTable.getEntry("centerY").getNumber(0.0));
+		System.out.println(visionTable.getEntry("area").getNumber(0.0));
 		SmartDashboard.putNumber("P", 2.00);
 		SmartDashboard.putNumber("I", 0.700);
 		SmartDashboard.putNumber("D", 0);

@@ -16,6 +16,7 @@ import static frc.team568.robot.PMW3901.Register.MOTION;
 import static frc.team568.robot.PMW3901.Register.POWER_UP_RESET;
 import static frc.team568.robot.PMW3901.Register.PRODUCT_ID;
 
+import java.io.Closeable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,14 +29,14 @@ import com.sun.jna.Structure;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.SendableBase;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.team568.util.Vector2;
 
 // Temporarily hide 2020 deprecation warnings
 @SuppressWarnings("all")
-public class PMW3901 extends SendableBase {
+public class PMW3901 implements Sendable, Closeable {
 	private static final CLibrary c = CLibrary.INSTANCE;
 	private static final HalLibrary hal = HalLibrary.INSTANCE;
 	private static final int SPI_CLOCK = 2000000;
@@ -61,7 +62,6 @@ public class PMW3901 extends SendableBase {
 		spiPort = port;
 		spi = new SPI(port);
 		initialize();
-		setName("PMW3901", port.value);
 	}
 
 	public void initialize() {
@@ -229,7 +229,6 @@ public class PMW3901 extends SendableBase {
 
 	@Override
 	public void close() {
-		super.close();
 		if (spi != null) {
 			spi.close();
 			spi = null;
@@ -238,22 +237,13 @@ public class PMW3901 extends SendableBase {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
-		builder.setSmartDashboardType(getName());
-		NetworkTableEntry pX = builder.getEntry("X");
-		NetworkTableEntry pY = builder.getEntry("Y");
-		NetworkTableEntry vX = builder.getEntry("vX");
-		NetworkTableEntry vY = builder.getEntry("vY");
-		NetworkTableEntry aX = builder.getEntry("aX");
-		NetworkTableEntry aY = builder.getEntry("aY");
-
-		builder.setUpdateTable(() -> {
-			pX.setDouble(position.x);
-			pY.setDouble(position.y);
-			vX.setDouble(velocity.x);
-			vY.setDouble(velocity.y);
-			aX.setDouble(acceleration.x);
-			aY.setDouble(acceleration.y);
-		});
+		builder.setSmartDashboardType("PMW3901");
+		builder.addDoubleProperty("X", () -> position.x, null);
+		builder.addDoubleProperty("Y", () -> position.y, null);
+		builder.addDoubleProperty("vX", () -> velocity.x, null);
+		builder.addDoubleProperty("vY", () -> velocity.y, null);
+		builder.addDoubleProperty("aX", () -> acceleration.x, null);
+		builder.addDoubleProperty("aY", () -> acceleration.y, null);
 	}
 
 	private static void log(String message, Object... args) {
