@@ -1,7 +1,7 @@
 package frc.team568.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.team568.robot.rechargemodified.Robot;
+import frc.team568.robot.rapidreact.Robot;
 
 public final class Main {
 	

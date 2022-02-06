@@ -1,10 +1,7 @@
 package frc.team568.robot.deepspace;
 
-import static frc.team568.util.Utilities.*;
-
-import frc.team568.robot.RobotBase;
-import frc.team568.robot.Xinput;
-import frc.team568.robot.subsystems.SubsystemBase;
+import static frc.team568.util.Utilities.applyDeadband;
+import static frc.team568.util.Utilities.clamp;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -12,13 +9,16 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import frc.team568.robot.RobotBase;
+import frc.team568.robot.Xinput;
+import frc.team568.robot.subsystems.SubsystemBase;
 
 public class DriveTrain2019 extends SubsystemBase {
 	private Joystick joystick;
@@ -299,9 +299,9 @@ public class DriveTrain2019 extends SubsystemBase {
 					alreadyToggled = false;
 				}
 
-				if (safeMode)
+				if (safeMode) 
 					arcadeDrive(-joystick.getRawAxis(Xinput.LeftStickY) * 0.5, joystick.getRawAxis(Xinput.RightStickX) * 0.5, false);
-				else
+				else 
 					arcadeDrive(-joystick.getRawAxis(Xinput.LeftStickY), joystick.getRawAxis(Xinput.RightStickX) * 0.6, false);
 
 				if (joystick.getRawButton(Xinput.LeftBumper)) {
