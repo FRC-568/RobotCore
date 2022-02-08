@@ -1,10 +1,8 @@
 package frc.team568.robot;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
@@ -13,10 +11,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public abstract class RobotBase extends TimedRobot implements PortMapper {
-	private final Map<Class<? extends Subsystem>, Subsystem> subsystems;
 	private final String _name;
 	private final NetworkTable config;
 	private final ControlMapper controls;
@@ -25,7 +21,6 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 
 	protected RobotBase(final String name) {
 		_name = name;
-		subsystems = new HashMap<Class<? extends Subsystem>, Subsystem>();
 		config = NetworkTableInstance.getDefault().getTable(getName());
 		config.getEntry(".type").setString("RobotPreferences");
 		config.addEntryListener(
@@ -125,31 +120,6 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 	//Set Subsystem configuration - call in the constructor before initializing subsystems
 	protected void config(String key, Number[] value) {
 		getConfig().getEntry(key).setNumberArray(value);
-	}
-	
-	//Takes a constructor Function and returns the created subsystem. Subsystems are retrievable with getSubsystem()
-	protected <S extends Subsystem> S addSubsystem(Function<RobotBase, S> constructor) {
-		S subsystem = constructor.apply(this);
-		subsystems.put(subsystem.getClass(), subsystem);
-		return subsystem;
-	}
-	
-	protected <S extends Subsystem> S addSubsystem(Class<? extends Subsystem> type, Function<RobotBase, S> constructor) {
-		S subsystem = constructor.apply(this);
-		return addSubsystem(type, subsystem);
-	}
-	
-	protected <S extends Subsystem> S addSubsystem(Class<? extends Subsystem> type, S subsystem) {
-		if(!type.isInstance(subsystem))
-			throw new RuntimeException("Subsystem of type " + subsystem.getClass().getSimpleName()
-					+ " is incompatible with " + type.getSimpleName());
-		subsystems.put(type, subsystem);
-		return subsystem;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public <S extends Subsystem> S getSubsystem(Class<S> type) {
-		return (S) subsystems.get(type);
 	}
 
 }

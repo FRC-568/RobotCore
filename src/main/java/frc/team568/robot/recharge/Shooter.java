@@ -122,10 +122,10 @@ public class Shooter extends SubsystemBase {
 	// Drivetrain setup
 	private DriveBase drive;
 
-	public Shooter(RobotBase robot) {
+	public Shooter(RobotBase robot, DriveBase drive) {
 		super(robot);
 
-		this.drive = robot.getSubsystem(DriveBase.class);
+		this.drive = drive;
 		shooterL = new WPI_TalonSRX(configInt("shooterL"));
 		shooterR = new WPI_TalonSRX(configInt("shooterR"));
 		shooterL.setInverted(true);
