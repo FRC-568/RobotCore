@@ -42,7 +42,7 @@ public class Robot extends RobotBase {
 				new InstantCommand(drive::toggleSafeMode)
 			));
 
-		drive = addSubsystem(TalonSRXDrive::new);
+		drive = new TalonSRXDrive(this);
 		drive.setDefaultCommand(new TalonSRXDriveDefaultCommand(drive, Map.of(
 			Input.FORWARD, () -> -driver.getLeftY(),
 			Input.TURN, () -> driver.getRightX(),

@@ -26,7 +26,7 @@ public class Robot extends RobotBase {
 		axis("turn", drivingControllerPort, Xinput.RightStickX);
 
 		// Subsystems
-		drive = addSubsystem(SimpleDrive::new);
+		drive = new SimpleDrive(this);
 
 	}
 

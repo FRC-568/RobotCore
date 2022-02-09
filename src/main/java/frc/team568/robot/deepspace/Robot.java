@@ -139,7 +139,7 @@ public class Robot extends RobotBase {
 		spikeFront = new Relay(2);	
 		spikeBack = new Relay(3);
 
-		drive = addSubsystem(TalonSRXDrive::new).withGyro(gyro);
+		drive = new TalonSRXDrive(this).withGyro(gyro);
 		drive.setDefaultCommand(new TalonSRXDriveDefaultCommand(drive, Map.of(
 			Input.FORWARD, () -> -driver.getLeftY(),
 			Input.TURN, () -> Math.abs(driver.getRightX()) < 0.15 ? 0 : driver.getRightX() * 0.7,
@@ -147,13 +147,13 @@ public class Robot extends RobotBase {
 			Input.TANK_RIGHT, () -> -driver.getRightY()
 		)));
 
-		shifter = addSubsystem(EvoDriveShifter::new);
-		climber = addSubsystem(HabitatClimber::new);
-		lift = addSubsystem(Lift::new);
-		//claw = addSubsystem(Claw::new);
-		shpaa = addSubsystem(Shpaa::new);
+		shifter = new EvoDriveShifter(this);
+		climber = new HabitatClimber(this);
+		lift = new Lift(this);
+		//claw = new Claw(this);
+		shpaa = new Shpaa(this);
 
-		lights = addSubsystem(BlinkinLights::new);
+		lights = new BlinkinLights(this);
 		camera.initCamera();
 		// cameraFront = CameraServer.getInstance().startAutomaticCapture(0);
 		// cameraBack = CameraServer.getInstance().startAutomaticCapture(1);

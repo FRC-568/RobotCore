@@ -39,7 +39,7 @@ public class Robot extends RobotBase {
 		button("driveModeToggle", mainJoystick, Xinput.Start);
 		button("safeModeToggle", () -> button(0, Xinput.LeftStickIn) && button(0, Xinput.RightStickIn));
 
-		drive = addSubsystem(MechyDrive::new);
+		drive = new MechyDrive(this);
 
 	}
 

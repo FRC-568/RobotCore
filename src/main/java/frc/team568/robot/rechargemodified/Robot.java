@@ -49,9 +49,9 @@ public class Robot extends RobotBase {
 		axis("turn", drivingControllerPort, Xinput.RightStickX);
 
 		// Subsystems
-		drive = addSubsystem(TwoMotorDrive::new);
-		//limelight = addSubsystem(Limelight::new);
-		//shooter = addSubsystem(Shooter::new);
+		drive = new TwoMotorDrive(this);
+		//limelight = new Limelight(this);
+		//shooter = new Shooter(this);
 		//shooter.initLimelight(limelight);
 		//shooter.getDrive(drive);
 

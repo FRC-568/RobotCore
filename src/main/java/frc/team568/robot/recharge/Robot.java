@@ -85,7 +85,7 @@ public class Robot extends RobotBase {
 		pdp = new PowerDistribution();
 
 		drive = new TalonSRXDrive(this).withGyro(gyro);
-		//drive = addSubsystem(TalonSRXDrive::new);
+		//drive = new TalonSRXDrive(this);
 		driverController.getButton(kBack).whenPressed(drive::toggleIsReversed);
 		driverController.getButton(kStart).whenPressed(drive::toggleTankControls);
 		driverController.getButton(kLeftStick)
@@ -106,7 +106,7 @@ public class Robot extends RobotBase {
 		// robotContainer = new RobotContainer(drive);
 
 		shooter = new Shooter(this, drive);
-		//hanger = addSubsystem(GeneratorHanger::new);
+		//hanger = new GeneratorHanger(this);
 		intake = new Intake(this);
 
 		driverController.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive));
