@@ -13,10 +13,12 @@ public class MecanumSubsystem extends SubsystemBase {
 	public MecanumSubsystem(RobotBase robot) {
 		super(robot);
 
-		motorBL = new WPI_TalonSRX(1);
-		motorFL = new WPI_TalonSRX(2);
-		motorBR = new WPI_TalonSRX(3);
-		motorFR = new WPI_TalonSRX(4);
+		motorBL = new WPI_TalonSRX(2);
+		motorFL = new WPI_TalonSRX(1);
+		motorBR = new WPI_TalonSRX(4);
+		motorFR = new WPI_TalonSRX(3);
+		motorBR.setInverted(true);
+		motorFR.setInverted(true);
 
 		drive = new MecanumDrive(motorFL, motorBL, motorFR, motorBR);
 	}
