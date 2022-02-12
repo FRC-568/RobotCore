@@ -25,12 +25,12 @@ public class Shooter extends SubsystemBase {
 	public static final int CAMERA_HEIGHT =  480;
 	public static final double CAMERA_CENTER = CAMERA_HEIGHT / 2;
     public static final double OFFSET_TO_FRONT = 0; //39 1/8; 34 5/8
-	public static final double WIDTH_BETWEEN_TARGET = 39.125; //29.375; // inches //TODO need to find to width of the vision target
+	public static final double WIDTH_BETWEEN_TARGET = 39.125; //29.375; // inches //TO-DO need to find to width of the vision target
 	public static final double HEIGHT_OF_TARGET = 98.25; // height of target in inches
 	public static final double DISTANCE_CONSTANT = WIDTH_BETWEEN_TARGET * CAMERA_WIDTH / 0.2361111111 / 2; //5760  // 5738;
-	public static final double INITIAL_VELOCITY = 500; //TODO find initial velocity in inches per second (by testing?)
+	public static final double INITIAL_VELOCITY = 500; //TO-DO find initial velocity in inches per second (by testing?)
 	public static final double SHOOTER_RADIUS = 8;
-	public static final double SHOOTER_MOUNTED_HEIGHT = 10; //TODO find shooter height from ground to edge of shooter
+	public static final double SHOOTER_MOUNTED_HEIGHT = 10; //TO-DO find shooter height from ground to edge of shooter
 	private static final double GRAVITY = 386.09; // 386.09 inches per second per second
 
 	//calcuation formulas
@@ -38,7 +38,7 @@ public class Shooter extends SubsystemBase {
 	private final double DEGREES_TO_RADIANS = Math.PI / 180;
 	
 	private final double ENCODER_ZERO_POS = 0;
-	private final double TICKS_PER_DEGREE = 10; //TODO get tick per degree
+	private final double TICKS_PER_DEGREE = 10; //TO-DO get tick per degree
 	private final double DEGREES_PER_TICK = 1 / TICKS_PER_DEGREE;
 
 	private double shooterHeight;
