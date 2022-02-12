@@ -1,129 +1,89 @@
 package frc.team568.robot.deepspace;
 
-import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import frc.team568.robot.RobotBase;
-import frc.team568.robot.subsystems.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 class Lift extends SubsystemBase {
-	WPI_TalonSRX liftMotor;
-	DigitalInput homeSwitch;
-
 	// Minimum and maximum height
 	private static double minHeight = -999999999;
 	private static double maxHeight = 999999999;
 
-	private NetworkTableEntry hatch1, hatch2, hatch3, cargo1, cargo2, cargo3;
+	WPI_TalonSRX motor;
+	DigitalInput homeSwitch;
 
-	Lift(RobotBase robot) {
-		super(robot);
-		liftMotor = new WPI_TalonSRX(configInt("motorLift"));
-		addChild("Lift Motor", liftMotor);
+	Lift(final int motorPort, final int homeSwitchPort) {
+		motor = new WPI_TalonSRX(motorPort);
+		addChild("Motor", motor);
 
-		liftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-		liftMotor.setSensorPhase(true);
-		liftMotor.setSelectedSensorPosition(0);
+		motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+		motor.setSensorPhase(true);
+		motor.setSelectedSensorPosition(0);
 
-		homeSwitch = new DigitalInput(configInt("homeSwitch"));
+		homeSwitch = new DigitalInput(homeSwitchPort);
 
-		SmartDashboard.putData("Reset Problem Encoder",
-			new InstantCommand(() -> liftMotor.setSelectedSensorPosition(0), this));
-		initDefaultCommand();
-	}
-
-	@Override
-	public String getConfigName() {
-		return "lift";
+		addChild("Reset Problem Encoder",
+			new InstantCommand(() -> motor.setSelectedSensorPosition(0), this));
 	}
 
 	public double getPosition() {
-		return liftMotor.getSelectedSensorPosition();
+		return motor.getSelectedSensorPosition();
 	}
 
-	public void initDefaultCommand() {
+	public Lift withControl(final DoubleSupplier liftControl) {
 		setDefaultCommand(new CommandBase() {
 			
-			{
-				addRequirements(Lift.this);
-				Lift.this.addChild("Default Command", this);
-			}
+			{ addRequirements(Lift.this); }
 
 			@Override
 			public void execute() {
-				NetworkTableEntry target;
-				
-				if(button("liftToPosition1")) {
-					target = button("liftForCargo") ? cargo1 : hatch1;
-					if(button("bookmarkButton"))
-						target.setDouble(liftMotor.getSelectedSensorPosition());
-					else
-						new MoveToCommand(target, () -> !button("liftToPosition1"));
-				} else if(button("liftToPosition2")) {
-					target = button("liftForCargo") ? cargo2 : hatch2;
-					if(button("bookmarkButton"))
-						target.setDouble(liftMotor.getSelectedSensorPosition());
-					else
-						new MoveToCommand(target, () -> !button("liftToPosition2"));
-				} else if(button("liftToPosition3")) {
-					target = button("liftForCargo") ? cargo3 : hatch3;
-					if(button("bookmarkButton"))
-						target.setDouble(liftMotor.getSelectedSensorPosition());
-					else
-						new MoveToCommand(target, () -> !button("liftToPosition3"));
-				} else if (getPosition() < minHeight && axis("lift") < 0) { // Stops the motor when passes MIN_HEIGHT or MAX_HEIGHT
-					liftMotor.stopMotor();
-				} else if (getPosition() > maxHeight && axis("lift") > 0)
-					liftMotor.stopMotor();
+				double position = getPosition();
+				double input = liftControl.getAsDouble();
+				// Stops the motor when passes MIN_HEIGHT or MAX_HEIGHT
+				if (position < minHeight && input < 0 || position > maxHeight && input > 0)
+					motor.stopMotor();
 				else 
-					liftMotor.set(axis("lift"));
+					motor.set(input);
 
 				// Calibration point
-				//if (homeSwitch.get());
-				//	liftMotor.setSelectedSensorPosition(0);
-			
+				if (homeSwitch.get());
+					motor.setSelectedSensorPosition(0);
 			}
 			
 		});
-
+		return Lift.this;
 	}
 
-	private class MoveToCommand extends CommandBase {
-		private final NetworkTableEntry targetEntry;
-		private double targetPosition = 0;
-		private BooleanSupplier condition;
+	public class MoveToCommand extends CommandBase {
+		private final DoubleSupplier targetValueSupplier;
+		private double targetPosition;
 
-		MoveToCommand(final NetworkTableEntry targetEntry, BooleanSupplier finishedCondition){
+		MoveToCommand(final DoubleSupplier targetValueSupplier){
+			this.targetValueSupplier = targetValueSupplier;
 			addRequirements(Lift.this);
-			this.targetEntry = targetEntry;
-			condition = finishedCondition;
 		}
 
 		@Override
 		public void initialize() {
-			double pos = liftMotor.getSelectedSensorPosition();
-			targetPosition = targetEntry.getDouble(pos);
+			targetPosition = targetValueSupplier.getAsDouble();
 		}
 
 		@Override
 		public void execute() {
-			liftMotor.set(ControlMode.Position, targetPosition);
+			motor.set(ControlMode.Position, targetPosition);
 		}
 
 		@Override
 		public boolean isFinished() {
-			return condition.getAsBoolean();
+			return Math.abs(targetPosition - getPosition()) < 50;
 		}
 	}
 
@@ -133,23 +93,6 @@ class Lift extends SubsystemBase {
 		builder.addDoubleProperty("Min height", () -> minHeight, (value) -> minHeight = value);
 		builder.addDoubleProperty("Max height", () -> maxHeight, (value) -> maxHeight = value);
 		builder.addDoubleProperty("Current height", () -> getPosition(), null);
-
-		if (builder instanceof SendableBuilderImpl) {
-			SendableBuilderImpl bi = (SendableBuilderImpl)builder;
-			hatch1 = bi.getEntry("Hatch 1");
-			hatch2 = bi.getEntry("Hatch 2");
-			hatch3 = bi.getEntry("Hatch 3");
-			hatch1.setPersistent();
-			hatch2.setPersistent();
-			hatch3.setPersistent();
-
-			cargo1 = bi.getEntry("Cargo 1");
-			cargo2 = bi.getEntry("Cargo 2");
-			cargo3 = bi.getEntry("Cargo 3");
-			cargo1.setPersistent();
-			cargo2.setPersistent();
-			cargo3.setPersistent();
-		}
 	}
 
 }

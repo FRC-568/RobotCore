@@ -3,23 +3,17 @@ package frc.team568.robot.subsystems;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.util.sendable.SendableRegistry;
-import frc.team568.robot.RobotBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.util.sendable.SendableBuilder;
 
 public class EvoDriveShifter extends SubsystemBase {
-	DoubleSolenoid solenoid;
+	final DoubleSolenoid solenoid;
 	private boolean isHighGear;
 
-	public EvoDriveShifter(final RobotBase robot) {
-		super(robot);
-		solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, configInt("solenoidLow"), configInt("solenoidHigh"));
-		SendableRegistry.addChild(this, solenoid);
+	public EvoDriveShifter(final int lowSolenoidPort, final int highSolenoidPort) {
+		solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, lowSolenoidPort, highSolenoidPort);
+		addChild("Solenoid", solenoid);
 		shiftLow();
-	}
-
-	@Override
-	public String getConfigName() {
-		return "shifter";
 	}
 
 	public void shiftLow() {
@@ -38,5 +32,11 @@ public class EvoDriveShifter extends SubsystemBase {
 		else
 			shiftHigh();
 		return isHighGear;
+	}
+
+	@Override
+	public void initSendable(SendableBuilder builder) {
+		super.initSendable(builder);
+		builder.addBooleanProperty("High Gear", () -> isHighGear, state -> isHighGear = state);
 	}
 }

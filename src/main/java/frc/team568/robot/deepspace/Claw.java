@@ -1,33 +1,17 @@
 package frc.team568.robot.deepspace;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.team568.robot.RobotBase;
-import frc.team568.robot.subsystems.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 class Claw extends SubsystemBase {
-	private DoubleSolenoid solenoid;
+	private final DoubleSolenoid solenoid;
 
-	Claw(RobotBase robot) {
-		super(robot);
-
-		solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, configInt("solenoidOpen"), configInt("solenoidClose"));
-		setDefaultCommand(new RunCommand(() -> {
-			holdToToggle(button("clawToggle"));
-
-			if (button("clawOpen"))
-				setOpen(true);
-
-			if (button("clawClose"))
-				setOpen(false);
-		}, this));
-	}
-
-	@Override
-	public String getConfigName() {
-		return "claw";
+	Claw(final int openPort, final int closePort) {
+		solenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, openPort, closePort);
+		addChild("Solenoid", solenoid);
 	}
 
 	void setOpen(boolean open) {
@@ -42,15 +26,10 @@ class Claw extends SubsystemBase {
 		setOpen(!getOpen());
 	}
 
-	private boolean _holdtoToggle = false;
-	private void holdToToggle(boolean button) {
-		if (button) {
-			if (!_holdtoToggle)
-				toggleOpen();
-			_holdtoToggle = true;
-		} else {
-			_holdtoToggle = false;
-		}
+	@Override
+	public void initSendable(SendableBuilder builder) {
+		super.initSendable(builder);
+		builder.addBooleanProperty("Open", this::getOpen, this::setOpen);
 	}
 
 }

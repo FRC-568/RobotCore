@@ -1,29 +1,22 @@
 package frc.team568.robot.deepspace;
 
-import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-
-import frc.team568.robot.RobotBase;
-import frc.team568.robot.subsystems.SubsystemBase;
-
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 class Shpaa extends SubsystemBase {
-	private DoubleSolenoid extender;
-	private DoubleSolenoid grabber;
+	private final DoubleSolenoid extender;
+	private final DoubleSolenoid grabber;
 
-	Shpaa(RobotBase robot) {
-		super(robot);
-
-		extender = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, configInt("extenderOut"), configInt("extenderIn"));
-		grabber = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, configInt("grabberOpen"), configInt("grabberClose"));
-		initDefaultCommand();
-	}
-
-	@Override
-	public String getConfigName() {
-		return "shpaa";
+	Shpaa(final int extenderOutPort,
+			final int extenderInPort,
+			final int grabberOpenPort,
+			final int grabberClosePort) {
+		extender = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, extenderOutPort, extenderInPort);
+		grabber = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, grabberOpenPort, grabberClosePort);
+		addChild("Extender Solenoid", extender);
+		addChild("Grabber Solenoid", grabber);
 	}
 
 	void setExtenderOut(boolean out) {
@@ -50,48 +43,11 @@ class Shpaa extends SubsystemBase {
 		setGrabberOpen(!getGrabberOpen());
 	}
 
-	public void initDefaultCommand() {
-		setDefaultCommand(new CommandBase() {
-			boolean grabberIsHeld = false;
-			boolean extenderIsHeld = false;
-
-			{
-				addRequirements(Shpaa.this);
-				SendableRegistry.addChild(Shpaa.this, this);
-			}
-
-			@Override
-			public void execute() {
-				if (button("shpaaGrabberToggle")) {
-					if (!grabberIsHeld)
-						toggleGrabber();
-					grabberIsHeld = true;
-				} else {
-					grabberIsHeld = false;
-				}
-
-				if (button("shpaaGrabberOpen"))
-					setGrabberOpen(true);
-
-				if (button("shpaaGrabberClose"))
-					setGrabberOpen(false);
-
-				if (button("shpaaExtenderToggle")) {
-					if (!extenderIsHeld)
-						toggleExtender();
-					extenderIsHeld = true;
-				} else {
-					extenderIsHeld = false;
-				}
-
-				if (button("shpaaExtenderOut"))
-					setExtenderOut(true);
-
-				if (button("shpaaExtenderIn"))
-					setExtenderOut(false);
-			}
-			
-		});
+	@Override
+	public void initSendable(SendableBuilder builder) {
+		super.initSendable(builder);
+		builder.addBooleanProperty("Extender Out", this::getExtenderOut, this::setExtenderOut);
+		builder.addBooleanProperty("Grabber Open", this::getGrabberOpen, this::setGrabberOpen);
 	}
 
 }

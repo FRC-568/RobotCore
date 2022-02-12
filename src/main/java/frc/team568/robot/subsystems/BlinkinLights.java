@@ -1,23 +1,21 @@
 package frc.team568.robot.subsystems;
 
-import frc.team568.robot.RobotBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class BlinkinLights extends SubsystemBase {
-	private Spark control;
+	private final  Spark control;
 	private Color _color;
 	private SendableChooser<Color> colorChooser;
 
-	public BlinkinLights(final RobotBase robot) {
-		super(robot);
-		control = new Spark(configInt("control"));
-		SendableRegistry.addChild(this, control);
+	public BlinkinLights(final int controlPort) {
+		control = new Spark(controlPort);
+		addChild("Controller", control);
 		setColor(Color.PINK_HOT);
 		colorChooser = new SendableChooser<>();
 		for (Color color : Color.values()) {
@@ -26,11 +24,6 @@ public class BlinkinLights extends SubsystemBase {
 			else
 				colorChooser.addOption(color.name(), color);
 		}
-	}
-
-	@Override
-	public String getConfigName() {
-		return "blinkin";
 	}
 
 	public Color getColor() {

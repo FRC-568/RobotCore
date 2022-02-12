@@ -1,14 +1,7 @@
 package frc.team568.robot.deepspace;
 
-import static edu.wpi.first.wpilibj.XboxController.Button.kA;
-import static edu.wpi.first.wpilibj.XboxController.Button.kB;
-import static edu.wpi.first.wpilibj.XboxController.Button.kBack;
-import static edu.wpi.first.wpilibj.XboxController.Button.kRightBumper;
-import static edu.wpi.first.wpilibj.XboxController.Button.kStart;
-import static edu.wpi.first.wpilibj.XboxController.Button.kLeftStick;
-import static edu.wpi.first.wpilibj.XboxController.Button.kRightStick;
-import static edu.wpi.first.wpilibj.XboxController.Button.kX;
-import static frc.team568.robot.XinputController.Direction.kLeft;
+import static edu.wpi.first.wpilibj.XboxController.Button.*;
+import static frc.team568.robot.XinputController.Direction.*;
 
 import java.util.Map;
 
@@ -16,14 +9,18 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.XinputController;
@@ -63,31 +60,9 @@ public class Robot extends RobotBase {
 		config("drive/rightMotors", new Integer[] { 2, 1 });
 		config("drive/leftInverted", false);
 		config("drive/rightInverted", true);
-		config("shifter/solenoidLow", 0);
-		config("shifter/solenoidHigh", 3);
-
 		config("drive/useTankControls", true);
 
-		config("climber/motorDrive", 8);
-		config("climber/motorClimbFront", 6);
-		config("climber/motorClimbBack", 7);
-
-		config("shpaa/extenderOut", 7);
-		config("shpaa/extenderIn", 1);
-		config("shpaa/grabberOpen", 2);
-		config("shpaa/grabberClose", 6);
-
-		config("claw/solenoidOpen", 4);
-		config("claw/solenoidClose", 3);
-
-		config("lift/motorLift", 5);
-		config("lift/homeSwitch", 0);
-
-		config("blinkin/control", 8);
 		//camera LED ring is on PWM 7
-
-		// redline shifter high <-> low gear
-		copilot.getButton(kLeft).whenPressed(shifter::shiftToggle);
 
 		// let motors coast (if configured)
 		driver.getButton(kRightBumper)
@@ -109,11 +84,6 @@ public class Robot extends RobotBase {
 		// launch mode - full speed forward
 		driver.getButton(kX).whileActiveContinuous(() -> drive.arcadeDrive(1, 0), drive);
 
-		axis("climberFront", () -> (Math.abs(axis(1, Xinput.LeftStickY)) < 0.15) ? 0 : axis(1, Xinput.LeftStickY));
-		axis("climberBack", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
-		axis("climberDrive", () -> (button(1, Xinput.RightBumper) ? 1 : 0) + (button(1, Xinput.LeftBumper) ? -1 : 0));
-
-		button("bookmarkButton", 1, Xinput.Back);
 		driver.getButton(kStart).whenPressed(drive::toggleTankControls);
 		driver.getButton(kLeftStick)
 			.and(driver.getButton(kRightStick))
@@ -121,17 +91,6 @@ public class Robot extends RobotBase {
 				new WaitCommand(5),
 				new InstantCommand(drive::toggleSafeMode)
 			));
-		axis("lift", () -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
-		
-		pov("moveToPosition1", 1, DOWN);
-		pov("moveToPosition2", 1, RIGHT);
-		pov("moveToPosition3", 1, UP);
-		button("liftForCargo", 1, Xinput.Y);
-
-		button("shpaaGrabberToggle", 1, Xinput.A);
-		button("shpaaExtenderToggle", 1, Xinput.X);
-
-		button("clawToggle", 1, Xinput.B);
 
 		pdp = new PowerDistribution();
 		compressor = new Compressor(PneumaticsModuleType.CTREPCM);
@@ -147,16 +106,72 @@ public class Robot extends RobotBase {
 			Input.TANK_RIGHT, () -> -driver.getRightY()
 		)));
 
-		shifter = new EvoDriveShifter(this);
-		climber = new HabitatClimber(this);
-		lift = new Lift(this);
-		//claw = new Claw(this);
-		shpaa = new Shpaa(this);
+		shifter = new EvoDriveShifter(
+			Config.Shifter.kLowSolenoidPort,
+			Config.Shifter.kHighSolenoidPort
+		);
 
-		lights = new BlinkinLights(this);
+		climber = new HabitatClimber(
+			Config.HabitatClimber.kDrivePort,
+			Config.HabitatClimber.kFrontPort,
+			Config.HabitatClimber.kBackPort
+		).buildControlCommand()
+			.withFront(() -> (Math.abs(copilot.getLeftY()) < 0.15) ? 0 : copilot.getLeftY())
+			.withBack(() -> copilot.getRightTriggerAxis() - copilot.getLeftTriggerAxis())
+			.withDrive(() -> (copilot.getRightBumper() ? 1 : 0) + (copilot.getLeftBumper() ? -1 : 0))
+			.makeDefault();
+
+		lift = new Lift(
+			Config.Lift.kMotorPort,
+			Config.Lift.kHomeSwitchPort
+		).withControl(() -> axis(1, Xinput.RightTrigger) - axis(1, Xinput.LeftTrigger));
+
+		Trigger bookmarkReleased = new Trigger(() -> !copilot.getBackButton());
+
+		copilot.getButton(kDown).and(bookmarkReleased).whileActiveOnce(lift.new MoveToCommand(
+			() -> Preferences.getDouble("deepspace/lift/" + (copilot.getYButton() ? "cargo" : "hatch") + "1", lift.getPosition())));
+		copilot.getButton(kRight).and(bookmarkReleased).whileActiveOnce(lift.new MoveToCommand(
+			() -> Preferences.getDouble("deepspace/lift/" + (copilot.getYButton() ? "cargo" : "hatch") + "2", lift.getPosition())));
+		copilot.getButton(kUp).and(bookmarkReleased).whileActiveOnce(lift.new MoveToCommand(
+			() -> Preferences.getDouble("deepspace/lift/" + (copilot.getYButton() ? "cargo" : "hatch") + "3", lift.getPosition())));
+
+		// Update bookmarks when back button is pressed
+		copilot.getButton(kBack).whileActiveOnce(new RunCommand(() -> {
+			int level = copilot.getUpButton() ? 3
+				: copilot.getRightButton() ? 2
+				: copilot.getDownButton() ? 1
+				: 0;
+			if (level > 0)
+				Preferences.setDouble("deepspace/lift/" + (copilot.getYButton() ? "cargo" : "hatch") + level, lift.getPosition());
+		}));
+
+		claw = new Claw(
+			Config.Claw.kOpenPort,
+			Config.Claw.kClosePort
+		);
+
+		shpaa = new Shpaa(
+			Config.Shpaa.kExtenderOutPort,
+			Config.Shpaa.kExtenderInPort,
+			Config.Shpaa.kGrabberOpenPort,
+			Config.Shpaa.kGrabberClosePort
+		);
+
+		lights = new BlinkinLights(Config.BlinkinLights.kControlPort);
 		camera.initCamera();
 		// cameraFront = CameraServer.getInstance().startAutomaticCapture(0);
 		// cameraBack = CameraServer.getInstance().startAutomaticCapture(1);
+		
+		copilot.getButton(kA).whenPressed(shpaa::toggleGrabber);
+		copilot.getButton(kX).whenPressed(shpaa::toggleExtender);
+		copilot.getButton(kB).whenPressed(claw::toggleOpen);
+		copilot.getButton(kLeft).whenPressed(shifter::shiftToggle); // redline shifter high <-> low gear
+
+		new Button(RobotController::getUserButton).whenReleased(new InstantCommand(() -> {
+			shpaa.setExtenderOut(false);
+			shpaa.setGrabberOpen(true);
+			shifter.shiftLow();
+		}, shpaa, shifter), false);
 	}
 
 	@Override
@@ -168,11 +183,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void robotPeriodic() {
-		if(RobotController.getUserButton()) {
-			shpaa.setExtenderOut(false);
-			shpaa.setGrabberOpen(true);
-			shifter.shiftLow();
-		}
+		CommandScheduler.getInstance().run();
 	}
 
 	@Override
@@ -187,7 +198,6 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousPeriodic() {
-		CommandScheduler.getInstance().run();
 		//camera.processImage();	
 	}
 
@@ -202,22 +212,6 @@ public class Robot extends RobotBase {
 	}
 
 	@Override
-	// Called every 20 milliseconds in teleop
-	public void teleopPeriodic() { 
-		CommandScheduler.getInstance().run();
-	}
-
-	@Override
-	public void testInit() {
-
-	}
-
-	@Override
-	public void testPeriodic() {
-		CommandScheduler.getInstance().run();
-	}
-
-	@Override
 	public void disabledInit() {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
@@ -229,8 +223,4 @@ public class Robot extends RobotBase {
 		spikeBack.setDirection(Relay.Direction.kReverse);
 	}
 
-	@Override
-	public void disabledPeriodic() {
-		CommandScheduler.getInstance().run();
-	}
 }
