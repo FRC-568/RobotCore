@@ -7,7 +7,7 @@ import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
 
 public class MecanumSubsystem extends SubsystemBase {
-	private MecanumDrive drive;
+	protected final MecanumDrive drive;
 	private WPI_TalonSRX motorFL, motorFR, motorBL, motorBR;
 
 	public MecanumSubsystem(RobotBase robot) {
@@ -21,6 +21,7 @@ public class MecanumSubsystem extends SubsystemBase {
 		motorFR.setInverted(true);
 
 		drive = new MecanumDrive(motorFL, motorBL, motorFR, motorBR);
+		addChild("Mecanum Drive", drive);
 	}
 	
 	public MecanumDrive getMecanumDrive() {
