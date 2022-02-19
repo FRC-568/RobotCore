@@ -9,13 +9,19 @@ import frc.team568.robot.subsystems.DriveBase.Input;
 
 public class MecanumSubsystemDefaultCommand extends CommandBase {
 	final MecanumSubsystem drive;
+
 	Map<Input, DoubleSupplier> inputMap;
 
-	public MecanumSubsystemDefaultCommand(final MecanumSubsystem drive, Map<Input, DoubleSupplier> inputMap) {
+	public MecanumSubsystemDefaultCommand(final MecanumSubsystem drive) {
+
 		this.drive = drive;
-		this.inputMap = inputMap;
 
 		addRequirements(drive);
+	}
+
+	public MecanumSubsystemDefaultCommand useAxis(Input input, DoubleSupplier axis){
+		inputMap.put(input, axis);
+		return this;
 	}
 
 	@Override
