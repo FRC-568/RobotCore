@@ -44,7 +44,7 @@ public class Robot extends RobotBase {
 		drive = new MecanumSubsystem(gyro);
  
 		drive.setDefaultCommand(new MecanumSubsystemDefaultCommand(drive)
-		.useAxis(Input.FORWARD, () -> driverController.getLeftY())
+		.useAxis(Input.FORWARD, () -> -driverController.getLeftY())
 		.useAxis(Input.STRAFE, () -> driverController.getLeftX())
 		.useAxis(Input.TURN, () -> driverController.getRightX()));
 	}
