@@ -11,8 +11,7 @@ import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import frc.team568.robot.RobotBase;
-import frc.team568.robot.subsystems.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class MecanumSubsystem extends SubsystemBase {
 	public double wheelRadius = 3;
@@ -27,8 +26,7 @@ public class MecanumSubsystem extends SubsystemBase {
 	MecanumDriveKinematics m_kinematics;
 	MecanumDriveOdometry m_odometry;
 
-	public MecanumSubsystem(RobotBase robot, Gyro gyro) {
-		super(robot);
+	public MecanumSubsystem(Gyro gyro) {
 		this.gyro = gyro;
 		motorBL = new WPI_TalonSRX(2);
 		motorFL = new WPI_TalonSRX(1);
@@ -51,8 +49,7 @@ public class MecanumSubsystem extends SubsystemBase {
 		// Creating my odometry object from the kinematics object. Here,
 		// our starting pose is 5 meters along the long end of the field and in the
 		// center of the field along the short end, facing forward.
-		m_odometry = new MecanumDriveOdometry(m_kinematics, new Rotation2d(gyro.getAngle()), new Pose2d(5.0, 13.5, new Rotation2d()));
-
+		m_odometry = new MecanumDriveOdometry(m_kinematics, Rotation2d.fromDegrees(gyro.getAngle()), new Pose2d(1, 4, new Rotation2d()));
 
 		drive = new MecanumDrive(motorFL, motorBL, motorFR, motorBR);
 		addChild("Mecanum Drive", drive);

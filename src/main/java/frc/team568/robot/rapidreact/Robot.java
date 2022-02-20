@@ -41,7 +41,7 @@ public class Robot extends RobotBase {
 		driverController = new XinputController(0);
 		pdp = new PowerDistribution();
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
-		drive = new MecanumSubsystem(this, gyro);
+		drive = new MecanumSubsystem(gyro);
  
 		drive.setDefaultCommand(new MecanumSubsystemDefaultCommand(drive)
 		.useAxis(Input.FORWARD, () -> driverController.getLeftY())
