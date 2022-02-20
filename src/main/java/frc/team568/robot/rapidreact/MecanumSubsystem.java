@@ -27,9 +27,9 @@ public class MecanumSubsystem extends SubsystemBase {
 	MecanumDriveKinematics m_kinematics;
 	MecanumDriveOdometry m_odometry;
 
-	public MecanumSubsystem(RobotBase robot) {
+	public MecanumSubsystem(RobotBase robot, Gyro gyro) {
 		super(robot);
-
+		this.gyro = gyro;
 		motorBL = new WPI_TalonSRX(2);
 		motorFL = new WPI_TalonSRX(1);
 		motorBR = new WPI_TalonSRX(4);

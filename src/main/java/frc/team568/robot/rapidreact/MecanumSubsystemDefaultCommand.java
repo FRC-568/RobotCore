@@ -1,5 +1,6 @@
 package frc.team568.robot.rapidreact;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
@@ -10,7 +11,7 @@ import frc.team568.robot.subsystems.DriveBase.Input;
 public class MecanumSubsystemDefaultCommand extends CommandBase {
 	final MecanumSubsystem drive;
 
-	Map<Input, DoubleSupplier> inputMap;
+	Map<Input, DoubleSupplier> inputMap = new HashMap<>();
 
 	public MecanumSubsystemDefaultCommand(final MecanumSubsystem drive) {
 

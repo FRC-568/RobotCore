@@ -34,13 +34,14 @@ public class Robot extends RobotBase {
 	String trajectoryJSON = "paths/output/TestPath.wpilib.json";
 	Trajectory trajectory = new Trajectory();
 
-	XinputController driverController = new XinputController(0/* driving Controller Port */);
+	XinputController driverController;
 
 	public Robot() {
 		super("RapidReact");
+		driverController = new XinputController(0);
 		pdp = new PowerDistribution();
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
-		drive = new MecanumSubsystem(this).useGyro(gyro);
+		drive = new MecanumSubsystem(this, gyro);
  
 		drive.setDefaultCommand(new MecanumSubsystemDefaultCommand(drive)
 		.useAxis(Input.FORWARD, () -> driverController.getLeftY())
