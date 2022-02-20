@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team568.robot.RobotBase;
@@ -24,9 +25,9 @@ public class Robot extends RobotBase {
 	PowerDistribution pdp;
 	MecanumSubsystem drive;
 	Gyro gyro;
-	private NetworkTableEntry maxSpeed = Shuffleboard.getTab("Autonomous Tab").
-	add("Max Speed", 10).
-	withWidget(BuiltInWidgets.kNumberSlider).getEntry();
+	private ShuffleboardTab tab = Shuffleboard.getTab("Drive");
+	private NetworkTableEntry maxSpeed = tab.add("Max Speed", 1).withWidget(BuiltInWidgets.kNumberSlider).getEntry();
+ 
 	
 	Command autonomousCommand;
 	
