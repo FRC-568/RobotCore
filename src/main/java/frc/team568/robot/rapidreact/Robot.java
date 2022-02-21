@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.XinputController;
 import frc.team568.robot.subsystems.DriveBase.Input;
@@ -47,6 +48,8 @@ public class Robot extends RobotBase {
 		.useAxis(Input.FORWARD, () -> -driverController.getLeftY())
 		.useAxis(Input.STRAFE, () -> driverController.getLeftX())
 		.useAxis(Input.TURN, () -> driverController.getRightX()));
+		
+		new Button(() -> driverController.getLeftBumper() && driverController.getRightBumper()).whenPressed(gyro::reset);
 	}
 
 	@Override

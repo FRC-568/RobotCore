@@ -59,6 +59,10 @@ public class MecanumSubsystem extends SubsystemBase {
 		this.gyro = gyro;
 		return this;
 	}
+
+	public Gyro getGyro() {
+		return gyro;
+	}
 	
 	@Override
 	public void periodic() {

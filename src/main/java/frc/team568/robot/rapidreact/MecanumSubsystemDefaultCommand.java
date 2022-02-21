@@ -5,19 +5,26 @@ import java.util.Map;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.subsystems.DriveBase.Input;
 
 public class MecanumSubsystemDefaultCommand extends CommandBase {
-	final MecanumSubsystem drive;
+	private final MecanumSubsystem drive;
+	private boolean fieldRelativeControls;
+	private Gyro gyro;
 
 	Map<Input, DoubleSupplier> inputMap = new HashMap<>();
 
 	public MecanumSubsystemDefaultCommand(final MecanumSubsystem drive) {
+		this(drive, true);
+	}
 
+	public MecanumSubsystemDefaultCommand(final MecanumSubsystem drive, boolean fieldRelativeControls) {
 		this.drive = drive;
-
+		this.fieldRelativeControls = fieldRelativeControls;
 		addRequirements(drive);
+		drive.addChild("Default Command", this);
 	}
 
 	public MecanumSubsystemDefaultCommand useAxis(Input input, DoubleSupplier axis){
@@ -26,8 +33,24 @@ public class MecanumSubsystemDefaultCommand extends CommandBase {
 	}
 
 	@Override
+	public void initialize() {
+		gyro = drive.getGyro();
+	}
+
+	@Override
 	public void execute() {
-		drive.getMecanumDrive().driveCartesian(axis(Input.FORWARD), axis(Input.STRAFE), axis(Input.TURN));
+		if (fieldRelativeControls && gyro != null)
+			drive.getMecanumDrive().driveCartesian(axis(Input.FORWARD), axis(Input.STRAFE), axis(Input.TURN), gyro.getAngle());
+		else
+			drive.getMecanumDrive().driveCartesian(axis(Input.FORWARD), axis(Input.STRAFE), axis(Input.TURN));
+	}
+
+	public boolean hasFieldRelativeControls() {
+		return fieldRelativeControls;
+	}
+
+	public void useFieldRelativeControls(boolean isFieldRelative) {
+		this.fieldRelativeControls = isFieldRelative;
 	}
 
 	private final double axis(Input input) {
@@ -37,5 +60,6 @@ public class MecanumSubsystemDefaultCommand extends CommandBase {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
+		builder.addBooleanProperty("Field Relative Controls", this::hasFieldRelativeControls, this::useFieldRelativeControls);
 	}
 }
