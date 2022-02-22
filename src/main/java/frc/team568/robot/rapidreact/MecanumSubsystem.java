@@ -72,6 +72,10 @@ public class MecanumSubsystem extends SubsystemBase {
 		motor.config_kD(0, 10   , 30);
 		
 		motor.setInverted(isInverted);
+		
+		//remember to set back to 0
+		motor.configClosedloopRamp(1.0);
+		motor.configOpenloopRamp(1.0);
 	}
 
 	public MecanumSubsystem useGyro(Gyro gyro){
