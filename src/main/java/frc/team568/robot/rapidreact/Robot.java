@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -28,7 +29,6 @@ public class Robot extends RobotBase {
 	Gyro gyro;
 	private ShuffleboardTab tab = Shuffleboard.getTab("Drive");
 	private NetworkTableEntry maxSpeed = tab.add("Max Speed", 1).withWidget(BuiltInWidgets.kNumberSlider).getEntry();
- 
 	
 	Command autonomousCommand;
 	
@@ -44,11 +44,12 @@ public class Robot extends RobotBase {
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
 		drive = new MecanumSubsystem(gyro);
  
-		drive.setDefaultCommand(new MecanumSubsystemDefaultCommand(drive)
-		.useAxis(Input.FORWARD, () -> -driverController.getLeftY())
-		.useAxis(Input.STRAFE, () -> driverController.getLeftX())
-		.useAxis(Input.TURN, () -> driverController.getRightX()));
-		
+		var msdefault = new MecanumSubsystemDefaultCommand(drive)
+			.useAxis(Input.FORWARD, () -> -driverController.getLeftY())
+			.useAxis(Input.STRAFE, () -> driverController.getLeftX())
+			.useAxis(Input.TURN, () -> driverController.getRightX());
+		drive.setDefaultCommand(msdefault);
+		driverController.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
 		new Button(() -> driverController.getLeftBumper() && driverController.getRightBumper()).whenPressed(gyro::reset);
 	}
 

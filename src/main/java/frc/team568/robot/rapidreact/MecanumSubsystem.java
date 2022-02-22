@@ -1,6 +1,10 @@
 package frc.team568.robot.rapidreact;
 
+import static frc.team568.util.Utilities.clamp;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -9,11 +13,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class MecanumSubsystem extends SubsystemBase {
+	public static double MAX_VELOCITY = 2500;
 	public double wheelRadius = 3;
 	protected final MecanumDrive drive;
 	protected WPI_TalonSRX motorFL, motorFR, motorBL, motorBR;
@@ -33,13 +40,10 @@ public class MecanumSubsystem extends SubsystemBase {
 		motorBR = new WPI_TalonSRX(4);
 		motorFR = new WPI_TalonSRX(3);
 
-		motorBL.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		motorFL.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		motorBR.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		motorFR.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		
-		motorBR.setInverted(true);
-		motorFR.setInverted(true);
+		setupMotor(motorBL, false);
+		setupMotor(motorFL, false);
+		setupMotor(motorBR, true);
+		setupMotor(motorFR, true);		
 		
 		// Locations of the wheels relative to the robot center.
 
@@ -51,8 +55,23 @@ public class MecanumSubsystem extends SubsystemBase {
 		// center of the field along the short end, facing forward.
 		m_odometry = new MecanumDriveOdometry(m_kinematics, Rotation2d.fromDegrees(gyro.getAngle()), new Pose2d(1, 4, new Rotation2d()));
 
-		drive = new MecanumDrive(motorFL, motorBL, motorFR, motorBR);
+		drive = new MecanumDrive(
+			makeWrapper(motorFL, MAX_VELOCITY),
+			makeWrapper(motorBL, MAX_VELOCITY),
+			makeWrapper(motorFR, MAX_VELOCITY),
+			makeWrapper(motorBR, MAX_VELOCITY));
 		addChild("Mecanum Drive", drive);
+	}
+
+	private void setupMotor(TalonSRX motor, Boolean isInverted){
+		motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+		motor.setSensorPhase(true);
+
+		motor.config_kP(0, 0.25 , 30);
+		motor.config_kI(0, 0.002, 30);
+		motor.config_kD(0, 10   , 30);
+		
+		motor.setInverted(isInverted);
 	}
 
 	public MecanumSubsystem useGyro(Gyro gyro){
@@ -92,9 +111,55 @@ public class MecanumSubsystem extends SubsystemBase {
 
 	public double convertToMetersPerSecond(double EncoderUnits){
 		double c = 2 * Math.PI * wheelRadius; // wheel circumference
-		double rps = EncoderUnits * (10 / 4096);
+		double rps = EncoderUnits * (10 / 4096); // Rotations per Second
 
 		double metersPerSecond = rps * c;
 		return metersPerSecond;
 	}
+
+	@Override
+	public void initSendable(SendableBuilder builder) {
+		super.initSendable(builder);
+		builder.addDoubleProperty("FL Speed", motorFL::getSelectedSensorVelocity, null);
+		builder.addDoubleProperty("BL Speed", motorBL::getSelectedSensorVelocity, null);
+		builder.addDoubleProperty("FR Speed", motorFR::getSelectedSensorVelocity, null);
+		builder.addDoubleProperty("BR Speed", motorBR::getSelectedSensorVelocity, null);
+	}
+	
+	protected MotorController makeWrapper(final WPI_TalonSRX controller, double maxSpeed) {
+		return new MotorController() {
+			@Override
+			public double get() {
+				System.out.println("get " + clamp(controller.getSelectedSensorVelocity() / maxSpeed, -1.0, 1.0));
+				return clamp(controller.getSelectedSensorVelocity() / maxSpeed, -1.0, 1.0);
+			}
+
+			@Override
+			public void set(double speed) {
+				System.out.println("set " + speed + ", " + speed * maxSpeed);
+				controller.set(ControlMode.Velocity, speed * maxSpeed);
+			}
+
+			@Override
+			public void setInverted(boolean isInverted) {
+				controller.setInverted(isInverted);
+			}
+
+			@Override
+			public boolean getInverted() {
+				return controller.getInverted();
+			}
+
+			@Override
+			public void disable() {
+				controller.disable();
+			}
+
+			@Override
+			public void stopMotor() {
+				controller.stopMotor();
+			}
+		};
+	}
+	
 }

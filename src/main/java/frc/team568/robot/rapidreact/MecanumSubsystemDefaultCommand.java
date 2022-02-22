@@ -27,6 +27,10 @@ public class MecanumSubsystemDefaultCommand extends CommandBase {
 		drive.addChild("Default Command", this);
 	}
 
+	public void toggleUseFieldRelative(){
+		fieldRelativeControls = !fieldRelativeControls;
+	}
+
 	public MecanumSubsystemDefaultCommand useAxis(Input input, DoubleSupplier axis){
 		inputMap.put(input, axis);
 		return this;
@@ -34,11 +38,13 @@ public class MecanumSubsystemDefaultCommand extends CommandBase {
 
 	@Override
 	public void initialize() {
+		// System.out.println("initialize");
 		gyro = drive.getGyro();
 	}
 
 	@Override
 	public void execute() {
+		// System.out.println("periodic");
 		if (fieldRelativeControls && gyro != null)
 			drive.getMecanumDrive().driveCartesian(axis(Input.FORWARD), axis(Input.STRAFE), axis(Input.TURN), gyro.getAngle());
 		else

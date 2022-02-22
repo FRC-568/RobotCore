@@ -18,7 +18,7 @@ public class Autonomous extends SequentialCommandGroup {
 				subsystem.m_kinematics,
 				new PIDController(1, 0, 0),
 				new PIDController(1, 0, 0),
-				new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(MaxSpeed, 1/* max velocity */)),
+				new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(MaxSpeed, 1/* max accleration */)),
 				MaxSpeed, //max wheel speeds
 				(wheelSpeeds) -> {
 					subsystem.motorBR.set(ControlMode.Velocity, subsystem.convertToEncoderUnits(wheelSpeeds.rearRightMetersPerSecond));
