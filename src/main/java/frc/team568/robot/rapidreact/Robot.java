@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -29,6 +30,7 @@ public class Robot extends RobotBase {
 	Gyro gyro;
 	private ShuffleboardTab tab = Shuffleboard.getTab("Drive");
 	private NetworkTableEntry maxSpeed = tab.add("Max Speed", 1).withWidget(BuiltInWidgets.kNumberSlider).getEntry();
+	Spark motor;
 	
 	Command autonomousCommand;
 	
@@ -43,6 +45,8 @@ public class Robot extends RobotBase {
 		pdp = new PowerDistribution();
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
 		drive = new MecanumSubsystem(gyro);
+
+		motor = new Spark(5);
  
 		var msdefault = new MecanumSubsystemDefaultCommand(drive)
 			.useAxis(Input.FORWARD, () -> -driverController.getLeftY())
@@ -75,5 +79,12 @@ public class Robot extends RobotBase {
 	@Override
 	public void teleopInit() {
 		if (autonomousCommand != null) autonomousCommand.cancel();
+	}
+
+	@Override
+	public void teleopPeriodic() {
+		motor.set(driverController.getRightY());
+		System.out.println(driverController.getRightY());
+		System.out.println(motor.get());
 	}
 }

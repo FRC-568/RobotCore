@@ -26,10 +26,12 @@ public class MecanumSubsystem extends SubsystemBase {
 	protected WPI_TalonSRX motorFL, motorFR, motorBL, motorBR;
 	private Gyro gyro;
 
+	// Locations of the wheels relative to the robot center.
 	Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
 	Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
 	Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
 	Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+
 	MecanumDriveKinematics m_kinematics;
 	MecanumDriveOdometry m_odometry;
 
@@ -44,8 +46,6 @@ public class MecanumSubsystem extends SubsystemBase {
 		setupMotor(motorFL, false);
 		setupMotor(motorBR, true);
 		setupMotor(motorFR, true);		
-		
-		// Locations of the wheels relative to the robot center.
 
 		// Creating my kinematics object using the wheel locations.
 		m_kinematics = new MecanumDriveKinematics(m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -134,13 +134,13 @@ public class MecanumSubsystem extends SubsystemBase {
 		return new MotorController() {
 			@Override
 			public double get() {
-				System.out.println("get " + clamp(controller.getSelectedSensorVelocity() / maxSpeed, -1.0, 1.0));
+				// System.out.println("get " + clamp(controller.getSelectedSensorVelocity() / maxSpeed, -1.0, 1.0));
 				return clamp(controller.getSelectedSensorVelocity() / maxSpeed, -1.0, 1.0);
 			}
 
 			@Override
 			public void set(double speed) {
-				System.out.println("set " + speed + ", " + speed * maxSpeed);
+				// System.out.println("set " + speed + ", " + speed * maxSpeed);
 				controller.set(ControlMode.Velocity, speed * maxSpeed);
 			}
 
