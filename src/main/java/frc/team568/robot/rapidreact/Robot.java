@@ -3,7 +3,6 @@ package frc.team568.robot.rapidreact;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -34,7 +33,7 @@ public class Robot extends RobotBase {
 	private ShuffleboardTab tab = Shuffleboard.getTab("Drive");
 	private NetworkTableEntry maxSpeed = tab.add("Max Speed", 1).withWidget(BuiltInWidgets.kNumberSlider).getEntry();
 	CANSparkMax intakeMotor;
-	WPI_TalonSRX liftMotor;
+	CANSparkMax liftMotor;
 	
 	Command autonomousCommand;
 	
@@ -51,7 +50,7 @@ public class Robot extends RobotBase {
 		drive = new MecanumSubsystem(gyro);
 
 		intakeMotor = new CANSparkMax(5, MotorType.kBrushless);
-		liftMotor = new WPI_TalonSRX(6);
+		liftMotor = new CANSparkMax(6, MotorType.kBrushless);
 
 		var msdefault = new MecanumSubsystemDefaultCommand(drive)
 			.useAxis(Input.FORWARD, () -> -driverController.getLeftY())
