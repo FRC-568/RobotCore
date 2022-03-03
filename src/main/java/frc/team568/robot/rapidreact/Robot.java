@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Button;
@@ -33,6 +35,7 @@ import frc.team568.robot.XinputController;
 import frc.team568.robot.subsystems.DriveBase.Input;
 
 public class Robot extends RobotBase {
+	SendableChooser<Command> m_chooser;
 	PowerDistribution pdp;
 	MecanumSubsystem drive;
 	Gyro gyro;
@@ -47,9 +50,9 @@ public class Robot extends RobotBase {
 	private NetworkTableEntry maxSpeed = tab.add("Max Speed", 1).withWidget(BuiltInWidgets.kNumberSlider).getEntry();
 	CANSparkMax intakeMotor;
 	CANSparkMax liftMotor;
-	
+
 	Command autonomousCommand;
-	
+
 	String trajectoryJSON = "src/main/deploy/paths/output/Test.wpilib.json";
 	Trajectory trajectory = new Trajectory();
 
@@ -72,12 +75,21 @@ public class Robot extends RobotBase {
 		liftMotor = new CANSparkMax(6, MotorType.kBrushed);
 
 		var msdefault = new MecanumSubsystemDefaultCommand(drive)
-			.useAxis(Input.FORWARD, () -> -driverController.getLeftY())
-			.useAxis(Input.STRAFE, () -> driverController.getLeftX())
-			.useAxis(Input.TURN, () -> driverController.getRightX());
+				.useAxis(Input.FORWARD, () -> -driverController.getLeftY())
+				.useAxis(Input.STRAFE, () -> driverController.getLeftX())
+				.useAxis(Input.TURN, () -> driverController.getRightX());
 		drive.setDefaultCommand(msdefault);
 		driverController.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
-		new Button(() -> driverController.getLeftBumper() && driverController.getRightBumper()).whenPressed(gyro::reset);
+		new Button(() -> driverController.getLeftBumper() && driverController.getRightBumper())
+				.whenPressed(gyro::reset);
+	}
+
+	public void robotInit() {
+		m_chooser = new SendableChooser<>();
+		m_chooser.setDefaultOption("taxi 1 second", new AutoTaxi(drive));
+		// m_chooser.addOption(name, object);
+		// Put the chooser on the dashboard
+		SmartDashboard.putData(m_chooser);
 	}
 
 	@Override
@@ -88,16 +100,25 @@ public class Robot extends RobotBase {
 	@Override
 	public void autonomousInit() {
 		compressor.enableDigital();
-		try {
-			// Opens Trajectory File
-			Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-			trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-			// Initializes Autonomous and schedules it
-			autonomousCommand = new Autonomous(trajectory, drive, maxSpeed.getDouble(1.0));
+		
+		autonomousCommand = m_chooser.getSelected();
+		if(autonomousCommand != null)
 			autonomousCommand.schedule();
-		} catch (IOException ex) {
-			DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-		}
+		/*
+		 * try {
+		 * // Opens Trajectory File
+		 * Path trajectoryPath =
+		 * Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+		 * trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+		 * // Initializes Autonomous and schedules it
+		 * autonomousCommand = new Autonomous(trajectory, drive,
+		 * maxSpeed.getDouble(1.0));
+		 * autonomousCommand.schedule();
+		 * } catch (IOException ex) {
+		 * DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON,
+		 * ex.getStackTrace());
+		 * }
+		 */
 	}
 
 	@Override
@@ -109,11 +130,11 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void teleopPeriodic() {
-		if(driverController.getAButton()){
+		if (driverController.getAButton()) {
 			intakeMotor.set(1);
 		}
 		// if (driverController.getBButton()){
-		// 	testSolenoid.toggle();
+		// testSolenoid.toggle();
 		// }
 		driverController.getButton(XboxController.Button.kB).whenPressed(collector::toggle);
 		driverController.getButton(XboxController.Button.kA).whenPressed(collectorLift::toggle);
