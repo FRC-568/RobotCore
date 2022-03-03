@@ -1,5 +1,7 @@
 package frc.team568.robot.rapidreact;
 
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
+
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -10,10 +12,14 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -30,6 +36,13 @@ public class Robot extends RobotBase {
 	PowerDistribution pdp;
 	MecanumSubsystem drive;
 	Gyro gyro;
+	Compressor compressor;
+
+	DoubleSolenoid collectorLift;
+	Solenoid climber;
+	Solenoid collector;
+	// 2 Singles(Intake Closing thing, Main Lift) 1 Double (Intake Lift)
+
 	private ShuffleboardTab tab = Shuffleboard.getTab("Drive");
 	private NetworkTableEntry maxSpeed = tab.add("Max Speed", 1).withWidget(BuiltInWidgets.kNumberSlider).getEntry();
 	CANSparkMax intakeMotor;
@@ -48,9 +61,15 @@ public class Robot extends RobotBase {
 		pdp = new PowerDistribution();
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
 		drive = new MecanumSubsystem(gyro);
+		compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
 
-		intakeMotor = new CANSparkMax(5, MotorType.kBrushless);
-		liftMotor = new CANSparkMax(6, MotorType.kBrushless);
+		collectorLift = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1); // random values for now
+		collector = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
+		climber = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
+
+		// changed from brushless to brushed *test*
+		intakeMotor = new CANSparkMax(5, MotorType.kBrushed);
+		liftMotor = new CANSparkMax(6, MotorType.kBrushed);
 
 		var msdefault = new MecanumSubsystemDefaultCommand(drive)
 			.useAxis(Input.FORWARD, () -> -driverController.getLeftY())
@@ -68,6 +87,7 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousInit() {
+		compressor.enableDigital();
 		try {
 			// Opens Trajectory File
 			Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
@@ -83,11 +103,31 @@ public class Robot extends RobotBase {
 	@Override
 	public void teleopInit() {
 		if (autonomousCommand != null) autonomousCommand.cancel();
+		compressor.enableDigital();
+		collectorLift.set(kForward);
 	}
 
 	@Override
 	public void teleopPeriodic() {
-		intakeMotor.set(driverController.getRightTriggerAxis());
-		liftMotor.set(driverController.getLeftTriggerAxis());
+		if(driverController.getAButton()){
+			intakeMotor.set(1);
+		}
+		// if (driverController.getBButton()){
+		// 	testSolenoid.toggle();
+		// }
+		driverController.getButton(XboxController.Button.kB).whenPressed(collector::toggle);
+		driverController.getButton(XboxController.Button.kA).whenPressed(collectorLift::toggle);
+		driverController.getButton(XboxController.Button.kX).whenPressed(climber::toggle);
+		liftMotor.set(driverController.getRightY());
+	}
+
+	@Override
+	public void disabledInit() {
+		if (autonomousCommand != null) {
+			autonomousCommand.cancel();
+			autonomousCommand = null;
+		}
+
+		compressor.disable();
 	}
 }
