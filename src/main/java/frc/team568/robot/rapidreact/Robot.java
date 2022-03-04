@@ -1,35 +1,26 @@
 package frc.team568.robot.rapidreact;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
-
-import java.io.IOException;
-import java.nio.file.Path;
+// import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.Button;
+// import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.XinputController;
 import frc.team568.robot.subsystems.DriveBase.Input;
@@ -46,8 +37,8 @@ public class Robot extends RobotBase {
 	Solenoid collector;
 	// 2 Singles(Intake Closing thing, Main Lift) 1 Double (Intake Lift)
 
-	private ShuffleboardTab tab = Shuffleboard.getTab("Drive");
-	private NetworkTableEntry maxSpeed = tab.add("Max Speed", 1).withWidget(BuiltInWidgets.kNumberSlider).getEntry();
+	// private ShuffleboardTab tab = Shuffleboard.getTab("Drive");
+	// private NetworkTableEntry maxSpeed = tab.add("Max Speed", 1).withWidget(BuiltInWidgets.kNumberSlider).getEntry();
 	CANSparkMax intakeMotor;
 	CANSparkMax liftMotor;
 
@@ -80,8 +71,7 @@ public class Robot extends RobotBase {
 				.useAxis(Input.TURN, () -> driverController.getRightX());
 		drive.setDefaultCommand(msdefault);
 		driverController.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
-		new Button(() -> driverController.getLeftBumper() && driverController.getRightBumper())
-				.whenPressed(gyro::reset);
+		// new Button(() -> driverController.getLeftBumper() && driverController.getRightBumper()).whenPressed(gyro::reset);
 	}
 
 	public void robotInit() {
@@ -99,8 +89,6 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousInit() {
-		compressor.enableDigital();
-		
 		autonomousCommand = m_chooser.getSelected();
 		if(autonomousCommand != null)
 			autonomousCommand.schedule();
@@ -130,16 +118,19 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void teleopPeriodic() {
-		if (driverController.getAButton()) {
-			intakeMotor.set(1);
+		if(driverController.getLeftTriggerAxis() > 0.2){
+			intakeMotor.set(driverController.getLeftTriggerAxis());
+		} else if(driverController.getRightTriggerAxis() > 0.2){
+			intakeMotor.set(-driverController.getRightTriggerAxis());
 		}
-		// if (driverController.getBButton()){
-		// testSolenoid.toggle();
-		// }
 		driverController.getButton(XboxController.Button.kB).whenPressed(collector::toggle);
 		driverController.getButton(XboxController.Button.kA).whenPressed(collectorLift::toggle);
 		driverController.getButton(XboxController.Button.kX).whenPressed(climber::toggle);
-		liftMotor.set(driverController.getRightY());
+		if(driverController.getLeftBumper()){
+			intakeMotor.set(0.8);
+		} else if(driverController.getRightBumper()){
+			intakeMotor.set(-0.8);
+		}
 	}
 
 	@Override

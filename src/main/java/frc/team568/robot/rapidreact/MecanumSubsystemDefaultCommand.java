@@ -11,7 +11,7 @@ import frc.team568.robot.subsystems.DriveBase.Input;
 
 public class MecanumSubsystemDefaultCommand extends CommandBase {
 	private final MecanumSubsystem drive;
-	private boolean fieldRelativeControls;
+	private boolean fieldRelativeControls = true;
 	private Gyro gyro;
 
 	Map<Input, DoubleSupplier> inputMap = new HashMap<>();

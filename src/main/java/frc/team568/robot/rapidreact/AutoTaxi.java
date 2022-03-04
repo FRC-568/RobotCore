@@ -1,12 +1,9 @@
 package frc.team568.robot.rapidreact;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 //created taxi class
 public class AutoTaxi extends SequentialCommandGroup {
@@ -54,7 +51,6 @@ public AutoTaxi(MecanumSubsystem subsystem) {
 	 * try {
 	 * wait(1000);
 	 * } catch (InterruptedException e) {
-	 * // TODO Auto-generated catch block
 	 * e.printStackTrace();
 	 * }
 	 * subsystem.motorFL.set(0);
