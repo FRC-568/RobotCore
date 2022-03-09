@@ -11,7 +11,7 @@ import frc.team568.robot.subsystems.DriveBase.Input;
 
 public class MecanumSubsystemDefaultCommand extends CommandBase {
 	private final MecanumSubsystem drive;
-	private boolean fieldRelativeControls = true;
+	private boolean fieldRelativeControls = false;
 	private Gyro gyro;
 
 	Map<Input, DoubleSupplier> inputMap = new HashMap<>();
@@ -29,6 +29,7 @@ public class MecanumSubsystemDefaultCommand extends CommandBase {
 
 	public void toggleUseFieldRelative(){
 		fieldRelativeControls = !fieldRelativeControls;
+		gyro.reset();
 	}
 
 	public MecanumSubsystemDefaultCommand useAxis(Input input, DoubleSupplier axis){
@@ -38,13 +39,11 @@ public class MecanumSubsystemDefaultCommand extends CommandBase {
 
 	@Override
 	public void initialize() {
-		// System.out.println("initialize");
 		gyro = drive.getGyro();
 	}
 
 	@Override
 	public void execute() {
-		// System.out.println("periodic");
 		if (fieldRelativeControls && gyro != null)
 			drive.getMecanumDrive().driveCartesian(axis(Input.FORWARD), axis(Input.STRAFE), axis(Input.TURN), gyro.getAngle());
 		else

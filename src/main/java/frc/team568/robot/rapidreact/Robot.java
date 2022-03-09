@@ -1,85 +1,122 @@
 package frc.team568.robot.rapidreact;
 
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
-// import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse;
+import java.util.Map;
+import java.util.Set;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI.Port;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-// import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.XinputController;
 import frc.team568.robot.subsystems.DriveBase.Input;
 
 public class Robot extends RobotBase {
-	SendableChooser<Command> m_chooser;
 	PowerDistribution pdp;
 	MecanumSubsystem drive;
 	Gyro gyro;
 	Compressor compressor;
+	UsbCamera camera;
+	PneumaticsControlModule pcm;
 
-	DoubleSolenoid collectorLift;
-	Solenoid climber;
-	Solenoid collector;
-	// 2 Singles(Intake Closing thing, Main Lift) 1 Double (Intake Lift)
+	private ShuffleboardTab tab = Shuffleboard.getTab("Autonomous Parameters");
 
-	// private ShuffleboardTab tab = Shuffleboard.getTab("Drive");
-	// private NetworkTableEntry maxSpeed = tab.add("Max Speed", 1).withWidget(BuiltInWidgets.kNumberSlider).getEntry();
-	CANSparkMax intakeMotor;
-	CANSparkMax liftMotor;
+	private NetworkTableEntry taxiTimeout = tab.add("Taxi Timeout", 1.5).withWidget(BuiltInWidgets.kNumberSlider)
+	.withProperties(Map.of("min", 0.5, "max", 4)).getEntry();
+	private NetworkTableEntry LidTimeout = tab.add("Lid Timeout", 1).withWidget(BuiltInWidgets.kNumberSlider)
+	.withProperties(Map.of("min", 0.5, "max", 5)).getEntry();
+	private NetworkTableEntry IntakeTimeout = tab.add("Intake Timeout", 3).withWidget(BuiltInWidgets.kNumberSlider)
+	.withProperties(Map.of("min", 0.5, "max", 5)).getEntry();
 
 	Command autonomousCommand;
 
 	String trajectoryJSON = "src/main/deploy/paths/output/Test.wpilib.json";
 	Trajectory trajectory = new Trajectory();
 
-	XinputController driverController;
+	XinputController mainDriver;
+	XinputController coDriver;
 
-	public Robot() {
+	Lift lift;
+	Intake intake;
+
+	public Robot() {	
 		super("RapidReact");
-		driverController = new XinputController(0);
+		mainDriver = new XinputController(0);
+		coDriver = new XinputController(1);
 		pdp = new PowerDistribution();
+		pcm = new PneumaticsControlModule();
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
 		drive = new MecanumSubsystem(gyro);
-		compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
+		compressor = new Compressor(Config.kcompressor, PneumaticsModuleType.CTREPCM);
+		camera = CameraServer.startAutomaticCapture();
 
-		collectorLift = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1); // random values for now
-		collector = new Solenoid(PneumaticsModuleType.CTREPCM, 2);
-		climber = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
-
-		// changed from brushless to brushed *test*
-		intakeMotor = new CANSparkMax(5, MotorType.kBrushed);
-		liftMotor = new CANSparkMax(6, MotorType.kBrushed);
+		taxiTimeout.setPersistent();
+		LidTimeout.setPersistent();
+		IntakeTimeout.setPersistent();
 
 		var msdefault = new MecanumSubsystemDefaultCommand(drive)
-				.useAxis(Input.FORWARD, () -> -driverController.getLeftY())
-				.useAxis(Input.STRAFE, () -> driverController.getLeftX())
-				.useAxis(Input.TURN, () -> driverController.getRightX());
-		drive.setDefaultCommand(msdefault);
-		driverController.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
-		// new Button(() -> driverController.getLeftBumper() && driverController.getRightBumper()).whenPressed(gyro::reset);
-	}
+				.useAxis(Input.FORWARD, () -> -mainDriver.getLeftY())
+				.useAxis(Input.STRAFE, () -> mainDriver.getLeftX())
+				.useAxis(Input.TURN, () -> mainDriver.getRightX());
 
-	public void robotInit() {
-		m_chooser = new SendableChooser<>();
-		m_chooser.setDefaultOption("taxi 1 second", new AutoTaxi(drive));
-		// m_chooser.addOption(name, object);
-		// Put the chooser on the dashboard
-		SmartDashboard.putData(m_chooser);
+		drive.setDefaultCommand(msdefault);
+	
+		mainDriver.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
+		mainDriver.getButton(XboxController.Button.kA).whenPressed(lift::toggle);
+		
+		coDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
+		coDriver.getButton(XboxController.Button.kA).whenPressed(intake::toggleLid);
+		coDriver.getButton(XboxController.Button.kB).whenPressed(intake::toggleLift);
+
+		lift.setDefaultCommand(new Command() {
+			@Override
+			public void execute() {
+				lift.setMotor(MathUtil.applyDeadband(mainDriver.getRightTriggerAxis() - mainDriver.getLeftTriggerAxis(), 0.1));
+			}
+
+			@Override
+			public Set<Subsystem> getRequirements() {
+				return Set.of(lift);
+			}
+		});
+		
+		intake.setDefaultCommand(new Command() {
+			@Override
+			public void execute() {
+				intake.setIntakeMotor(MathUtil.applyDeadband(coDriver.getRightTriggerAxis() - coDriver.getLeftTriggerAxis(), 0.1));
+			}
+
+			@Override
+			public Set<Subsystem> getRequirements() {
+				return Set.of(intake);
+			}
+		});
+
+		lift = new Lift(
+			Config.Lift.kLiftuprightFlow, 
+			Config.Lift.kLiftslantedFlow, 
+			Config.Lift.kmotorLift_ID);
+		intake = new Intake(
+			Config.Intake.kintakeLiftUp, 
+			Config.Intake.kintakeLiftDown, 
+			Config.Intake.kintakeLidOpen, 
+			Config.Intake.kintakeLidClosed, 
+			Config.Intake.kmotorIntake_ID);
 	}
 
 	@Override
@@ -89,7 +126,8 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = m_chooser.getSelected();
+		compressor.enableDigital();
+		autonomousCommand = new AutoTaxi(drive, intake).setTaxiTime(taxiTimeout.getDouble(1.5)).setLidTime(LidTimeout.getDouble(1)).setIntakeTime(IntakeTimeout.getDouble(3));
 		if(autonomousCommand != null)
 			autonomousCommand.schedule();
 		/*
@@ -113,24 +151,6 @@ public class Robot extends RobotBase {
 	public void teleopInit() {
 		if (autonomousCommand != null) autonomousCommand.cancel();
 		compressor.enableDigital();
-		collectorLift.set(kForward);
-	}
-
-	@Override
-	public void teleopPeriodic() {
-		if(driverController.getLeftTriggerAxis() > 0.2){
-			intakeMotor.set(driverController.getLeftTriggerAxis());
-		} else if(driverController.getRightTriggerAxis() > 0.2){
-			intakeMotor.set(-driverController.getRightTriggerAxis());
-		}
-		driverController.getButton(XboxController.Button.kB).whenPressed(collector::toggle);
-		driverController.getButton(XboxController.Button.kA).whenPressed(collectorLift::toggle);
-		driverController.getButton(XboxController.Button.kX).whenPressed(climber::toggle);
-		if(driverController.getLeftBumper()){
-			intakeMotor.set(0.8);
-		} else if(driverController.getRightBumper()){
-			intakeMotor.set(-0.8);
-		}
 	}
 
 	@Override

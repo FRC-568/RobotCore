@@ -37,10 +37,10 @@ public class MecanumSubsystem extends SubsystemBase {
 
 	public MecanumSubsystem(Gyro gyro) {
 		this.gyro = gyro;
-		motorBL = new WPI_TalonSRX(2);
-		motorFL = new WPI_TalonSRX(1);
-		motorBR = new WPI_TalonSRX(4);
-		motorFR = new WPI_TalonSRX(3);
+		motorBL = new WPI_TalonSRX(Config.MecanumSubsystem.kmotorBL_ID);
+		motorFL = new WPI_TalonSRX(Config.MecanumSubsystem.kmotorFL_ID);
+		motorBR = new WPI_TalonSRX(Config.MecanumSubsystem.kmotorBR_ID);
+		motorFR = new WPI_TalonSRX(Config.MecanumSubsystem.kmotorFR_ID);
 
 		setupMotor(motorBL, false);
 		setupMotor(motorFL, false);
@@ -134,13 +134,11 @@ public class MecanumSubsystem extends SubsystemBase {
 		return new MotorController() {
 			@Override
 			public double get() {
-				// System.out.println("get " + clamp(controller.getSelectedSensorVelocity() / maxSpeed, -1.0, 1.0));
 				return clamp(controller.getSelectedSensorVelocity() / maxSpeed, -1.0, 1.0);
 			}
 
 			@Override
 			public void set(double speed) {
-				// System.out.println("set " + speed + ", " + speed * maxSpeed);
 				controller.set(ControlMode.Velocity, speed * maxSpeed);
 			}
 
