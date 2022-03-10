@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static frc.team568.robot.rapidreact.Config.MecanumSubsystem.*;
+
 public class MecanumSubsystem extends SubsystemBase {
 	public static double MAX_VELOCITY = 2500;
 	public double wheelRadius = 3;
@@ -37,10 +39,10 @@ public class MecanumSubsystem extends SubsystemBase {
 
 	public MecanumSubsystem(Gyro gyro) {
 		this.gyro = gyro;
-		motorBL = new WPI_TalonSRX(Config.MecanumSubsystem.kmotorBL_ID);
-		motorFL = new WPI_TalonSRX(Config.MecanumSubsystem.kmotorFL_ID);
-		motorBR = new WPI_TalonSRX(Config.MecanumSubsystem.kmotorBR_ID);
-		motorFR = new WPI_TalonSRX(Config.MecanumSubsystem.kmotorFR_ID);
+		motorBL = new WPI_TalonSRX(kMotorID_BL);
+		motorFL = new WPI_TalonSRX(kMotorId_FL);
+		motorBR = new WPI_TalonSRX(kMotorId_BR);
+		motorFR = new WPI_TalonSRX(kMotorId_FR);
 
 		setupMotor(motorBL, false);
 		setupMotor(motorFL, false);

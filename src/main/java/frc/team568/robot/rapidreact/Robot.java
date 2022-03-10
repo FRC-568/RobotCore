@@ -33,15 +33,13 @@ public class Robot extends RobotBase {
 	Compressor compressor;
 	UsbCamera camera;
 	PneumaticsControlModule pcm;
+	Lift lift;
+	Intake intake;
 
-	private ShuffleboardTab tab = Shuffleboard.getTab("Autonomous Parameters");
-
-	private NetworkTableEntry taxiTimeout = tab.add("Taxi Timeout", 1.5).withWidget(BuiltInWidgets.kNumberSlider)
-	.withProperties(Map.of("min", 0.5, "max", 4)).getEntry();
-	private NetworkTableEntry LidTimeout = tab.add("Lid Timeout", 1).withWidget(BuiltInWidgets.kNumberSlider)
-	.withProperties(Map.of("min", 0.5, "max", 5)).getEntry();
-	private NetworkTableEntry IntakeTimeout = tab.add("Intake Timeout", 3).withWidget(BuiltInWidgets.kNumberSlider)
-	.withProperties(Map.of("min", 0.5, "max", 5)).getEntry();
+	private ShuffleboardTab tab;
+	private NetworkTableEntry taxiTimeout;
+	private NetworkTableEntry lidTimeout;
+	private NetworkTableEntry intakeTimeout;
 
 	Command autonomousCommand;
 
@@ -51,10 +49,7 @@ public class Robot extends RobotBase {
 	XinputController mainDriver;
 	XinputController coDriver;
 
-	Lift lift;
-	Intake intake;
-
-	public Robot() {	
+	public Robot() {
 		super("RapidReact");
 		mainDriver = new XinputController(0);
 		coDriver = new XinputController(1);
@@ -65,28 +60,12 @@ public class Robot extends RobotBase {
 		compressor = new Compressor(Config.kcompressor, PneumaticsModuleType.CTREPCM);
 		camera = CameraServer.startAutomaticCapture();
 
-		taxiTimeout.setPersistent();
-		LidTimeout.setPersistent();
-		IntakeTimeout.setPersistent();
-
-		var msdefault = new MecanumSubsystemDefaultCommand(drive)
-				.useAxis(Input.FORWARD, () -> -mainDriver.getLeftY())
-				.useAxis(Input.STRAFE, () -> mainDriver.getLeftX())
-				.useAxis(Input.TURN, () -> mainDriver.getRightX());
-
-		drive.setDefaultCommand(msdefault);
-	
-		mainDriver.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
-		mainDriver.getButton(XboxController.Button.kA).whenPressed(lift::toggle);
-		
-		coDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
-		coDriver.getButton(XboxController.Button.kA).whenPressed(intake::toggleLid);
-		coDriver.getButton(XboxController.Button.kB).whenPressed(intake::toggleLift);
-
+		lift = new Lift();
 		lift.setDefaultCommand(new Command() {
 			@Override
 			public void execute() {
-				lift.setMotor(MathUtil.applyDeadband(mainDriver.getRightTriggerAxis() - mainDriver.getLeftTriggerAxis(), 0.1));
+				lift.setMotor(MathUtil.applyDeadband(mainDriver.getRightTriggerAxis() - mainDriver.getLeftTriggerAxis(),
+						0.1));
 			}
 
 			@Override
@@ -94,11 +73,13 @@ public class Robot extends RobotBase {
 				return Set.of(lift);
 			}
 		});
-		
+
+		intake = new Intake();
 		intake.setDefaultCommand(new Command() {
 			@Override
 			public void execute() {
-				intake.setIntakeMotor(MathUtil.applyDeadband(coDriver.getRightTriggerAxis() - coDriver.getLeftTriggerAxis(), 0.1));
+				intake.setIntakeMotor(
+						MathUtil.applyDeadband(coDriver.getRightTriggerAxis() - coDriver.getLeftTriggerAxis(), 0.1));
 			}
 
 			@Override
@@ -107,16 +88,40 @@ public class Robot extends RobotBase {
 			}
 		});
 
-		lift = new Lift(
-			Config.Lift.kLiftuprightFlow, 
-			Config.Lift.kLiftslantedFlow, 
-			Config.Lift.kmotorLift_ID);
-		intake = new Intake(
-			Config.Intake.kintakeLiftUp, 
-			Config.Intake.kintakeLiftDown, 
-			Config.Intake.kintakeLidOpen, 
-			Config.Intake.kintakeLidClosed, 
-			Config.Intake.kmotorIntake_ID);
+		var msdefault = new MecanumSubsystemDefaultCommand(drive)
+				.useAxis(Input.FORWARD, () -> -mainDriver.getLeftY())
+				.useAxis(Input.STRAFE, () -> mainDriver.getLeftX())
+				.useAxis(Input.TURN, () -> mainDriver.getRightX());
+
+		drive.setDefaultCommand(msdefault);
+
+		mainDriver.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
+		mainDriver.getButton(XboxController.Button.kA).whenPressed(lift::toggle);
+
+		coDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
+		coDriver.getButton(XboxController.Button.kA).whenPressed(intake::toggleLid);
+		coDriver.getButton(XboxController.Button.kB).whenPressed(intake::toggleLift);
+
+		setupShuffleboard();
+	}
+
+	private void setupShuffleboard() {
+		tab = Shuffleboard.getTab("Autonomous Parameters");
+
+		taxiTimeout = tab.add("Taxi Timeout", 1.5)
+				.withWidget(BuiltInWidgets.kNumberSlider)
+				.withProperties(Map.of("min", 0.5, "max", 4)).getEntry();
+		taxiTimeout.setPersistent();
+
+		lidTimeout = tab.add("Lid Timeout", 1)
+				.withWidget(BuiltInWidgets.kNumberSlider)
+				.withProperties(Map.of("min", 0.5, "max", 5)).getEntry();
+		lidTimeout.setPersistent();
+
+		intakeTimeout = tab.add("Intake Timeout", 3)
+				.withWidget(BuiltInWidgets.kNumberSlider)
+				.withProperties(Map.of("min", 0.5, "max", 5)).getEntry();
+		intakeTimeout.setPersistent();
 	}
 
 	@Override
@@ -127,8 +132,11 @@ public class Robot extends RobotBase {
 	@Override
 	public void autonomousInit() {
 		compressor.enableDigital();
-		autonomousCommand = new AutoTaxi(drive, intake).setTaxiTime(taxiTimeout.getDouble(1.5)).setLidTime(LidTimeout.getDouble(1)).setIntakeTime(IntakeTimeout.getDouble(3));
-		if(autonomousCommand != null)
+		autonomousCommand = new AutoTaxi(drive, intake)
+				.setTaxiTime(taxiTimeout.getDouble(1.5))
+				.setLidTime(lidTimeout.getDouble(1))
+				.setIntakeTime(intakeTimeout.getDouble(3));
+		if (autonomousCommand != null)
 			autonomousCommand.schedule();
 		/*
 		 * try {
@@ -149,7 +157,8 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void teleopInit() {
-		if (autonomousCommand != null) autonomousCommand.cancel();
+		if (autonomousCommand != null)
+			autonomousCommand.cancel();
 		compressor.enableDigital();
 	}
 

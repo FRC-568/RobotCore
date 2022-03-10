@@ -6,18 +6,22 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.team568.util.Utilities;
 
-public class Lift extends SubsystemBase {
+import static edu.wpi.first.wpilibj.PneumaticsModuleType.CTREPCM;
+import static frc.team568.robot.rapidreact.Config.Lift.*;
+
+class Lift extends SubsystemBase {
 	DoubleSolenoid liftSolenoid;
 	WPI_TalonSRX liftMotor;
-	public Lift(int uprightFLow, int slantedFlow, int motorID) {
-		// Upright = forward, slated = reverse
-		liftSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, uprightFLow, slantedFlow);
 
-		liftMotor = new WPI_TalonSRX(motorID);
+	public Lift() {
+		// Upright = forward, slanted = reverse
+		liftSolenoid = new DoubleSolenoid(CTREPCM, kUprightFlow, kSlantedFlow);
+
+		liftMotor = new WPI_TalonSRX(kMotorId);
 		liftMotor.setNeutralMode(NeutralMode.Brake);
 	}
 	
@@ -25,12 +29,12 @@ public class Lift extends SubsystemBase {
 		liftSolenoid.set(upright ? Value.kForward : Value.kReverse);
 	}
 
-	boolean getUpright() {
+	boolean isUpright() {
 		return liftSolenoid.get() == Value.kForward;
 	}
 
 	void toggle() {
-		setUpright(!getUpright());
+		setUpright(!isUpright());
 	}
 
 	void setMotor(double speed){
@@ -48,6 +52,6 @@ public class Lift extends SubsystemBase {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
-		builder.addBooleanProperty("Lift Upright", this::getUpright, null);
+		builder.addBooleanProperty("Lift Upright", this::isUpright, null);
 	}
 }

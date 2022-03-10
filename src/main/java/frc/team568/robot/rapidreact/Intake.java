@@ -6,24 +6,26 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team568.util.Utilities;
 
-public class Intake extends SubsystemBase {
+import static edu.wpi.first.wpilibj.PneumaticsModuleType.CTREPCM;
+import static frc.team568.robot.rapidreact.Config.Intake.*;
+
+class Intake extends SubsystemBase {
 	DoubleSolenoid intakeLift, intakeLid;
 	CANSparkMax intakeMotor;
 
-	Intake(int intakeLiftUp, int intakeLiftDown, int intakeLidOpen, int intakeLidClosed, int motorID){
+	Intake() {
 		// Down = forward, Up = reverse
-		intakeLift = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, intakeLiftDown, intakeLiftUp);
+		intakeLift = new DoubleSolenoid(CTREPCM, kLiftDown, kLiftUp);
 		// Open = forward, Closed = reverse
-		intakeLid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, intakeLidOpen, intakeLidClosed);
+		intakeLid = new DoubleSolenoid(CTREPCM, kLidOpen, kLidClosed);
 
-		intakeMotor = new CANSparkMax(motorID, MotorType.kBrushed);
+		intakeMotor = new CANSparkMax(kMotorId, MotorType.kBrushed);
 	}
 
-	boolean getLidOpen() {
+	boolean isLidOpen() {
 		return intakeLid.get() == Value.kForward;
 	}
 
@@ -32,10 +34,10 @@ public class Intake extends SubsystemBase {
 	}
 
 	void toggleLid() {
-		setLidOpen(!getLidOpen());
+		setLidOpen(!isLidOpen());
 	}
 
-	boolean getLiftUp() {
+	boolean isLiftUp() {
 		return intakeLift.get() == Value.kReverse;
 	}
 
@@ -44,7 +46,7 @@ public class Intake extends SubsystemBase {
 	}
 
 	void toggleLift() {
-		setLiftUp(!getLiftUp());
+		setLiftUp(!isLiftUp());
 	}
 
 	void setIntakeMotor(double speed){
@@ -66,7 +68,7 @@ public class Intake extends SubsystemBase {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
-		builder.addBooleanProperty("Lid Open", this::getLidOpen, null);
-		builder.addBooleanProperty("Intake Lift Up", this::getLiftUp, null);
+		builder.addBooleanProperty("Lid Open", this::isLidOpen, null);
+		builder.addBooleanProperty("Intake Lift Up", this::isLiftUp, null);
 	}
 }
