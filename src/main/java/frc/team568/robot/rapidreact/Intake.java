@@ -1,5 +1,12 @@
 package frc.team568.robot.rapidreact;
 
+import static edu.wpi.first.wpilibj.PneumaticsModuleType.CTREPCM;
+import static frc.team568.robot.rapidreact.Config.Intake.kLidClosed;
+import static frc.team568.robot.rapidreact.Config.Intake.kLidOpen;
+import static frc.team568.robot.rapidreact.Config.Intake.kLiftDown;
+import static frc.team568.robot.rapidreact.Config.Intake.kLiftUp;
+import static frc.team568.robot.rapidreact.Config.Intake.kMotorId;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -8,9 +15,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team568.util.Utilities;
-
-import static edu.wpi.first.wpilibj.PneumaticsModuleType.CTREPCM;
-import static frc.team568.robot.rapidreact.Config.Intake.*;
 
 class Intake extends SubsystemBase {
 	DoubleSolenoid intakeLift, intakeLid;
@@ -25,17 +29,17 @@ class Intake extends SubsystemBase {
 		intakeMotor = new CANSparkMax(kMotorId, MotorType.kBrushed);
 	}
 
-	boolean isLidOpen() {
-		return intakeLid.get() == Value.kForward;
-	}
+	// boolean isLidOpen() {
+	// 	return intakeLid.get() == Value.kForward;
+	// }
 
-	void setLidOpen(boolean open) {
-		intakeLid.set(open ? Value.kForward : Value.kReverse);
-	}
+	// void setLidOpen(boolean open) {
+	// 	intakeLid.set(open ? Value.kForward : Value.kReverse);
+	// }
 
-	void toggleLid() {
-		setLidOpen(!isLidOpen());
-	}
+	// void toggleLid() {
+	// 	setLidOpen(!isLidOpen());
+	// }
 
 	boolean isLiftUp() {
 		return intakeLift.get() == Value.kReverse;
@@ -68,7 +72,6 @@ class Intake extends SubsystemBase {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
-		builder.addBooleanProperty("Lid Open", this::isLidOpen, null);
 		builder.addBooleanProperty("Intake Lift Up", this::isLiftUp, null);
 	}
 }

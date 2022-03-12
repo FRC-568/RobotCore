@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -59,7 +60,8 @@ public class MecanumSubsystemDefaultCommand extends CommandBase {
 	}
 
 	private final double axis(Input input) {
-		return inputMap.get(input).getAsDouble();
+		
+		return MathUtil.applyDeadband(inputMap.get(input).getAsDouble(),0.1);
 	}
 
 	@Override

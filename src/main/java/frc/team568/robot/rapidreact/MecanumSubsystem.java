@@ -1,9 +1,12 @@
 package frc.team568.robot.rapidreact;
 
+import static frc.team568.robot.rapidreact.Config.MecanumSubsystem.kMotorID_BL;
+import static frc.team568.robot.rapidreact.Config.MecanumSubsystem.kMotorId_BR;
+import static frc.team568.robot.rapidreact.Config.MecanumSubsystem.kMotorId_FL;
+import static frc.team568.robot.rapidreact.Config.MecanumSubsystem.kMotorId_FR;
 import static frc.team568.util.Utilities.clamp;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -18,8 +21,6 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import static frc.team568.robot.rapidreact.Config.MecanumSubsystem.*;
 
 public class MecanumSubsystem extends SubsystemBase {
 	public static double MAX_VELOCITY = 2500;
@@ -66,18 +67,18 @@ public class MecanumSubsystem extends SubsystemBase {
 	}
 
 	private void setupMotor(TalonSRX motor, Boolean isInverted){
-		motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-		motor.setSensorPhase(true);
+		// motor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+		// motor.setSensorPhase(true);
 
-		motor.config_kP(0, 0.25 , 30);
-		motor.config_kI(0, 0.002, 30);
-		motor.config_kD(0, 10   , 30);
+		// motor.config_kP(0, 0.25 , 30);
+		// motor.config_kI(0, 0.002, 30);
+		// motor.config_kD(0, 10   , 30);
 		
 		motor.setInverted(isInverted);
 		
 		//remember to set back to 0
-		motor.configClosedloopRamp(1.0);
-		motor.configOpenloopRamp(1.0);
+		motor.configClosedloopRamp(0.1);
+		motor.configOpenloopRamp(0.1);
 	}
 
 	public MecanumSubsystem useGyro(Gyro gyro){

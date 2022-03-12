@@ -1,6 +1,7 @@
 package frc.team568.robot.rapidreact;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -9,20 +10,32 @@ public class AutoTaxi extends SequentialCommandGroup {
 	protected MecanumSubsystem subsystem;
 	protected Intake intake;
 	double taxiTime = 1.5;
-	double lidTime = 1, intakeTime = 3;
+	double lungeTime = 1, intakeTime = 3;
 	
-	public AutoTaxi(MecanumSubsystem subsystem, Intake intake) {
+	public AutoTaxi(MecanumSubsystem subsystem, Intake intake, boolean outTake) {
 		this.subsystem = subsystem;
 		this.intake = intake;
-		addRequirements(subsystem);
-		addCommands(
-			new InstantCommand(() -> intake.setLidOpen(false)),
-			new WaitCommand(lidTime),
-			new RunCommand(() -> intake.setIntakeMotor(1.0)).withTimeout(intakeTime),
-			new WaitCommand(Math.max(1, 10 - lidTime - intakeTime)),
-			new RunCommand(() -> subsystem.getMecanumDrive().driveCartesian(0, -1, 0)).withTimeout(taxiTime),
-			new WaitCommand(100)
-		);
+		addRequirements(subsystem, intake);
+		if(outTake){
+			addCommands(
+				new ParallelCommandGroup(
+					new RunCommand(() -> subsystem.getMecanumDrive().driveCartesian(0.7, 0, 0)).withTimeout(lungeTime),
+					new WaitCommand(0.2).andThen(new InstantCommand(() -> intake.setIntakeMotor(-0.7)))
+				),
+				new WaitCommand(intakeTime),
+				new InstantCommand(() -> subsystem.getMecanumDrive().driveCartesian(0, 0, 0)),
+				new InstantCommand(() -> intake.setIntakeMotor(0.0)),
+				new WaitCommand(Math.max(1, 10 - lungeTime - intakeTime)),
+				new RunCommand(() -> subsystem.getMecanumDrive().driveCartesian(-0.5, 0, 0)).withTimeout(taxiTime),
+				new WaitCommand(100)
+			);
+		} else {
+			addCommands(
+				new WaitCommand(10),
+				new RunCommand(() -> subsystem.getMecanumDrive().driveCartesian(-0.5, 0, 0)).withTimeout(taxiTime),
+				new WaitCommand(100)
+			);
+		}	
 	}
 
 	public AutoTaxi setTaxiTime(double TaxiTime){
@@ -30,8 +43,8 @@ public class AutoTaxi extends SequentialCommandGroup {
 		return this;
 	}
 
-	public AutoTaxi setLidTime(double lidTime){
-		this.lidTime = lidTime;
+	public AutoTaxi setLidTime(double lungeTime){
+		this.lungeTime = lungeTime;
 		return this;
 	}
 
