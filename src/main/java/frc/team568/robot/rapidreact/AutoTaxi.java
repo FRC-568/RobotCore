@@ -10,7 +10,7 @@ public class AutoTaxi extends SequentialCommandGroup {
 	protected MecanumSubsystem subsystem;
 	protected Intake intake;
 	double taxiTime = 1.5;
-	double lungeTime = 1, intakeTime = 3;
+	double lungeTime = 1, intakeTime = 3, lidDelay = 0.3;
 	
 	public AutoTaxi(MecanumSubsystem subsystem, Intake intake, boolean outTake) {
 		this.subsystem = subsystem;
@@ -18,9 +18,11 @@ public class AutoTaxi extends SequentialCommandGroup {
 		addRequirements(subsystem, intake);
 		if(outTake){
 			addCommands(
+				new InstantCommand(() -> intake.setLidOpen(true)),
 				new ParallelCommandGroup(
-					new RunCommand(() -> subsystem.getMecanumDrive().driveCartesian(0.7, 0, 0)).withTimeout(lungeTime),
-					new WaitCommand(0.2).andThen(new InstantCommand(() -> intake.setIntakeMotor(-0.7)))
+					new InstantCommand(() -> intake.setIntakeMotor(-0.7)),
+					new RunCommand(() -> subsystem.getMecanumDrive().driveCartesian(0.7, 0, 0)).withTimeout(lungeTime)),
+					new WaitCommand(lidDelay).andThen(new InstantCommand(() -> intake.setLidOpen(false))
 				),
 				new WaitCommand(intakeTime),
 				new InstantCommand(() -> subsystem.getMecanumDrive().driveCartesian(0, 0, 0)),
@@ -36,6 +38,11 @@ public class AutoTaxi extends SequentialCommandGroup {
 				new WaitCommand(100)
 			);
 		}	
+	}
+
+	public AutoTaxi setLidDelay(double lidDelay){
+		this.lidDelay = lidDelay;
+		return this;
 	}
 
 	public AutoTaxi setTaxiTime(double TaxiTime){

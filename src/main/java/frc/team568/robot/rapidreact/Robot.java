@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.XinputController;
 import frc.team568.robot.subsystems.DriveBase.Input;
@@ -43,6 +45,7 @@ public class Robot extends RobotBase {
 	private NetworkTableEntry taxiTimeout;
 	private NetworkTableEntry lungeTime;
 	private NetworkTableEntry intakeTimeout;
+	private NetworkTableEntry lidDelay;
 
 	private SendableChooser<Command> m_chooser;
 
@@ -104,8 +107,10 @@ public class Robot extends RobotBase {
 		mainDriver.getButton(XboxController.Button.kA).whenPressed(lift::toggle);
 
 		coDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
-		coDriver.getButton(XboxController.Button.kA).whenPressed(this::toggleCompressor);
+		coDriver.getButton(XboxController.Button.kA).whenPressed(intake::toggleLid);
 		coDriver.getButton(XboxController.Button.kB).whenPressed(intake::toggleLift);
+
+		new Button(RobotController::getUserButton).whenReleased(this::toggleCompressor);
 
 		setupShuffleboard();
 	}
@@ -133,8 +138,11 @@ public class Robot extends RobotBase {
 
 		intakeTimeout = tab.add("Intake Timeout", 3)
 				.withWidget(BuiltInWidgets.kNumberSlider)
-				.withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
+				.withProperties(Map.of("min", 0.05, "max", 1)).getEntry();
 		intakeTimeout.setPersistent();
+
+		lidDelay = tab.add("Lid Closing Delay", 0.3).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
+		lidDelay.setPersistent();
 	}
 
 	public void robotInit() {
@@ -142,7 +150,7 @@ public class Robot extends RobotBase {
 		m_chooser.setDefaultOption("Outake", new AutoTaxi(drive, intake, true)
 			.setTaxiTime(taxiTimeout.getDouble(1.5))
 			.setLidTime(lungeTime.getDouble(1))
-			.setIntakeTime(intakeTimeout.getDouble(3)));
+			.setIntakeTime(intakeTimeout.getDouble(3)).setLidDelay(lidDelay.getDouble(0.3)));
 		m_chooser.addOption("don't Outake", new AutoTaxi(drive, intake, false)
 			.setTaxiTime(taxiTimeout.getDouble(1.5))
 			.setLidTime(lungeTime.getDouble(1))

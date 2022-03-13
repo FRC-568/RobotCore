@@ -29,17 +29,17 @@ class Intake extends SubsystemBase {
 		intakeMotor = new CANSparkMax(kMotorId, MotorType.kBrushed);
 	}
 
-	// boolean isLidOpen() {
-	// 	return intakeLid.get() == Value.kForward;
-	// }
+	boolean isLidOpen() {
+		return intakeLid.get() == Value.kForward;
+	}
 
-	// void setLidOpen(boolean open) {
-	// 	intakeLid.set(open ? Value.kForward : Value.kReverse);
-	// }
+	void setLidOpen(boolean open) {
+		intakeLid.set(open ? Value.kForward : Value.kReverse);
+	}
 
-	// void toggleLid() {
-	// 	setLidOpen(!isLidOpen());
-	// }
+	void toggleLid() {
+		setLidOpen(!isLidOpen());
+	}
 
 	boolean isLiftUp() {
 		return intakeLift.get() == Value.kReverse;
