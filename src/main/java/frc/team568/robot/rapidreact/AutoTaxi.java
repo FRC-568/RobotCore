@@ -1,16 +1,19 @@
 package frc.team568.robot.rapidreact;
 
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class AutoTaxi extends SequentialCommandGroup {
 	protected MecanumSubsystem subsystem;
 	protected Intake intake;
 	double taxiTime = 1.5;
 	double lungeTime = 1, intakeTime = 3, lidDelay = 0.3;
+	private BuiltInAccelerometer accel;
 	
 	public AutoTaxi(MecanumSubsystem subsystem, Intake intake, boolean outTake) {
 		this.subsystem = subsystem;
@@ -22,7 +25,7 @@ public class AutoTaxi extends SequentialCommandGroup {
 				new ParallelCommandGroup(
 					new InstantCommand(() -> intake.setIntakeMotor(-0.7)),
 					new RunCommand(() -> subsystem.getMecanumDrive().driveCartesian(0.7, 0, 0)).withTimeout(lungeTime)),
-					new WaitCommand(lidDelay).andThen(new InstantCommand(() -> intake.setLidOpen(false))
+					new WaitUntilCommand(this::hit).andThen(new InstantCommand(() -> intake.setLidOpen(false))
 				),
 				new WaitCommand(intakeTime),
 				new InstantCommand(() -> subsystem.getMecanumDrive().driveCartesian(0, 0, 0)),
@@ -38,6 +41,16 @@ public class AutoTaxi extends SequentialCommandGroup {
 				new WaitCommand(100)
 			);
 		}	
+	}
+
+	public boolean hit() {
+		// Assuming that negative acceleration is the hit.
+		return accel.getZ() > 0.5;
+	}
+
+	public AutoTaxi addAccelerometer(BuiltInAccelerometer accelerometer){
+		accel = accelerometer;
+		return this;
 	}
 
 	public AutoTaxi setLidDelay(double lidDelay){

@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -39,7 +40,7 @@ public class Robot extends RobotBase {
 	Lift lift;
 	Intake intake;
 
-	// private int autoType = 0;
+	BuiltInAccelerometer accelerometer;
 
 	private ShuffleboardTab tab;
 	private NetworkTableEntry taxiTimeout;
@@ -67,6 +68,7 @@ public class Robot extends RobotBase {
 		drive = new MecanumSubsystem(gyro);
 		compressor = new Compressor(Config.kcompressor, PneumaticsModuleType.CTREPCM);
 		camera = CameraServer.startAutomaticCapture();
+		accelerometer = new BuiltInAccelerometer();
 
 		lift = new Lift();
 		lift.setDefaultCommand(new Command() {
@@ -87,7 +89,7 @@ public class Robot extends RobotBase {
 			@Override
 			public void execute() {
 				intake.setIntakeMotor(
-						MathUtil.applyDeadband(coDriver.getLeftTriggerAxis(), 0.05) - coDriver.getRightTriggerAxis());
+						MathUtil.applyDeadband(coDriver.getLeftTriggerAxis(), 0.05) - MathUtil.applyDeadband(coDriver.getRightTriggerAxis(), 0.05));
 			}
 
 			@Override
@@ -104,23 +106,28 @@ public class Robot extends RobotBase {
 		drive.setDefaultCommand(msdefault);
 
 		mainDriver.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
-		mainDriver.getButton(XboxController.Button.kA).whenPressed(lift::toggle);
+		mainDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
+		mainDriver.getButton(XboxController.Button.kA).whenPressed(() -> msdefault.ram(accelerometer, intake));
 
 		coDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
 		coDriver.getButton(XboxController.Button.kA).whenPressed(intake::toggleLid);
 		coDriver.getButton(XboxController.Button.kB).whenPressed(intake::toggleLift);
+		coDriver.getButton(XboxController.Button.kY).whenPressed(this::toggleCompressor);
 
-		new Button(RobotController::getUserButton).whenReleased(this::toggleCompressor);
+		new Button(RobotController::getUserButton).whenReleased(this::reset);
 
 		setupShuffleboard();
 	}
 
+	public void reset(){
+		if(!intake.isLiftUp()) intake.setLiftUp(true);
+		if(!lift.isUpright()) lift.setUpright(false);
+		if(!intake.isLidOpen()) intake.setLidOpen(true);
+	}
+
 	private void toggleCompressor() {
-		if(compressor.enabled()){
-			compressor.disable();
-		} else {
-			compressor.enableDigital();
-		}
+		if(compressor.enabled()) compressor.disable();
+		else compressor.enableDigital();
 	}
 
 	private void setupShuffleboard() {
@@ -141,8 +148,12 @@ public class Robot extends RobotBase {
 				.withProperties(Map.of("min", 0.05, "max", 1)).getEntry();
 		intakeTimeout.setPersistent();
 
-		lidDelay = tab.add("Lid Closing Delay", 0.3).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
+		lidDelay = tab.add("Lid Closing Delay", 0.3)
+				.withWidget(BuiltInWidgets.kNumberSlider)
+				.withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
 		lidDelay.setPersistent();
+
+		tab.addNumber("Accel getZ", accelerometer::getZ);
 	}
 
 	public void robotInit() {
@@ -150,11 +161,14 @@ public class Robot extends RobotBase {
 		m_chooser.setDefaultOption("Outake", new AutoTaxi(drive, intake, true)
 			.setTaxiTime(taxiTimeout.getDouble(1.5))
 			.setLidTime(lungeTime.getDouble(1))
-			.setIntakeTime(intakeTimeout.getDouble(3)).setLidDelay(lidDelay.getDouble(0.3)));
+			.setIntakeTime(intakeTimeout.getDouble(3))
+			.setLidDelay(lidDelay.getDouble(0.3)).addAccelerometer(accelerometer));
+
 		m_chooser.addOption("don't Outake", new AutoTaxi(drive, intake, false)
-			.setTaxiTime(taxiTimeout.getDouble(1.5))
-			.setLidTime(lungeTime.getDouble(1))
-			.setIntakeTime(intakeTimeout.getDouble(3)));
+			.setTaxiTime(taxiTimeout.getDouble(1.5)));
+
+		m_chooser.addOption("Do Nothing", new AutoTaxi(drive, intake, false)
+			.setTaxiTime(100));
 		
 		tab.add(m_chooser);
 	}
@@ -200,7 +214,6 @@ public class Robot extends RobotBase {
 			autonomousCommand.cancel();
 			autonomousCommand = null;
 		}
-
 		compressor.disable();
 	}
 }

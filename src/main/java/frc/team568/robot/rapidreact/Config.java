@@ -1,6 +1,8 @@
 package frc.team568.robot.rapidreact;
 
 final class Config {
+	//in-flow side is the bottom of the piston
+
 	static final int kcompressor = 0;
 	
 	static final class MecanumSubsystem {
@@ -13,15 +15,14 @@ final class Config {
 	static final class Lift {
 		static final int kUprightFlow = 3;
 		static final int kSlantedFlow = 7;
-		static final int kMotorId = 5;
+		static final int kMotorId     = 5;
 	}
 
 	static final class Intake {
-		//in-flow side is the bottom of the piston
-		static final int kLiftUp = 1;
-		static final int kLiftDown = 5;
-		static final int kLidOpen = 4;
-		static final int kLidClosed = 0;
-		static final int kMotorId = 6;
+		static final int kLiftUp     = 1;
+		static final int kLiftDown   = 5;
+		static final int kLidOpen    = 4;
+		static final int kLidClosed  = 0;
+		static final int kMotorId    = 6;
 	}
 }

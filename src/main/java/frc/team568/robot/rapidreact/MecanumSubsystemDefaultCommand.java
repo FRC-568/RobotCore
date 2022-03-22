@@ -6,6 +6,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team568.robot.subsystems.DriveBase.Input;
@@ -68,5 +69,10 @@ public class MecanumSubsystemDefaultCommand extends CommandBase {
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
 		builder.addBooleanProperty("Field Relative Controls", this::hasFieldRelativeControls, this::useFieldRelativeControls);
+	}
+
+	public void ram(BuiltInAccelerometer accel, Intake intake) {
+		// drive.getMecanumDrive().driveCartesian(0.7, 0, 0);
+		if(accel.getZ() > 1) intake.setLidOpen(false);
 	}
 }
