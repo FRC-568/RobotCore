@@ -61,7 +61,6 @@ public class MecanumSubsystemDefaultCommand extends CommandBase {
 	}
 
 	private final double axis(Input input) {
-		
 		return MathUtil.applyDeadband(inputMap.get(input).getAsDouble(),0.1);
 	}
 
@@ -72,7 +71,6 @@ public class MecanumSubsystemDefaultCommand extends CommandBase {
 	}
 
 	public void ram(BuiltInAccelerometer accel, Intake intake) {
-		// drive.getMecanumDrive().driveCartesian(0.7, 0, 0);
-		if(accel.getZ() > 1) intake.setLidOpen(false);
+		if(accel.getZ() > 0.5) intake.setLidOpen(false);
 	}
 }

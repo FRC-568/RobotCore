@@ -1,13 +1,11 @@
 package frc.team568.robot.rapidreact;
 
-import java.util.Map;
 import java.util.Set;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Compressor;
@@ -18,9 +16,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -42,15 +37,10 @@ public class Robot extends RobotBase {
 
 	BuiltInAccelerometer accelerometer;
 
-	private ShuffleboardTab tab;
-	private NetworkTableEntry taxiTimeout;
-	private NetworkTableEntry lungeTime;
-	private NetworkTableEntry intakeTimeout;
-	private NetworkTableEntry lidDelay;
-
 	private SendableChooser<Command> m_chooser;
 
 	Command autonomousCommand;
+	public AutonomousParameters autoParam;
 
 	String trajectoryJSON = "src/main/deploy/paths/output/Test.wpilib.json";
 	Trajectory trajectory = new Trajectory();
@@ -69,6 +59,7 @@ public class Robot extends RobotBase {
 		compressor = new Compressor(Config.kcompressor, PneumaticsModuleType.CTREPCM);
 		camera = CameraServer.startAutomaticCapture();
 		accelerometer = new BuiltInAccelerometer();
+		autoParam = new AutonomousParameters();
 
 		lift = new Lift();
 		lift.setDefaultCommand(new Command() {
@@ -115,8 +106,6 @@ public class Robot extends RobotBase {
 		coDriver.getButton(XboxController.Button.kY).whenPressed(this::toggleCompressor);
 
 		new Button(RobotController::getUserButton).whenReleased(this::reset);
-
-		setupShuffleboard();
 	}
 
 	public void reset(){
@@ -130,47 +119,15 @@ public class Robot extends RobotBase {
 		else compressor.enableDigital();
 	}
 
-	private void setupShuffleboard() {
-		tab = Shuffleboard.getTab("Parameters");
-
-		taxiTimeout = tab.add("Taxi Timeout", 1.5)
-				.withWidget(BuiltInWidgets.kNumberSlider)
-				.withProperties(Map.of("min", 0.1, "max", 4)).getEntry();
-		taxiTimeout.setPersistent();
-
-		lungeTime = tab.add("Lunge Timeout", 1)
-				.withWidget(BuiltInWidgets.kNumberSlider)
-				.withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
-		lungeTime.setPersistent();
-
-		intakeTimeout = tab.add("Intake Timeout", 3)
-				.withWidget(BuiltInWidgets.kNumberSlider)
-				.withProperties(Map.of("min", 0.05, "max", 1)).getEntry();
-		intakeTimeout.setPersistent();
-
-		lidDelay = tab.add("Lid Closing Delay", 0.3)
-				.withWidget(BuiltInWidgets.kNumberSlider)
-				.withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
-		lidDelay.setPersistent();
-
-		tab.addNumber("Accel getZ", accelerometer::getZ);
-	}
-
 	public void robotInit() {
 		m_chooser = new SendableChooser<>();
-		m_chooser.setDefaultOption("Outake", new AutoTaxi(drive, intake, true)
-			.setTaxiTime(taxiTimeout.getDouble(1.5))
-			.setLidTime(lungeTime.getDouble(1))
-			.setIntakeTime(intakeTimeout.getDouble(3))
-			.setLidDelay(lidDelay.getDouble(0.3)).addAccelerometer(accelerometer));
+		m_chooser.setDefaultOption("Outake and Taxi", new Autonomous("Outtake", drive, intake, autoParam));
 
-		m_chooser.addOption("don't Outake", new AutoTaxi(drive, intake, false)
-			.setTaxiTime(taxiTimeout.getDouble(1.5)));
+		m_chooser.addOption("Only Taxi", new Autonomous("Taxi", drive, intake, autoParam));
 
-		m_chooser.addOption("Do Nothing", new AutoTaxi(drive, intake, false)
-			.setTaxiTime(100));
+		m_chooser.addOption("Do Nothing", new Autonomous("Do Nothing", drive, intake, autoParam));
 		
-		tab.add(m_chooser);
+		autoParam.tab.add(m_chooser);
 	}
 
 	@Override
