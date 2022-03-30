@@ -1,44 +1,78 @@
 package frc.team568.robot.rapidreact;
 
+import static edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kNumberSlider;
+
 import java.util.Map;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.BuiltInAccelerometer;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
-public class AutonomousParameters {
+class AutonomousParameters {
+	static final double TAXI_TIME_DEF = 1.5;
+	static final double TAXI_DELAY_DEF = 10.0;
+	static final double CHARGE_TIME_DEF = 1.0;
+	static final double SHOOT_TIME_DEF = 3.0;
+	static final double LID_TIME_DEF = 0.3;
+
+	ShuffleboardTab tab;
+	NetworkTableEntry taxiTimeEntry;
+	NetworkTableEntry taxiDelayEntry;
+	NetworkTableEntry chargeTimeEntry;
+	NetworkTableEntry shootTimeEntry;
+	NetworkTableEntry lidTimeEntry;
+
 	AutonomousParameters() {
 		setupShuffleboard();
 	}
 
-	ShuffleboardTab tab;
-	NetworkTableEntry taxiTimeout;
-	NetworkTableEntry lungeTime;
-	NetworkTableEntry intakeTimeout;
-	NetworkTableEntry lidDelay;
-
-	BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
-
-	private void setupShuffleboard() {
+	void setupShuffleboard() {
 		tab = Shuffleboard.getTab("Parameters");
 
-		taxiTimeout = tab.add("Taxi Timeout", 1.5)
-				.withWidget(BuiltInWidgets.kNumberSlider)
+		taxiTimeEntry = tab.add("Taxi Time", TAXI_TIME_DEF)
+				.withWidget(kNumberSlider)
 				.withProperties(Map.of("min", 0.1, "max", 4)).getEntry();
-		taxiTimeout.setPersistent();
+		taxiTimeEntry.setPersistent();
 
-		lungeTime = tab.add("Lunge Timeout", 1)
-				.withWidget(BuiltInWidgets.kNumberSlider)
+		taxiDelayEntry = tab.add("Taxi After", TAXI_DELAY_DEF)
+				.withWidget(kNumberSlider)
+				.withProperties(Map.of("min", 0, "max", 15)).getEntry();
+		taxiDelayEntry.setPersistent();
+
+		chargeTimeEntry = tab.add("Lunge Timeout", CHARGE_TIME_DEF)
+				.withWidget(kNumberSlider)
 				.withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
-		lungeTime.setPersistent();
+		chargeTimeEntry.setPersistent();
 
-		lidDelay = tab.add("Lid Closing Delay", 0.3)
-				.withWidget(BuiltInWidgets.kNumberSlider)
+		shootTimeEntry = tab.add("Intake Timeout", SHOOT_TIME_DEF)
+				.withWidget(kNumberSlider)
+				.withProperties(Map.of("min", 0.05, "max", 1)).getEntry();
+		shootTimeEntry.setPersistent();
+
+		lidTimeEntry = tab.add("Lid Closing Delay", LID_TIME_DEF)
+				.withWidget(kNumberSlider)
 				.withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
-		lidDelay.setPersistent();
-
-		tab.addNumber("Accel getZ", accelerometer::getZ);
+		lidTimeEntry.setPersistent();
 	}
+
+	double taxiTime() {
+		return taxiTimeEntry.getDouble(TAXI_TIME_DEF);
+	}
+
+	double taxiDelay() {
+		return taxiDelayEntry.getDouble(TAXI_DELAY_DEF);
+	}
+
+	double chargeTime() {
+		return chargeTimeEntry.getDouble(CHARGE_TIME_DEF);
+	}
+
+	double shootTime() {
+		return shootTimeEntry.getDouble(SHOOT_TIME_DEF);
+	}
+
+	double lidTime() {
+		return lidTimeEntry.getDouble(LID_TIME_DEF);
+	}
+
 }

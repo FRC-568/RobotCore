@@ -166,5 +166,13 @@ public class MecanumSubsystem extends SubsystemBase {
 			}
 		};
 	}
+
+	public void driveStraight(double d) {
+		getMecanumDrive().driveCartesian(d, 0, 0);
+	}
+
+	public void stop(){
+		getMecanumDrive().driveCartesian(0, 0, 0);
+	}
 	
 }
