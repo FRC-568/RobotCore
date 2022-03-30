@@ -98,7 +98,7 @@ public class Robot extends RobotBase {
 
 		mainDriver.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
 		mainDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
-		mainDriver.getButton(XboxController.Button.kA).whenHeld(new ChargeAndScore(drive, intake, 2.0));
+		mainDriver.getButton(XboxController.Button.kA).whenPressed(() -> msdefault.ram(accelerometer, intake));
 
 		coDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
 		coDriver.getButton(XboxController.Button.kA).whenPressed(intake::toggleLid);
@@ -109,9 +109,9 @@ public class Robot extends RobotBase {
 	}
 
 	public void reset(){
-		intake.setLiftUp(true);
-		lift.setUpright(false);
-		intake.setLidOpen(true);
+		if(!intake.isLiftUp()) intake.setLiftUp(true);
+		if(!lift.isUpright()) lift.setUpright(false);
+		if(!intake.isLidOpen()) intake.setLidOpen(true);
 	}
 
 	private void toggleCompressor() {
@@ -141,6 +141,21 @@ public class Robot extends RobotBase {
 		autonomousCommand = m_chooser.getSelected();
 		if (autonomousCommand != null)
 			autonomousCommand.schedule();
+		/*
+		 * try {
+		 * // Opens Trajectory File
+		 * Path trajectoryPath =
+		 * Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+		 * trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+		 * // Initializes Autonomous and schedules it
+		 * autonomousCommand = new Autonomous(trajectory, drive,
+		 * maxSpeed.getDouble(1.0));
+		 * autonomousCommand.schedule();
+		 * } catch (IOException ex) {
+		 * DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON,
+		 * ex.getStackTrace());
+		 * }
+		 */
 	}
 
 	@Override

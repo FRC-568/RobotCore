@@ -13,8 +13,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team568.util.Utilities;
 
@@ -69,22 +67,6 @@ class Intake extends SubsystemBase {
 
 	CANSparkMax getIntakeMotor() {
 		return intakeMotor;
-	}
-
-	Command commandOpenLid() {
-		return new InstantCommand(() -> setLidOpen(true));
-	}
-
-	Command commandCloseLid() {
-		return new InstantCommand(() -> setLidOpen(false));
-	}
-
-	Command commandToggleLid() {
-		return new InstantCommand(this::toggleLid);
-	}
-
-	void stop() {
-		intakeMotor.set(0.0);
 	}
 
 	@Override
