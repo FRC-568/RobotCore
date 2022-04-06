@@ -1,10 +1,11 @@
 package frc.team568.robot.rapidreact;
 
+import static edu.wpi.first.math.MathUtil.applyDeadband;
+
 import java.util.Set;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
@@ -34,13 +35,11 @@ public class Robot extends RobotBase {
 	PneumaticsControlModule pcm;
 	Lift lift;
 	Intake intake;
-
 	BuiltInAccelerometer accelerometer;
 
+	private AutonomousParameters autoParam;
 	private SendableChooser<Command> m_chooser;
-
 	Command autonomousCommand;
-	public AutonomousParameters autoParam;
 
 	String trajectoryJSON = "src/main/deploy/paths/output/Test.wpilib.json";
 	Trajectory trajectory = new Trajectory();
@@ -65,8 +64,7 @@ public class Robot extends RobotBase {
 		lift.setDefaultCommand(new Command() {
 			@Override
 			public void execute() {
-				lift.setMotor(MathUtil.applyDeadband(mainDriver.getRightTriggerAxis() - mainDriver.getLeftTriggerAxis(),
-						0.1));
+				lift.setMotor(applyDeadband(mainDriver.getRightTriggerAxis() - mainDriver.getLeftTriggerAxis(), 0.1));
 			}
 
 			@Override
@@ -79,8 +77,7 @@ public class Robot extends RobotBase {
 		intake.setDefaultCommand(new Command() {
 			@Override
 			public void execute() {
-				intake.setIntakeMotor(
-						MathUtil.applyDeadband(coDriver.getLeftTriggerAxis(), 0.05) - MathUtil.applyDeadband(coDriver.getRightTriggerAxis(), 0.05));
+				intake.setIntakeMotor(applyDeadband(coDriver.getLeftTriggerAxis(), 0.05) - applyDeadband(coDriver.getRightTriggerAxis(), 0.05));
 			}
 
 			@Override
@@ -98,7 +95,7 @@ public class Robot extends RobotBase {
 
 		mainDriver.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
 		mainDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
-		mainDriver.getButton(XboxController.Button.kA).whenHeld(new ChargeAndScore(drive, intake, 2.0));
+		mainDriver.getButton(XboxController.Button.kA).whenHeld(new ChargeAndScore(drive, intake, 3.0));
 
 		coDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
 		coDriver.getButton(XboxController.Button.kA).whenPressed(intake::toggleLid);

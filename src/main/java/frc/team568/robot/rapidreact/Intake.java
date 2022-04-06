@@ -83,6 +83,10 @@ class Intake extends SubsystemBase {
 		return new InstantCommand(this::toggleLid);
 	}
 
+	Command commandLowerLift() {
+		return new InstantCommand(() -> setLiftUp(false));
+	}
+
 	void stop() {
 		intakeMotor.set(0.0);
 	}

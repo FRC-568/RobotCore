@@ -58,11 +58,8 @@ public class MecanumSubsystem extends SubsystemBase {
 		// center of the field along the short end, facing forward.
 		m_odometry = new MecanumDriveOdometry(m_kinematics, Rotation2d.fromDegrees(gyro.getAngle()), new Pose2d(1, 4, new Rotation2d()));
 
-		drive = new MecanumDrive(
-			/*makeWrapper(*/motorFL/*, MAX_VELOCITY)*/,
-			/*makeWrapper(*/motorBL/*, MAX_VELOCITY)*/,
-			/*makeWrapper(*/motorFR/*, MAX_VELOCITY)*/,
-			/*makeWrapper(*/motorBR/*, MAX_VELOCITY)*/);
+		drive = new MecanumDrive(motorFL, motorBL, motorFR, motorBR);
+
 		addChild("Mecanum Drive", drive);
 	}
 
@@ -79,11 +76,6 @@ public class MecanumSubsystem extends SubsystemBase {
 		//remember to set back to 0
 		motor.configClosedloopRamp(0.1);
 		motor.configOpenloopRamp(0.1);
-	}
-
-	public MecanumSubsystem useGyro(Gyro gyro){
-		this.gyro = gyro;
-		return this;
 	}
 
 	public Gyro getGyro() {

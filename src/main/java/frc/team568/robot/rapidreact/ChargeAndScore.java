@@ -22,6 +22,16 @@ public class ChargeAndScore extends SequentialCommandGroup {
 		});
 	}
 
+	ChargeAndScore(MecanumSubsystem drive, Intake intake){
+		this(drive, intake, AutonomousParameters.CHARGE_TIME_DEF, new BooleanSupplier() {
+			private BuiltInAccelerometer accel = new BuiltInAccelerometer();
+
+			public boolean getAsBoolean() {
+				return accel.getZ() > 0.5;
+			}
+		});
+	}
+
 	ChargeAndScore(MecanumSubsystem drive, Intake intake, double chargeTime, BooleanSupplier scoreTrigger){
 		addRequirements(drive, intake);
 		addCommands(

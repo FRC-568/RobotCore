@@ -1,5 +1,10 @@
 package frc.team568.robot.rapidreact;
 
+import static edu.wpi.first.wpilibj.PneumaticsModuleType.CTREPCM;
+import static frc.team568.robot.rapidreact.Config.Lift.kMotorId;
+import static frc.team568.robot.rapidreact.Config.Lift.kSlantedFlow;
+import static frc.team568.robot.rapidreact.Config.Lift.kUprightFlow;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -7,11 +12,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.team568.util.Utilities;
-
-import static edu.wpi.first.wpilibj.PneumaticsModuleType.CTREPCM;
-import static frc.team568.robot.rapidreact.Config.Lift.*;
 
 class Lift extends SubsystemBase {
 	DoubleSolenoid liftSolenoid;
