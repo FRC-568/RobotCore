@@ -95,5 +95,6 @@ class Intake extends SubsystemBase {
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
 		builder.addBooleanProperty("Intake Lift Up", this::isLiftUp, null);
+		builder.addBooleanProperty("Lid Open", this::isLidOpen, null);
 	}
 }

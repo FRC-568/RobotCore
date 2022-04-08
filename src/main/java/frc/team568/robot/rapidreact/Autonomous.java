@@ -1,5 +1,6 @@
 package frc.team568.robot.rapidreact;
 
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
@@ -7,13 +8,13 @@ public class Autonomous extends SequentialCommandGroup {
 	protected MecanumSubsystem subsystem;
 	protected Intake intake;
 
-	public Autonomous(String autoType, MecanumSubsystem subsystem, Intake intake, AutonomousParameters param) {
+	public Autonomous(String autoType, MecanumSubsystem subsystem, Intake intake, AutonomousParameters param, BuiltInAccelerometer accel) {
 		this.subsystem = subsystem;
 		this.intake = intake;
 		addRequirements(subsystem, intake);
 		switch (autoType) {
 			case "Outtake":
-				addCommands(new ChargeAndScore(subsystem, intake, param));
+				addCommands(new AutoScoreAndTaxi(subsystem, intake, param, accel));
 				break;
 			case "Taxi":
 				addCommands(new AutoTaxi(subsystem, param.taxiTime()));

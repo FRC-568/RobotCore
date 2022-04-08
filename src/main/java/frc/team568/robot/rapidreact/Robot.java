@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -21,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.XinputController;
 import frc.team568.robot.subsystems.DriveBase.Input;
@@ -35,7 +33,7 @@ public class Robot extends RobotBase {
 	PneumaticsControlModule pcm;
 	Lift lift;
 	Intake intake;
-	BuiltInAccelerometer accelerometer;
+	BuiltInAccelerometer accel;
 
 	private AutonomousParameters autoParam;
 	private SendableChooser<Command> m_chooser;
@@ -57,8 +55,8 @@ public class Robot extends RobotBase {
 		drive = new MecanumSubsystem(gyro);
 		compressor = new Compressor(Config.kcompressor, PneumaticsModuleType.CTREPCM);
 		camera = CameraServer.startAutomaticCapture();
-		accelerometer = new BuiltInAccelerometer();
 		autoParam = new AutonomousParameters();
+		accel = new BuiltInAccelerometer();
 
 		lift = new Lift();
 		lift.setDefaultCommand(new Command() {
@@ -95,21 +93,23 @@ public class Robot extends RobotBase {
 
 		mainDriver.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
 		mainDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
-		mainDriver.getButton(XboxController.Button.kA).whenHeld(new ChargeAndScore(drive, intake, 3.0));
+		mainDriver.getButton(XboxController.Button.kA).whenHeld(new ChargeAndScore(drive, intake, 3.0, accel));
 
 		coDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
 		coDriver.getButton(XboxController.Button.kA).whenPressed(intake::toggleLid);
 		coDriver.getButton(XboxController.Button.kB).whenPressed(intake::toggleLift);
 		coDriver.getButton(XboxController.Button.kY).whenPressed(this::toggleCompressor);
+		// coDriver.getButton(XboxController.Button.kY)
+		
 
-		new Button(RobotController::getUserButton).whenReleased(this::reset);
+		// new Button(RobotController::getUserButton).whenReleased(this::reset);
 	}
 
-	public void reset(){
-		intake.setLiftUp(true);
-		lift.setUpright(false);
-		intake.setLidOpen(true);
-	}
+	// public void reset(){
+	// 	intake.setLiftUp(true);
+	// 	lift.setUpright(false);
+	// 	intake.setLidOpen(true);
+	// }
 
 	private void toggleCompressor() {
 		if(compressor.enabled()) compressor.disable();
@@ -118,11 +118,11 @@ public class Robot extends RobotBase {
 
 	public void robotInit() {
 		m_chooser = new SendableChooser<>();
-		m_chooser.setDefaultOption("Outake and Taxi", new Autonomous("Outtake", drive, intake, autoParam));
+		m_chooser.setDefaultOption("Outake and Taxi", new Autonomous("Outtake", drive, intake, autoParam, accel));
 
-		m_chooser.addOption("Only Taxi", new Autonomous("Taxi", drive, intake, autoParam));
+		m_chooser.addOption("Only Taxi", new Autonomous("Taxi", drive, intake, autoParam, accel));
 
-		m_chooser.addOption("Do Nothing", new Autonomous("Do Nothing", drive, intake, autoParam));
+		m_chooser.addOption("Do Nothing", new Autonomous("Do Nothing", drive, intake, autoParam, accel));
 		
 		autoParam.tab.add(m_chooser);
 	}
