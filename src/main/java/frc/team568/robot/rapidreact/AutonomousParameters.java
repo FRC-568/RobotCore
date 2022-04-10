@@ -21,6 +21,7 @@ class AutonomousParameters {
 	NetworkTableEntry chargeTimeEntry;
 	NetworkTableEntry shootTimeEntry;
 	NetworkTableEntry lidTimeEntry;
+	NetworkTableEntry accelTrigger;
 
 	AutonomousParameters() {
 		setupShuffleboard();
@@ -53,6 +54,11 @@ class AutonomousParameters {
 				.withWidget(kNumberSlider)
 				.withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
 		lidTimeEntry.setPersistent();
+
+		accelTrigger = tab.add("Acceleromter Gs", LID_TIME_DEF)
+				.withWidget(kNumberSlider)
+				.withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
+		accelTrigger.setPersistent();
 	}
 
 	double taxiTime() {
@@ -61,6 +67,10 @@ class AutonomousParameters {
 
 	double taxiDelay() {
 		return taxiDelayEntry.getDouble(TAXI_DELAY_DEF);
+	}
+
+	double accelTrigger() {
+		return accelTrigger.getDouble(1);
 	}
 
 	double chargeTime() {

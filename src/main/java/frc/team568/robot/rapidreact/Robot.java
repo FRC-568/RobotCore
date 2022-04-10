@@ -93,7 +93,7 @@ public class Robot extends RobotBase {
 
 		mainDriver.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
 		mainDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
-		mainDriver.getButton(XboxController.Button.kA).whenHeld(new ChargeAndScore(drive, intake, 3.0, accel));
+		mainDriver.getButton(XboxController.Button.kA).whenHeld(new ChargeAndScore(drive, intake, 3.0));
 
 		coDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
 		coDriver.getButton(XboxController.Button.kA).whenPressed(intake::toggleLid);

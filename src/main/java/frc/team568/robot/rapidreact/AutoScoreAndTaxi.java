@@ -10,7 +10,7 @@ public class AutoScoreAndTaxi extends SequentialCommandGroup{
 		addRequirements(drive, intake);
 		addCommands(
 			intake.commandOpenLid(),
-			new ChargeAndScore(drive, intake, param, accel),
+			new ChargeAndScore(drive, intake, param),
 			new InstantCommand(() -> drive.stop()),
 			new WaitCommand(param.shootTime()),
 			new InstantCommand(() -> intake.stop()),
