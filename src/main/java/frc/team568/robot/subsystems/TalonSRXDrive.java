@@ -9,17 +9,17 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
@@ -84,8 +84,8 @@ public class TalonSRXDrive extends DriveBase {
 		DifferentialDrive d = new DifferentialDrive(motorsL[0], motorsR[0]);
 		SendableRegistry.addChild(this, d);
 
-		leftMotors = new MotorControllerGroup(motorsL[0], motorsL[1]);
-		rightMotors = new MotorControllerGroup(motorsR[0], motorsR[1]);
+		leftMotors = new MotorControllerGroup(motorsL[0]);
+		rightMotors = new MotorControllerGroup(motorsR[0]);
 
 		odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 	 
