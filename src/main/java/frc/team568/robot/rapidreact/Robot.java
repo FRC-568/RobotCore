@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.XinputController;
 import frc.team568.robot.subsystems.DriveBase.Input;
@@ -102,14 +104,14 @@ public class Robot extends RobotBase {
 		// coDriver.getButton(XboxController.Button.kY)
 		
 
-		// new Button(RobotController::getUserButton).whenReleased(this::reset);
+		new Button(RobotController::getUserButton).whenPressed(this::reset);
 	}
 
-	// public void reset(){
-	// 	intake.setLiftUp(true);
-	// 	lift.setUpright(false);
-	// 	intake.setLidOpen(true);
-	// }
+	public void reset(){
+		intake.setLiftUp(true);
+		lift.setUpright(false);
+		intake.setLidOpen(true);
+	}
 
 	private void toggleCompressor() {
 		if(compressor.enabled()) compressor.disable();
