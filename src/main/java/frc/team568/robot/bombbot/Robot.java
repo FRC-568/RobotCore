@@ -62,19 +62,41 @@ public class Robot extends RobotBase {
 
 	@Override
 	public void teleopPeriodic() {
-		switch (mode) {
-			case 0:
-				claw1.set(Utilities.applyDeadband(driverController.getLeftTriggerAxis(), 0.05)
-						- Utilities.applyDeadband(driverController.getRightTriggerAxis(), 0.05));
-				break;
-			case 1:
-				claw2.set(Utilities.applyDeadband(driverController.getLeftTriggerAxis(), 0.05)
-						- Utilities.applyDeadband(driverController.getRightTriggerAxis(), 0.05));
-				break;
-			case 2:
-				claw3.set(Utilities.applyDeadband(driverController.getLeftTriggerAxis(), 0.05)
-						- Utilities.applyDeadband(driverController.getRightTriggerAxis(), 0.05));
-				break;
+		if (!driverController.getLeftBumper() && !driverController.getRightBumper()) {
+			switch (mode) {
+				case 0:
+					claw1.set(Utilities.applyDeadband(driverController.getLeftTriggerAxis(), 0.05)
+							- Utilities.applyDeadband(driverController.getRightTriggerAxis(), 0.05));
+					break;
+				case 1:
+					claw2.set(Utilities.applyDeadband(driverController.getLeftTriggerAxis(), 0.05)
+							- Utilities.applyDeadband(driverController.getRightTriggerAxis(), 0.05));
+					break;
+				case 2:
+					claw3.set(Utilities.applyDeadband(driverController.getLeftTriggerAxis(), 0.05)
+							- Utilities.applyDeadband(driverController.getRightTriggerAxis(), 0.05));
+					break;
+			}
+			if (driverController.getAButton()) {
+				claw1.set(1);
+			} else if (driverController.getXButton()) {
+				claw1.set(-1);
+			} else {
+				claw1.set(0);
+			}
+			if (driverController.getYButton()) {
+				claw2.set(1);
+			} else if (driverController.getBButton()) {
+				claw2.set(-1);
+			} else {
+				claw2.set(0);
+			}
+			if (driverController.getDownButton()) {
+				claw3.set(1);
+			} else if (driverController.getUpButton()) {
+				claw3.set(-1);
+			} else
+				claw3.set(0);
 		}
 	}
 
