@@ -32,6 +32,8 @@ public class MechyDrive extends SubsystemBase {
 
 	private boolean safeMode = false;
 
+    private boolean correct = true;
+
 	public MechyDrive(RobotBase robot) {
 
 		super(robot);
@@ -130,6 +132,10 @@ public class MechyDrive extends SubsystemBase {
 				
 				}
 
+                if (button("toggleCorrection")) {
+                    correct = !correct;
+                }
+
 				// pid calculation
 				pidDrive.setSetpoint(prevAngle);
 				correction = pidDrive.calculate(gyro.getAngle());
@@ -163,6 +169,10 @@ public class MechyDrive extends SubsystemBase {
 				double rightX = axis("turn") * 0.7;
                 if (axis("turn") < 0.05) {
                     rightX = 0.0;
+                }
+
+                if (!correct) {
+                    correction = 0.0;
                 }
 
 				final double v1 = -r * Math.cos(robotAngle) - rightX - correction;
