@@ -1,13 +1,13 @@
 package frc.team568.robot.mechy;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.subsystems.MechyDrive;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class Robot extends RobotBase {
 	
@@ -22,8 +22,8 @@ public class Robot extends RobotBase {
 		JoystickButton joystickStart = new JoystickButton(new Joystick(mainJoystick), Xinput.Start);
 
 		port("leftFrontMotor", 1);
-		port("rightFrontMotor", 2);
-		port("leftBackMotor", 3);
+		port("rightFrontMotor", 3);
+		port("leftBackMotor", 2);
 		port("rightBackMotor", 4);
 
 		axis("forward", mainJoystick, Xinput.LeftStickY);
