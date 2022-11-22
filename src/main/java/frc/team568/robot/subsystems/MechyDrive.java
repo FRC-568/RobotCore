@@ -156,8 +156,15 @@ public class MechyDrive extends SubsystemBase {
 
 				// drive calculation
 				double r = Math.hypot(axis("side"), axis("forward"));
+                if ((axis("side") < 0.05) && (axis("forward") < 0.05)) {
+                    r = 0.0;
+                }
 				double robotAngle = Math.atan2(-axis("forward"), axis("side")) - Math.PI / 4 + angleCompensation;
 				double rightX = axis("turn") * 0.7;
+                if (axis("turn") < 0.05) {
+                    rightX = 0.0;
+                }
+
 				final double v1 = -r * Math.cos(robotAngle) - rightX - correction;
 				final double v2 = -r * Math.sin(robotAngle) + rightX + correction;
 				final double v3 = -r * Math.sin(robotAngle) - rightX - correction;
