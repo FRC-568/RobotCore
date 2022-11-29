@@ -1,46 +1,46 @@
 package frc.team568.robot.mechy;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
+import frc.team568.robot.XinputController;
 import frc.team568.robot.subsystems.MechyDrive;
 
+import static edu.wpi.first.wpilibj.XboxController.Button.*;
+
 public class Robot extends RobotBase {
+	public static final int drivingControllerPort = 0;
 	
-	public MechyDrive drive;
-	private Command autonomousCommand;
+	final MechyDrive drive;
+	Command autonomousCommand;
+
+	XinputController driverController = new XinputController(drivingControllerPort);
 
 	public Robot() {
 		super("Mechy");
 
-		int mainJoystick = 0;
+		drive = new MechyDrive(1, 2, 3, 4)
+			.useGyro()
+			.buildControlCommand()
+				.withForwardAxis(() -> -driverController.getRawAxis(Xinput.LeftStickY))
+				.withSideAxis(() -> driverController.getRawAxis(Xinput.LeftStickX))
+				.withTurnAxis(() -> driverController.getRawAxis(Xinput.RightStickX))
+				.makeDefault();
 
-		JoystickButton joystickStart = new JoystickButton(new Joystick(mainJoystick), Xinput.Start);
-
-		port("leftFrontMotor", 1);
-		port("rightFrontMotor", 3);
-		port("leftBackMotor", 2);
-		port("rightBackMotor", 4);
-
-		axis("forward", mainJoystick, Xinput.LeftStickY);
-		axis("side", mainJoystick, Xinput.LeftStickX);
-		axis("turn", mainJoystick, Xinput.RightStickX);
-
-		joystickStart.whenPressed(new InstantCommand(() -> {
-
-			drive.drivePOV = !drive.drivePOV;
-			drive.gyro.reset();
-
-		}));
-		button("driveModeToggle", mainJoystick, Xinput.Start);
-		button("safeModeToggle", () -> button(0, Xinput.LeftStickIn) && button(0, Xinput.RightStickIn));
-        button("toggleCorrection", mainJoystick, Xinput.LeftBumper);
-
-		drive = new MechyDrive(this);
+		driverController.getButton(kStart)
+			.whenPressed(new InstantCommand(drive::toggleFieldPOV));
+		driverController.getButton(kLeftStick)
+			.and(driverController.getButton(kRightStick))
+			.whileActiveOnce(new SequentialCommandGroup(
+				new WaitCommand(5),
+				new InstantCommand(drive::toggleSafeMode)
+			));
+		driverController.getButton(kLeftBumper)
+			.whenPressed(new InstantCommand(drive::toggleDriftCorrection));
 
 	}
 
@@ -51,28 +51,19 @@ public class Robot extends RobotBase {
 	}
 
 	@Override
-	public void teleopPeriodic() {
-		CommandScheduler.getInstance().run();
-	}
-
-	@Override
-	public void testPeriodic() {
-		CommandScheduler.getInstance().run();
-		
-	}
-
-	@Override
 	public void disabledInit() {
-		
+		if (autonomousCommand != null)
+			autonomousCommand.cancel();
 	}
 
 	@Override
 	public void autonomousInit() {
-
+		if (autonomousCommand != null)
+			autonomousCommand.schedule();
 	}
 
 	@Override
-	public void autonomousPeriodic() {
+	public void robotPeriodic() {
 		CommandScheduler.getInstance().run();
 	}
 

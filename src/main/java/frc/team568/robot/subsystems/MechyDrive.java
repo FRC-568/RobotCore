@@ -1,220 +1,204 @@
 package frc.team568.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.team568.robot.RobotBase;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class MechyDrive extends SubsystemBase {
+public class MechyDrive extends SubsystemBase implements OmniDriveSubsystem {
+	private static final double kP_Drift = 0.05;
 
-	private double Kp = 0.04;
-	private double Ki = 0;
-	private double Kd = 0.002;
-	private double correction = 0;
-	private double prevAngle = 0;
-	private double angleCompensation = 0;
+	protected MecanumDrive drive;
+	protected Gyro gyro;
 
-	private WPI_TalonSRX fl;
-	private WPI_TalonSRX bl;
-	private WPI_TalonSRX fr;
-	private WPI_TalonSRX br;
+	protected boolean m_fieldPOVEnabled = true;
+	protected boolean m_safeModeEnabled = false;
+    protected boolean m_driftCorrectionEnabled = true;
+	protected double m_baseHeading = 0;
 
-	public boolean drivePOV = true;
-
-	public ADXRS450_Gyro gyro;
-
-	private PIDController pidDrive;
-
-	private boolean safeMode = false;
-
-    private boolean correct = true;
-
-	public MechyDrive(RobotBase robot) {
-
-		super(robot);
-
-		initMotors();
-		configureGyro();
-		configurePID();
-
-		reset();
-		initDefaultCommand();
+	public MechyDrive(int motorFL, int motorBL, int motorFR, int motorBR) {
+		initMotors(motorFL, motorBL, motorFR, motorBR);
 	}
 
-	private void initMotors() {
-		
-		fl = new WPI_TalonSRX(port("leftFrontMotor"));
-		bl = new WPI_TalonSRX(port("leftBackMotor"));
-		fr = new WPI_TalonSRX(port("rightFrontMotor"));
-		br = new WPI_TalonSRX(port("rightBackMotor"));
-
-		addChild("FL Motor", fl);
-		addChild("BL Motor", bl);
-		addChild("FR Motor", fr);
-		addChild("BR Motor", br);
+	private void initMotors(int motorFL, int motorBL, int motorFR, int motorBR) {
+		WPI_TalonSRX fl = new WPI_TalonSRX(motorFL);
+		WPI_TalonSRX bl = new WPI_TalonSRX(motorBL);
+		WPI_TalonSRX fr = new WPI_TalonSRX(motorFR);
+		WPI_TalonSRX br = new WPI_TalonSRX(motorBR);
 
 		fl.setInverted(true);
 		bl.setInverted(true);
 		fr.setInverted(false);
 		br.setInverted(false);
-		
+
+		drive = new MecanumDrive(fl, bl, fr, br);
+		drive.setDeadband(0.05);
+		addChild("drive", drive);
 	}
 
-	private void configureGyro() {
-		
-		gyro = new ADXRS450_Gyro();
-		gyro.reset();
-
+	public MechyDrive useGyro() {
+		return useGyro(new ADXRS450_Gyro());
 	}
 
-	private void configurePID() {
-		
-		pidDrive = new PIDController(Kp, Ki, Kd);
+	public MechyDrive useGyro(Gyro gyro) {
+		this.gyro = gyro;
+		resetHeading();
+		return this;
+	}
 
+	public Gyro getGyro() {
+		return gyro;
 	}
 
 	@Override
-	public void periodic() {
-		
+	public void driveCartesian(double ySpeed, double xSpeed, double zRotation) {
+		if (usingDriftCorrection())
+			zRotation -= gyro.getRate() * kP_Drift;
+		drive.driveCartesian(ySpeed, xSpeed, zRotation);
 	}
 
-	public void stop() {
-
+	@Override
+	public void driveCartesian(double ySpeed, double xSpeed, double zRotation, double gyroAngle) {
+		if (usingDriftCorrection())
+			zRotation -= gyro.getRate() * kP_Drift;
+		drive.driveCartesian(ySpeed, xSpeed, zRotation, gyroAngle);
 	}
 
-	public void reset() {
-		
+	@Override
+	public void drivePolar(double magnitude, double angle, double zRotation) {
+		if (usingDriftCorrection())
+			zRotation -= gyro.getRate() * kP_Drift;
+		drive.drivePolar(magnitude, angle, zRotation);
 	}
 
-	protected void initDefaultCommand() {
-		setDefaultCommand(new CommandBase() {
+	@Override
+	public void stopMotor() {
+		drive.stopMotor();
+	}
 
-			double comboStartTime = 0;
-			boolean alreadyToggled = false;
+	public double getHeading() {
+		if (gyro == null)
+			return 0;
+		return gyro.getAngle() - m_baseHeading;
+	}
 
-			{
-				addRequirements(MechyDrive.this);
-				SendableRegistry.addChild(MechyDrive.this, this);
-			}
+	public void setHeading(double newHeading) {
+		if (gyro == null)
+			m_baseHeading = newHeading;
+		else
+			m_baseHeading = gyro.getAngle() - newHeading;
+	}
 
-			@Override
-			public void execute() {
+	public void resetHeading() {
+		if (gyro == null)
+			m_baseHeading = 0;
+		else
+			m_baseHeading = gyro.getAngle();
+	}
 
-				// toggle POV and field mode
-				if (button("driveModeToggle")) {
+	public boolean usingFieldPOV() {
+		return m_fieldPOVEnabled;
+	}
 
-					drivePOV = !drivePOV;
-					gyro.reset();
+	public void setFieldPOV(boolean enabled) {
+		m_fieldPOVEnabled = enabled;
+		resetHeading();
+	}
 
-				}
+	public boolean toggleFieldPOV() {
+		setFieldPOV(!usingFieldPOV());
+		return usingFieldPOV();
+	}
 
-				if (button("safeModeToggle")) {
+	public boolean usingSafeMode() {
+		return m_safeModeEnabled;
+	}
 
-					if (comboStartTime == 0)
-						comboStartTime = Timer.getFPGATimestamp();
-					else if (Timer.getFPGATimestamp() - comboStartTime >= 3.0 && !alreadyToggled) {
-					
-						safeMode = !safeMode;
-						alreadyToggled = true;
-						System.out.println("Safemode is " + (safeMode ? "Enabled" : "Disabled") + ".");
-					
-					}
+	public void setSafeMode(boolean enabled) {
+		m_safeModeEnabled = enabled;
+		drive.setMaxOutput(enabled ? 0.5 : 1.0);
+		System.out.println("Safemode is " + (m_safeModeEnabled ? "Enabled" : "Disabled") + ".");
+	}
 
-				} else {
+	public boolean toggleSafeMode() {
+		setSafeMode(!usingSafeMode());
+		return usingSafeMode();
+	}
 
-					comboStartTime = 0;
-					alreadyToggled = false;
-				
-				}
+	public boolean usingDriftCorrection() {
+		return m_driftCorrectionEnabled;
+	}
 
-                if (button("toggleCorrection")) {
-                    correct = !correct;
-                }
+	public void setDriftCorrection(boolean enabled) {
+		m_driftCorrectionEnabled = enabled;
+	}
 
-				// pid calculation
-				pidDrive.setSetpoint(prevAngle);
-				correction = pidDrive.calculate(gyro.getAngle());
-
-				// resets current gyro heading and pid if turning or not moving
-				if (Math.abs(axis("turn")) > 0.05) {
-				
-					pidDrive.reset();
-					prevAngle = gyro.getAngle();
-					correction = 0;
-
-				} else if (Math.abs(axis("forward")) < 0.05 && Math.abs(axis("side")) < 0.05) {
-
-					pidDrive.reset();
-					prevAngle = gyro.getAngle();
-					correction = 0;
-
-				}
-
-				// field oriented mode
-				angleCompensation = 0;
-				if (!drivePOV)
-					angleCompensation = Math.toRadians(gyro.getAngle());
-
-				// drive calculation
-				double r = Math.hypot(axis("side"), axis("forward"));
-                if ((axis("side") < 0.05) && (axis("forward") < 0.05)) {
-                    r = 0.0;
-                }
-				double robotAngle = Math.atan2(-axis("forward"), axis("side")) - Math.PI / 4 + angleCompensation;
-				double rightX = axis("turn") * 0.7;
-                if (axis("turn") < 0.05) {
-                    rightX = 0.0;
-                }
-
-                if (!correct) {
-                    correction = 0.0;
-                }
-
-				final double v1 = -r * Math.cos(robotAngle) - rightX - correction;
-				final double v2 = -r * Math.sin(robotAngle) + rightX + correction;
-				final double v3 = -r * Math.sin(robotAngle) - rightX - correction;
-				final double v4 = -r * Math.cos(robotAngle) + rightX + correction;
-
-				double driveDamp = 1;
-				if (safeMode)
-					driveDamp = 0.5;
-
-				fl.set(v1 * driveDamp);
-				fr.set(v2 * driveDamp);
-				bl.set(v3 * driveDamp);
-				br.set(v4 * driveDamp);
-				
-			}
-
-		}); // End set default command
-
-	} // End init default command
+	public boolean toggleDriftCorrection() {
+		setDriftCorrection(!usingDriftCorrection());
+		return usingDriftCorrection();
+	}
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
-
 		super.initSendable(builder);
-		builder.addDoubleProperty("P", () -> Kp, (value) -> Kp = value);
-		builder.addDoubleProperty("I", () -> Ki, (value) -> Ki = value);
-		builder.addDoubleProperty("D", () -> Kd, (value) -> Kd = value);
 
-		builder.addDoubleProperty("Forward", () -> axis("forward"), null);
-		builder.addDoubleProperty("Side", () -> axis("side"), null);
-		builder.addDoubleProperty("Turn", () -> axis("turn"), null);
-		builder.addDoubleProperty("prevAngle", () -> prevAngle, null);
-		builder.addBooleanProperty("isPOV", () -> drivePOV, null);
-		builder.addDoubleProperty("angleCompensation", () -> angleCompensation, null);
-		builder.addBooleanProperty("isSafeMode", () -> safeMode, null);
-		builder.addDoubleProperty("fl", () -> fl.get(), null);		
-		builder.addDoubleProperty("fr", () -> fr.get(), null);
-		builder.addDoubleProperty("bl", () -> bl.get(), null);
-		builder.addDoubleProperty("br", () -> br.get(), null);
-		
+		builder.addDoubleProperty("Heading", this::getHeading, this::setHeading);
+		builder.addBooleanProperty("FieldPOV", this::usingFieldPOV, this::setFieldPOV);
+		builder.addBooleanProperty("SafeMode", this::usingSafeMode, this::setSafeMode);
+	}
+
+	public ControlBuilder buildControlCommand() {
+		return new ControlBuilder();
+	}
+
+	public final class ControlBuilder {
+		private DoubleSupplier forwardAxis;
+		private DoubleSupplier sideAxis;
+		private DoubleSupplier turnAxis;
+
+		private ControlBuilder() {
+			DoubleSupplier defaultZero = () -> 0;
+			forwardAxis = defaultZero;
+			sideAxis = defaultZero;
+			turnAxis = defaultZero;
+		}
+
+		public ControlBuilder withForwardAxis(DoubleSupplier forward) {
+			this.forwardAxis = forward;
+			return this;
+		}
+
+		public ControlBuilder withSideAxis(DoubleSupplier side) {
+			this.sideAxis = side;
+			return this;
+		}
+
+		public ControlBuilder withTurnAxis(DoubleSupplier turn) {
+			this.turnAxis = turn;
+			return this;
+		}
+
+		public Command makeCommand() {
+			return new RunCommand(() -> {
+				driveCartesian(
+					forwardAxis.getAsDouble(),
+					sideAxis.getAsDouble(),
+					turnAxis.getAsDouble(),
+					usingFieldPOV() ? getHeading() : 0);
+			}, MechyDrive.this);
+		}
+
+		public MechyDrive makeDefault() {
+			setDefaultCommand(makeCommand());
+			return MechyDrive.this;
+		}
 	}
 
 }
