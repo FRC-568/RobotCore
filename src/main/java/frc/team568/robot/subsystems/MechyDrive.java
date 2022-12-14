@@ -13,14 +13,15 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class MechyDrive extends SubsystemBase implements OmniDriveSubsystem {
-	private static final double kP_Drift = 0.05;
+	public static double kP_Drift = 0.0125;
+	public static double inputDeadband = 0.05;
 
 	protected MecanumDrive drive;
 	protected Gyro gyro;
 
-	protected boolean m_fieldPOVEnabled = true;
+	protected boolean m_fieldPOVEnabled = false;
 	protected boolean m_safeModeEnabled = false;
-    protected boolean m_driftCorrectionEnabled = true;
+    protected boolean m_driftCorrectionEnabled = false;
 	protected double m_baseHeading = 0;
 
 	public MechyDrive(int motorFL, int motorBL, int motorFR, int motorBR) {
@@ -33,13 +34,13 @@ public class MechyDrive extends SubsystemBase implements OmniDriveSubsystem {
 		WPI_TalonSRX fr = new WPI_TalonSRX(motorFR);
 		WPI_TalonSRX br = new WPI_TalonSRX(motorBR);
 
-		fl.setInverted(true);
-		bl.setInverted(true);
-		fr.setInverted(false);
-		br.setInverted(false);
+		fl.setInverted(false);
+		bl.setInverted(false);
+		fr.setInverted(true);
+		br.setInverted(true);
 
 		drive = new MecanumDrive(fl, bl, fr, br);
-		drive.setDeadband(0.05);
+		drive.setDeadband(inputDeadband);
 		addChild("drive", drive);
 	}
 
@@ -152,6 +153,7 @@ public class MechyDrive extends SubsystemBase implements OmniDriveSubsystem {
 		builder.addDoubleProperty("Heading", this::getHeading, this::setHeading);
 		builder.addBooleanProperty("FieldPOV", this::usingFieldPOV, this::setFieldPOV);
 		builder.addBooleanProperty("SafeMode", this::usingSafeMode, this::setSafeMode);
+		builder.addDoubleProperty("kP_Drift", () -> kP_Drift, v -> kP_Drift = v);
 	}
 
 	public ControlBuilder buildControlCommand() {
