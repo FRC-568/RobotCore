@@ -159,8 +159,8 @@ public class Robot extends RobotBase {
 
 		lights = new BlinkinLights(Config.BlinkinLights.kControlPort);
 		camera.initCamera();
-		// cameraFront = CameraServer.getInstance().startAutomaticCapture(0);
-		// cameraBack = CameraServer.getInstance().startAutomaticCapture(1);
+		// cameraFront = CameraServer.startAutomaticCapture(0);
+		// cameraBack = CameraServer.startAutomaticCapture(1);
 		
 		copilot.getButton(kA).whenPressed(shpaa::toggleGrabber);
 		copilot.getButton(kX).whenPressed(shpaa::toggleExtender);

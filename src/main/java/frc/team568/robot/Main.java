@@ -1,7 +1,7 @@
 package frc.team568.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.team568.robot.bombbot.Robot;
+import frc.team568.robot.chargedup.Robot;
 
 public final class Main {
 	
