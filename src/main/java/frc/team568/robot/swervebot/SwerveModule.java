@@ -4,16 +4,19 @@
 
 package frc.team568.robot.swervebot;
 
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.SensorTimeBase;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class SwerveModule {
 	private static final double kWheelRadius = 0.047625; //3.75 inch wheels on mk4i
@@ -27,7 +30,7 @@ public class SwerveModule {
 	private final CANSparkMax m_turningMotor;
 
 	private final RelativeEncoder m_driveEncoder;
-	private final RelativeEncoder m_turningEncoder;
+	private final CANCoder m_turningEncoder;
 
 	// Gains are for example purposes only - must be determined for your own robot!
 	private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
@@ -53,15 +56,21 @@ public class SwerveModule {
 	 */
 	public SwerveModule(
 			int driveMotorChannel,
-			int turningMotorChannel) {
+			int turningMotorChannel,
+			int turningEncoderChannel) {
 		m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
 		m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
 
 		m_driveEncoder = m_driveMotor.getEncoder();
 		m_driveEncoder.setVelocityConversionFactor(2 * Math.PI * kWheelRadius / 60);
 
-		m_turningEncoder = m_turningMotor.getAlternateEncoder(kEncoderResolution);
-		m_turningEncoder.setPositionConversionFactor(2 * Math.PI);
+		m_turningEncoder = new CANCoder(turningEncoderChannel);
+		CANCoderConfiguration config = new CANCoderConfiguration();
+		config.sensorCoefficient = 2 * Math.PI / kEncoderResolution;
+		config.unitString = "rad";
+		config.sensorTimeBase = SensorTimeBase.PerSecond;
+		m_turningEncoder.configAllSettings(config);
+
 
 		// Limit the PID Controller's input range between -pi and pi and set the input
 		// to be continuous.
