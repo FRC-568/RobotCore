@@ -16,8 +16,6 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 import frc.team568.robot.XinputController;
@@ -86,14 +84,12 @@ public class Robot extends RobotBase {
 
 		drive = new TalonSRXDrive(this).withGyro(gyro);
 		//drive = new TalonSRXDrive(this);
-		driverController.getButton(kBack).whenPressed(drive::toggleIsReversed);
-		driverController.getButton(kStart).whenPressed(drive::toggleTankControls);
+		driverController.getButton(kBack).onTrue(new InstantCommand(drive::toggleIsReversed));
+		driverController.getButton(kStart).onTrue(new InstantCommand(drive::toggleTankControls));
 		driverController.getButton(kLeftStick)
 			.and(driverController.getButton(kRightStick))
-			.whileActiveOnce(new SequentialCommandGroup(
-				new WaitCommand(5),
-				new InstantCommand(drive::toggleSafeMode)
-			));
+			.debounce(5)
+			.onTrue(new InstantCommand(drive::toggleSafeMode));
 		drive.setDefaultCommand(new TalonSRXDriveDefaultCommand(drive, Map.of(
 			Input.FORWARD, () -> -driverController.getLeftY(),
 			Input.TURN, () -> driverController.getRightX(),
@@ -109,7 +105,7 @@ public class Robot extends RobotBase {
 		//hanger = new GeneratorHanger(this);
 		intake = new Intake(this);
 
-		driverController.getButton(kX).whenHeld(new ShooterAlignCommand(shooter, drive));
+		driverController.getButton(kX).onTrue(new ShooterAlignCommand(shooter, drive));
 		//driverController.getButton(kY).whenPressed(robotContainer.getAutonomousCommand());
 	
 	}

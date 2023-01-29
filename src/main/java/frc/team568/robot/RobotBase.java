@@ -1,13 +1,14 @@
 package frc.team568.robot;
 
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
-import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableEvent.Kind;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -23,9 +24,8 @@ public abstract class RobotBase extends TimedRobot implements PortMapper {
 		_name = name;
 		config = NetworkTableInstance.getDefault().getTable(getName());
 		config.getEntry(".type").setString("RobotPreferences");
-		config.addEntryListener(
-			(table, key, entry, value, flags) -> entry.setPersistent(),
-			EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
+		config.addListener(EnumSet.of(Kind.kPublish),
+			(table, key, event) -> event.topicInfo.getTopic().setPersistent(true));
 		controls = new ControlMapper();
 	}
 	

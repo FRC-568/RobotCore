@@ -15,7 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
-import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class MecanumSubsystem extends SubsystemBase {
+	public static final int ENCODER_RESOLUTION = 4096;
 	public static double MAX_VELOCITY = 2500;
 	public double wheelRadius = 3;
 	protected final MecanumDrive drive;
@@ -56,7 +57,12 @@ public class MecanumSubsystem extends SubsystemBase {
 		// Creating my odometry object from the kinematics object. Here,
 		// our starting pose is 5 meters along the long end of the field and in the
 		// center of the field along the short end, facing forward.
-		m_odometry = new MecanumDriveOdometry(m_kinematics, Rotation2d.fromDegrees(gyro.getAngle()), new Pose2d(1, 4, new Rotation2d()));
+		var heading = Rotation2d.fromDegrees(gyro.getAngle());
+		m_odometry = new MecanumDriveOdometry(
+			m_kinematics,
+			heading,
+			new MecanumDriveWheelPositions(),
+			new Pose2d(1, 4, heading));
 
 		drive = new MecanumDrive(motorFL, motorBL, motorFR, motorBR);
 
@@ -84,11 +90,11 @@ public class MecanumSubsystem extends SubsystemBase {
 	
 	@Override
 	public void periodic() {
-		m_odometry.update(new Rotation2d(gyro.getAngle()), new MecanumDriveWheelSpeeds(
-			convertToMetersPerSecond(motorFL.getSelectedSensorVelocity()),
-			convertToMetersPerSecond(motorBL.getSelectedSensorVelocity()),
-			convertToMetersPerSecond(motorFR.getSelectedSensorVelocity()),
-			convertToMetersPerSecond(motorBR.getSelectedSensorVelocity())
+		m_odometry.update(Rotation2d.fromDegrees(gyro.getAngle()), new MecanumDriveWheelPositions(
+			rawToMeters(motorFL.getSelectedSensorPosition()),
+			rawToMeters(motorBL.getSelectedSensorPosition()),
+			rawToMeters(motorFR.getSelectedSensorPosition()),
+			rawToMeters(motorBR.getSelectedSensorPosition())
 		));
 	}
 
@@ -101,19 +107,19 @@ public class MecanumSubsystem extends SubsystemBase {
 	}
 
 	public double convertToEncoderUnits(double metersPerSecond){
-		double c = 2 * Math.PI * wheelRadius; // wheel circumference
-		double rps = metersPerSecond / c; // Rotations Per Second
-
-		double EncoderUnits = rps * (4096 / 10);
-		return EncoderUnits;
+		return metersPerSecond / wheelCircumference() * (ENCODER_RESOLUTION / 10);
 	}
 
-	public double convertToMetersPerSecond(double EncoderUnits){
-		double c = 2 * Math.PI * wheelRadius; // wheel circumference
-		double rps = EncoderUnits * (10 / 4096); // Rotations per Second
+	public double convertToMetersPerSecond(double encoderUnits){
+		return encoderUnits * (10 / ENCODER_RESOLUTION) * wheelCircumference();
+	}
 
-		double metersPerSecond = rps * c;
-		return metersPerSecond;
+	public double rawToMeters(double rawEncoderTicks) {
+		return wheelCircumference() * ENCODER_RESOLUTION;
+	}
+
+	public double wheelCircumference() {
+		return 2 * Math.PI * wheelRadius;
 	}
 
 	@Override

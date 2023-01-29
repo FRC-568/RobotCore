@@ -37,10 +37,10 @@ public class Camera {
 	}
 	
 	public void driveToTapeCommand() {
-		new JoystickButton(controller0, Xinput.X).whenHeld(new TapeTrackerCommand(driveTrain));
+		new JoystickButton(controller0, Xinput.X).whileTrue(new TapeTrackerCommand(driveTrain));
 	}
 	public void toggleCameraCommand() {
-		new JoystickButton(controller0, Xinput.Back).whenPressed(new CameraToggleCommand());
+		new JoystickButton(controller0, Xinput.Back).onTrue(new CameraToggleCommand());
 	}
 
 	public void toggleCamera() {

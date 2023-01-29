@@ -1,6 +1,6 @@
 package frc.team568.robot.recharge;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -18,9 +18,6 @@ public class ShooterAlignCommand extends CommandBase {
 	private static final double MAX_DISTANCE_DRIVE = 80; // inches
 
 	private double targetSpeed;
-	NetworkTableEntry rotationEntry;
-	NetworkTableEntry directionEntry;
-	NetworkTableEntry errorEntry;
 	
 	public ShooterAlignCommand(final Shooter shooter, final TalonSRXDrive drive) {
 		this.shooter = shooter;
@@ -89,12 +86,6 @@ public class ShooterAlignCommand extends CommandBase {
 		super.initSendable(builder);
 		
 		builder.addDoubleProperty("Target Speed", () -> targetSpeed, null);
-		if (builder instanceof SendableBuilderImpl) {
-			SendableBuilderImpl bi = (SendableBuilderImpl)builder;
-			rotationEntry = bi.getEntry("rotate speed");
-			directionEntry = bi.getEntry("direction");
-			errorEntry = bi.getEntry("error");
-		}
 	}
 	
 }

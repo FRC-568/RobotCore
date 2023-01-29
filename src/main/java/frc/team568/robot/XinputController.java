@@ -6,6 +6,7 @@ import java.util.Map;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class XinputController extends XboxController {
 	private final Map<Direction, Boolean> povPressed = new EnumMap<>(Direction.class);
@@ -28,15 +29,15 @@ public class XinputController extends XboxController {
 		super(port);
 	}
 
-	public edu.wpi.first.wpilibj2.command.button.Button getButton(Button button) {
+	public Trigger getButton(Button button) {
 		return new JoystickButton(this, button.value);
 	}
 
-	public edu.wpi.first.wpilibj2.command.button.Button getButton(Direction direction) {
+	public Trigger getButton(Direction direction) {
 		return new POVButton(this, direction.value);
 	}
 
-	public edu.wpi.first.wpilibj2.command.button.Button getAxis(Button button) {
+	public Trigger getAxis(Button button) {
 		return new JoystickButton(this, button.value);
 	}
 

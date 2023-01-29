@@ -2,8 +2,6 @@ package frc.team568.robot.rapidreact;
 
 import static edu.wpi.first.math.MathUtil.applyDeadband;
 
-import java.util.Set;
-
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -17,11 +15,14 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.XinputController;
 import frc.team568.robot.subsystems.DriveBase.Input;
@@ -61,30 +62,18 @@ public class Robot extends RobotBase {
 		accel = new BuiltInAccelerometer();
 
 		lift = new Lift();
-		lift.setDefaultCommand(new Command() {
-			@Override
-			public void execute() {
-				lift.setMotor(applyDeadband(mainDriver.getRightTriggerAxis() - mainDriver.getLeftTriggerAxis(), 0.1));
-			}
-
-			@Override
-			public Set<Subsystem> getRequirements() {
-				return Set.of(lift);
-			}
-		});
+		lift.setDefaultCommand(new RunCommand(
+			() -> lift.setMotor(
+				applyDeadband(mainDriver.getRightTriggerAxis() - mainDriver.getLeftTriggerAxis(),
+				0.1)),
+			lift));
 
 		intake = new Intake();
-		intake.setDefaultCommand(new Command() {
-			@Override
-			public void execute() {
-				intake.setIntakeMotor(applyDeadband(coDriver.getLeftTriggerAxis(), 0.05) - applyDeadband(coDriver.getRightTriggerAxis(), 0.05));
-			}
-
-			@Override
-			public Set<Subsystem> getRequirements() {
-				return Set.of(intake);
-			}
-		});
+		intake.setDefaultCommand(new RunCommand(
+			() -> intake.setIntakeMotor(
+				applyDeadband(coDriver.getLeftTriggerAxis(), 0.05) - applyDeadband(coDriver.getRightTriggerAxis(),
+				0.05)),
+			intake));
 
 		var msdefault = new MecanumSubsystemDefaultCommand(drive)
 				.useAxis(Input.FORWARD, () -> -mainDriver.getLeftY())
@@ -93,18 +82,18 @@ public class Robot extends RobotBase {
 
 		drive.setDefaultCommand(msdefault);
 
-		mainDriver.getButton(XboxController.Button.kY).whenPressed(msdefault::toggleUseFieldRelative);
-		mainDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
-		mainDriver.getButton(XboxController.Button.kA).whenHeld(new ChargeAndScore(drive, intake, 3.0));
+		mainDriver.getButton(XboxController.Button.kY).onTrue(new InstantCommand(msdefault::toggleUseFieldRelative));
+		mainDriver.getButton(XboxController.Button.kX).onTrue(new InstantCommand(lift::toggle));
+		mainDriver.getButton(XboxController.Button.kA).whileTrue(new ChargeAndScore(drive, intake, 3.0));
 
-		coDriver.getButton(XboxController.Button.kX).whenPressed(lift::toggle);
-		coDriver.getButton(XboxController.Button.kA).whenPressed(intake::toggleLid);
-		coDriver.getButton(XboxController.Button.kB).whenPressed(intake::toggleLift);
-		coDriver.getButton(XboxController.Button.kY).whenPressed(this::toggleCompressor);
+		coDriver.getButton(XboxController.Button.kX).onTrue(new InstantCommand(lift::toggle));
+		coDriver.getButton(XboxController.Button.kA).onTrue(new InstantCommand(intake::toggleLid));
+		coDriver.getButton(XboxController.Button.kB).onTrue(new InstantCommand(intake::toggleLift));
+		coDriver.getButton(XboxController.Button.kY).onTrue(new InstantCommand(this::toggleCompressor));
 		// coDriver.getButton(XboxController.Button.kY)
 		
 
-		new Button(RobotController::getUserButton).whenPressed(this::reset);
+		new Trigger(RobotController::getUserButton).onTrue(new InstantCommand(this::reset));
 	}
 
 	public void reset(){
@@ -114,17 +103,19 @@ public class Robot extends RobotBase {
 	}
 
 	private void toggleCompressor() {
-		if(compressor.enabled()) compressor.disable();
+		if(compressor.isEnabled()) compressor.disable();
 		else compressor.enableDigital();
 	}
 
 	public void robotInit() {
 		m_chooser = new SendableChooser<>();
-		m_chooser.setDefaultOption("Outake and Taxi", new Autonomous("Outtake", drive, intake, autoParam, accel));
+		m_chooser.setDefaultOption("Outake and Taxi", new AutoScoreAndTaxi(drive, intake, autoParam, accel));
 
-		m_chooser.addOption("Only Taxi", new Autonomous("Taxi", drive, intake, autoParam, accel));
+		m_chooser.addOption("Only Taxi", new AutoTaxi(drive, autoParam.taxiTime()));
 
-		m_chooser.addOption("Do Nothing", new Autonomous("Do Nothing", drive, intake, autoParam, accel));
+		var wait = new WaitCommand(100);
+		wait.addRequirements(drive, intake);
+		m_chooser.addOption("Do Nothing", wait);
 		
 		autoParam.tab.add(m_chooser);
 	}
@@ -150,11 +141,19 @@ public class Robot extends RobotBase {
 	}
 
 	@Override
+	public void testInit() {
+		if (autonomousCommand != null)
+			autonomousCommand.cancel();
+		compressor.enableDigital();
+		LiveWindow.enableAllTelemetry();
+	}
+
+	@Override
 	public void disabledInit() {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
-			autonomousCommand = null;
 		}
 		compressor.disable();
+		LiveWindow.disableAllTelemetry();
 	}
 }

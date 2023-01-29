@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -46,9 +47,9 @@ public class MecanumSubsystemDefaultCommand extends CommandBase {
 	@Override
 	public void execute() {
 		if (fieldRelativeControls && gyro != null)
-			drive.getMecanumDrive().driveCartesian(axis(Input.FORWARD), axis(Input.STRAFE), axis(Input.TURN), gyro.getAngle());
+			drive.getMecanumDrive().driveCartesian(axis(Input.FORWARD), -axis(Input.STRAFE), -axis(Input.TURN), Rotation2d.fromDegrees(-gyro.getAngle()));
 		else
-			drive.getMecanumDrive().driveCartesian(axis(Input.FORWARD), axis(Input.STRAFE), axis(Input.TURN));
+			drive.getMecanumDrive().driveCartesian(axis(Input.FORWARD), -axis(Input.STRAFE), -axis(Input.TURN));
 	}
 
 	public boolean hasFieldRelativeControls() {

@@ -17,9 +17,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
@@ -67,30 +64,29 @@ public class Robot extends RobotBase {
 		// let motors coast (if configured)
 		driver.getButton(kRightBumper)
 			.and(driver.getButton(kA))
-			.whileActiveContinuous(
+			.whileTrue(new RunCommand(
 				() -> drive.arcadeDrive(0, 0),
-				drive);
+				drive));
 		
 		// stop. now.
 		driver.getButton(kRightBumper)
 			.and(driver.getButton(kB))
-			.whileActiveContinuous(
+			.whileTrue(new RunCommand(
 				drive.drive::stopMotor,
-				drive);
+				drive));
 		
 		// reverse driving direction
-		driver.getButton(kBack).whenPressed(drive::toggleIsReversed);
+		driver.getButton(kBack).onTrue(new InstantCommand(drive::toggleIsReversed));
 
 		// launch mode - full speed forward
-		driver.getButton(kX).whileActiveContinuous(() -> drive.arcadeDrive(1, 0), drive);
+		driver.getButton(kX).whileTrue(new RunCommand(() -> drive.arcadeDrive(1, 0), drive));
 
-		driver.getButton(kStart).whenPressed(drive::toggleTankControls);
+		driver.getButton(kStart).onTrue(new InstantCommand(drive::toggleTankControls));
+
 		driver.getButton(kLeftStick)
 			.and(driver.getButton(kRightStick))
-			.whileActiveOnce(new SequentialCommandGroup(
-				new WaitCommand(5),
-				new InstantCommand(drive::toggleSafeMode)
-			));
+			.debounce(5)
+			.onTrue(new InstantCommand(drive::toggleSafeMode));
 
 		pdp = new PowerDistribution();
 		compressor = new Compressor(PneumaticsModuleType.CTREPCM);
@@ -128,15 +124,15 @@ public class Robot extends RobotBase {
 
 		Trigger bookmarkReleased = new Trigger(() -> !copilot.getBackButton());
 
-		copilot.getButton(kDown).and(bookmarkReleased).whileActiveOnce(lift.new MoveToCommand(
+		copilot.getButton(kDown).and(bookmarkReleased).whileTrue(lift.new MoveToCommand(
 			() -> Preferences.getDouble("deepspace/lift/" + (copilot.getYButton() ? "cargo" : "hatch") + "1", lift.getPosition())));
-		copilot.getButton(kRight).and(bookmarkReleased).whileActiveOnce(lift.new MoveToCommand(
+		copilot.getButton(kRight).and(bookmarkReleased).whileTrue(lift.new MoveToCommand(
 			() -> Preferences.getDouble("deepspace/lift/" + (copilot.getYButton() ? "cargo" : "hatch") + "2", lift.getPosition())));
-		copilot.getButton(kUp).and(bookmarkReleased).whileActiveOnce(lift.new MoveToCommand(
+		copilot.getButton(kUp).and(bookmarkReleased).whileTrue(lift.new MoveToCommand(
 			() -> Preferences.getDouble("deepspace/lift/" + (copilot.getYButton() ? "cargo" : "hatch") + "3", lift.getPosition())));
 
 		// Update bookmarks when back button is pressed
-		copilot.getButton(kBack).whileActiveOnce(new RunCommand(() -> {
+		copilot.getButton(kBack).whileTrue(new RunCommand(() -> {
 			int level = copilot.getUpButton() ? 3
 				: copilot.getRightButton() ? 2
 				: copilot.getDownButton() ? 1
@@ -162,16 +158,16 @@ public class Robot extends RobotBase {
 		// cameraFront = CameraServer.startAutomaticCapture(0);
 		// cameraBack = CameraServer.startAutomaticCapture(1);
 		
-		copilot.getButton(kA).whenPressed(shpaa::toggleGrabber);
-		copilot.getButton(kX).whenPressed(shpaa::toggleExtender);
-		copilot.getButton(kB).whenPressed(claw::toggleOpen);
-		copilot.getButton(kLeft).whenPressed(shifter::shiftToggle); // redline shifter high <-> low gear
+		copilot.getButton(kA).onTrue(new InstantCommand(shpaa::toggleGrabber));
+		copilot.getButton(kX).onTrue(new InstantCommand(shpaa::toggleExtender));
+		copilot.getButton(kB).onTrue(new InstantCommand(claw::toggleOpen));
+		copilot.getButton(kLeft).onTrue(new InstantCommand(shifter::shiftToggle)); // redline shifter high <-> low gear
 
-		new Button(RobotController::getUserButton).whenReleased(new InstantCommand(() -> {
+		new Trigger(RobotController::getUserButton).onFalse(new InstantCommand(() -> {
 			shpaa.setExtenderOut(false);
 			shpaa.setGrabberOpen(true);
 			shifter.shiftLow();
-		}, shpaa, shifter), false);
+		}, shpaa, shifter));
 	}
 
 	@Override

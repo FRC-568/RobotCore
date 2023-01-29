@@ -1,10 +1,5 @@
 package frc.team568.robot.subsystems;
 
-import static edu.wpi.first.networktables.EntryListenerFlags.kImmediate;
-import static edu.wpi.first.networktables.EntryListenerFlags.kLocal;
-import static edu.wpi.first.networktables.EntryListenerFlags.kNew;
-import static edu.wpi.first.networktables.EntryListenerFlags.kUpdate;
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -13,33 +8,34 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
 	private static final double SPEED_MAX = 1.0;
 	private static final double SPEED_SAFE = 0.5;
+
+	private final double TICKS_PER_METER = 100;
+	private final double METERS_PER_TICK = 1 / TICKS_PER_METER;
+
+	private boolean _safeMode = Preferences.getBoolean("Safe Mode", false);
+	private boolean _isReversed = Preferences.getBoolean("Reverse Direction", false);
+	private boolean _tankControls = Preferences.getBoolean("Tank Controls", false);
+
 	public final DifferentialDrive drive;
 	private Gyro gyro;
 	private WPI_TalonSRX[] motorsL;
 	private WPI_TalonSRX[] motorsR;
-	private NetworkTableEntry reversedEntry;
-	private NetworkTableEntry tankControlsEntry;
-	private NetworkTableEntry safeModeEntry;
 
 	private MotorControllerGroup leftMotors;
 	private MotorControllerGroup rightMotors;
 
 	private DifferentialDriveOdometry odometry;
-
-	private final double TICKS_PER_METER = 100;
-	private final double METERS_PER_TICK = 1 / TICKS_PER_METER;
 
 	public TalonSRXDrive(final RobotBase robot) {
 		super(robot);
@@ -87,7 +83,7 @@ public class TalonSRXDrive extends DriveBase {
 		leftMotors = new MotorControllerGroup(motorsL[0]);
 		rightMotors = new MotorControllerGroup(motorsR[0]);
 
-		odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
+		odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()), 0, 0);
 	 
 		return d;
 	}
@@ -125,7 +121,7 @@ public class TalonSRXDrive extends DriveBase {
 	 */
 	public void resetOdometry(Pose2d pose) {
 		resetSensors();
-		odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+		odometry.resetPosition(Rotation2d.fromDegrees(getHeading()), 0, 0, pose);
 	}
 
 	/**
@@ -137,9 +133,9 @@ public class TalonSRXDrive extends DriveBase {
 		drive.setMaxOutput(maxOutput);
 	}
 
-  /**
-   * Zeroes the heading of the robot.
-   */
+	/**
+	 * Zeroes the heading of the robot.
+	 */
 	private void configureEncoder(WPI_TalonSRX talon) {
 		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 		talon.setSensorPhase(true);
@@ -249,11 +245,12 @@ public class TalonSRXDrive extends DriveBase {
 	}
 
 	public boolean getIsReversed() {
-		return reversedEntry.getBoolean(false);
+		return _isReversed;
 	}
 
 	public void setIsReversed(boolean reverse) {
-		reversedEntry.setBoolean(reverse);
+		_isReversed = reverse;
+		Preferences.setBoolean("Reverse Direction", reverse);
 	}
 
 	public void toggleIsReversed() {
@@ -261,24 +258,28 @@ public class TalonSRXDrive extends DriveBase {
 	}
 
 	public boolean getTankControls() {
-		return tankControlsEntry.getBoolean(false);
+		return _tankControls;
 	}
 
 	public void setTankControls(boolean reverse) {
-		tankControlsEntry.setBoolean(reverse);
+		_tankControls = reverse;
+		Preferences.setBoolean("Tank Controls", reverse);
 	}
 
 	public void toggleTankControls() {
 		setTankControls(!getTankControls());;
 	}
 
+
 	public boolean getSafeMode() {
-		return safeModeEntry.getBoolean(false);
+		return _safeMode;
 	}
 
 	public void setSafeMode(boolean enabled) {
-		safeModeEntry.setBoolean(enabled);
-		// update handled by listener in initSendable()
+		_safeMode = enabled;
+		drive.setMaxOutput(enabled ? SPEED_SAFE : SPEED_MAX);
+		System.out.println("Safe Mode is " + (enabled ? "Enabled" : "Disabled") + ".");
+		Preferences.setBoolean("Safe Mode", enabled);
 	}
 
 	public void toggleSafeMode() {
@@ -293,26 +294,9 @@ public class TalonSRXDrive extends DriveBase {
 		builder.addDoubleProperty("Right Velocity", () -> getVelocityInTicks(Side.RIGHT), null);
 		builder.addDoubleProperty("Average Velocity", () -> getVelocityInTicks(), null);
 		builder.addDoubleProperty("Average Distance", () -> getDistanceInTicks(), null);
-
-		if (builder instanceof SendableBuilderImpl) {
-			SendableBuilderImpl bi = (SendableBuilderImpl)builder;
-			
-			reversedEntry = bi.getEntry("Reverse Direction");
-			reversedEntry.setDefaultBoolean(false);
-			reversedEntry.setPersistent();
-
-			tankControlsEntry = bi.getEntry("Tank Controls");
-			tankControlsEntry.setDefaultBoolean(false);
-			tankControlsEntry.setPersistent();
-
-			safeModeEntry = bi.getEntry("Safe Mode");
-			safeModeEntry.setDefaultBoolean(false);
-			safeModeEntry.setPersistent();
-			safeModeEntry.addListener(e -> {
-				drive.setMaxOutput(e.value.getBoolean() ? SPEED_SAFE : SPEED_MAX);
-				System.out.println("Safemode is " + (getSafeMode() ? "Enabled" : "Disabled") + ".");
-			}, kNew | kUpdate | kLocal | kImmediate);
-		}
+		builder.addBooleanProperty("Safe Mode", this::getSafeMode, this::setSafeMode);
+		builder.addBooleanProperty("Reverse Direction", this::getIsReversed, this::setIsReversed);
+		builder.addBooleanProperty("Tank Controls", this::getTankControls, this::setTankControls);
 	}
 
 }

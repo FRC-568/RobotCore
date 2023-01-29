@@ -4,7 +4,7 @@ import static edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets.kNumberSlider;
 
 import java.util.Map;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
@@ -16,12 +16,12 @@ class AutonomousParameters {
 	static final double LID_TIME_DEF = 0.3;
 
 	ShuffleboardTab tab;
-	NetworkTableEntry taxiTimeEntry;
-	NetworkTableEntry taxiDelayEntry;
-	NetworkTableEntry chargeTimeEntry;
-	NetworkTableEntry shootTimeEntry;
-	NetworkTableEntry lidTimeEntry;
-	NetworkTableEntry accelTrigger;
+	GenericEntry taxiTimeEntry;
+	GenericEntry taxiDelayEntry;
+	GenericEntry chargeTimeEntry;
+	GenericEntry shootTimeEntry;
+	GenericEntry lidTimeEntry;
+	GenericEntry accelTrigger;
 
 	AutonomousParameters() {
 		setupShuffleboard();
@@ -33,32 +33,32 @@ class AutonomousParameters {
 		taxiTimeEntry = tab.add("Taxi Time", TAXI_TIME_DEF)
 				.withWidget(kNumberSlider)
 				.withProperties(Map.of("min", 0.1, "max", 4)).getEntry();
-		taxiTimeEntry.setPersistent();
+		taxiTimeEntry.getTopic().setPersistent(true);
 
 		taxiDelayEntry = tab.add("Taxi After", TAXI_DELAY_DEF)
 				.withWidget(kNumberSlider)
 				.withProperties(Map.of("min", 0, "max", 15)).getEntry();
-		taxiDelayEntry.setPersistent();
+		taxiDelayEntry.getTopic().setPersistent(true);
 
 		chargeTimeEntry = tab.add("Lunge Timeout", CHARGE_TIME_DEF)
 				.withWidget(kNumberSlider)
 				.withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
-		chargeTimeEntry.setPersistent();
+		chargeTimeEntry.getTopic().setPersistent(true);
 
 		shootTimeEntry = tab.add("Intake Timeout", SHOOT_TIME_DEF)
 				.withWidget(kNumberSlider)
 				.withProperties(Map.of("min", 0.05, "max", 1)).getEntry();
-		shootTimeEntry.setPersistent();
+		shootTimeEntry.getTopic().setPersistent(true);
 
 		lidTimeEntry = tab.add("Lid Closing Delay", LID_TIME_DEF)
 				.withWidget(kNumberSlider)
 				.withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
-		lidTimeEntry.setPersistent();
+		lidTimeEntry.getTopic().setPersistent(true);
 
 		accelTrigger = tab.add("Acceleromter Gs", LID_TIME_DEF)
 				.withWidget(kNumberSlider)
 				.withProperties(Map.of("min", 0.1, "max", 5)).getEntry();
-		accelTrigger.setPersistent();
+		accelTrigger.getTopic().setPersistent(true);
 	}
 
 	double taxiTime() {

@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.XinputController;
 import frc.team568.robot.commands.TalonSRXDriveDefaultCommand;
@@ -44,8 +45,8 @@ public class Robot extends RobotBase {
 				Input.TANK_LEFT, () -> -driverController.getLeftY(),
 				Input.TANK_RIGHT, () -> -driverController.getRightY())));
 
-		driverController.getButton(Button.kLeftBumper).whenReleased(() -> cycleMode(false));
-		driverController.getButton(Button.kRightBumper).whenReleased(() -> cycleMode(true));
+		driverController.getButton(Button.kLeftBumper).onFalse(new InstantCommand(() -> cycleMode(false)));
+		driverController.getButton(Button.kRightBumper).onFalse(new InstantCommand(() -> cycleMode(true)));
 	}
 
 	public void robotInit() {

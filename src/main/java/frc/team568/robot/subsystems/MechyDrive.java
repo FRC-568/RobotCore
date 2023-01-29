@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -61,21 +62,21 @@ public class MechyDrive extends SubsystemBase implements OmniDriveSubsystem {
 	@Override
 	public void driveCartesian(double ySpeed, double xSpeed, double zRotation) {
 		if (usingDriftCorrection())
-			zRotation -= gyro.getRate() * kP_Drift;
+			zRotation -= -gyro.getRate() * kP_Drift;
 		drive.driveCartesian(ySpeed, xSpeed, zRotation);
 	}
 
 	@Override
-	public void driveCartesian(double ySpeed, double xSpeed, double zRotation, double gyroAngle) {
+	public void driveCartesian(double ySpeed, double xSpeed, double zRotation, Rotation2d gyroAngle) {
 		if (usingDriftCorrection())
-			zRotation -= gyro.getRate() * kP_Drift;
+			zRotation -= -gyro.getRate() * kP_Drift;
 		drive.driveCartesian(ySpeed, xSpeed, zRotation, gyroAngle);
 	}
 
 	@Override
-	public void drivePolar(double magnitude, double angle, double zRotation) {
+	public void drivePolar(double magnitude, Rotation2d angle, double zRotation) {
 		if (usingDriftCorrection())
-			zRotation -= gyro.getRate() * kP_Drift;
+			zRotation -= -gyro.getRate() * kP_Drift;
 		drive.drivePolar(magnitude, angle, zRotation);
 	}
 
@@ -87,21 +88,21 @@ public class MechyDrive extends SubsystemBase implements OmniDriveSubsystem {
 	public double getHeading() {
 		if (gyro == null)
 			return 0;
-		return gyro.getAngle() - m_baseHeading;
+		return -gyro.getAngle() - m_baseHeading;
 	}
 
 	public void setHeading(double newHeading) {
 		if (gyro == null)
 			m_baseHeading = newHeading;
 		else
-			m_baseHeading = gyro.getAngle() - newHeading;
+			m_baseHeading = -gyro.getAngle() - newHeading;
 	}
 
 	public void resetHeading() {
 		if (gyro == null)
 			m_baseHeading = 0;
 		else
-			m_baseHeading = gyro.getAngle();
+			m_baseHeading = -gyro.getAngle();
 	}
 
 	public boolean usingFieldPOV() {
@@ -191,9 +192,9 @@ public class MechyDrive extends SubsystemBase implements OmniDriveSubsystem {
 			return new RunCommand(() -> {
 				driveCartesian(
 					forwardAxis.getAsDouble(),
-					sideAxis.getAsDouble(),
-					turnAxis.getAsDouble(),
-					usingFieldPOV() ? getHeading() : 0);
+					-sideAxis.getAsDouble(),
+					-turnAxis.getAsDouble(),
+					Rotation2d.fromDegrees(usingFieldPOV() ? getHeading() : 0));
 			}, MechyDrive.this);
 		}
 

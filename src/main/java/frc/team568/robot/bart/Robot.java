@@ -10,8 +10,6 @@ import java.util.Map;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.XinputController;
 import frc.team568.robot.commands.TalonSRXDriveDefaultCommand;
@@ -33,14 +31,12 @@ public class Robot extends RobotBase {
 		config("drive/leftInverted", false);
 		config("drive/rightInverted", true);
 
-		driver.getButton(kBack).whenPressed(drive::toggleIsReversed);
-		driver.getButton(kStart).whenPressed(drive::toggleTankControls);
+		driver.getButton(kBack).onTrue(new InstantCommand(drive::toggleIsReversed));
+		driver.getButton(kStart).onTrue(new InstantCommand(drive::toggleTankControls));
 		driver.getButton(kLeftStick)
 			.and(driver.getButton(kRightStick))
-			.whileActiveOnce(new SequentialCommandGroup(
-				new WaitCommand(5),
-				new InstantCommand(drive::toggleSafeMode)
-			));
+			.debounce(5)
+			.onTrue(new InstantCommand(drive::toggleSafeMode));
 
 		drive = new TalonSRXDrive(this);
 		drive.setDefaultCommand(new TalonSRXDriveDefaultCommand(drive, Map.of(

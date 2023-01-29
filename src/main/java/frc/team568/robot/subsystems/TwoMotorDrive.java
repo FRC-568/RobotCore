@@ -54,7 +54,7 @@ public class TwoMotorDrive extends SubsystemBase {
 	private AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_gyro);
 
 	DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
-  	m_gyro.getRotation2d(), new Pose2d(5.0, 13.5, new Rotation2d()));
+  	m_gyro.getRotation2d(), 0, 0, new Pose2d(5.0, 13.5, new Rotation2d()));
 
 	// Create the simulation model of our drivetrain.
 	DifferentialDrivetrainSim m_driveSim = new DifferentialDrivetrainSim(
