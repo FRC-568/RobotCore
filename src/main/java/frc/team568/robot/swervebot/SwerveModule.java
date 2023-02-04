@@ -4,9 +4,6 @@
 
 package frc.team568.robot.swervebot;
 
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -31,7 +28,7 @@ public class SwerveModule {
 	  private final CANSparkMax m_turningMotor;
   
 	  private final RelativeEncoder m_driveEncoder;
-	  private final CANCoder m_turningEncoder;
+	  private final RelativeEncoder m_turningEncoder;
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
@@ -65,12 +62,17 @@ public class SwerveModule {
   m_driveEncoder = m_driveMotor.getEncoder();
   m_driveEncoder.setVelocityConversionFactor(2 * Math.PI * kWheelRadius / 60);
 
-  m_turningEncoder = new CANCoder(turningEncoderChannel);
-  CANCoderConfiguration config = new CANCoderConfiguration();
-  config.sensorCoefficient = 2 * Math.PI / kEncoderResolution;
-  config.unitString = "rad";
-  config.sensorTimeBase = SensorTimeBase.PerSecond;
-  m_turningEncoder.configAllSettings(config);
+  m_turningEncoder = m_turningMotor.getEncoder();
+  m_turningEncoder.setVelocityConversionFactor(2 * Math.PI / kEncoderResolution);
+
+  //m_turningEncoder = new CANCoder(turningEncoderChannel);
+  //CANCoderConfiguration config = new CANCoderConfiguration();
+  //
+  //config.magnetOffsetDegrees = 0;
+  //config.sensorCoefficient = 2 * Math.PI / kEncoderResolution;
+  //config.unitString = "rad";
+  //config.sensorTimeBase = SensorTimeBase.PerSecond;
+  //m_turningEncoder.configAllSettings(config);
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);

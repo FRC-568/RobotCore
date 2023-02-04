@@ -19,6 +19,17 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
   @Override
+  public void testInit() {
+    
+  }
+
+  @Override
+  public void testPeriodic() {
+    driveWithJoystick(false);
+    
+  }
+
+  @Override
   public void autonomousPeriodic() {
     driveWithJoystick(false);
     m_swerve.updateOdometry();
