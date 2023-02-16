@@ -18,7 +18,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.team568.robot.RobotBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AprilTags extends SubsystemBase {
 
@@ -36,8 +36,7 @@ public class AprilTags extends SubsystemBase {
 
 	private boolean driverMode;
 
-	public AprilTags(RobotBase robot) {
-		super(robot);
+	public AprilTags() {
         robotToCam = new Transform3d(new Translation3d(0, 0.0, 0), new Rotation3d(0,0,0));
         // TODO: change cam name to whatever it is inside photonvision
         camera = new PhotonCamera("photonvision");
