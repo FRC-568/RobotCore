@@ -8,6 +8,7 @@ final class RobotContainer {
 
 	public RobotContainer() {
 		drive = new SwerveSubsystem();
+		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
 	}
 
 	public Command getAutonomousCommand() {

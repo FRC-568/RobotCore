@@ -4,6 +4,8 @@
 
 package frc.team568.robot.chargedup;
 
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpeed;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -13,13 +15,12 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import static frc.team568.robot.chargedup.Constants.SwerveConstants.*;
-
 class SwerveSubsystem extends SubsystemBase {
 	private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
 	private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
 	private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
 	private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+	public boolean fieldRelative;
 
 	private final SwerveModule m_frontLeft = new SwerveModule(1, 2, 1);
 	private final SwerveModule m_frontRight = new SwerveModule(3, 4, 2);
@@ -74,4 +75,11 @@ class SwerveSubsystem extends SubsystemBase {
 						m_backLeft.getPosition(),
 						m_backRight.getPosition() });
 	}
+
+	@Override
+	public void periodic(){
+		updateOdometry();
+	}
+
+	
 }
