@@ -10,12 +10,12 @@ import org.photonvision.EstimatedRobotPose;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -108,6 +108,10 @@ class SwerveSubsystem extends SubsystemBase {
 						m_backRight.getPosition() });
 		EstimatedRobotPose camPose = apriltag.getEstimatedPose().get();
 		m_estimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
+	}
+
+	public Rotation2d getHeading(){
+		return m_gyro.getRotation2d();
 	}
 
 	@Override

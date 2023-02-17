@@ -1,6 +1,9 @@
 package frc.team568.robot.chargedup;
 
-import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -40,6 +43,8 @@ public class LiftSubsystem extends SubsystemBase {
 	private static double[] CARRIAGE_LEVELS = {0, 4096, 8192};
 	private static int level1 = 0;
 	private static int level2 = 1;
+
+	boolean override = false;
 
 	public LiftSubsystem(int stagePort, int carriagePort, int switchPort1, int switchPort2) {
 		// TODO: set init position to level 1
