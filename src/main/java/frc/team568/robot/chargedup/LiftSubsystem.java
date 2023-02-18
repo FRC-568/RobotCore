@@ -9,8 +9,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Lift extends SubsystemBase {
+public class LiftSubsystem extends SubsystemBase {
 	// TODO: abstract out stuff like getting position into seperate functions
+	// TODO: make stuff configurable from dashboard
 
 	private WPI_TalonSRX liftMotor;
     private DigitalInput limitSwitch;
@@ -29,6 +30,7 @@ public class Lift extends SubsystemBase {
 	private static double kP = 0.0;
 	private static double kI = 0.0;
 	private static double kD = 0.0;
+	private static double tolerance = 10;
 
 	private static double[] levels = {0, 50, 100, 150};
 
@@ -36,11 +38,16 @@ public class Lift extends SubsystemBase {
 	private double timestamp = 0.0;
 	private double dt = 0.02;
 
-	public Lift(int motorPort, int switchPort) {
+	private boolean override = false;
+
+	public LiftSubsystem(int motorPort, int switchPort) {
 		liftMotor = new WPI_TalonSRX(motorPort);
+		addChild("liftMotor", liftMotor);
         limitSwitch = new DigitalInput(switchPort);
+		addChild("limitSwitch", limitSwitch);
 		feedforward = new ElevatorFeedforward(kStatic, kG, kV, kA);
 		pid = new PIDController(kP, kI, kD);
+		pid.setTolerance(10);
 	}
 
     public double getPosition() {
@@ -54,10 +61,16 @@ public class Lift extends SubsystemBase {
 
 	// set and forget
 	public void set(double input) {
-		liftMotor.set(input);
+		override = true;
+		liftMotor.set(input + feedforward.calculate(input));
+	}
+
+	public boolean isFinished() {
+		return pid.atSetpoint();
 	}
 
 	public void setLevel(int level) {
+		override = false;
 		timestamp = 0.0;
 		profile = new TrapezoidProfile(
 				constraints,
@@ -70,10 +83,12 @@ public class Lift extends SubsystemBase {
 		if (limitSwitch.get()) {
 			liftMotor.setSelectedSensorPosition(0.0);
 		}
-		// TODO: add acceleration stuff
-		setVoltage(feedforward.calculate(profile.calculate(timestamp).velocity)
-				+ pid.calculate(liftMotor.getSelectedSensorPosition(),
-								profile.calculate(timestamp).position));
-		timestamp += dt;
+		if (!override) {
+			// TODO: add acceleration stuff
+			setVoltage(feedforward.calculate(profile.calculate(timestamp).velocity)
+					+ pid.calculate(liftMotor.getSelectedSensorPosition(),
+									profile.calculate(timestamp).position));
+			timestamp += dt;
+		}
 	}
 }
