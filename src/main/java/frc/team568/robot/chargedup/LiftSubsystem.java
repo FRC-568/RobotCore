@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LiftSubsystem extends SubsystemBase {
@@ -36,7 +37,7 @@ public class LiftSubsystem extends SubsystemBase {
 
 	private double setpoint = 0.0;
 	private double timestamp = 0.0;
-	private double dt = 0.02;
+	private Timer timer = new Timer();
 
 	private boolean override = false;
 
@@ -71,7 +72,7 @@ public class LiftSubsystem extends SubsystemBase {
 
 	public void setLevel(int level) {
 		override = false;
-		timestamp = 0.0;
+		timer.reset();
 		profile = new TrapezoidProfile(
 				constraints,
 				new TrapezoidProfile.State(levels[level], 0.0),
@@ -84,11 +85,11 @@ public class LiftSubsystem extends SubsystemBase {
 			liftMotor.setSelectedSensorPosition(0.0);
 		}
 		if (!override) {
+			timestamp = timer.getFPGATimestamp();
 			// TODO: add acceleration stuff
 			setVoltage(feedforward.calculate(profile.calculate(timestamp).velocity)
 					+ pid.calculate(liftMotor.getSelectedSensorPosition(),
 									profile.calculate(timestamp).position));
-			timestamp += dt;
 		}
 	}
 }
