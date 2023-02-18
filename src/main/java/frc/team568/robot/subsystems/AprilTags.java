@@ -78,7 +78,6 @@ public class AprilTags extends SubsystemBase {
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
-		update();
 		super.initSendable(builder);
 
 		builder.addBooleanProperty("Driver Mode", () -> driverMode, null);

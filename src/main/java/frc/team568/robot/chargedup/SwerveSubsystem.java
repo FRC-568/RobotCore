@@ -6,7 +6,13 @@ package frc.team568.robot.chargedup;
 
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpeed;
 
+import org.photonvision.EstimatedRobotPose;
+
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -14,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.team568.robot.subsystems.AprilTags;
 
 class SwerveSubsystem extends SubsystemBase {
 	private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
@@ -32,16 +39,29 @@ class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
 			m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
-	private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),
-			new SwerveModulePosition[] {
+	// private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),
+	// 		new SwerveModulePosition[] {
+	// 				m_frontLeft.getPosition(),
+	// 				m_frontRight.getPosition(),
+	// 				m_backLeft.getPosition(),
+	// 				m_backRight.getPosition()
+	// 		});
+
+	// TODO: set relative cam pose to robot
+	private final AprilTags apriltag = new AprilTags("photonvision", new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0.0, 0.0, 0.0));
+
+	private final SwerveDrivePoseEstimator m_estimator;
+
+	public SwerveSubsystem(Pose2d startingPose) {
+		m_gyro.reset();
+		m_estimator = new SwerveDrivePoseEstimator(m_kinematics, m_gyro.getRotation2d(),
+				new SwerveModulePosition[] {
 					m_frontLeft.getPosition(),
 					m_frontRight.getPosition(),
 					m_backLeft.getPosition(),
 					m_backRight.getPosition()
-			});
-
-	public SwerveSubsystem() {
-		m_gyro.reset();
+				},
+				startingPose);
 	}
 
 	/**
@@ -67,19 +87,20 @@ class SwerveSubsystem extends SubsystemBase {
 
 	/** Updates the field relative position of the robot. */
 	public void updateOdometry() {
-		m_odometry.update(
+		m_estimator.update(
 				m_gyro.getRotation2d(),
 				new SwerveModulePosition[] {
 						m_frontLeft.getPosition(),
 						m_frontRight.getPosition(),
 						m_backLeft.getPosition(),
 						m_backRight.getPosition() });
+		EstimatedRobotPose camPose = apriltag.getEstimatedPose().get();
+		m_estimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
 	}
 
 	@Override
-	public void periodic(){
+	public void periodic() {
 		updateOdometry();
 	}
-
 	
 }
