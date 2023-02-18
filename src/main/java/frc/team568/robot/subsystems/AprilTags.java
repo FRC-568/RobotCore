@@ -36,10 +36,10 @@ public class AprilTags extends SubsystemBase {
 
 	private boolean driverMode;
 
-	public AprilTags() {
-        robotToCam = new Transform3d(new Translation3d(0, 0.0, 0), new Rotation3d(0,0,0));
+	public AprilTags(String camName, Transform3d translation, Rotation3d rotation) {
+        robotToCam = new Transform3d(translation, rotation);
         // TODO: change cam name to whatever it is inside photonvision
-        camera = new PhotonCamera("photonvision");
+        camera = new PhotonCamera(camName);
         result = new PhotonPipelineResult();
         hasTargets = false;
         pose = Optional.of(new EstimatedRobotPose(null, 0));
