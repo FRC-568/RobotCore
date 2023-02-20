@@ -1,19 +1,14 @@
 package frc.team568.robot.chargedup;
 
-import java.util.function.Consumer;
-
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LiftSubsystem extends SubsystemBase {
-	// TODO: abstract out stuff like getting position into seperate functions
-	// TODO: make stuff configurable from dashboard
-	// TODO: use built-in TalonSRX limit switch stuff
+	// TODO: use built-in TalonSRX limit switch stuff?
 	// TODO: figure out encoder stuff
 
     // === stage ===
@@ -22,9 +17,6 @@ public class LiftSubsystem extends SubsystemBase {
 	private static double feedforward1 = 0.0;
     private static double accel1 = 1024;
     private static double maxV1 = 2048;
-	// TODO: figure out max vel + accel w/ feedforward
-
-    // pid constants
 	private static double kP1 = 0.0;
 	private static double kI1 = 0.0;
 	private static double kD1 = 0.0;
@@ -35,9 +27,6 @@ public class LiftSubsystem extends SubsystemBase {
 	private static double feedforward2 = 0.0;
     private static double accel2 = 1024;
     private static double maxV2 = 2048;
-	// TODO: figure out max vel + accel w/ feedforward
-
-    // pid constants
 	private static double kP2 = 0.0;
 	private static double kI2 = 0.0;
 	private static double kD2 = 0.0;
@@ -49,7 +38,6 @@ public class LiftSubsystem extends SubsystemBase {
 	private static double[] CARRIAGE_LEVELS = {0, 4096, 8192};
 
 	public LiftSubsystem(int stagePort, int carriagePort, int switchPort1, int switchPort2) {
-		// liftMotor = new WPI_TalonSRX(motorPort);
 		stageMotor = new WPI_TalonSRX(stagePort);
 		addChild("stageMotor", stageMotor);
         limitSwitch1 = new DigitalInput(switchPort1);
@@ -82,14 +70,19 @@ public class LiftSubsystem extends SubsystemBase {
 		carriageMotor.config_kD(0, kD2);
 	}
 
-	// set and forget
+    public double getStagePos() {
+        return stageMotor.getSelectedSensorPosition();
+	}
+
+	public double getCarriagePos() {
+		return carriageMotor.getSelectedSensorPosition();
+	}
+
 	public void set(double input) {
-		override = true;
 		stageMotor.set(ControlMode.Velocity, input);
 	}
 
 	public void setLevel(int level) {
-		override = false;
         switch (level) {
             case 0:
 				stageMotor.set(ControlMode.MotionMagic,
@@ -147,6 +140,8 @@ public class LiftSubsystem extends SubsystemBase {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
+		builder.addDoubleProperty("Stage position", () -> getStagePos(), null);
+		builder.addDoubleProperty("Carrage pos", () -> getCarriagePos(), null);
 		builder.addDoubleProperty("ff1", () -> feedforward1, (value) -> feedforward1 = value);
 		builder.addDoubleProperty("accel1", () -> accel1, (value) -> accel1 = value);
 		builder.addDoubleProperty("maxV1", () -> maxV1, (value) -> maxV1 = value);
