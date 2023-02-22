@@ -20,6 +20,7 @@ public class LiftSubsystem extends SubsystemBase {
 	private static double kP1 = 0.0;
 	private static double kI1 = 0.0;
 	private static double kD1 = 0.0;
+	private static double tolerance1 = 10;
 
     // === carriage ===
 	private WPI_TalonSRX carriageMotor;
@@ -30,14 +31,18 @@ public class LiftSubsystem extends SubsystemBase {
 	private static double kP2 = 0.0;
 	private static double kI2 = 0.0;
 	private static double kD2 = 0.0;
+	private static double tolerance2 = 10;
 
     private static double neutralDeadband = 0.001;
     // all the way down, all the way up
     private static double[] STAGE_LEVELS = {0, 4096};
     // intake, collected, and outtake
 	private static double[] CARRIAGE_LEVELS = {0, 4096, 8192};
+	private static int level1 = 0;
+	private static int level2 = 1;
 
 	public LiftSubsystem(int stagePort, int carriagePort, int switchPort1, int switchPort2) {
+		// TODO: set init position to level 1
 		stageMotor = new WPI_TalonSRX(stagePort);
 		addChild("stageMotor", stageMotor);
         limitSwitch1 = new DigitalInput(switchPort1);
@@ -78,6 +83,11 @@ public class LiftSubsystem extends SubsystemBase {
 		return carriageMotor.getSelectedSensorPosition();
 	}
 
+	public boolean onTarget() {
+		return (Math.abs(stageMotor.getSelectedSensorPosition()-STAGE_LEVELS[level1]) < tolerance1)
+			   && (Math.abs(carriageMotor.getSelectedSensorPosition()-CARRIAGE_LEVELS[level2]) < tolerance2);
+	}
+
 	public void set(double input) {
 		stageMotor.set(ControlMode.Velocity, input);
 	}
@@ -93,6 +103,8 @@ public class LiftSubsystem extends SubsystemBase {
 									CARRIAGE_LEVELS[0],
 									DemandType.ArbitraryFeedForward,
 									feedforward2);
+				level1 = 0;
+				level2 = 0;
 				break;
 			case 1:
 				stageMotor.set(ControlMode.MotionMagic,
@@ -103,6 +115,8 @@ public class LiftSubsystem extends SubsystemBase {
 									CARRIAGE_LEVELS[1],
 									DemandType.ArbitraryFeedForward,
 									feedforward2);
+				level1 = 0;
+				level2 = 1;
 				break;
 			case 2:
 				stageMotor.set(ControlMode.MotionMagic,
@@ -113,6 +127,8 @@ public class LiftSubsystem extends SubsystemBase {
 									CARRIAGE_LEVELS[2],
 									DemandType.ArbitraryFeedForward,
 									feedforward2);
+				level1 = 0;
+				level2 = 2;
 				break;
 			case 3:
 				stageMotor.set(ControlMode.MotionMagic,
@@ -123,6 +139,8 @@ public class LiftSubsystem extends SubsystemBase {
 									CARRIAGE_LEVELS[2],
 									DemandType.ArbitraryFeedForward,
 									feedforward2);
+				level1 = 1;
+				level2 = 2;
 				break;
 		}
 	}
