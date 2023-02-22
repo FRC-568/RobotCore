@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,16 +40,18 @@ class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
 			m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
-	// private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),
-	// 		new SwerveModulePosition[] {
-	// 				m_frontLeft.getPosition(),
-	// 				m_frontRight.getPosition(),
-	// 				m_backLeft.getPosition(),
-	// 				m_backRight.getPosition()
-	// 		});
+	// private final SwerveDriveOdometry m_odometry = new
+	// SwerveDriveOdometry(m_kinematics, m_gyro.getRotation2d(),
+	// new SwerveModulePosition[] {
+	// m_frontLeft.getPosition(),
+	// m_frontRight.getPosition(),
+	// m_backLeft.getPosition(),
+	// m_backRight.getPosition()
+	// });
 
 	// TODO: set relative cam pose to robot
-	private final AprilTags apriltag = new AprilTags("photonvision", new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0.0, 0.0, 0.0));
+	private final AprilTags apriltag = new AprilTags("photonvision", new Translation3d(0.0, 0.0, 0.0),
+			new Rotation3d(0.0, 0.0, 0.0));
 
 	private final SwerveDrivePoseEstimator m_estimator;
 
@@ -56,10 +59,10 @@ class SwerveSubsystem extends SubsystemBase {
 		m_gyro.reset();
 		m_estimator = new SwerveDrivePoseEstimator(m_kinematics, m_gyro.getRotation2d(),
 				new SwerveModulePosition[] {
-					m_frontLeft.getPosition(),
-					m_frontRight.getPosition(),
-					m_backLeft.getPosition(),
-					m_backRight.getPosition()
+						m_frontLeft.getPosition(),
+						m_frontRight.getPosition(),
+						m_backLeft.getPosition(),
+						m_backRight.getPosition()
 				},
 				startingPose);
 	}
@@ -74,11 +77,21 @@ class SwerveSubsystem extends SubsystemBase {
 	 *                      field.
 	 */
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-		var swerveModuleStates = m_kinematics.toSwerveModuleStates(
-				fieldRelative
-						? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
-						: new ChassisSpeeds(xSpeed, ySpeed, rot));
+		setModuleStates(fieldRelative
+				? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
+				: new ChassisSpeeds(xSpeed, ySpeed, rot));
+	}
+	
+	public void setModuleStates(ChassisSpeeds outChassisSpeeds) {
+		var swerveModuleStates = m_kinematics.toSwerveModuleStates(outChassisSpeeds);
 		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
+		setModuleStates(swerveModuleStates);
+	}
+
+	public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
+		if (swerveModuleStates == null || swerveModuleStates.length < 4)
+			throw new RuntimeException("Invalid SwerveModuleState size");
+
 		m_frontLeft.setDesiredState(swerveModuleStates[0]);
 		m_frontRight.setDesiredState(swerveModuleStates[1]);
 		m_backLeft.setDesiredState(swerveModuleStates[2]);
@@ -93,9 +106,14 @@ class SwerveSubsystem extends SubsystemBase {
 		return m_estimator.getEstimatedPosition();
 	}
 
-	// public void resetPose(Pose2d pose) {
-		// m_estimator.resetPosition(null, swerveModuleP, pose);
-	// }
+	public void resetPose(Pose2d pose) {
+		m_estimator.resetPosition(getHeading(), new SwerveModulePosition[] {
+				m_frontLeft.getPosition(),
+				m_frontRight.getPosition(),
+				m_backLeft.getPosition(),
+				m_backRight.getPosition() },
+				pose);
+	}
 
 	/** Updates the field relative position of the robot. */
 	public void updateOdometry() {
@@ -110,7 +128,7 @@ class SwerveSubsystem extends SubsystemBase {
 		m_estimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
 	}
 
-	public Rotation2d getHeading(){
+	public Rotation2d getHeading() {
 		return m_gyro.getRotation2d();
 	}
 
@@ -118,5 +136,5 @@ class SwerveSubsystem extends SubsystemBase {
 	public void periodic() {
 		updateOdometry();
 	}
-	
+
 }

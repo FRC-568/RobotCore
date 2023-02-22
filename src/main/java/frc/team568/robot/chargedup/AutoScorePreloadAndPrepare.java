@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class AutoScorePreloadAndPrepare extends SequentialCommandGroup{
-	PathPlannerTrajectory path = PathPlanner.loadPath("LeftScorePreloadAndExit", new PathConstraints(4.0, 3.0))
+	PathPlannerTrajectory path = PathPlanner.loadPath("LeftScorePreloadAndExit", new PathConstraints(4.0, 3.0));
 	AutoScorePreloadAndPrepare(SwerveSubsystem drive, LiftSubsystem lift) {
 		addRequirements(drive, lift);
 		addCommands(
