@@ -85,6 +85,18 @@ class SwerveSubsystem extends SubsystemBase {
 		m_backRight.setDesiredState(swerveModuleStates[3]);
 	}
 
+	public SwerveDriveKinematics getKinematics() {
+		return m_kinematics;
+	}
+
+	public Pose2d getPose() {
+		return m_estimator.getEstimatedPosition();
+	}
+
+	// public void resetPose(Pose2d pose) {
+		// m_estimator.resetPosition(null, swerveModuleP, pose);
+	// }
+
 	/** Updates the field relative position of the robot. */
 	public void updateOdometry() {
 		m_estimator.update(
