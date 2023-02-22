@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -56,17 +57,24 @@ public class SwerveModule implements Sendable {
 	private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
 
 	/**
+	 * The module's location in meters from the center of rotation.
+	 */
+	public Translation2d location;
+
+	/**
 	 * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
 	 * and turning encoder.
 	 *
 	 * @param driveMotorChannel     CAN channel for the drive motor.
 	 * @param turningMotorChannel   CAN channel for the turning motor.
 	 * @param turningEncoderChannel CAN channel for the turning encoder.
+	 * @param location              Location of the module in meters relative to the robot's center of rotation.
 	 */
 	public SwerveModule(
 			int driveMotorChannel,
 			int turningMotorChannel,
-			int turningEncoderChannel) {
+			int turningEncoderChannel,
+			Translation2d location) {
 
 		var m_turningEncoder = new CANCoder(turningEncoderChannel);
 
@@ -97,6 +105,8 @@ public class SwerveModule implements Sendable {
 		// m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
 		turningAngle = m_turningEncoder::getPosition;
+
+		this.location = location;
 
 		SendableRegistry.addLW(this, "Swerve " + driveMotorChannel);
 		SendableRegistry.addChild(this, m_drivePIDController);

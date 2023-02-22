@@ -52,6 +52,8 @@ final class RobotContainer {
 		
 		controller1.leftBumper().onTrue(new InstantCommand(() -> lift.set(-0.1)));
 		controller1.leftBumper().onFalse(new InstantCommand(() -> lift.set(0)));
+
+		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleControlFieldRelative));
 	}
 
 	public Command getAutonomousCommand() {

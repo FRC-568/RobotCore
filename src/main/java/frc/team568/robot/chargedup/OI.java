@@ -1,15 +1,18 @@
 package frc.team568.robot.chargedup;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.XboxController;
-
-import static frc.team568.robot.chargedup.Constants.OIConstants.*;
+import static frc.team568.robot.chargedup.Constants.OIConstants.kAxisSlewRate;
+import static frc.team568.robot.chargedup.Constants.OIConstants.kControllerDeadband;
+import static frc.team568.robot.chargedup.Constants.OIConstants.kDriverControllerPort;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 final class OI {
-	static final XboxController driverController = new XboxController(kDriverControllerPort);
+	static final CommandXboxController driverController = new CommandXboxController(kDriverControllerPort);
 
 	static final class Axis {
 		public static final DoubleSupplier swerveForward;
@@ -32,6 +35,10 @@ final class OI {
 					.calculate(MathUtil.applyDeadband(driverController.getRightX(), kControllerDeadband))
 					* Constants.SwerveConstants.kModuleMaxAngularVelocity;
 		}
+	}
+
+	static final class Button {
+		public static final Trigger fieldRelativeControl = driverController.start();
 	}
 
 }

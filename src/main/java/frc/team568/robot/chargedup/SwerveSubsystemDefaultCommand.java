@@ -4,13 +4,11 @@
 
 package frc.team568.robot.chargedup;
 
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** Add your docs here. */
 
 public class SwerveSubsystemDefaultCommand extends CommandBase{
-
 	public final SwerveSubsystem drive;
 
 	public SwerveSubsystemDefaultCommand(final SwerveSubsystem drive){
@@ -36,7 +34,7 @@ public class SwerveSubsystemDefaultCommand extends CommandBase{
 		// the right by default.
 		final var rot = OI.Axis.swerveCCW.getAsDouble();
 
-		drive.drive(xSpeed, ySpeed, rot, drive.fieldRelative);
+		drive.drive(xSpeed, ySpeed, rot);
 	}
 
 }
