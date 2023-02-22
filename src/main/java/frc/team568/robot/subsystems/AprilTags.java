@@ -41,7 +41,7 @@ public class AprilTags extends SubsystemBase {
         camera = new PhotonCamera(camName);
         result = new PhotonPipelineResult();
         hasTargets = false;
-        pose = Optional.of(new EstimatedRobotPose(null, 0));
+        pose = Optional.empty();
         driverMode = false;
 
         try {
