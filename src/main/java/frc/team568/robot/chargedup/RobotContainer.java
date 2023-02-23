@@ -6,6 +6,9 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,6 +20,10 @@ final class RobotContainer {
 	final LiftSubsystem lift;
 	HashMap<String, Command> eventMap = new HashMap<>();
 	SwerveAutoBuilder autoBuilder;
+
+	//Auto tab objects
+	private ShuffleboardTab autoTab;
+	private SendableChooser<String> programChooser;
 
 	public RobotContainer() {
 		controller1 = new CommandXboxController(0);
@@ -39,6 +46,8 @@ final class RobotContainer {
 				true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
 				drive // The drive subsystem. Used to properly set the requirements of path following commands
 			);
+		
+		setupAutoTab();
 	}
 
 	public void configureButtonBindings() {
@@ -58,6 +67,16 @@ final class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		return Commands.none();
+	}
+
+	private void setupAutoTab() {
+		autoTab = Shuffleboard.getTab("Auto");
+		programChooser = new SendableChooser<>();
+		programChooser.setDefaultOption("Wait", null);
+		programChooser.addOption("Left - score & park", "LeftScorePreloadAndExit");
+		programChooser.addOption("Middle - score & engage", "MiddleScorePreloadAndExitAndChargeStation");
+		programChooser.addOption("Right - score & park", "RightScorePreloadAndExit");
+		autoTab.add("Auto Program", programChooser);
 	}
 
 }
