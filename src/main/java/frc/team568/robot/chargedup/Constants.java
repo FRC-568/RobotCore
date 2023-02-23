@@ -18,10 +18,10 @@ final class Constants {
 		static final double kMaxSpeed = 3.0; // 3 meters per second
 		static final double kModuleMaxAngularVelocity = Math.PI; // 1/2 rotation per second
 		static final double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
-		static final double kFrontOffset = 0.381;
-		static final double kLeftOffset = 0.381;
-		static final double kRightOffset = 0.381;
-		static final double kBackOffset = 0.381;
+		static final double kFrontOffset = 0.3849685;
+		static final double kLeftOffset = 0.38735;
+		static final double kRightOffset = 0.38735;
+		static final double kBackOffset = 0.3849685;
 
 	}
 

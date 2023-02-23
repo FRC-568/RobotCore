@@ -4,7 +4,11 @@
 
 package frc.team568.robot.chargedup;
 
-import static frc.team568.robot.chargedup.Constants.SwerveConstants.*;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kBackOffset;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kFrontOffset;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kLeftOffset;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpeed;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kRightOffset;
 
 import org.photonvision.EstimatedRobotPose;
 
@@ -44,7 +48,7 @@ class SwerveSubsystem extends SubsystemBase {
 		m_modules = new SwerveModule[] {
 			new SwerveModule(1, 2, 1, new Translation2d(kFrontOffset, 0)),
 			new SwerveModule(3, 4, 2, new Translation2d(0, kLeftOffset)),
-			new SwerveModule(5, 6, 3, new Translation2d(0, kRightOffset)),
+			new SwerveModule(5, 6, 3, new Translation2d(0, -kRightOffset)),
 			new SwerveModule(7, 8, 4, new Translation2d(-kBackOffset, 0))
 		};
 		m_kinematics = new SwerveDriveKinematics(getModuleLocations());
