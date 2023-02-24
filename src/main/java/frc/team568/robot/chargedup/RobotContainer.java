@@ -2,6 +2,9 @@ package frc.team568.robot.chargedup;
 
 import java.util.HashMap;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
@@ -46,8 +49,14 @@ final class RobotContainer {
 				true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
 				drive // The drive subsystem. Used to properly set the requirements of path following commands
 			);
+
+
 		
-		setupAutoTab();
+		
+		setupAutoTab();				
+
+		
+
 	}
 
 	public void configureButtonBindings() {
@@ -66,7 +75,16 @@ final class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		return Commands.none();
+		String pathString = programChooser.getSelected();
+		
+		if(pathString == null){
+			return Commands.none();
+		}
+		
+		PathPlannerTrajectory path = PathPlanner.loadPath(pathString, new PathConstraints(4.0, 3.0));
+		return new ScorePreload(lift).andThen(autoBuilder.fullAuto(path));
+
+
 	}
 
 	private void setupAutoTab() {
