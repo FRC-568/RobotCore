@@ -5,6 +5,7 @@ import java.util.HashMap;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+>>>>>>> 36abcae (Add auto command and update auto paths)
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
@@ -83,17 +84,15 @@ final class RobotContainer {
 		
 		PathPlannerTrajectory path = PathPlanner.loadPath(pathString, new PathConstraints(4.0, 3.0));
 		return new ScorePreload(lift).andThen(autoBuilder.fullAuto(path));
-
-
 	}
 
 	private void setupAutoTab() {
 		autoTab = Shuffleboard.getTab("Auto");
 		programChooser = new SendableChooser<>();
 		programChooser.setDefaultOption("Wait", null);
-		programChooser.addOption("Left - score & park", "LeftScorePreloadAndExit");
-		programChooser.addOption("Middle - score & engage", "MiddleScorePreloadAndExitAndChargeStation");
-		programChooser.addOption("Right - score & park", "RightScorePreloadAndExit");
+		programChooser.addOption("Score & Prepare", "ScorePreloadAndPrepare");
+		programChooser.addOption("Score & Engage", "ScorePreloadAndEngage");
+		programChooser.addOption("Score & Exit", "ScorePreloadAndExit");
 		autoTab.add("Auto Program", programChooser);
 	}
 
