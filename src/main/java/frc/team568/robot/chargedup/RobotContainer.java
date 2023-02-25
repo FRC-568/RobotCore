@@ -92,6 +92,8 @@ final class RobotContainer {
 		programChooser.setDefaultOption("Wait", null);
 		programChooser.addOption("Score & Prepare", "ScorePreloadAndPrepare");
 		programChooser.addOption("Score & Engage", "ScorePreloadAndEngage");
+		programChooser.addOption("Score & Engage Station Side", "ScorePreloadAndEngageStationSide");
+		programChooser.addOption("Score & Engage Wall Side", "ScorePreloadAndEngageWallSide");
 		programChooser.addOption("Score & Exit", "ScorePreloadAndExit");
 		autoTab.add("Auto Program", programChooser);
 	}
