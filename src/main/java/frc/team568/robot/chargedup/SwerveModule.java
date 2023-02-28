@@ -45,19 +45,19 @@ public class SwerveModule implements Sendable {
 	private final RelativeEncoder m_driveEncoder;
 
 	// Gains are for example purposes only - must be determined for your own robot!
-	private final PIDController m_drivePIDController = new PIDController(0.05, 0, 0);
+	private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
 
 	// Gains are for example purposes only - must be determined for your own robot!
-	private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
-			0.05,
+	public ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
+			0.5,
 			0,
 			0,
 			new TrapezoidProfile.Constraints(
 					kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
 	// Gains are for example purposes only - must be determined for your own robot!
-	private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
-	private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
+	private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0, 0);
+	private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
 
 	/**
 	 * The module's location in meters from the center of rotation.

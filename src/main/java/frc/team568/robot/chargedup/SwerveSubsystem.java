@@ -161,12 +161,34 @@ class SwerveSubsystem extends SubsystemBase {
 	public void periodic() {
 		updatePose();
 	}
+
+	void setPThingy(double p) {
+		for (int i = 0; i < 4; i++) {
+			m_modules[i].m_turningPIDController.setP(p);
+		}
+	}
+
+	void setIThingy(double p) {
+		for (int i = 0; i < 4; i++) {
+			m_modules[i].m_turningPIDController.setI(p);
+		}
+	}
+
+	void setDThingy(double p) {
+		for (int i = 0; i < 4; i++) {
+			m_modules[i].m_turningPIDController.setD(p);
+		}
+	}
 	
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
 
 		builder.addBooleanProperty(FIELD_REL_KEY, this::isControlFieldRelative, this::setControlFieldRelative);
+		builder.addDoubleProperty("p", () -> m_modules[0].m_turningPIDController.getP(), (input) -> setPThingy(input));
+		builder.addDoubleProperty("i", () -> m_modules[0].m_turningPIDController.getI(), (input) -> setIThingy(input));
+		builder.addDoubleProperty("d", () -> m_modules[0].m_turningPIDController.getD(), (input) -> setDThingy(input));
+
 	}
 
 }
