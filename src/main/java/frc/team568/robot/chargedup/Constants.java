@@ -19,7 +19,8 @@ final class Constants {
 		static final double kMaxSpeed = 3.0; // 3 meters per second - 2.5 is probably more reliable / safe
 		static final double kMaxDriveRpm = kMaxSpeed / kWheelCircumference * 60; // Max drive speed in RPM
 		static final double kMaxDriveAcceleration = kMaxDriveRpm / 1.0; // Max velocity after 1s
-		static final double kModuleMaxAngularVelocity = Math.PI; // 1/2 rotation per second
+		static final double kMaxSpinRate = 4 * Math.PI; // 2 rotations per second
+		static final double kModuleMaxAngularVelocity = 4 * Math.PI; // 2 rotations per second
 		static final double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
 		static final int kDrivePidChannel = 0;
 		

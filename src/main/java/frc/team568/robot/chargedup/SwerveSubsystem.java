@@ -12,6 +12,7 @@ import static frc.team568.robot.chargedup.Constants.SwerveConstants.kFrontRot;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kLeftOffset;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kLeftRot;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpeed;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpinRate;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kRightOffset;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kRightRot;
 
@@ -89,6 +90,10 @@ class SwerveSubsystem extends SubsystemBase {
 	 * @param fieldRelative Override setting for field relative controls
 	 */
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+		xSpeed *= kMaxSpeed;
+		ySpeed *= kMaxSpeed;
+		rot *= kMaxSpinRate;
+		
 		setModuleStates(fieldRelative
 				? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
 				: new ChassisSpeeds(xSpeed, ySpeed, rot));
@@ -176,39 +181,39 @@ class SwerveSubsystem extends SubsystemBase {
 	}
 
 	void setTurnP(double turnP) {
+		kTurnP = turnP;
 		for (int i = 0; i < m_modules.length; i++)
 			m_modules[i].m_turningPIDController.setP(turnP);
-		kTurnP = turnP;
 	}
 
 	void setTurnI(double turnI) {
+		kTurnI = turnI;
 		for (int i = 0; i < m_modules.length; i++)
 			m_modules[i].m_turningPIDController.setI(turnI);
-		kTurnI = turnI;
 	}
 
 	void setTurnD(double turnD) {
+		kTurnD = turnD;
 		for (int i = 0; i < m_modules.length; i++)
 			m_modules[i].m_turningPIDController.setD(turnD);
-		kTurnD = turnD;
 	}
 
 	void setDriveP(double driveP) {
+		kDriveP = driveP;
 		for (int i = 0; i < m_modules.length; i++)
 			m_modules[i].m_drivePIDController.setP(driveP, kDrivePidChannel);
-		kDriveP = driveP;
 	}
 
 	void setDriveI(double driveI) {
+		kDriveI = driveI;
 		for (int i = 0; i < m_modules.length; i++)
 			m_modules[i].m_drivePIDController.setI(driveI, kDrivePidChannel);
-		kDriveI = driveI;
 	}
 
 	void setDriveD(double driveD) {
+		kDriveD = driveD;
 		for (int i = 0; i < m_modules.length; i++)
 			m_modules[i].m_drivePIDController.setD(driveD, kDrivePidChannel);
-		kDriveD = driveD;
 	}
 	
 	@Override
