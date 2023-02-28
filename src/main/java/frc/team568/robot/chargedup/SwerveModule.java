@@ -4,23 +4,27 @@
 
 package frc.team568.robot.chargedup;
 
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kDrivePidChannel;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kEncoderResolution;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxDriveAcceleration;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxDriveRpm;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularAcceleration;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularVelocity;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kWheelCircumference;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kWheelRadius;
 
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -37,15 +41,11 @@ public class SwerveModule implements Sendable {
 	private DoubleSupplier driveVelocity;
 	private DoubleSupplier turningAngle;
 
-	private double driveMotorOutput;
-
 	private final CANSparkMax m_driveMotor;
 	private final CANSparkMax m_turningMotor;
 
 	private final RelativeEncoder m_driveEncoder;
-
-	// Gains are for example purposes only - must be determined for your own robot!
-	private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
+	final SparkMaxPIDController m_drivePIDController;
 
 	// Gains are for example purposes only - must be determined for your own robot!
 	public ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
@@ -55,8 +55,6 @@ public class SwerveModule implements Sendable {
 			new TrapezoidProfile.Constraints(
 					kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
-	// Gains are for example purposes only - must be determined for your own robot!
-	private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0, 0);
 	private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
 
 	/**
@@ -80,30 +78,32 @@ public class SwerveModule implements Sendable {
 			Translation2d location,
 			double turnOffset) {
 
-		var m_turningEncoder = new CANCoder(turningEncoderChannel);
-
+		// Setup Drive Motor
 		m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
-		m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
-		m_turningMotor.setInverted(true);
 
 		m_driveEncoder = m_driveMotor.getEncoder();
 		m_driveEncoder.setVelocityConversionFactor(2 * Math.PI * kWheelRadius / 60);
-
 		drivePosition = m_driveEncoder::getPosition;
 		driveVelocity = m_driveEncoder::getVelocity;
+		
+		m_drivePIDController = m_driveMotor.getPIDController();
+		m_drivePIDController.setSmartMotionMaxVelocity(kMaxDriveRpm, kDrivePidChannel);
+		m_drivePIDController.setSmartMotionMaxAccel(kMaxDriveAcceleration, kDrivePidChannel);
 
+		// Setup Turning Motor
+		m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
+		m_turningMotor.setInverted(true);
+
+		var m_turningEncoder = new CANCoder(turningEncoderChannel);
 		m_turningEncoder = new CANCoder(turningEncoderChannel);
-		// Save CAN bandwidth
 		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20);
 		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 100);
-		CANCoderConfiguration config = new CANCoderConfiguration();
-		config.magnetOffsetDegrees = turnOffset;
-		config.sensorCoefficient = 2 * Math.PI / kEncoderResolution;
-		config.unitString = "radians";
-		config.sensorTimeBase = SensorTimeBase.PerSecond;
-		config.sensorDirection = false;
-		config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
-		m_turningEncoder.configAllSettings(config);
+		m_turningEncoder.configMagnetOffset(turnOffset);
+		m_turningEncoder.configFeedbackCoefficient(
+			2 * Math.PI / kEncoderResolution,
+			"radians",
+			SensorTimeBase.PerSecond);
+		m_turningEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
 		// Limit the PID Controller's input range between -pi and pi and set the input
 		// to be continuous.
 		// m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
@@ -111,30 +111,6 @@ public class SwerveModule implements Sendable {
 		turningAngle = m_turningEncoder::getPosition;
 
 		this.location = location;
-
-		SendableRegistry.addLW(this, "Swerve " + driveMotorChannel);
-		SendableRegistry.addChild(this, m_drivePIDController);
-		SendableRegistry.addChild(this, m_turningPIDController);
-	}
-
-	public SwerveModule(
-			int driveMotorChannel,
-			int turningMotorChannel) {
-
-		m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
-		m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
-
-		m_driveEncoder = m_driveMotor.getEncoder();
-		m_driveEncoder.setVelocityConversionFactor(2 * Math.PI * kWheelRadius / 60);
-
-		drivePosition = m_driveEncoder::getPosition;
-		driveVelocity = m_driveEncoder::getVelocity;
-
-		var m_turningEncoder = m_turningMotor.getEncoder();
-
-		// m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
-
-		turningAngle = m_turningEncoder::getPosition;
 
 		SendableRegistry.addLW(this, "Swerve " + driveMotorChannel);
 		SendableRegistry.addChild(this, m_drivePIDController);
@@ -170,22 +146,15 @@ public class SwerveModule implements Sendable {
 		// Optimize the reference state to avoid spinning further than 90 degrees
 		SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(turningAngle.getAsDouble()));
 
-		// Calculate the drive output from the drive PID controller.
-		final double driveOutput = m_drivePIDController.calculate(driveVelocity.getAsDouble(),
-				state.speedMetersPerSecond);
-
-		final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
-
 		// Calculate the turning motor output from the turning PID controller.
 		final double turnOutput = m_turningPIDController.calculate(turningAngle.getAsDouble(),
 				state.angle.getRadians());
-
 		final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
-
-		driveMotorOutput = (driveOutput + driveFeedforward);
-
-		m_driveMotor.setVoltage(driveOutput + driveFeedforward);
 		m_turningMotor.setVoltage(turnOutput + turnFeedforward);
+
+		// Calculate drive motor output using SparkMax built-in PID controller.
+		final double speedRpm = state.speedMetersPerSecond / kWheelCircumference * 60;
+		m_drivePIDController.setReference(speedRpm, ControlType.kSmartVelocity, kDrivePidChannel);
 	}
 
 	@Override
@@ -194,7 +163,7 @@ public class SwerveModule implements Sendable {
 		builder.addIntegerProperty("Turn ID", m_turningMotor::getDeviceId, null);
 		builder.addDoubleProperty("Position", drivePosition, null);
 		builder.addDoubleProperty("Velociy", driveVelocity, null);
-		builder.addDoubleProperty("Drive Output", () -> driveMotorOutput, null);
+		builder.addDoubleProperty("Drive Output", m_driveMotor::get, null);
 		builder.addDoubleProperty("Heading", turningAngle, null);
 		builder.addDoubleProperty("Target Angle", () -> m_turningPIDController.getSetpoint().position, null);
 	}

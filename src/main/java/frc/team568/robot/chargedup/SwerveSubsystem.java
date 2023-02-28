@@ -6,6 +6,7 @@ package frc.team568.robot.chargedup;
 
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kBackOffset;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kBackRot;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kDrivePidChannel;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kFrontOffset;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kFrontRot;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kLeftOffset;
@@ -37,6 +38,8 @@ class SwerveSubsystem extends SubsystemBase {
 
 	private boolean fieldRelativeControl;
 
+	private double kTurnP, kTurnI, kTurnD, kDriveP, kDriveI, kDriveD;
+
 	// TODO: set relative cam pose to robot
 	// private final AprilTags apriltag = new AprilTags("photonvision", new Translation3d(0.0, 0.0, 0.0),
 	// 		new Rotation3d(0.0, 0.0, 0.0));
@@ -54,6 +57,16 @@ class SwerveSubsystem extends SubsystemBase {
 		m_estimator = new SwerveDrivePoseEstimator(m_kinematics, getHeading(), getModulePositions(), startingPose);
 
 		fieldRelativeControl = Preferences.getBoolean(FIELD_REL_KEY, true);
+
+		var turnPid = m_modules[0].m_turningPIDController;
+		kTurnP = turnPid.getP();
+		kTurnI = turnPid.getI();
+		kTurnD = turnPid.getD();
+
+		var drivePid = m_modules[0].m_drivePIDController;
+		kDriveP = drivePid.getP(kDrivePidChannel);
+		kDriveI = drivePid.getI(kDrivePidChannel);
+		kDriveD = drivePid.getD(kDrivePidChannel);
 	}
 
 	/**
@@ -162,22 +175,40 @@ class SwerveSubsystem extends SubsystemBase {
 		updatePose();
 	}
 
-	void setPThingy(double p) {
-		for (int i = 0; i < 4; i++) {
-			m_modules[i].m_turningPIDController.setP(p);
-		}
+	void setTurnP(double turnP) {
+		for (int i = 0; i < m_modules.length; i++)
+			m_modules[i].m_turningPIDController.setP(turnP);
+		kTurnP = turnP;
 	}
 
-	void setIThingy(double p) {
-		for (int i = 0; i < 4; i++) {
-			m_modules[i].m_turningPIDController.setI(p);
-		}
+	void setTurnI(double turnI) {
+		for (int i = 0; i < m_modules.length; i++)
+			m_modules[i].m_turningPIDController.setI(turnI);
+		kTurnI = turnI;
 	}
 
-	void setDThingy(double p) {
-		for (int i = 0; i < 4; i++) {
-			m_modules[i].m_turningPIDController.setD(p);
-		}
+	void setTurnD(double turnD) {
+		for (int i = 0; i < m_modules.length; i++)
+			m_modules[i].m_turningPIDController.setD(turnD);
+		kTurnD = turnD;
+	}
+
+	void setDriveP(double driveP) {
+		for (int i = 0; i < m_modules.length; i++)
+			m_modules[i].m_drivePIDController.setP(driveP, kDrivePidChannel);
+		kDriveP = driveP;
+	}
+
+	void setDriveI(double driveI) {
+		for (int i = 0; i < m_modules.length; i++)
+			m_modules[i].m_drivePIDController.setI(driveI, kDrivePidChannel);
+		kDriveI = driveI;
+	}
+
+	void setDriveD(double driveD) {
+		for (int i = 0; i < m_modules.length; i++)
+			m_modules[i].m_drivePIDController.setD(driveD, kDrivePidChannel);
+		kDriveD = driveD;
 	}
 	
 	@Override
@@ -185,9 +216,12 @@ class SwerveSubsystem extends SubsystemBase {
 		super.initSendable(builder);
 
 		builder.addBooleanProperty(FIELD_REL_KEY, this::isControlFieldRelative, this::setControlFieldRelative);
-		builder.addDoubleProperty("p", () -> m_modules[0].m_turningPIDController.getP(), (input) -> setPThingy(input));
-		builder.addDoubleProperty("i", () -> m_modules[0].m_turningPIDController.getI(), (input) -> setIThingy(input));
-		builder.addDoubleProperty("d", () -> m_modules[0].m_turningPIDController.getD(), (input) -> setDThingy(input));
+		builder.addDoubleProperty("turn-p", () -> kTurnP, this::setTurnP);
+		builder.addDoubleProperty("turn-i", () -> kTurnI, this::setTurnI);
+		builder.addDoubleProperty("turn-d", () -> kTurnD, this::setTurnD);
+		builder.addDoubleProperty("drive-p", () -> kDriveP, this::setDriveP);
+		builder.addDoubleProperty("drive-i", () -> kDriveI, this::setDriveI);
+		builder.addDoubleProperty("drive-d", () -> kDriveD, this::setDriveD);
 
 	}
 
