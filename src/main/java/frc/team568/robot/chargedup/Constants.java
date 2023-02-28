@@ -22,6 +22,10 @@ final class Constants {
 		static final double kLeftOffset = 0.38735;
 		static final double kRightOffset = 0.38735;
 		static final double kBackOffset = 0.3849685;
+		static final double kFrontRot = 3.26589;
+		static final double kLeftRot = 28.81978;
+		static final double kRightRot = 234.2251;
+		static final double kBackRot = 52.9986;
 
 	}
 

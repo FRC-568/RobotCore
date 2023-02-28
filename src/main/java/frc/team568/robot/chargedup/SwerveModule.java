@@ -77,7 +77,8 @@ public class SwerveModule implements Sendable {
 			int driveMotorChannel,
 			int turningMotorChannel,
 			int turningEncoderChannel,
-			Translation2d location) {
+			Translation2d location,
+			double turnOffset) {
 
 		var m_turningEncoder = new CANCoder(turningEncoderChannel);
 
@@ -96,7 +97,7 @@ public class SwerveModule implements Sendable {
 		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20);
 		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 100);
 		CANCoderConfiguration config = new CANCoderConfiguration();
-		//config.magnetOffsetDegrees = 0;
+		config.magnetOffsetDegrees = turnOffset;
 		config.sensorCoefficient = 2 * Math.PI / kEncoderResolution;
 		config.unitString = "radians";
 		config.sensorTimeBase = SensorTimeBase.PerSecond;

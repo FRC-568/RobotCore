@@ -10,16 +10,10 @@ import static frc.team568.robot.chargedup.Constants.SwerveConstants.kLeftOffset;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpeed;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kRightOffset;
 
-import java.util.Optional;
-
-import org.photonvision.EstimatedRobotPose;
-
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -29,7 +23,6 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team568.robot.subsystems.AprilTags;
 
 class SwerveSubsystem extends SubsystemBase {
 	protected static final String FIELD_REL_KEY = "Field Relative Control";
@@ -48,10 +41,10 @@ class SwerveSubsystem extends SubsystemBase {
 
 	public SwerveSubsystem(Pose2d startingPose) {
 		m_modules = new SwerveModule[] {
-			new SwerveModule(1, 2, 1, new Translation2d(kFrontOffset, 0)),
-			new SwerveModule(3, 4, 2, new Translation2d(0, kLeftOffset)),
-			new SwerveModule(5, 6, 3, new Translation2d(0, -kRightOffset)),
-			new SwerveModule(7, 8, 4, new Translation2d(-kBackOffset, 0))
+			new SwerveModule(1, 2, 1, new Translation2d(kFrontOffset, 0), kFrontOffset),
+			new SwerveModule(3, 4, 2, new Translation2d(0, kLeftOffset), kLeftOffset),
+			new SwerveModule(5, 6, 3, new Translation2d(0, -kRightOffset), kRightOffset),
+			new SwerveModule(7, 8, 4, new Translation2d(-kBackOffset, 0), kBackOffset)
 		};
 		m_kinematics = new SwerveDriveKinematics(getModuleLocations());
 		m_estimator = new SwerveDrivePoseEstimator(m_kinematics, getHeading(), getModulePositions(), startingPose);
