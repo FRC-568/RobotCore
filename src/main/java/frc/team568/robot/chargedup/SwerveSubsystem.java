@@ -5,10 +5,14 @@
 package frc.team568.robot.chargedup;
 
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kBackOffset;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kBackRot;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kFrontOffset;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kFrontRot;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kLeftOffset;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kLeftRot;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpeed;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kRightOffset;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kRightRot;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -41,10 +45,10 @@ class SwerveSubsystem extends SubsystemBase {
 
 	public SwerveSubsystem(Pose2d startingPose) {
 		m_modules = new SwerveModule[] {
-			new SwerveModule(1, 2, 1, new Translation2d(kFrontOffset, 0), kFrontOffset),
-			new SwerveModule(3, 4, 2, new Translation2d(0, kLeftOffset), kLeftOffset),
-			new SwerveModule(5, 6, 3, new Translation2d(0, -kRightOffset), kRightOffset),
-			new SwerveModule(7, 8, 4, new Translation2d(-kBackOffset, 0), kBackOffset)
+			new SwerveModule(1, 2, 1, new Translation2d(kFrontOffset, 0), kFrontRot),
+			new SwerveModule(3, 4, 2, new Translation2d(0, kLeftOffset), kLeftRot),
+			new SwerveModule(5, 6, 3, new Translation2d(0, -kRightOffset), kRightRot),
+			new SwerveModule(7, 8, 4, new Translation2d(-kBackOffset, 0), kBackRot)
 		};
 		m_kinematics = new SwerveDriveKinematics(getModuleLocations());
 		m_estimator = new SwerveDrivePoseEstimator(m_kinematics, getHeading(), getModulePositions(), startingPose);
