@@ -4,6 +4,11 @@
 
 package frc.team568.robot.chargedup;
 
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kEncoderResolution;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularAcceleration;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularVelocity;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kWheelRadius;
+
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.sensors.CANCoder;
@@ -26,8 +31,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
-
-import static frc.team568.robot.chargedup.Constants.SwerveConstants.*;
 
 public class SwerveModule implements Sendable {
 	private DoubleSupplier drivePosition;
@@ -93,7 +96,7 @@ public class SwerveModule implements Sendable {
 		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20);
 		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 100);
 		CANCoderConfiguration config = new CANCoderConfiguration();
-		config.magnetOffsetDegrees = 0;
+		//config.magnetOffsetDegrees = 0;
 		config.sensorCoefficient = 2 * Math.PI / kEncoderResolution;
 		config.unitString = "radians";
 		config.sensorTimeBase = SensorTimeBase.PerSecond;
