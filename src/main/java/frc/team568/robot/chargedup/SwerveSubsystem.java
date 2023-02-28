@@ -10,6 +10,8 @@ import static frc.team568.robot.chargedup.Constants.SwerveConstants.kLeftOffset;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpeed;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kRightOffset;
 
+import java.util.Optional;
+
 import org.photonvision.EstimatedRobotPose;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -39,8 +41,8 @@ class SwerveSubsystem extends SubsystemBase {
 	private boolean fieldRelativeControl;
 
 	// TODO: set relative cam pose to robot
-	private final AprilTags apriltag = new AprilTags("photonvision", new Translation3d(0.0, 0.0, 0.0),
-			new Rotation3d(0.0, 0.0, 0.0));
+	// private final AprilTags apriltag = new AprilTags("photonvision", new Translation3d(0.0, 0.0, 0.0),
+	// 		new Rotation3d(0.0, 0.0, 0.0));
 
 	private final SwerveDrivePoseEstimator m_estimator;
 
@@ -137,8 +139,10 @@ class SwerveSubsystem extends SubsystemBase {
 	/** Updates the field relative position of the robot. */
 	public void updatePose() {
 		m_estimator.update(m_gyro.getRotation2d(), getModulePositions());
-		EstimatedRobotPose camPose = apriltag.getEstimatedPose().get();
-		m_estimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
+		// Optional<EstimatedRobotPose> camPose = apriltag.getEstimatedPose();
+		// if (camPose.isPresent()) {
+		// 	m_estimator.addVisionMeasurement(camPose.get().estimatedPose.toPose2d(), camPose.get().timestampSeconds);
+		// }
 	}
 
 	public boolean isControlFieldRelative() {

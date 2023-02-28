@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 final class RobotContainer {
 	CommandXboxController controller1;
 	final SwerveSubsystem drive;
-	final LiftSubsystem lift;
+	// final LiftSubsystem lift;
 	HashMap<String, Command> eventMap = new HashMap<>();
 	SwerveAutoBuilder autoBuilder;
 
@@ -34,7 +34,7 @@ final class RobotContainer {
 		drive = new SwerveSubsystem(new Pose2d());
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
 
-		lift = new LiftSubsystem(0, 0, 0, 0);
+		// lift = new LiftSubsystem(0, 0, 0, 0);
 
 		configureButtonBindings();
 
@@ -60,16 +60,16 @@ final class RobotContainer {
 	}
 
 	public void configureButtonBindings() {
-		controller1.povUp().onTrue(new InstantCommand(() -> lift.setLevel(3)));
-		controller1.povRight().onTrue(new InstantCommand(() -> lift.setLevel(2)));
-		controller1.povLeft().onTrue(new InstantCommand(() -> lift.setLevel(1)));
-		controller1.povDown().onTrue(new InstantCommand(() -> lift.setLevel(0)));
+		// controller1.povUp().onTrue(new InstantCommand(() -> lift.setLevel(3)));
+		// controller1.povRight().onTrue(new InstantCommand(() -> lift.setLevel(2)));
+		// controller1.povLeft().onTrue(new InstantCommand(() -> lift.setLevel(1)));
+		// controller1.povDown().onTrue(new InstantCommand(() -> lift.setLevel(0)));
 		
-		controller1.rightBumper().onTrue(new InstantCommand(() -> lift.set(0.1)));
-		controller1.rightBumper().onFalse(new InstantCommand(() -> lift.set(0)));
+		// controller1.rightBumper().onTrue(new InstantCommand(() -> lift.set(0.1)));
+		// controller1.rightBumper().onFalse(new InstantCommand(() -> lift.set(0)));
 		
-		controller1.leftBumper().onTrue(new InstantCommand(() -> lift.set(-0.1)));
-		controller1.leftBumper().onFalse(new InstantCommand(() -> lift.set(0)));
+		// controller1.leftBumper().onTrue(new InstantCommand(() -> lift.set(-0.1)));
+		// controller1.leftBumper().onFalse(new InstantCommand(() -> lift.set(0)));
 
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleControlFieldRelative));
 	}
@@ -82,7 +82,8 @@ final class RobotContainer {
 		}
 		
 		PathPlannerTrajectory path = PathPlanner.loadPath(pathString, new PathConstraints(4.0, 3.0));
-		return new ScorePreload(lift).andThen(autoBuilder.fullAuto(path));
+		// return new ScorePreload(lift).andThen(autoBuilder.fullAuto(path));
+		return Commands.none();
 	}
 
 	private void setupAutoTab() {
