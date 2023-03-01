@@ -4,8 +4,8 @@
 
 package frc.team568.robot.chargedup;
 
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpinRate;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularAcceleration;
-import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularVelocity;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -25,7 +25,7 @@ public class TurnToHeading extends CommandBase {
 			0,
 			0,
 			new TrapezoidProfile.Constraints(
-					kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
+					kMaxSpinRate, kModuleMaxAngularAcceleration));
 	private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.08, 0.04);
 
 	public TurnToHeading(final SwerveSubsystem drive, Rotation2d heading) {
@@ -57,8 +57,7 @@ public class TurnToHeading extends CommandBase {
 			} else {
 				return true;
 			}
-		} 
-		else {
+		} else {
 			holdCount = 0;
 		}
 		return false;

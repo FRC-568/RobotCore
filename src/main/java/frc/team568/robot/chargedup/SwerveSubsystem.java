@@ -12,7 +12,6 @@ import static frc.team568.robot.chargedup.Constants.SwerveConstants.kFrontRot;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kLeftOffset;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kLeftRot;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpeed;
-import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpinRate;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kRightOffset;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kRightRot;
 
@@ -84,16 +83,12 @@ class SwerveSubsystem extends SubsystemBase {
 	/**
 	 * Method to drive the robot using joystick info.
 	 *
-	 * @param xSpeed        Speed of the robot in the x direction (forward).
-	 * @param ySpeed        Speed of the robot in the y direction (sideways).
-	 * @param rot           Angular rate of the robot.
+	 * @param xSpeed        Speed of the robot in meters / second along the x direction (forward).
+	 * @param ySpeed        Speed of the robot in meters / second along the y direction (sideways).
+	 * @param rot           Angular rate of the robot in radians (counter-clockwise is positive.)
 	 * @param fieldRelative Override setting for field relative controls
 	 */
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-		xSpeed *= kMaxSpeed;
-		ySpeed *= kMaxSpeed;
-		rot *= kMaxSpinRate;
-		
 		setModuleStates(fieldRelative
 				? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
 				: new ChassisSpeeds(xSpeed, ySpeed, rot));
