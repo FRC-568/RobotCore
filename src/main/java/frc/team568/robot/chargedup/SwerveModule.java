@@ -41,7 +41,7 @@ public class SwerveModule implements Sendable {
 	private DoubleSupplier driveVelocity;
 	private DoubleSupplier turningAngle;
 
-	private final CANSparkMax m_driveMotor;
+	final CANSparkMax m_driveMotor;
 	private final CANSparkMax m_turningMotor;
 
 	private final RelativeEncoder m_driveEncoder;
@@ -49,13 +49,13 @@ public class SwerveModule implements Sendable {
 
 	// Gains are for example purposes only - must be determined for your own robot!
 	public ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
-			0.5,
+			12,
 			0,
 			0,
 			new TrapezoidProfile.Constraints(
 					kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
-	private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
+	private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.05, 0.1);
 
 	/**
 	 * The module's location in meters from the center of rotation.
@@ -111,6 +111,8 @@ public class SwerveModule implements Sendable {
 		turningAngle = m_turningEncoder::getPosition;
 
 		this.location = location;
+
+		m_turningPIDController.enableContinuousInput(0, 2*Math.PI);
 
 		SendableRegistry.addLW(this, "Swerve " + driveMotorChannel);
 		SendableRegistry.addChild(this, m_drivePIDController);

@@ -182,38 +182,74 @@ class SwerveSubsystem extends SubsystemBase {
 
 	void setTurnP(double turnP) {
 		kTurnP = turnP;
-		for (int i = 0; i < m_modules.length; i++)
+		for (int i = 0; i < m_modules.length; i++) {
 			m_modules[i].m_turningPIDController.setP(turnP);
+			m_modules[i].m_driveMotor.burnFlash();
+		}
 	}
 
 	void setTurnI(double turnI) {
 		kTurnI = turnI;
-		for (int i = 0; i < m_modules.length; i++)
+		for (int i = 0; i < m_modules.length; i++) {
 			m_modules[i].m_turningPIDController.setI(turnI);
+			m_modules[i].m_driveMotor.burnFlash();
+		}
 	}
 
 	void setTurnD(double turnD) {
 		kTurnD = turnD;
-		for (int i = 0; i < m_modules.length; i++)
+		for (int i = 0; i < m_modules.length; i++) {
 			m_modules[i].m_turningPIDController.setD(turnD);
+			m_modules[i].m_driveMotor.burnFlash();
+		}
 	}
 
 	void setDriveP(double driveP) {
-		kDriveP = driveP;
-		for (int i = 0; i < m_modules.length; i++)
+		for (int i = 0; i < m_modules.length; i++) {
 			m_modules[i].m_drivePIDController.setP(driveP, kDrivePidChannel);
+			m_modules[i].m_driveMotor.burnFlash();
+		}
+		kDriveP = driveP;
 	}
 
 	void setDriveI(double driveI) {
 		kDriveI = driveI;
-		for (int i = 0; i < m_modules.length; i++)
+		for (int i = 0; i < m_modules.length; i++) {
 			m_modules[i].m_drivePIDController.setI(driveI, kDrivePidChannel);
+			m_modules[i].m_driveMotor.burnFlash();
+		}
 	}
 
 	void setDriveD(double driveD) {
 		kDriveD = driveD;
-		for (int i = 0; i < m_modules.length; i++)
+		for (int i = 0; i < m_modules.length; i++) {
 			m_modules[i].m_drivePIDController.setD(driveD, kDrivePidChannel);
+			m_modules[i].m_driveMotor.burnFlash();
+		}
+	}
+
+	public double getDriveP() {
+		return kDriveP;
+	}
+
+	public double getDriveI() {
+		return kDriveI;
+	}
+
+	public double getDriveD() {
+		return kDriveD;
+	}
+
+	public double getTurnP() {
+		return kTurnP;
+	}
+
+	public double getTurnI() {
+		return kTurnI;
+	}
+
+	public double getTurnD() {
+		return kTurnD;
 	}
 	
 	@Override
@@ -221,12 +257,12 @@ class SwerveSubsystem extends SubsystemBase {
 		super.initSendable(builder);
 
 		builder.addBooleanProperty(FIELD_REL_KEY, this::isControlFieldRelative, this::setControlFieldRelative);
-		builder.addDoubleProperty("turn-p", () -> kTurnP, this::setTurnP);
-		builder.addDoubleProperty("turn-i", () -> kTurnI, this::setTurnI);
-		builder.addDoubleProperty("turn-d", () -> kTurnD, this::setTurnD);
-		builder.addDoubleProperty("drive-p", () -> kDriveP, this::setDriveP);
-		builder.addDoubleProperty("drive-i", () -> kDriveI, this::setDriveI);
-		builder.addDoubleProperty("drive-d", () -> kDriveD, this::setDriveD);
+		builder.addDoubleProperty("turn-p", this::getTurnP, this::setTurnP);
+		builder.addDoubleProperty("turn-i", this::getTurnI, this::setTurnI);
+		builder.addDoubleProperty("turn-d", this::getTurnD, this::setTurnD);
+		builder.addDoubleProperty("drive-p", this::getDriveP, this::setDriveP);
+		builder.addDoubleProperty("drive-i", this::getDriveI, this::setDriveI);
+		builder.addDoubleProperty("drive-d", this::getDriveD, this::setDriveD);
 
 	}
 
