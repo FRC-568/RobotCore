@@ -23,10 +23,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 class SwerveSubsystem extends SubsystemBase {
@@ -38,7 +42,9 @@ class SwerveSubsystem extends SubsystemBase {
 
 	private boolean fieldRelativeControl;
 
-	private double kTurnP, kTurnI, kTurnD, kDriveP, kDriveI, kDriveD;
+	final ShuffleboardTab configTab;
+
+	PIDConfig drivePID, turnPID;
 
 	// TODO: set relative cam pose to robot
 	// private final AprilTags apriltag = new AprilTags("photonvision", new Translation3d(0.0, 0.0, 0.0),
@@ -48,33 +54,25 @@ class SwerveSubsystem extends SubsystemBase {
 
 	public SwerveSubsystem(Pose2d startingPose) {
 		m_modules = new SwerveModule[] {
-			new SwerveModule(1, 2, 1, new Translation2d(kFrontOffset, 0), kFrontRot),
-			new SwerveModule(3, 4, 2, new Translation2d(0, kLeftOffset), kLeftRot),
-			new SwerveModule(5, 6, 3, new Translation2d(0, -kRightOffset), kRightRot),
-			new SwerveModule(7, 8, 4, new Translation2d(-kBackOffset, 0), kBackRot)
+				new SwerveModule(1, 2, 1, new Translation2d(kFrontOffset, 0), kFrontRot),
+				new SwerveModule(3, 4, 2, new Translation2d(0, kLeftOffset), kLeftRot),
+				new SwerveModule(5, 6, 3, new Translation2d(0, -kRightOffset), kRightRot),
+				new SwerveModule(7, 8, 4, new Translation2d(-kBackOffset, 0), kBackRot)
 		};
 		m_kinematics = new SwerveDriveKinematics(getModuleLocations());
 		m_estimator = new SwerveDrivePoseEstimator(m_kinematics, getHeading(), getModulePositions(), startingPose);
 
 		fieldRelativeControl = Preferences.getBoolean(FIELD_REL_KEY, true);
 
-		var turnPid = m_modules[0].m_turningPIDController;
-		kTurnP = turnPid.getP();
-		kTurnI = turnPid.getI();
-		kTurnD = turnPid.getD();
-
-		var drivePid = m_modules[0].m_drivePIDController;
-		kDriveP = drivePid.getP(kDrivePidChannel);
-		kDriveI = drivePid.getI(kDrivePidChannel);
-		kDriveD = drivePid.getD(kDrivePidChannel);
+		configTab = setupConfigTab();
 	}
 
 	/**
 	 * Method to drive the robot using joystick info.
 	 *
-	 * @param xSpeed        Speed of the robot in the x direction (forward).
-	 * @param ySpeed        Speed of the robot in the y direction (sideways).
-	 * @param rot           Angular rate of the robot.
+	 * @param xSpeed Speed of the robot in the x direction (forward).
+	 * @param ySpeed Speed of the robot in the y direction (sideways).
+	 * @param rot    Angular rate of the robot.
 	 */
 	public void drive(double xSpeed, double ySpeed, double rot) {
 		drive(xSpeed, ySpeed, rot, isControlFieldRelative());
@@ -93,7 +91,7 @@ class SwerveSubsystem extends SubsystemBase {
 				? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
 				: new ChassisSpeeds(xSpeed, ySpeed, rot));
 	}
-	
+
 	public void setModuleStates(ChassisSpeeds outChassisSpeeds) {
 		var swerveModuleStates = m_kinematics.toSwerveModuleStates(outChassisSpeeds);
 		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
@@ -170,95 +168,134 @@ class SwerveSubsystem extends SubsystemBase {
 		return fr;
 	}
 
+	private void updateConfig() {
+		if (drivePID.isDirty()) {
+			for (var module : m_modules) {
+				var controller = module.m_drivePIDController;
+				controller.setP(drivePID.getP(), kDrivePidChannel);
+				controller.setI(drivePID.getI(), kDrivePidChannel);
+				controller.setD(drivePID.getD(), kDrivePidChannel);
+				module.m_driveMotor.burnFlash();
+			}
+			drivePID.updateLastValues();
+		}
+
+		if (turnPID.isDirty()) {
+			for (var module : m_modules) {
+				var controller = module.m_turningPIDController;
+				controller.setP(turnPID.getP());
+				controller.setI(turnPID.getI());
+				controller.setD(turnPID.getD());
+			}
+			turnPID.updateLastValues();
+		}
+	}
+
 	@Override
 	public void periodic() {
+		updateConfig();
 		updatePose();
 	}
 
-	void setTurnP(double turnP) {
-		kTurnP = turnP;
-		for (int i = 0; i < m_modules.length; i++) {
-			m_modules[i].m_turningPIDController.setP(turnP);
-			m_modules[i].m_driveMotor.burnFlash();
-		}
+	private ShuffleboardTab setupConfigTab() {
+		ShuffleboardTab configTab = Shuffleboard.getTab("Swerve Config");
+		ShuffleboardLayout layout;
+		double kP, kI, kD;
+		GenericEntry entryP, entryI, entryD;
+
+		// Add drive motor settings to their own layout
+		layout = configTab.getLayout("Drive");
+
+		var drivePid = m_modules[0].m_drivePIDController;
+		kP = drivePid.getP(kDrivePidChannel);
+		kI = drivePid.getI(kDrivePidChannel);
+		kD = drivePid.getD(kDrivePidChannel);
+
+		entryP = layout.addPersistent("kP", kP).getEntry();
+		entryI = layout.addPersistent("kI", kI).getEntry();
+		entryD = layout.addPersistent("kD", kD).getEntry();
+
+		this.drivePID = new PIDConfig(entryP, entryI, entryD);
+
+		// Add turning motor settings to their own layout
+		layout = configTab.getLayout("Turn");
+
+		var turnPid = m_modules[0].m_turningPIDController;
+		kP = turnPid.getP();
+		kI = turnPid.getI();
+		kD = turnPid.getD();
+
+		entryP = layout.addPersistent("kP", kP).getEntry();
+		entryI = layout.addPersistent("kI", kI).getEntry();
+		entryD = layout.addPersistent("kD", kD).getEntry();
+
+		this.turnPID = new PIDConfig(entryP, entryI, entryD);
+
+		return configTab;
 	}
 
-	void setTurnI(double turnI) {
-		kTurnI = turnI;
-		for (int i = 0; i < m_modules.length; i++) {
-			m_modules[i].m_turningPIDController.setI(turnI);
-			m_modules[i].m_driveMotor.burnFlash();
-		}
-	}
-
-	void setTurnD(double turnD) {
-		kTurnD = turnD;
-		for (int i = 0; i < m_modules.length; i++) {
-			m_modules[i].m_turningPIDController.setD(turnD);
-			m_modules[i].m_driveMotor.burnFlash();
-		}
-	}
-
-	void setDriveP(double driveP) {
-		for (int i = 0; i < m_modules.length; i++) {
-			m_modules[i].m_drivePIDController.setP(driveP, kDrivePidChannel);
-			m_modules[i].m_driveMotor.burnFlash();
-		}
-		kDriveP = driveP;
-	}
-
-	void setDriveI(double driveI) {
-		kDriveI = driveI;
-		for (int i = 0; i < m_modules.length; i++) {
-			m_modules[i].m_drivePIDController.setI(driveI, kDrivePidChannel);
-			m_modules[i].m_driveMotor.burnFlash();
-		}
-	}
-
-	void setDriveD(double driveD) {
-		kDriveD = driveD;
-		for (int i = 0; i < m_modules.length; i++) {
-			m_modules[i].m_drivePIDController.setD(driveD, kDrivePidChannel);
-			m_modules[i].m_driveMotor.burnFlash();
-		}
-	}
-
-	public double getDriveP() {
-		return kDriveP;
-	}
-
-	public double getDriveI() {
-		return kDriveI;
-	}
-
-	public double getDriveD() {
-		return kDriveD;
-	}
-
-	public double getTurnP() {
-		return kTurnP;
-	}
-
-	public double getTurnI() {
-		return kTurnI;
-	}
-
-	public double getTurnD() {
-		return kTurnD;
-	}
-	
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
 
 		builder.addBooleanProperty(FIELD_REL_KEY, this::isControlFieldRelative, this::setControlFieldRelative);
-		builder.addDoubleProperty("turn-p", this::getTurnP, this::setTurnP);
-		builder.addDoubleProperty("turn-i", this::getTurnI, this::setTurnI);
-		builder.addDoubleProperty("turn-d", this::getTurnD, this::setTurnD);
-		builder.addDoubleProperty("drive-p", this::getDriveP, this::setDriveP);
-		builder.addDoubleProperty("drive-i", this::getDriveI, this::setDriveI);
-		builder.addDoubleProperty("drive-d", this::getDriveD, this::setDriveD);
+	}
 
+	public final class PIDConfig {
+		private final GenericEntry entryP, entryI, entryD;
+		private double lastP = -1, lastI = -1, lastD = -1;
+
+		private PIDConfig(final GenericEntry p, final GenericEntry i, final GenericEntry d) {
+			this.entryP = p;
+			this.entryI = i;
+			this.entryD = d;
+		}
+
+		public double getP() {
+			return entryP.get().getDouble();
+		}
+
+		public boolean setP(double value) {
+			if (value == getP())
+				return false;
+
+			entryP.setDouble(value);
+			return true;
+		}
+
+		public double getI() {
+			return entryI.get().getDouble();
+		}
+
+		public boolean setI(double value) {
+			if (value == getI())
+				return false;
+
+			entryI.setDouble(value);
+			return true;
+		}
+
+		public double getD() {
+			return entryD.get().getDouble();
+		}
+
+		public boolean setD(double value) {
+			if (value == getD())
+				return false;
+
+			entryD.setDouble(value);
+			return true;
+		}
+
+		private boolean isDirty() {
+			return lastP != getP() || lastI != getI() || lastD != getD();
+		}
+
+		private void updateLastValues() {
+			lastP = getP();
+			lastI = getI();
+			lastD = getD();
+		}
 	}
 
 }

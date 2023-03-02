@@ -24,7 +24,7 @@ final class RobotContainer {
 	HashMap<String, Command> eventMap = new HashMap<>();
 	SwerveAutoBuilder autoBuilder;
 
-	//Auto tab objects
+	// Auto tab objects
 	private ShuffleboardTab autoTab;
 	private SendableChooser<String> programChooser;
 
@@ -50,13 +50,7 @@ final class RobotContainer {
 				drive // The drive subsystem. Used to properly set the requirements of path following commands
 			);
 
-
-		
-		
-		setupAutoTab();				
-
-		
-
+		setupAutoTab();
 	}
 
 	public void configureButtonBindings() {
@@ -81,7 +75,7 @@ final class RobotContainer {
 			return Commands.none();
 		}
 		
-		PathPlannerTrajectory path = PathPlanner.loadPath(pathString, new PathConstraints(4.0, 3.0));
+		// PathPlannerTrajectory path = PathPlanner.loadPath(pathString, new PathConstraints(4.0, 3.0));
 		// return new ScorePreload(lift).andThen(autoBuilder.fullAuto(path));
 		return Commands.none();
 	}
