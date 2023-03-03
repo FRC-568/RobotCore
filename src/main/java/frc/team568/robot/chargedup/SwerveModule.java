@@ -21,6 +21,7 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -32,9 +33,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class SwerveModule implements Sendable {
 	private DoubleSupplier drivePosition;
@@ -57,6 +62,8 @@ public class SwerveModule implements Sendable {
 					kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
 	private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.05, 0.1);
+	DataLog log;
+	DoubleLogEntry motorOutput;
 
 	/**
 	 * The module's location in meters from the center of rotation.
@@ -81,6 +88,7 @@ public class SwerveModule implements Sendable {
 
 		// Setup Drive Motor
 		m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
+		m_driveMotor.setIdleMode(IdleMode.kCoast);
 
 		m_driveEncoder = m_driveMotor.getEncoder();
 		m_driveEncoder.setVelocityConversionFactor(2 * Math.PI * kWheelRadius / 60);
@@ -117,6 +125,11 @@ public class SwerveModule implements Sendable {
 		SendableRegistry.addLW(this, "Swerve " + driveMotorChannel);
 		SendableRegistry.addChild(this, m_drivePIDController);
 		SendableRegistry.addChild(this, m_turningPIDController);
+
+		DataLogManager.start();
+		DriverStation.startDataLog(DataLogManager.getLog());
+		log = DataLogManager.getLog();
+		motorOutput = new DoubleLogEntry(log, "/my/pidOutput");
 	}
 
 	/**
@@ -155,8 +168,9 @@ public class SwerveModule implements Sendable {
 		m_turningMotor.setVoltage(turnOutput + turnFeedforward);
 
 		// Calculate drive motor output using SparkMax built-in PID controller.
-		final double speedRpm = state.speedMetersPerSecond / kWheelCircumference * 60;
+		final double speedRpm = state.speedMetersPerSecond / kWheelCircumference;
 		m_drivePIDController.setReference(speedRpm, ControlType.kSmartVelocity, kDrivePidChannel);
+		motorOutput.append(m_driveMotor.getAppliedOutput());
 	}
 
 	@Override
