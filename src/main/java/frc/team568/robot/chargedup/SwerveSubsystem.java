@@ -28,6 +28,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -215,7 +216,7 @@ class SwerveSubsystem extends SubsystemBase {
 		GenericEntry entryP, entryI, entryD;
 
 		// Add drive motor settings to their own layout
-		layout = configTab.getLayout("Drive");
+		layout = configTab.getLayout("Drive", BuiltInLayouts.kList);
 
 		var drivePid = m_modules[0].m_drivePIDController;
 		kP = drivePid.getP(kDrivePidChannel);
@@ -229,7 +230,7 @@ class SwerveSubsystem extends SubsystemBase {
 		this.drivePID = new PIDConfig(entryP, entryI, entryD);
 
 		// Add turning motor settings to their own layout
-		layout = configTab.getLayout("Turn");
+		layout = configTab.getLayout("Turn", BuiltInLayouts.kList);
 
 		var turnPid = m_modules[0].m_turningPIDController;
 		kP = turnPid.getP();
@@ -243,7 +244,7 @@ class SwerveSubsystem extends SubsystemBase {
 		this.turnPID = new PIDConfig(entryP, entryI, entryD);
 
 		// Add section for CANCoder settings
-		layout = configTab.getLayout("CANCoders");
+		layout = configTab.getLayout("CANCoders", BuiltInLayouts.kList);
 
 		cancoderOffsets = new GenericEntry[m_modules.length];
 		cancoderPrevOffsets = new double[m_modules.length];
