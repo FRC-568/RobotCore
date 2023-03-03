@@ -44,6 +44,9 @@ class SwerveSubsystem extends SubsystemBase {
 
 	final ShuffleboardTab configTab;
 
+	private GenericEntry[] cancoderOffsets;
+	private double[] cancoderPrevOffsets;
+
 	PIDConfig drivePID, turnPID;
 
 	// TODO: set relative cam pose to robot
@@ -177,7 +180,7 @@ class SwerveSubsystem extends SubsystemBase {
 				controller.setD(drivePID.getD(), kDrivePidChannel);
 				module.m_driveMotor.burnFlash();
 			}
-			drivePID.updateLastValues();
+			drivePID.clearDirtyFlag();
 		}
 
 		if (turnPID.isDirty()) {
@@ -187,7 +190,15 @@ class SwerveSubsystem extends SubsystemBase {
 				controller.setI(turnPID.getI());
 				controller.setD(turnPID.getD());
 			}
-			turnPID.updateLastValues();
+			turnPID.clearDirtyFlag();
+		}
+
+		for (int i = 0; i < cancoderOffsets.length; i++) {
+			var newValue = cancoderOffsets[i].get().getDouble();
+			if (newValue != cancoderPrevOffsets[i]) {
+				m_modules[i].m_turningEncoder.configMagnetOffset(newValue);
+				cancoderPrevOffsets[i] = newValue;
+			}
 		}
 	}
 
@@ -230,6 +241,22 @@ class SwerveSubsystem extends SubsystemBase {
 		entryD = layout.addPersistent("kD", kD).getEntry();
 
 		this.turnPID = new PIDConfig(entryP, entryI, entryD);
+
+		// Add section for CANCoder settings
+		layout = configTab.getLayout("CANCoders");
+
+		cancoderOffsets = new GenericEntry[m_modules.length];
+		cancoderPrevOffsets = new double[m_modules.length];
+		for (int i = 0; i < m_modules.length; i++) {
+			double encValue = m_modules[i].m_turningEncoder.configGetMagnetOffset();
+			var name = ModuleIndex.byIndex(i).name();
+			var entry = layout.addPersistent(name + " Offset", encValue).getEntry();
+			double entryValue = entry.get().getDouble();
+			if (entryValue != encValue)
+				m_modules[i].m_turningEncoder.configMagnetOffset(entryValue);
+			cancoderPrevOffsets[i] = entryValue;
+			cancoderOffsets[i] = entry;
+		}
 
 		return configTab;
 	}
@@ -291,10 +318,31 @@ class SwerveSubsystem extends SubsystemBase {
 			return lastP != getP() || lastI != getI() || lastD != getD();
 		}
 
-		private void updateLastValues() {
+		private void clearDirtyFlag() {
 			lastP = getP();
 			lastI = getI();
 			lastD = getD();
+		}
+	}
+
+	public enum ModuleIndex {
+		FRONT(0),
+		LEFT(1),
+		RIGHT(2),
+		BACK(3);
+
+		public final int index;
+
+		ModuleIndex(int index) {
+			this.index = index;
+		}
+
+		public static ModuleIndex byIndex(int indexValue) {
+			for (var m : values()) {
+				if (m.index == indexValue)
+					return m;
+			}
+			return null;
 		}
 	}
 

@@ -43,6 +43,7 @@ public class SwerveModule implements Sendable {
 
 	final CANSparkMax m_driveMotor;
 	private final CANSparkMax m_turningMotor;
+	final CANCoder m_turningEncoder;
 
 	private final RelativeEncoder m_driveEncoder;
 	final SparkMaxPIDController m_drivePIDController;
@@ -94,7 +95,6 @@ public class SwerveModule implements Sendable {
 		m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
 		m_turningMotor.setInverted(true);
 
-		var m_turningEncoder = new CANCoder(turningEncoderChannel);
 		m_turningEncoder = new CANCoder(turningEncoderChannel);
 		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20);
 		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 100);
