@@ -45,6 +45,9 @@ class SwerveSubsystem extends SubsystemBase {
 	private GenericEntry[] cancoderOffsets;
 	private double[] cancoderPrevOffsets;
 
+	private Translation2d targetTrajectory = new Translation2d(0, 0);
+	private Rotation2d targetRotation = new Rotation2d(0);
+
 	private GenericEntry _fieldRelative;
 
 	PIDConfig drivePID, turnPID;
@@ -98,9 +101,19 @@ class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public void setModuleStates(ChassisSpeeds outChassisSpeeds) {
+		targetTrajectory = new Translation2d(outChassisSpeeds.vxMetersPerSecond, outChassisSpeeds.vyMetersPerSecond);
+		targetRotation = new Rotation2d(outChassisSpeeds.omegaRadiansPerSecond);
 		var swerveModuleStates = m_kinematics.toSwerveModuleStates(outChassisSpeeds);
 		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
 		setModuleStates(swerveModuleStates);
+	}
+
+	public Translation2d getTargetTrajectory(){
+		return targetTrajectory;
+	}
+
+	public Rotation2d getTargetRotation(){
+		return targetRotation;
 	}
 
 	public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
@@ -216,6 +229,7 @@ class SwerveSubsystem extends SubsystemBase {
 		double kP, kI, kD;
 		GenericEntry entryP, entryI, entryD;
 
+		// Max and Maria want lift position, speed, velocity, camera, auto selection, and a "normal dashboard"
 		// Add drive motor settings to their own layout
 		layout = configTab.getLayout("Drive", BuiltInLayouts.kList).withPosition(0, 0).withSize(1, 2);
 
@@ -238,9 +252,9 @@ class SwerveSubsystem extends SubsystemBase {
 		kI = turnController.getI();
 		kD = turnController.getD();
 
-		entryP = layout.addPersistent("kP", kP).withPosition(1, 1).withSize(1, 1).getEntry();
-		entryI = layout.addPersistent("kI", kI).withPosition(1, 2).withSize(1, 1).getEntry();
-		entryD = layout.addPersistent("kD", kD).withPosition(1, 3).withSize(1, 1).getEntry();
+		entryP = layout.addPersistent("kP", kP).withPosition(1, 0).withSize(1, 1).getEntry();
+		entryI = layout.addPersistent("kI", kI).withPosition(1, 1).withSize(1, 1).getEntry();
+		entryD = layout.addPersistent("kD", kD).withPosition(1, 2).withSize(1, 1).getEntry();
 
 		this.turnPID = new PIDConfig(entryP, entryI, entryD);
 

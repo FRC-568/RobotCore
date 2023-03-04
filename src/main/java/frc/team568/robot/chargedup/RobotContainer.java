@@ -8,7 +8,10 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -16,8 +19,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.team568.robot.deepspace.Camera;
 
 final class RobotContainer {
+	private static final Translation2d ZERO_POS = new Translation2d(0, 0);
+
+	UsbCamera camera;
 	CommandXboxController controller1;
 	final SwerveSubsystem drive;
 	// final LiftSubsystem lift;
@@ -26,10 +33,12 @@ final class RobotContainer {
 
 	// Auto tab objects
 	private ShuffleboardTab autoTab;
+	private ShuffleboardTab driverTab;
 	private SendableChooser<String> programChooser;
 
 	public RobotContainer() {
 		controller1 = new CommandXboxController(0);
+		camera = CameraServer.startAutomaticCapture();
 		// WARNING: this pose is empty
 		drive = new SwerveSubsystem(new Pose2d());
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
@@ -51,6 +60,7 @@ final class RobotContainer {
 			);
 
 		setupAutoTab();
+		setupDriverTab();
 	}
 
 	public void configureButtonBindings() {
@@ -90,6 +100,14 @@ final class RobotContainer {
 		programChooser.addOption("Score & Engage Wall Side", "ScorePreloadAndEngageWallSide");
 		programChooser.addOption("Score & Exit", "ScorePreloadAndExit");
 		autoTab.add("Auto Program", programChooser);
+	}
+
+	private void setupDriverTab() {
+		driverTab = Shuffleboard.getTab( "Driver");
+		driverTab.addDouble("Travel Velocity", () -> drive.getTargetTrajectory().getDistance(ZERO_POS)).withSize(1, 1).withPosition(0, 0);
+		driverTab.addDouble("Travel Direction", () -> drive.getTargetTrajectory().getAngle().getDegrees()).withSize(1, 1).withPosition(0, 0);
+		driverTab.addDouble("Travel Facing", () -> drive.getTargetRotation().getDegrees()).withSize(1, 1).withPosition(4, 0);
+		driverTab.add(camera).withPosition(0, 0).withSize(3, 3);
 	}
 
 }
