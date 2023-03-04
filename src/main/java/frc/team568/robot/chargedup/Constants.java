@@ -6,7 +6,7 @@ final class Constants {
 		
 		static final int kDriverControllerPort = 0;
 		static final int kCopilotControllerPort = 1;
-		static final double kControllerDeadband = 0.1; // inputs below are ignored; above are re-scaled from deadband offset.
+		static final double kControllerDeadband = 0.15; // inputs below are ignored; above are re-scaled from deadband offset.
 		static final double kAxisSlewRate = 3; // Controller axis max rate of change in units per second.
 
 	}
@@ -30,9 +30,9 @@ final class Constants {
 		static final double kBackOffset = 0.3849685;
 
 		static final double kFrontRot = 3.26589;
-		static final double kLeftRot = 28.81978;
-		static final double kRightRot = 234.2251;
-		static final double kBackRot = 52.9986;
+		static final double kLeftRot = -20;
+		static final double kRightRot = 100;
+		static final double kBackRot = 0;
 
 	}
 
