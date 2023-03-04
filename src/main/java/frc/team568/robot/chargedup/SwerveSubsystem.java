@@ -217,30 +217,30 @@ class SwerveSubsystem extends SubsystemBase {
 		GenericEntry entryP, entryI, entryD;
 
 		// Add drive motor settings to their own layout
-		layout = configTab.getLayout("Drive", BuiltInLayouts.kList);
+		layout = configTab.getLayout("Drive", BuiltInLayouts.kList).withPosition(0, 0).withSize(1, 2);
 
 		var driveController = m_modules[0].m_drivePIDController;
 		kP = driveController.getP(kDrivePidChannel);
 		kI = driveController.getI(kDrivePidChannel);
 		kD = driveController.getD(kDrivePidChannel);
 
-		entryP = layout.addPersistent("kP", kP).getEntry();
-		entryI = layout.addPersistent("kI", kI).getEntry();
-		entryD = layout.addPersistent("kD", kD).getEntry();
+		entryP = layout.addPersistent("kP", kP).withPosition(0,0).withSize(1,1).getEntry();
+		entryI = layout.addPersistent("kI", kI).withPosition(0, 1).withSize(1, 1).getEntry();
+		entryD = layout.addPersistent("kD", kD).withPosition(0, 2).withSize(1, 1).getEntry();
 
 		this.drivePID = new PIDConfig(entryP, entryI, entryD);
 
 		// Add turning motor settings to their own layout
-		layout = configTab.getLayout("Turn", BuiltInLayouts.kList);
+		layout = configTab.getLayout("Turn", BuiltInLayouts.kList).withPosition(1, 1).withSize(1, 2);
 
 		var turnController = m_modules[0].m_turningPIDController;
 		kP = turnController.getP();
 		kI = turnController.getI();
 		kD = turnController.getD();
 
-		entryP = layout.addPersistent("kP", kP).getEntry();
-		entryI = layout.addPersistent("kI", kI).getEntry();
-		entryD = layout.addPersistent("kD", kD).getEntry();
+		entryP = layout.addPersistent("kP", kP).withPosition(1, 1).withSize(1, 1).getEntry();
+		entryI = layout.addPersistent("kI", kI).withPosition(1, 2).withSize(1, 1).getEntry();
+		entryD = layout.addPersistent("kD", kD).withPosition(1, 3).withSize(1, 1).getEntry();
 
 		this.turnPID = new PIDConfig(entryP, entryI, entryD);
 
@@ -248,7 +248,7 @@ class SwerveSubsystem extends SubsystemBase {
 		_fieldRelative = configTab.addPersistent(FIELD_REL_KEY, true).getEntry();
 
 		// Add section for CANCoder settings
-		layout = configTab.getLayout("CANCoders", BuiltInLayouts.kList);
+		layout = configTab.getLayout("CANCoders", BuiltInLayouts.kGrid).withPosition(2, 2).withSize(2, 2);
 
 		cancoderOffsets = new GenericEntry[m_modules.length];
 		cancoderPrevOffsets = new double[m_modules.length];
