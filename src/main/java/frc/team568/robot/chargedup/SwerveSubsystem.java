@@ -203,6 +203,7 @@ class SwerveSubsystem extends SubsystemBase {
 			var newValue = cancoderOffsets[i].get().getDouble();
 			if (newValue != cancoderPrevOffsets[i]) {
 				m_modules[i].m_turningEncoder.configMagnetOffset(newValue);
+				m_modules[i].m_turningEncoder.setPositionToAbsolute();
 				cancoderPrevOffsets[i] = newValue;
 			}
 		}
@@ -223,10 +224,10 @@ class SwerveSubsystem extends SubsystemBase {
 		// Add drive motor settings to their own layout
 		layout = configTab.getLayout("Drive", BuiltInLayouts.kList);
 
-		var drivePid = m_modules[0].m_drivePIDController;
-		kP = drivePid.getP(kDrivePidChannel);
-		kI = drivePid.getI(kDrivePidChannel);
-		kD = drivePid.getD(kDrivePidChannel);
+		var driveController = m_modules[0].m_drivePIDController;
+		kP = driveController.getP(kDrivePidChannel);
+		kI = driveController.getI(kDrivePidChannel);
+		kD = driveController.getD(kDrivePidChannel);
 
 		entryP = layout.addPersistent("kP", kP).getEntry();
 		entryI = layout.addPersistent("kI", kI).getEntry();
@@ -237,10 +238,10 @@ class SwerveSubsystem extends SubsystemBase {
 		// Add turning motor settings to their own layout
 		layout = configTab.getLayout("Turn", BuiltInLayouts.kList);
 
-		var turnPid = m_modules[0].m_turningPIDController;
-		kP = turnPid.getP();
-		kI = turnPid.getI();
-		kD = turnPid.getD();
+		var turnController = m_modules[0].m_turningPIDController;
+		kP = turnController.getP();
+		kI = turnController.getI();
+		kD = turnController.getD();
 
 		entryP = layout.addPersistent("kP", kP).getEntry();
 		entryI = layout.addPersistent("kI", kI).getEntry();
@@ -253,15 +254,12 @@ class SwerveSubsystem extends SubsystemBase {
 
 		cancoderOffsets = new GenericEntry[m_modules.length];
 		cancoderPrevOffsets = new double[m_modules.length];
+
 		for (int i = 0; i < m_modules.length; i++) {
 			double encValue = m_modules[i].m_turningEncoder.configGetMagnetOffset();
-			var name = ModuleIndex.byIndex(i).name();
-			var entry = layout.addPersistent(name + " Offset", encValue).getEntry();
-			double entryValue = entry.get().getDouble();
-			if (entryValue != encValue)
-				m_modules[i].m_turningEncoder.configMagnetOffset(entryValue);
-			cancoderPrevOffsets[i] = entryValue;
-			cancoderOffsets[i] = entry;
+			String modName = ModuleIndex.byIndex(i).name();
+			cancoderOffsets[i] = layout.addPersistent(modName + " Offset", encValue).getEntry();
+			cancoderPrevOffsets[i] = encValue;
 		}
 
 		return configTab;

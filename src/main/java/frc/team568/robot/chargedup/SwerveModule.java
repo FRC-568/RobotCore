@@ -106,7 +106,7 @@ public class SwerveModule implements Sendable {
 		m_turningEncoder = new CANCoder(turningEncoderChannel);
 		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20);
 		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 100);
-		m_turningEncoder.configMagnetOffset(turnOffset);
+		//m_turningEncoder.configMagnetOffset(turnOffset);
 		m_turningEncoder.configFeedbackCoefficient(
 			2 * Math.PI / kEncoderResolution,
 			"radians",
