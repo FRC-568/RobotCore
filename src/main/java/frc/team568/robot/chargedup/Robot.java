@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		// Enable telemetry for testing - disable before competition
-		LiveWindow.enableAllTelemetry();
+		LiveWindow.disableAllTelemetry();
 
 		if (m_autonomousCommand != null)
 			m_autonomousCommand.cancel();

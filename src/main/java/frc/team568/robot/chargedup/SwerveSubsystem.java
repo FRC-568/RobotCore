@@ -226,8 +226,8 @@ class SwerveSubsystem extends SubsystemBase {
 	private ShuffleboardTab setupConfigTab() {
 		ShuffleboardTab configTab = Shuffleboard.getTab("Swerve Config");
 		ShuffleboardLayout layout;
-		double kP, kI, kD;
-		GenericEntry entryP, entryI, entryD;
+		double kP, kI, kD, kS, kV;
+		GenericEntry entryP, entryI, entryD, entryKs, entryKv;
 
 		// Max and Maria want lift position, speed, velocity, camera, auto selection, and a "normal dashboard"
 		// Add drive motor settings to their own layout
@@ -237,12 +237,17 @@ class SwerveSubsystem extends SubsystemBase {
 		kP = driveController.getP(kDrivePidChannel);
 		kI = driveController.getI(kDrivePidChannel);
 		kD = driveController.getD(kDrivePidChannel);
+		kS = 0.0;
+		kV = 0.0;
 
-		entryP = layout.addPersistent("kP", kP).withPosition(0,0).withSize(1,1).getEntry();
+
+		entryP = layout.addPersistent("kP", kP).withPosition(0, 0).withSize(1, 1).getEntry();
 		entryI = layout.addPersistent("kI", kI).withPosition(0, 1).withSize(1, 1).getEntry();
 		entryD = layout.addPersistent("kD", kD).withPosition(0, 2).withSize(1, 1).getEntry();
+		entryKs = layout.addPersistent("kS", kS).withPosition(0, 3).withSize(1, 1).getEntry();
+		entryKv = layout.addPersistent("kV", kV).withPosition(0, 4).withSize(1, 1).getEntry();
 
-		this.drivePID = new PIDConfig(entryP, entryI, entryD);
+		this.drivePID = new PIDConfig(entryP, entryI, entryD, entryKs, entryKv);
 
 		// Add turning motor settings to their own layout
 		layout = configTab.getLayout("Turn", BuiltInLayouts.kList).withPosition(1, 1).withSize(1, 2);
@@ -251,12 +256,16 @@ class SwerveSubsystem extends SubsystemBase {
 		kP = turnController.getP();
 		kI = turnController.getI();
 		kD = turnController.getD();
+		kS = m_modules[0].getTurnKs();
+		kV = m_modules[0].getTurnKv();
 
 		entryP = layout.addPersistent("kP", kP).withPosition(1, 0).withSize(1, 1).getEntry();
 		entryI = layout.addPersistent("kI", kI).withPosition(1, 1).withSize(1, 1).getEntry();
 		entryD = layout.addPersistent("kD", kD).withPosition(1, 2).withSize(1, 1).getEntry();
+		entryKs = layout.addPersistent("kS", kS).withPosition(1, 3).withSize(1, 1).getEntry();
+		entryKv = layout.addPersistent("kV", kV).withPosition(1, 4).withSize(1, 1).getEntry();
 
-		this.turnPID = new PIDConfig(entryP, entryI, entryD);
+		this.turnPID = new PIDConfig(entryP, entryI, entryD, entryKs, entryKv);
 
 		// Field-relative controls
 		_fieldRelative = configTab.addPersistent(FIELD_REL_KEY, true).getEntry();
@@ -285,13 +294,15 @@ class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public final class PIDConfig {
-		private final GenericEntry entryP, entryI, entryD;
-		private double lastP = -1, lastI = -1, lastD = -1;
+		private final GenericEntry entryP, entryI, entryD, entryKs, entryKv;
+		private double lastP = -1, lastI = -1, lastD = -1, lastKs = -1, lastKv = -1;
 
-		private PIDConfig(final GenericEntry p, final GenericEntry i, final GenericEntry d) {
+		private PIDConfig(final GenericEntry p, final GenericEntry i, final GenericEntry d, final GenericEntry kS, final GenericEntry kV) {
 			this.entryP = p;
 			this.entryI = i;
 			this.entryD = d;
+			this.entryKs = kS;
+			this.entryKv = kV;
 		}
 
 		public double getP() {
@@ -330,14 +341,40 @@ class SwerveSubsystem extends SubsystemBase {
 			return true;
 		}
 
+		public double getKs() {
+			return entryKs.get().getDouble();
+		}
+
+		public boolean setKs(double value) {
+			if (value == getD())
+				return false;
+
+			entryKs.setDouble(value);
+			return true;
+		}
+
+		public double getKv() {
+			return entryD.get().getDouble();
+		}
+
+		public boolean setKv(double value) {
+			if (value == getD())
+				return false;
+
+			entryD.setDouble(value);
+			return true;
+		}
+
 		private boolean isDirty() {
-			return lastP != getP() || lastI != getI() || lastD != getD();
+			return lastP != getP() || lastI != getI() || lastD != getD() || lastKs != getKs() || lastKv != getKv();
 		}
 
 		private void clearDirtyFlag() {
 			lastP = getP();
 			lastI = getI();
 			lastD = getD();
+			lastKs = getKs();
+			lastKv = getKv();
 		}
 	}
 

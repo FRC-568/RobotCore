@@ -27,7 +27,7 @@ final class RobotContainer {
 	UsbCamera camera;
 	CommandXboxController controller1;
 	final SwerveSubsystem drive;
-	// final LiftSubsystem lift;
+	final LiftSubsystem lift;
 	HashMap<String, Command> eventMap = new HashMap<>();
 	SwerveAutoBuilder autoBuilder;
 
@@ -43,7 +43,7 @@ final class RobotContainer {
 		drive = new SwerveSubsystem(new Pose2d());
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
 
-		// lift = new LiftSubsystem(0, 0, 0, 0);
+		lift = new LiftSubsystem(11, 12);
 
 		configureButtonBindings();
 
@@ -69,11 +69,17 @@ final class RobotContainer {
 		// controller1.povLeft().onTrue(new InstantCommand(() -> lift.setLevel(1)));
 		// controller1.povDown().onTrue(new InstantCommand(() -> lift.setLevel(0)));
 		
-		// controller1.rightBumper().onTrue(new InstantCommand(() -> lift.set(0.1)));
-		// controller1.rightBumper().onFalse(new InstantCommand(() -> lift.set(0)));
+		controller1.rightTrigger().onTrue(new InstantCommand(() -> lift.setStage(controller1.getRightTriggerAxis())));
+		controller1.rightTrigger().onFalse(new InstantCommand(() -> lift.setStage(0)));
 		
-		// controller1.leftBumper().onTrue(new InstantCommand(() -> lift.set(-0.1)));
-		// controller1.leftBumper().onFalse(new InstantCommand(() -> lift.set(0)));
+		controller1.leftTrigger().onTrue(new InstantCommand(() -> lift.setStage(-controller1.getLeftTriggerAxis())));
+		controller1.leftTrigger().onFalse(new InstantCommand(() -> lift.setStage(0)));
+
+		controller1.povUp().onTrue(new InstantCommand(() -> lift.setCarriage(1)));
+		controller1.povUp().onFalse(new InstantCommand(() -> lift.setCarriage(0)));
+		
+		controller1.povDown().onTrue(new InstantCommand(() -> lift.setCarriage(-1)));
+		controller1.povDown().onFalse(new InstantCommand(() -> lift.setCarriage(0)));
 
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
 	}

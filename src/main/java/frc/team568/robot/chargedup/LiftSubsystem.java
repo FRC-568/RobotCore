@@ -4,10 +4,20 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LiftSubsystem extends SubsystemBase {
@@ -26,7 +36,9 @@ public class LiftSubsystem extends SubsystemBase {
 	private static double tolerance1 = 10;
 
     // === carriage ===
-	private WPI_TalonSRX carriageMotor;
+	private CANSparkMax carriageMotor;
+	private SparkMaxPIDController carriagePid;
+	private RelativeEncoder carriageEncoder;
 	private DigitalInput limitSwitch2;
 	private static double feedforward2 = 0.0;
     private static double accel2 = 1024;
@@ -38,7 +50,7 @@ public class LiftSubsystem extends SubsystemBase {
 
     private static double neutralDeadband = 0.001;
     // all the way down, all the way up
-    private static double[] STAGE_LEVELS = {0, 4096};
+    private static double[] STAGE_LEVELS = {0, 4096, 8192};
     // intake, collected, and outtake
 	private static double[] CARRIAGE_LEVELS = {0, 4096, 8192};
 	private static int level1 = 0;
@@ -46,12 +58,12 @@ public class LiftSubsystem extends SubsystemBase {
 
 	boolean override = false;
 
-	public LiftSubsystem(int stagePort, int carriagePort, int switchPort1, int switchPort2) {
+	public LiftSubsystem(int stagePort, int carriagePort) {
 		// TODO: set init position to level 1
 		stageMotor = new WPI_TalonSRX(stagePort);
 		addChild("stageMotor", stageMotor);
-        limitSwitch1 = new DigitalInput(switchPort1);
-		addChild("limitSwitch1", limitSwitch1);
+        // limitSwitch1 = new DigitalInput(switchPort1);
+		// addChild("limitSwitch1", limitSwitch1);
 
         stageMotor.set(ControlMode.PercentOutput, 0);
         stageMotor.setNeutralMode(NeutralMode.Brake);
@@ -64,20 +76,22 @@ public class LiftSubsystem extends SubsystemBase {
 		stageMotor.config_kI(0, kI1);
 		stageMotor.config_kD(0, kD1);
 
-		carriageMotor = new WPI_TalonSRX(carriagePort);
-		addChild("carriageMotor", carriageMotor);
-        limitSwitch2 = new DigitalInput(switchPort2);
-		addChild("limitSwitch2", limitSwitch2);
+		carriageMotor = new CANSparkMax(carriagePort, MotorType.kBrushed);
+		carriagePid = carriageMotor.getPIDController();
+		carriageEncoder = carriageMotor.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 8192);
+		// addChild("carriageMotor", carriageMotor);
+        // limitSwitch2 = new DigitalInput(switchPort2);
+		// addChild("limitSwitch2", limitSwitch2);
 
-		carriageMotor.set(ControlMode.PercentOutput, 0);
-        carriageMotor.setNeutralMode(NeutralMode.Brake);
-		carriageMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 30);
-		carriageMotor.configNeutralDeadband(neutralDeadband);
-		carriageMotor.configMotionAcceleration(accel2);
-		carriageMotor.configMotionCruiseVelocity(maxV2);
-		carriageMotor.config_kP(0, kP2);
-		carriageMotor.config_kI(0, kI2);
-		carriageMotor.config_kD(0, kD2);
+		carriageMotor.set(0);
+        carriageMotor.setIdleMode(IdleMode.kBrake);
+		// carriageMotor.d; ??? deadband?
+		carriagePid.setSmartMotionMaxVelocity(maxV2, 0);
+		carriagePid.setSmartMotionMaxAccel(accel2, 0);
+		carriagePid.setP(kP2);
+		carriagePid.setI(kI2);
+		carriagePid.setD(kD2);
+		carriagePid.setFF(feedforward2);
 	}
 
     public double getStagePos() {
@@ -85,16 +99,20 @@ public class LiftSubsystem extends SubsystemBase {
 	}
 
 	public double getCarriagePos() {
-		return carriageMotor.getSelectedSensorPosition();
+		return carriageEncoder.getPosition();
 	}
 
 	public boolean onTarget() {
-		return (Math.abs(stageMotor.getSelectedSensorPosition()-STAGE_LEVELS[level1]) < tolerance1)
-			   && (Math.abs(carriageMotor.getSelectedSensorPosition()-CARRIAGE_LEVELS[level2]) < tolerance2);
+		return (Math.abs(getStagePos()-STAGE_LEVELS[level1]) < tolerance1)
+			   && (Math.abs(getCarriagePos()-CARRIAGE_LEVELS[level2]) < tolerance2);
 	}
 
-	public void set(double input) {
-		stageMotor.set(ControlMode.Velocity, input);
+	public void setCarriage(double input) {
+		carriageMotor.set(input);
+	}
+
+	public void setStage(double input) {
+		stageMotor.set(input);
 	}
 
 	public void setLevel(int level) {
@@ -104,10 +122,7 @@ public class LiftSubsystem extends SubsystemBase {
 							STAGE_LEVELS[0],
 							DemandType.ArbitraryFeedForward,
 							feedforward1);
-				carriageMotor.set(ControlMode.MotionMagic,
-									CARRIAGE_LEVELS[0],
-									DemandType.ArbitraryFeedForward,
-									feedforward2);
+				carriagePid.setReference(CARRIAGE_LEVELS[0], CANSparkMax.ControlType.kSmartMotion);
 				level1 = 0;
 				level2 = 0;
 				break;
@@ -116,10 +131,7 @@ public class LiftSubsystem extends SubsystemBase {
 							STAGE_LEVELS[0],
 							DemandType.ArbitraryFeedForward,
 							feedforward1);
-				carriageMotor.set(ControlMode.MotionMagic,
-									CARRIAGE_LEVELS[1],
-									DemandType.ArbitraryFeedForward,
-									feedforward2);
+				carriagePid.setReference(CARRIAGE_LEVELS[1], CANSparkMax.ControlType.kSmartMotion);
 				level1 = 0;
 				level2 = 1;
 				break;
@@ -128,10 +140,7 @@ public class LiftSubsystem extends SubsystemBase {
 							STAGE_LEVELS[0],
 							DemandType.ArbitraryFeedForward,
 							feedforward1);
-				carriageMotor.set(ControlMode.MotionMagic,
-									CARRIAGE_LEVELS[2],
-									DemandType.ArbitraryFeedForward,
-									feedforward2);
+				carriagePid.setReference(CARRIAGE_LEVELS[2], CANSparkMax.ControlType.kSmartMotion);
 				level1 = 0;
 				level2 = 2;
 				break;
@@ -140,10 +149,16 @@ public class LiftSubsystem extends SubsystemBase {
 							STAGE_LEVELS[1],
 							DemandType.ArbitraryFeedForward,
 							feedforward1);
-				carriageMotor.set(ControlMode.MotionMagic,
-									CARRIAGE_LEVELS[2],
-									DemandType.ArbitraryFeedForward,
-									feedforward2);
+				carriagePid.setReference(CARRIAGE_LEVELS[2], CANSparkMax.ControlType.kSmartMotion);
+				level1 = 1;
+				level2 = 2;
+				break;
+			case 4:
+				stageMotor.set(ControlMode.MotionMagic,
+							STAGE_LEVELS[2],
+							DemandType.ArbitraryFeedForward,
+							feedforward1);
+				carriagePid.setReference(CARRIAGE_LEVELS[2], CANSparkMax.ControlType.kSmartMotion);
 				level1 = 1;
 				level2 = 2;
 				break;
@@ -152,12 +167,12 @@ public class LiftSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		if (limitSwitch1.get()) {
-			stageMotor.setSelectedSensorPosition(0.0);
-		}
-		if (limitSwitch2.get()) {
-			carriageMotor.setSelectedSensorPosition(0.0);
-		}
+		// if (limitSwitch1.get()) {
+		// 	stageMotor.setSelectedSensorPosition(0.0);
+		// }
+		// if (limitSwitch2.get()) {
+		// 	carriageEncoder.setPosition(0.0);
+		// }
 	}
 
 	@Override
@@ -179,6 +194,7 @@ public class LiftSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("kD2", () -> kD2, (value) -> kD2 = value);
 		builder.addDoubleProperty("STAGE_LEVELS[0]", () -> STAGE_LEVELS[0], (value) -> STAGE_LEVELS[0] = value);
 		builder.addDoubleProperty("STAGE_LEVELS[1]", () -> STAGE_LEVELS[1], (value) -> STAGE_LEVELS[1] = value);
+		builder.addDoubleProperty("STAGE_LEVELS[2]", () -> STAGE_LEVELS[2], (value) -> STAGE_LEVELS[2] = value);
 		builder.addDoubleProperty("CARRIAGE_LEVELS[0]", () -> CARRIAGE_LEVELS[0], (value) -> CARRIAGE_LEVELS[0] = value);
 		builder.addDoubleProperty("CARRIAGE_LEVELS[1]", () -> CARRIAGE_LEVELS[1], (value) -> CARRIAGE_LEVELS[1] = value);
 		builder.addDoubleProperty("CARRIAGE_LEVELS[2]", () -> CARRIAGE_LEVELS[2], (value) -> CARRIAGE_LEVELS[2] = value);

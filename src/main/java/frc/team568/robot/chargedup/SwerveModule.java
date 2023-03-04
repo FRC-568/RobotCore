@@ -8,6 +8,7 @@ import static frc.team568.robot.chargedup.Constants.SwerveConstants.kDrivePidCha
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kEncoderResolution;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxDriveAcceleration;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxDriveRpm;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxRampRate;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularAcceleration;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularVelocity;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kWheelCircumference;
@@ -61,7 +62,7 @@ public class SwerveModule implements Sendable {
 			new TrapezoidProfile.Constraints(
 					kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
 
-	private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.05, 0.1);
+	private SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.05, 0.1);
 	DataLog log;
 	DoubleLogEntry motorOutput;
 
@@ -89,6 +90,7 @@ public class SwerveModule implements Sendable {
 		// Setup Drive Motor
 		m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
 		m_driveMotor.setIdleMode(IdleMode.kCoast);
+		m_driveMotor.setClosedLoopRampRate(kMaxRampRate);
 
 		m_driveEncoder = m_driveMotor.getEncoder();
 		m_driveEncoder.setVelocityConversionFactor(2 * Math.PI * kWheelRadius / 60);
@@ -96,8 +98,6 @@ public class SwerveModule implements Sendable {
 		driveVelocity = m_driveEncoder::getVelocity;
 		
 		m_drivePIDController = m_driveMotor.getPIDController();
-		m_drivePIDController.setSmartMotionMaxVelocity(kMaxDriveRpm, kDrivePidChannel);
-		m_drivePIDController.setSmartMotionMaxAccel(kMaxDriveAcceleration, kDrivePidChannel);
 
 		// Setup Turning Motor
 		m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
@@ -135,6 +135,14 @@ public class SwerveModule implements Sendable {
 		motorOutput = new DoubleLogEntry(log, "/my/pidOutput");
 	}
 
+	public double getTurnKs() {
+		return m_turnFeedforward.ks;
+	}
+
+	public double getTurnKv() {
+		return m_turnFeedforward.kv;
+	}
+
 	/**
 	 * Returns the current state of the module.
 	 *
@@ -163,6 +171,7 @@ public class SwerveModule implements Sendable {
 	public void setDesiredState(SwerveModuleState desiredState) {
 		// Optimize the reference state to avoid spinning further than 90 degrees
 		SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(turningAngle.getAsDouble()));
+		// SwerveModuleState state = desiredState;
 
 		// Calculate the turning motor output from the turning PID controller.
 		final double turnOutput = m_turningPIDController.calculate(turningAngle.getAsDouble(),

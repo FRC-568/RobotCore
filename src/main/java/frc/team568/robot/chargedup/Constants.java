@@ -19,6 +19,7 @@ final class Constants {
 		static final double kMaxSpeed = 2.5; // 3 meters per second - 2.5 is probably more reliable / safe
 		static final double kMaxDriveRpm = kMaxSpeed / kWheelCircumference * 60; // Max drive speed in RPM
 		static final double kMaxDriveAcceleration = kMaxDriveRpm / 2.0; // Max velocity after 1s
+		static final double kMaxRampRate = 2.0;
 		static final double kMaxSpinRate = 4 * Math.PI; // 2 rotations per second
 		static final double kModuleMaxAngularVelocity = 4 * Math.PI; // 2 rotations per second
 		static final double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
@@ -29,10 +30,10 @@ final class Constants {
 		static final double kRightOffset = 0.38735;
 		static final double kBackOffset = 0.3849685;
 
-		static final double kFrontRot = 3.26589;
-		static final double kLeftRot = -20;
-		static final double kRightRot = 100;
-		static final double kBackRot = 0;
+		static final double kFrontRot = 5;
+		static final double kLeftRot = -35;
+		static final double kRightRot = 105;
+		static final double kBackRot = 307;
 
 	}
 
