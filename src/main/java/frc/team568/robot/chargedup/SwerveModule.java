@@ -123,8 +123,11 @@ public class SwerveModule implements Sendable {
 		m_turningPIDController.enableContinuousInput(0, 2*Math.PI);
 
 		SendableRegistry.addLW(this, "Swerve " + driveMotorChannel);
+		SendableRegistry.addChild(this, m_driveMotor);
 		SendableRegistry.addChild(this, m_drivePIDController);
+		SendableRegistry.addChild(this, m_turningMotor);
 		SendableRegistry.addChild(this, m_turningPIDController);
+		SendableRegistry.addChild(this, m_turningEncoder);
 
 		DataLogManager.start();
 		DriverStation.startDataLog(DataLogManager.getLog());

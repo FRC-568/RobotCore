@@ -25,6 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -69,6 +70,10 @@ class SwerveSubsystem extends SubsystemBase {
 		fieldRelativeControl = Preferences.getBoolean(FIELD_REL_KEY, true);
 
 		configTab = setupConfigTab();
+
+		for (ModuleIndex ind : ModuleIndex.values())
+			addChild(ind.name() + " module", m_modules[ind.index]);
+		addChild("Gyro", (ADXRS450_Gyro)m_gyro);
 	}
 
 	/**
