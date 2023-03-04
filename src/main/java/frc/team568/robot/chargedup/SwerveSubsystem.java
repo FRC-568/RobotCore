@@ -25,9 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -36,18 +34,18 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 class SwerveSubsystem extends SubsystemBase {
-	protected static final String FIELD_REL_KEY = "Field Relative Control";
+	protected static final String FIELD_REL_KEY = "Field Relative";
 
 	private final SwerveModule[] m_modules;
 	private final SwerveDriveKinematics m_kinematics;
 	private final Gyro m_gyro = new ADXRS450_Gyro();
 
-	private boolean fieldRelativeControl;
-
 	final ShuffleboardTab configTab;
 
 	private GenericEntry[] cancoderOffsets;
 	private double[] cancoderPrevOffsets;
+
+	private GenericEntry _fieldRelative;
 
 	PIDConfig drivePID, turnPID;
 
@@ -67,8 +65,6 @@ class SwerveSubsystem extends SubsystemBase {
 		m_kinematics = new SwerveDriveKinematics(getModuleLocations());
 		m_estimator = new SwerveDrivePoseEstimator(m_kinematics, getHeading(), getModulePositions(), startingPose);
 
-		fieldRelativeControl = Preferences.getBoolean(FIELD_REL_KEY, true);
-
 		configTab = setupConfigTab();
 
 		for (ModuleIndex ind : ModuleIndex.values())
@@ -84,7 +80,7 @@ class SwerveSubsystem extends SubsystemBase {
 	 * @param rot    Angular rate of the robot.
 	 */
 	public void drive(double xSpeed, double ySpeed, double rot) {
-		drive(xSpeed, ySpeed, rot, isControlFieldRelative());
+		drive(xSpeed, ySpeed, rot, isFieldRelative());
 	}
 
 	/**
@@ -162,18 +158,17 @@ class SwerveSubsystem extends SubsystemBase {
 		// }
 	}
 
-	public boolean isControlFieldRelative() {
-		return fieldRelativeControl;
+	public boolean isFieldRelative() {
+		return _fieldRelative.getBoolean(true);
 	}
 
-	public void setControlFieldRelative(boolean isEnabled) {
-		fieldRelativeControl = isEnabled;
-		Preferences.setBoolean(FIELD_REL_KEY, isEnabled);
+	public void setFieldRelative(boolean isEnabled) {
+		_fieldRelative.setBoolean(isEnabled);
 	}
 
-	public boolean toggleControlFieldRelative() {
-		var fr = !isControlFieldRelative();
-		setControlFieldRelative(fr);
+	public boolean toggleFieldRelative() {
+		boolean fr = !isFieldRelative();
+		setFieldRelative(fr);
 		return fr;
 	}
 
@@ -249,6 +244,9 @@ class SwerveSubsystem extends SubsystemBase {
 
 		this.turnPID = new PIDConfig(entryP, entryI, entryD);
 
+		// Field-relative controls
+		_fieldRelative = configTab.addPersistent(FIELD_REL_KEY, true).getEntry();
+
 		// Add section for CANCoder settings
 		layout = configTab.getLayout("CANCoders", BuiltInLayouts.kList);
 
@@ -269,7 +267,7 @@ class SwerveSubsystem extends SubsystemBase {
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
 
-		builder.addBooleanProperty(FIELD_REL_KEY, this::isControlFieldRelative, this::setControlFieldRelative);
+		builder.addBooleanProperty(FIELD_REL_KEY, this::isFieldRelative, this::setFieldRelative);
 	}
 
 	public final class PIDConfig {
