@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -75,6 +76,11 @@ public class LiftSubsystem extends SubsystemBase {
 		stageMotor.config_kP(0, kP1);
 		stageMotor.config_kI(0, kI1);
 		stageMotor.config_kD(0, kD1);
+		stageMotor.configPeakCurrentLimit(20);
+		stageMotor.configPeakCurrentDuration(250);
+		stageMotor.configContinuousCurrentLimit(20);
+		stageMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(false, 24, 30.0, 100.0));
+		stageMotor.configOpenloopRamp(0.5);
 
 		carriageMotor = new CANSparkMax(carriagePort, MotorType.kBrushed);
 		carriagePid = carriageMotor.getPIDController();

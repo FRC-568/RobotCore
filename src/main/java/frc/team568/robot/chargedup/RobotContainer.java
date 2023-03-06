@@ -12,12 +12,15 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team568.robot.deepspace.Camera;
 
@@ -36,6 +39,8 @@ final class RobotContainer {
 	private ShuffleboardTab driverTab;
 	private SendableChooser<String> programChooser;
 
+	private PowerDistribution pd;
+
 	public RobotContainer() {
 		controller1 = new CommandXboxController(0);
 		camera = CameraServer.startAutomaticCapture();
@@ -43,7 +48,7 @@ final class RobotContainer {
 		drive = new SwerveSubsystem(new Pose2d());
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
 
-		lift = new LiftSubsystem(11, 12);
+		lift = new LiftSubsystem(12, 11);
 
 		configureButtonBindings();
 
@@ -61,6 +66,8 @@ final class RobotContainer {
 
 		setupAutoTab();
 		setupDriverTab();
+
+		pd = new PowerDistribution(1, ModuleType.kRev);
 	}
 
 	public void configureButtonBindings() {
@@ -68,13 +75,10 @@ final class RobotContainer {
 		// controller1.povRight().onTrue(new InstantCommand(() -> lift.setLevel(2)));
 		// controller1.povLeft().onTrue(new InstantCommand(() -> lift.setLevel(1)));
 		// controller1.povDown().onTrue(new InstantCommand(() -> lift.setLevel(0)));
+	
+		controller1.rightTrigger().whileTrue(Commands.runEnd(() -> lift.setStage(controller1.getRightTriggerAxis()), () -> lift.setStage(0), lift));
+		controller1.leftTrigger().whileTrue(Commands.runEnd(() -> lift.setStage(-controller1.getLeftTriggerAxis()), () -> lift.setStage(0), lift));
 		
-		controller1.rightTrigger().onTrue(new InstantCommand(() -> lift.setStage(controller1.getRightTriggerAxis())));
-		controller1.rightTrigger().onFalse(new InstantCommand(() -> lift.setStage(0)));
-		
-		controller1.leftTrigger().onTrue(new InstantCommand(() -> lift.setStage(-controller1.getLeftTriggerAxis())));
-		controller1.leftTrigger().onFalse(new InstantCommand(() -> lift.setStage(0)));
-
 		controller1.povUp().onTrue(new InstantCommand(() -> lift.setCarriage(1)));
 		controller1.povUp().onFalse(new InstantCommand(() -> lift.setCarriage(0)));
 		
