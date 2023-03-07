@@ -6,8 +6,6 @@ package frc.team568.robot.chargedup;
 
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kDrivePidChannel;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kEncoderResolution;
-import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxDriveAcceleration;
-import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxDriveRpm;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxRampRate;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularAcceleration;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularVelocity;
@@ -112,6 +110,7 @@ public class SwerveModule implements Sendable {
 			"radians",
 			SensorTimeBase.PerSecond);
 		m_turningEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+		m_turningMotor.setClosedLoopRampRate(0);
 		// Limit the PID Controller's input range between -pi and pi and set the input
 		// to be continuous.
 		// m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
@@ -180,7 +179,7 @@ public class SwerveModule implements Sendable {
 		m_turningMotor.setVoltage(turnOutput + turnFeedforward);
 
 		// Calculate drive motor output using SparkMax built-in PID controller.
-		final double speedRpm = state.speedMetersPerSecond / (kWheelCircumference);
+		final double speedRpm = state.speedMetersPerSecond * 60 / (kWheelCircumference);
 		// m_drivePIDController.setReference(speedRpm, ControlType.kSmartVelocity, kDrivePidChannel);
 		m_drivePIDController.setReference(speedRpm, ControlType.kSmartVelocity, kDrivePidChannel);
 		motorOutput.append(m_driveMotor.getAppliedOutput());
