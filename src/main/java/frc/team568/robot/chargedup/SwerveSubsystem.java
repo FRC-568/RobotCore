@@ -291,6 +291,12 @@ class SwerveSubsystem extends SubsystemBase {
 		super.initSendable(builder);
 
 		builder.addBooleanProperty(FIELD_REL_KEY, this::isFieldRelative, this::setFieldRelative);
+		builder.addDoubleProperty("left y-axis", () -> OI.Axis.swerveForward.getAsDouble(), null);
+		builder.addDoubleProperty("left x-axis", () -> OI.Axis.swerveLeft.getAsDouble(), null);
+		builder.addDoubleProperty("right x-axis", () -> OI.Axis.swerveCCW.getAsDouble(), null);
+		builder.addBooleanProperty("forward above deadzone", () -> OI.Axis.swerveForward.getAsDouble() >= Constants.OIConstants.kAxisSlewRate ? true : false, null);
+		builder.addBooleanProperty("strafe above deadzone", () -> OI.Axis.swerveLeft.getAsDouble() >= Constants.OIConstants.kAxisSlewRate ? true : false, null);
+		builder.addBooleanProperty("turn above deadzone", () -> OI.Axis.swerveCCW.getAsDouble() >= Constants.OIConstants.kAxisSlewRate ? true : false, null);
 	}
 
 	public final class PIDConfig {
@@ -354,14 +360,14 @@ class SwerveSubsystem extends SubsystemBase {
 		}
 
 		public double getKv() {
-			return entryD.get().getDouble();
+			return entryKv.get().getDouble();
 		}
 
 		public boolean setKv(double value) {
-			if (value == getD())
+			if (value == getKv())
 				return false;
 
-			entryD.setDouble(value);
+			entryKv.setDouble(value);
 			return true;
 		}
 
