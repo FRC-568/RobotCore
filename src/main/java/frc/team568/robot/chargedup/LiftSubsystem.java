@@ -5,12 +5,10 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.EncoderType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -18,7 +16,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LiftSubsystem extends SubsystemBase {
@@ -59,12 +56,12 @@ public class LiftSubsystem extends SubsystemBase {
 
 	boolean override = false;
 
-	public LiftSubsystem(int stagePort, int carriagePort) {
+	public LiftSubsystem(int stagePort, int carriagePort, int switchPort1) {
 		// TODO: set init position to level 1
 		stageMotor = new WPI_TalonSRX(stagePort);
 		addChild("stageMotor", stageMotor);
-        // limitSwitch1 = new DigitalInput(switchPort1);
-		// addChild("limitSwitch1", limitSwitch1);
+        limitSwitch1 = new DigitalInput(switchPort1);
+		addChild("limitSwitch1", limitSwitch1);
 
         stageMotor.set(ControlMode.PercentOutput, 0);
         stageMotor.setNeutralMode(NeutralMode.Brake);
@@ -173,9 +170,9 @@ public class LiftSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		// if (limitSwitch1.get()) {
-		// 	stageMotor.setSelectedSensorPosition(0.0);
-		// }
+		if (limitSwitch1.get()) {
+			stageMotor.setSelectedSensorPosition(0.0);
+		}
 		// if (limitSwitch2.get()) {
 		// 	carriageEncoder.setPosition(0.0);
 		// }

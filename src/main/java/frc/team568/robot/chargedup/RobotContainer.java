@@ -48,7 +48,7 @@ final class RobotContainer {
 		drive = new SwerveSubsystem(new Pose2d());
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
 
-		lift = new LiftSubsystem(12, 11);
+		lift = new LiftSubsystem(12, 11, 0);
 
 		configureButtonBindings();
 
@@ -71,19 +71,19 @@ final class RobotContainer {
 	}
 
 	public void configureButtonBindings() {
-		// controller1.povUp().onTrue(new InstantCommand(() -> lift.setLevel(3)));
-		// controller1.povRight().onTrue(new InstantCommand(() -> lift.setLevel(2)));
-		// controller1.povLeft().onTrue(new InstantCommand(() -> lift.setLevel(1)));
-		// controller1.povDown().onTrue(new InstantCommand(() -> lift.setLevel(0)));
+		controller1.povUp().onTrue(new InstantCommand(() -> lift.setLevel(3)));
+		controller1.povRight().onTrue(new InstantCommand(() -> lift.setLevel(2)));
+		controller1.povLeft().onTrue(new InstantCommand(() -> lift.setLevel(1)));
+		controller1.povDown().onTrue(new InstantCommand(() -> lift.setLevel(0)));
 	
-		controller1.rightTrigger().whileTrue(Commands.runEnd(() -> lift.setStage(controller1.getRightTriggerAxis()), () -> lift.setStage(0), lift));
-		controller1.leftTrigger().whileTrue(Commands.runEnd(() -> lift.setStage(-controller1.getLeftTriggerAxis()), () -> lift.setStage(0), lift));
+		controller1.rightTrigger().whileTrue(Commands.runEnd(() -> lift.setCarriage(controller1.getRightTriggerAxis()), () -> lift.setCarriage(0), lift));
+		controller1.leftTrigger().whileTrue(Commands.runEnd(() -> lift.setCarriage(-controller1.getLeftTriggerAxis()), () -> lift.setCarriage(0), lift));
 		
-		controller1.povUp().onTrue(new InstantCommand(() -> lift.setCarriage(1)));
-		controller1.povUp().onFalse(new InstantCommand(() -> lift.setCarriage(0)));
+		controller1.povUp().onTrue(new InstantCommand(() -> lift.setStage(1)));
+		controller1.povUp().onFalse(new InstantCommand(() -> lift.setStage(0)));
 		
-		controller1.povDown().onTrue(new InstantCommand(() -> lift.setCarriage(-1)));
-		controller1.povDown().onFalse(new InstantCommand(() -> lift.setCarriage(0)));
+		controller1.povDown().onTrue(new InstantCommand(() -> lift.setStage(-1)));
+		controller1.povDown().onFalse(new InstantCommand(() -> lift.setStage((0))));
 
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
 	}
