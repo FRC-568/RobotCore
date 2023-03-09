@@ -11,6 +11,7 @@ import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAn
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularVelocity;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kWheelCircumference;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kWheelRadius;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kDriveGearRatio;
 
 import java.util.function.DoubleSupplier;
 
@@ -91,7 +92,8 @@ public class SwerveModule implements Sendable {
 		m_driveMotor.setClosedLoopRampRate(kMaxRampRate);
 
 		m_driveEncoder = m_driveMotor.getEncoder();
-		m_driveEncoder.setVelocityConversionFactor(2 * Math.PI * kWheelRadius / 60);
+		m_driveEncoder.setPositionConversionFactor(kWheelCircumference / m_driveEncoder.getCountsPerRevolution());
+		m_driveEncoder.setVelocityConversionFactor(kWheelCircumference / m_driveEncoder.getCountsPerRevolution());
 		drivePosition = m_driveEncoder::getPosition;
 		driveVelocity = m_driveEncoder::getVelocity;
 		
@@ -111,9 +113,7 @@ public class SwerveModule implements Sendable {
 			SensorTimeBase.PerSecond);
 		m_turningEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
 		m_turningMotor.setClosedLoopRampRate(0);
-		// Limit the PID Controller's input range between -pi and pi and set the input
-		// to be continuous.
-		// m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+		m_turningPIDController.setIntegratorRange(-3, 3);
 
 		turningAngle = m_turningEncoder::getPosition;
 
@@ -181,7 +181,7 @@ public class SwerveModule implements Sendable {
 		// Calculate drive motor output using SparkMax built-in PID controller.
 		final double speedRpm = state.speedMetersPerSecond * 60 / (kWheelCircumference);
 		// m_drivePIDController.setReference(speedRpm, ControlType.kSmartVelocity, kDrivePidChannel);
-		m_drivePIDController.setReference(speedRpm, ControlType.kSmartVelocity, kDrivePidChannel);
+		m_drivePIDController.setReference(desiredState.speedMetersPerSecond, ControlType.kSmartVelocity, kDrivePidChannel);
 		motorOutput.append(m_driveMotor.getAppliedOutput());
 	}
 
