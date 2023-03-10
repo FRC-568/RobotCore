@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -20,15 +21,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team568.robot.deepspace.Camera;
+
+import static frc.team568.robot.chargedup.Constants.OIConstants.kControllerDeadband;
 
 final class RobotContainer {
 	private static final Translation2d ZERO_POS = new Translation2d(0, 0);
 
 	UsbCamera camera;
 	CommandXboxController controller1;
+	CommandXboxController controller2;
 	final SwerveSubsystem drive;
 	final LiftSubsystem lift;
 	HashMap<String, Command> eventMap = new HashMap<>();
@@ -43,12 +46,13 @@ final class RobotContainer {
 
 	public RobotContainer() {
 		controller1 = new CommandXboxController(0);
+		controller2 = new CommandXboxController(1);
 		camera = CameraServer.startAutomaticCapture();
 		// WARNING: this pose is empty
 		drive = new SwerveSubsystem(new Pose2d());
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
 
-		lift = new LiftSubsystem(12, 11, 0);
+		lift = new LiftSubsystem(12, 11, 0, 1);
 
 		configureButtonBindings();
 
@@ -71,13 +75,17 @@ final class RobotContainer {
 	}
 
 	public void configureButtonBindings() {
-		controller1.povUp().onTrue(new InstantCommand(() -> lift.setLevel(3)));
-		controller1.povRight().onTrue(new InstantCommand(() -> lift.setLevel(2)));
-		controller1.povLeft().onTrue(new InstantCommand(() -> lift.setLevel(1)));
+		controller1.povUp().onTrue(new InstantCommand(() -> lift.setLevel(4)));
+		controller1.povRight().onTrue(new InstantCommand(() -> lift.setLevel(3)));
+		controller1.povLeft().onTrue(new InstantCommand(() -> lift.setLevel(2)));
 		controller1.povDown().onTrue(new InstantCommand(() -> lift.setLevel(0)));
+
+		controller1.a().onTrue(new InstantCommand(() -> lift.setLevel(1)));
+		controller1.rightBumper().onTrue(new InstantCommand(() -> lift.setLevel(5)));
 	
-		controller1.rightTrigger().whileTrue(Commands.runEnd(() -> lift.setCarriage(controller1.getRightTriggerAxis()), () -> lift.setCarriage(0), lift));
-		controller1.leftTrigger().whileTrue(Commands.runEnd(() -> lift.setCarriage(-controller1.getLeftTriggerAxis()), () -> lift.setCarriage(0), lift));
+		// TODO: check parens
+		controller2.leftStick().whileTrue(Commands.runEnd(() -> lift.setStage(MathUtil.applyDeadband(controller2.getLeftY(), kControllerDeadband)), () -> lift.setStage(0), lift));
+		controller2.rightStick().whileTrue(Commands.runEnd(() -> lift.setCarriage(MathUtil.applyDeadband(controller2.getRightY(), kControllerDeadband)), () -> lift.setCarriage(0), lift));
 		
 		// controller1.povUp().onTrue(new InstantCommand(() -> lift.setStage(1)));
 		// controller1.povUp().onFalse(new InstantCommand(() -> lift.setStage(0)));
@@ -86,6 +94,7 @@ final class RobotContainer {
 		// controller1.povDown().onFalse(new InstantCommand(() -> lift.setStage((0))));
 
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
+		controller1.leftBumper().toggleOnTrue(new InstantCommand(() -> drive.toggleSlowMode()));
 	}
 
 	public Command getAutonomousCommand() {
