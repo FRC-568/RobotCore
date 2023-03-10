@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -19,7 +18,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LiftSubsystem extends SubsystemBase {
-	// TODO: use built-in TalonSRX limit switch stuff?
 	// TODO: figure out encoder stuff
 
     // === stage ===
@@ -47,16 +45,16 @@ public class LiftSubsystem extends SubsystemBase {
 	private static double tolerance2 = 10;
 
     private static double neutralDeadband = 0.001;
-    // all the way down, all the way up
+    // all the way down, mid, all the way up
     private static double[] STAGE_LEVELS = {0, 4096, 8192};
-    // intake, collected, and outtake
-	private static double[] CARRIAGE_LEVELS = {0, 4096, 8192};
+    // intake, collected, prep, PUSHHHH
+	private static double[] CARRIAGE_LEVELS = {0, 4096, 8192, 16384};
 	private static int level1 = 0;
 	private static int level2 = 1;
 
 	boolean override = false;
 
-	public LiftSubsystem(int stagePort, int carriagePort, int switchPort1) {
+	public LiftSubsystem(int stagePort, int carriagePort, int switchPort1, int switchPort2) {
 		// TODO: set init position to level 1
 		stageMotor = new WPI_TalonSRX(stagePort);
 		addChild("stageMotor", stageMotor);
@@ -83,7 +81,7 @@ public class LiftSubsystem extends SubsystemBase {
 		carriagePid = carriageMotor.getPIDController();
 		carriageEncoder = carriageMotor.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 8192);
 		// addChild("carriageMotor", carriageMotor);
-        // limitSwitch2 = new DigitalInput(switchPort2);
+        limitSwitch2 = new DigitalInput(switchPort2);
 		// addChild("limitSwitch2", limitSwitch2);
 
 		carriageMotor.set(0);
@@ -118,6 +116,7 @@ public class LiftSubsystem extends SubsystemBase {
 		stageMotor.set(input);
 	}
 
+	// intake, collected, low, mid, high, PUSHHHH
 	public void setLevel(int level) {
         switch (level) {
             case 0:
@@ -162,8 +161,12 @@ public class LiftSubsystem extends SubsystemBase {
 							DemandType.ArbitraryFeedForward,
 							feedforward1);
 				carriagePid.setReference(CARRIAGE_LEVELS[2], CANSparkMax.ControlType.kSmartMotion);
-				level1 = 1;
+				level1 = 2;
 				level2 = 2;
+				break;
+			case 5:
+				carriagePid.setReference(CARRIAGE_LEVELS[3], CANSparkMax.ControlType.kSmartMotion);
+				level2 = 3;
 				break;
 		}
 	}
@@ -173,9 +176,9 @@ public class LiftSubsystem extends SubsystemBase {
 		if (limitSwitch1.get()) {
 			stageMotor.setSelectedSensorPosition(0.0);
 		}
-		// if (limitSwitch2.get()) {
-		// 	carriageEncoder.setPosition(0.0);
-		// }
+		if (limitSwitch2.get()) {
+			carriageEncoder.setPosition(0.0);
+		}
 	}
 
 	@Override
@@ -201,5 +204,6 @@ public class LiftSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("CARRIAGE_LEVELS[0]", () -> CARRIAGE_LEVELS[0], (value) -> CARRIAGE_LEVELS[0] = value);
 		builder.addDoubleProperty("CARRIAGE_LEVELS[1]", () -> CARRIAGE_LEVELS[1], (value) -> CARRIAGE_LEVELS[1] = value);
 		builder.addDoubleProperty("CARRIAGE_LEVELS[2]", () -> CARRIAGE_LEVELS[2], (value) -> CARRIAGE_LEVELS[2] = value);
+		builder.addDoubleProperty("CARRIAGE_LEVELS[3]", () -> CARRIAGE_LEVELS[3], (value) -> CARRIAGE_LEVELS[3] = value);
 	}
 }
