@@ -10,8 +10,6 @@ import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxRampRate
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularAcceleration;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kModuleMaxAngularVelocity;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kWheelCircumference;
-import static frc.team568.robot.chargedup.Constants.SwerveConstants.kWheelRadius;
-import static frc.team568.robot.chargedup.Constants.SwerveConstants.kDriveGearRatio;
 
 import java.util.function.DoubleSupplier;
 
@@ -88,7 +86,7 @@ public class SwerveModule implements Sendable {
 
 		// Setup Drive Motor
 		m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
-		m_driveMotor.setIdleMode(IdleMode.kCoast);
+		m_driveMotor.setIdleMode(IdleMode.kBrake);
 		m_driveMotor.setClosedLoopRampRate(kMaxRampRate);
 
 		m_driveEncoder = m_driveMotor.getEncoder();
@@ -101,6 +99,7 @@ public class SwerveModule implements Sendable {
 
 		// Setup Turning Motor
 		m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
+		m_turningMotor.setIdleMode(IdleMode.kBrake);
 		m_turningMotor.setInverted(true);
 
 		m_turningEncoder = new CANCoder(turningEncoderChannel);
@@ -181,7 +180,7 @@ public class SwerveModule implements Sendable {
 		// Calculate drive motor output using SparkMax built-in PID controller.
 		final double speedRpm = state.speedMetersPerSecond * 60 / (kWheelCircumference);
 		// m_drivePIDController.setReference(speedRpm, ControlType.kSmartVelocity, kDrivePidChannel);
-		m_drivePIDController.setReference(desiredState.speedMetersPerSecond, ControlType.kSmartVelocity, kDrivePidChannel);
+		m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kSmartVelocity, kDrivePidChannel);
 		motorOutput.append(m_driveMotor.getAppliedOutput());
 	}
 
@@ -190,7 +189,7 @@ public class SwerveModule implements Sendable {
 		builder.addIntegerProperty("Drive ID", m_driveMotor::getDeviceId, null);
 		builder.addIntegerProperty("Turn ID", m_turningMotor::getDeviceId, null);
 		builder.addDoubleProperty("Position", drivePosition, null);
-		builder.addDoubleProperty("Velociy", driveVelocity, null);
+		builder.addDoubleProperty("Velocity", driveVelocity, null);
 		builder.addDoubleProperty("Drive Output", m_driveMotor::get, null);
 		builder.addDoubleProperty("Heading", turningAngle, null);
 		builder.addDoubleProperty("Target Angle", () -> m_turningPIDController.getSetpoint().position, null);

@@ -52,6 +52,10 @@ class SwerveSubsystem extends SubsystemBase {
 
 	PIDConfig drivePID, turnPID;
 
+	double desiredX = 0.0;
+	double desiredY = 0.0;
+	double desiredTurn = 0.0;
+
 	// TODO: set relative cam pose to robot
 	// private final AprilTags apriltag = new AprilTags("photonvision", new Translation3d(0.0, 0.0, 0.0),
 	// 		new Rotation3d(0.0, 0.0, 0.0));
@@ -98,6 +102,9 @@ class SwerveSubsystem extends SubsystemBase {
 		setModuleStates(fieldRelative
 				? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
 				: new ChassisSpeeds(xSpeed, ySpeed, rot));
+		desiredX = xSpeed;
+		desiredY = ySpeed;
+		desiredTurn = rot;
 	}
 
 	public void setModuleStates(ChassisSpeeds outChassisSpeeds) {
@@ -297,6 +304,9 @@ class SwerveSubsystem extends SubsystemBase {
 		builder.addBooleanProperty("forward above deadzone", () -> OI.Axis.swerveForward.getAsDouble() >= Constants.OIConstants.kAxisSlewRate ? true : false, null);
 		builder.addBooleanProperty("strafe above deadzone", () -> OI.Axis.swerveLeft.getAsDouble() >= Constants.OIConstants.kAxisSlewRate ? true : false, null);
 		builder.addBooleanProperty("turn above deadzone", () -> OI.Axis.swerveCCW.getAsDouble() >= Constants.OIConstants.kAxisSlewRate ? true : false, null);
+		builder.addDoubleProperty("desiredX", () -> desiredX, null);
+		builder.addDoubleProperty("desiredY", () -> desiredY, null);
+		builder.addDoubleProperty("desiredTurn", () -> desiredTurn, null);
 	}
 
 	public final class PIDConfig {

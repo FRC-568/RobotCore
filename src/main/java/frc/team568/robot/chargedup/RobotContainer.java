@@ -79,11 +79,11 @@ final class RobotContainer {
 		controller1.rightTrigger().whileTrue(Commands.runEnd(() -> lift.setCarriage(controller1.getRightTriggerAxis()), () -> lift.setCarriage(0), lift));
 		controller1.leftTrigger().whileTrue(Commands.runEnd(() -> lift.setCarriage(-controller1.getLeftTriggerAxis()), () -> lift.setCarriage(0), lift));
 		
-		controller1.povUp().onTrue(new InstantCommand(() -> lift.setStage(1)));
-		controller1.povUp().onFalse(new InstantCommand(() -> lift.setStage(0)));
+		// controller1.povUp().onTrue(new InstantCommand(() -> lift.setStage(1)));
+		// controller1.povUp().onFalse(new InstantCommand(() -> lift.setStage(0)));
 		
-		controller1.povDown().onTrue(new InstantCommand(() -> lift.setStage(-1)));
-		controller1.povDown().onFalse(new InstantCommand(() -> lift.setStage((0))));
+		// controller1.povDown().onTrue(new InstantCommand(() -> lift.setStage(-1)));
+		// controller1.povDown().onFalse(new InstantCommand(() -> lift.setStage((0))));
 
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
 	}
