@@ -62,6 +62,11 @@ class SwerveSubsystem extends SubsystemBase {
 
 	private final SwerveDrivePoseEstimator m_estimator;
 
+	private boolean slowMode = false;
+	private double slowMultiplier = 0.25;
+	private double normalMultiplier = 1.0;
+	private double speedMultiplier;
+
 	public SwerveSubsystem(Pose2d startingPose) {
 		m_modules = new SwerveModule[] {
 				new SwerveModule(1, 2, 1, new Translation2d(kFrontOffset, 0), kFrontRot),
@@ -99,6 +104,8 @@ class SwerveSubsystem extends SubsystemBase {
 	 * @param fieldRelative Override setting for field relative controls
 	 */
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+		xSpeed = xSpeed * speedMultiplier;
+		ySpeed = ySpeed * speedMultiplier;
 		setModuleStates(fieldRelative
 				? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
 				: new ChassisSpeeds(xSpeed, ySpeed, rot));
@@ -113,6 +120,15 @@ class SwerveSubsystem extends SubsystemBase {
 		var swerveModuleStates = m_kinematics.toSwerveModuleStates(outChassisSpeeds);
 		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
 		setModuleStates(swerveModuleStates);
+	}
+
+	public void toggleSlowMode() {
+		slowMode = !slowMode;
+		if (slowMode) {
+			speedMultiplier = slowMultiplier;
+		} else {
+			speedMultiplier = normalMultiplier;
+		}
 	}
 
 	public Translation2d getTargetTrajectory(){
