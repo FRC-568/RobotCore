@@ -100,7 +100,7 @@ final class RobotContainer {
 	public Command getAutonomousCommand() {
 		String pathString = programChooser.getSelected();
 		
-		if(pathString == null){
+		if (pathString == null) {
 			return Commands.none();
 		}
 		
