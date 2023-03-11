@@ -63,9 +63,9 @@ class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDrivePoseEstimator m_estimator;
 
 	private boolean slowMode = false;
-	private double slowMultiplier = 0.25;
-	private double normalMultiplier = 1.0;
-	private double speedMultiplier;
+	private double slowMultiplier = 1.0;
+	private double normalMultiplier = 6.0;
+	private double speedMultiplier = 6.0;
 
 	public SwerveSubsystem(Pose2d startingPose) {
 		m_modules = new SwerveModule[] {

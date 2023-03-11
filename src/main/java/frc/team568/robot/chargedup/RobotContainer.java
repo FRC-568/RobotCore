@@ -82,16 +82,19 @@ final class RobotContainer {
 
 		controller1.a().onTrue(new InstantCommand(() -> lift.setLevel(1)));
 		controller1.rightBumper().onTrue(new InstantCommand(() -> lift.setLevel(5)));
+
+		controller2.rightTrigger().whileTrue(Commands.runEnd(() -> lift.setCarriage(controller2.getRightTriggerAxis()), () -> lift.setCarriage(0), lift));
+		controller2.leftTrigger().whileTrue(Commands.runEnd(() -> lift.setCarriage(-controller2.getLeftTriggerAxis()), () -> lift.setCarriage(0), lift));
 	
 		// TODO: check parens
-		controller2.leftStick().whileTrue(Commands.runEnd(() -> lift.setStage(MathUtil.applyDeadband(controller2.getLeftY(), kControllerDeadband)), () -> lift.setStage(0), lift));
-		controller2.rightStick().whileTrue(Commands.runEnd(() -> lift.setCarriage(MathUtil.applyDeadband(controller2.getRightY(), kControllerDeadband)), () -> lift.setCarriage(0), lift));
+		// controller2.leftStick().whileTrue(Commands.runEnd(() -> lift.setStage(MathUtil.applyDeadband(controller2.getLeftY(), kControllerDeadband)), () -> lift.setStage(0), lift));
+		// controller2.rightStick().whileTrue(Commands.runEnd(() -> lift.setCarriage(MathUtil.applyDeadband(controller2.getRightY(), kControllerDeadband)), () -> lift.setCarriage(0), lift));
 		
-		// controller1.povUp().onTrue(new InstantCommand(() -> lift.setStage(1)));
-		// controller1.povUp().onFalse(new InstantCommand(() -> lift.setStage(0)));
+		controller2.povUp().onTrue(new InstantCommand(() -> lift.setStage(1)));
+		controller2.povUp().onFalse(new InstantCommand(() -> lift.setStage(0)));
 		
-		// controller1.povDown().onTrue(new InstantCommand(() -> lift.setStage(-1)));
-		// controller1.povDown().onFalse(new InstantCommand(() -> lift.setStage((0))));
+		controller2.povDown().onTrue(new InstantCommand(() -> lift.setStage(-1)));
+		controller2.povDown().onFalse(new InstantCommand(() -> lift.setStage((0))));
 
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
 		controller1.leftBumper().toggleOnTrue(new InstantCommand(() -> drive.toggleSlowMode()));
@@ -106,8 +109,8 @@ final class RobotContainer {
 		
 		// PathPlannerTrajectory path = PathPlanner.loadPath(pathString, new PathConstraints(4.0, 3.0));
 		// return new ScorePreload(lift).andThen(autoBuilder.fullAuto(path));
-		// return new ScorePreload(lift).andThen(new DriveForwardIGuess(drive));
-		return Commands.none();
+		return new DriveForwardIGuess(drive, 3);
+		// return Commands.none();
 	}
 
 	private void setupAutoTab() {
