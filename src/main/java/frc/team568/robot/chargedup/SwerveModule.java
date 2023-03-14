@@ -178,7 +178,7 @@ public class SwerveModule implements Sendable {
 		m_turningMotor.setVoltage(turnOutput + turnFeedforward);
 
 		// Calculate drive motor output using SparkMax built-in PID controller.
-		final double speedRpm = state.speedMetersPerSecond * 60 / (kWheelCircumference);
+		// final double speedRpm = state.speedMetersPerSecond * 60 / (kWheelCircumference);
 		// m_drivePIDController.setReference(speedRpm, ControlType.kSmartVelocity, kDrivePidChannel);
 		m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kSmartVelocity, kDrivePidChannel);
 		motorOutput.append(m_driveMotor.getAppliedOutput());
