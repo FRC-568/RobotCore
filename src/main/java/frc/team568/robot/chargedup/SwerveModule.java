@@ -29,13 +29,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DriverStation;
 
 public class SwerveModule implements Sendable {
 	private DoubleSupplier drivePosition;
@@ -52,9 +48,6 @@ public class SwerveModule implements Sendable {
 	// Gains are for example purposes only - must be determined for your own robot!
 	public PIDController m_turningPIDController = new PIDController(12, 0, 0);
 	private SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.05, 0.1);
-
-	DataLog log;
-	DoubleLogEntry motorOutput;
 
 	/**
 	 * The module's location in meters from the center of rotation.
@@ -119,19 +112,6 @@ public class SwerveModule implements Sendable {
 		SendableRegistry.addChild(this, m_turningMotor);
 		SendableRegistry.addChild(this, m_turningPIDController);
 		SendableRegistry.addChild(this, m_turningEncoder);
-
-		DataLogManager.start();
-		DriverStation.startDataLog(DataLogManager.getLog());
-		log = DataLogManager.getLog();
-		motorOutput = new DoubleLogEntry(log, "/my/pidOutput");
-	}
-
-	public double getTurnKs() {
-		return m_turnFeedforward.ks;
-	}
-
-	public double getTurnKv() {
-		return m_turnFeedforward.kv;
 	}
 
 	/**
@@ -175,8 +155,6 @@ public class SwerveModule implements Sendable {
 		// final double speedRpm = state.speedMetersPerSecond * 60 / (kWheelCircumference);
 		// m_drivePIDController.setReference(speedRpm, ControlType.kSmartVelocity, kDrivePidChannel);
 		m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kSmartVelocity, kDrivePidChannel);
-		// m_driveMotor.set(state.speedMetersPerSecond / kMaxSpeed);
-		motorOutput.append(m_driveMotor.getAppliedOutput());
 	}
 
 	@Override
