@@ -59,9 +59,9 @@ class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDrivePoseEstimator m_estimator;
 
 	private boolean slowMode = false;
-	private double slowMultiplier = 1.0;
-	private double normalMultiplier = 6.0;
-	private double speedMultiplier = 6.0;
+	private double slowMultiplier = 0.5;
+	private double normalMultiplier = 1.0;
+	private double speedMultiplier = 1.0;
 
 	public SwerveSubsystem(Pose2d startingPose) {
 		m_modules = new SwerveModule[] {
@@ -315,7 +315,7 @@ class SwerveSubsystem extends SubsystemBase {
 		builder.addBooleanProperty("turn above deadzone", () -> OI.Axis.swerveCCW.getAsDouble() >= Constants.OIConstants.kAxisSlewRate ? true : false, null);
 		builder.addDoubleProperty("target x speed", () -> getTargetTrajectory().getX(), null);
 		builder.addDoubleProperty("target y speed", () -> getTargetTrajectory().getY(), null);
-		builder.addDoubleProperty("target rot speed", () -> getTargetRotation().getDegrees(), null);
+		builder.addDoubleProperty("target rot speed", () -> getTargetRotation().getRadians(), null);
 		builder.addDoubleProperty("actual wheel speed", () -> getModules()[0].getState().speedMetersPerSecond, null);
 	}
 

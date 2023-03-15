@@ -14,7 +14,7 @@ final class Constants {
 	static final class SwerveConstants {
 
 		static final int kEncoderResolution = 4096; // counts per rotation of turning motor
-		static final double kRelativeEncoderResolution = 44;
+		static final double kRelativeEncoderResolution = 42;
 		static final double kWheelRadius = 0.047625; // 3.75 inch wheels on mk4i
 		static final double kWheelCircumference = 2 * Math.PI * kWheelRadius;
 		static final double kTurnGearRatio = 150.0 / 7.0;
