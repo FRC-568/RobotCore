@@ -11,6 +11,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -56,6 +57,7 @@ public class LiftSubsystem extends SubsystemBase {
 
 	public LiftSubsystem(int stagePort, int carriagePort, int switchPort1, int switchPort2) {
 		// TODO: set init position to level 1
+		// TODO: set limit switch to normally open or closed
 		stageMotor = new WPI_TalonSRX(stagePort);
 		addChild("stageMotor", stageMotor);
         limitSwitch1 = new DigitalInput(switchPort1);
@@ -76,8 +78,12 @@ public class LiftSubsystem extends SubsystemBase {
 		stageMotor.configContinuousCurrentLimit(20);
 		stageMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(false, 24, 30.0, 100.0));
 		stageMotor.configOpenloopRamp(0.5);
+		stageMotor.configForwardSoftLimitThreshold(STAGE_LEVELS[2]);
+		// TODO: change to true
+		stageMotor.configForwardSoftLimitEnable(false);
 
 		carriageMotor = new CANSparkMax(carriagePort, MotorType.kBrushed);
+		carriageMotor.setOpenLoopRampRate(0.5);
 		carriagePid = carriageMotor.getPIDController();
 		carriageEncoder = carriageMotor.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 8192);
 		// addChild("carriageMotor", carriageMotor);
@@ -86,6 +92,8 @@ public class LiftSubsystem extends SubsystemBase {
 
 		carriageMotor.set(0);
         carriageMotor.setIdleMode(IdleMode.kBrake);
+		// scale issues: in rotations
+		// carriageMotor.setSoftLimit(SoftLimitDirection.kForward, CARRIAGE_LEVELS[3]);
 		// carriageMotor.d; ??? deadband?
 		carriagePid.setSmartMotionMaxVelocity(maxV2, 0);
 		carriagePid.setSmartMotionMaxAccel(accel2, 0);
