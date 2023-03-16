@@ -36,6 +36,7 @@ final class RobotContainer {
 	final LiftSubsystem lift;
 	HashMap<String, Command> eventMap = new HashMap<>();
 	SwerveAutoBuilder autoBuilder;
+	LockDemWheels lockWheels;
 
 	// Auto tab objects
 	private ShuffleboardTab autoTab;
@@ -51,6 +52,7 @@ final class RobotContainer {
 		// WARNING: this pose is empty
 		drive = new SwerveSubsystem(new Pose2d());
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
+		lockWheels = new LockDemWheels(drive);
 
 		lift = new LiftSubsystem(12, 11, 0, 1);
 
@@ -82,6 +84,8 @@ final class RobotContainer {
 
 		controller1.a().onTrue(new InstantCommand(() -> lift.setLevel(1)));
 		controller1.rightBumper().onTrue(new InstantCommand(() -> lift.setLevel(5)));
+
+		controller1.back().onTrue(lockWheels);
 
 		controller2.rightTrigger().whileTrue(Commands.runEnd(() -> lift.setCarriage(controller2.getRightTriggerAxis()), () -> lift.setCarriage(0), lift));
 		controller2.leftTrigger().whileTrue(Commands.runEnd(() -> lift.setCarriage(-controller2.getLeftTriggerAxis()), () -> lift.setCarriage(0), lift));
