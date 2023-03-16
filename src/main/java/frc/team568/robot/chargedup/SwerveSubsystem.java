@@ -59,7 +59,7 @@ class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDrivePoseEstimator m_estimator;
 
 	private boolean slowMode = false;
-	private double slowMultiplier = 0.5;
+	private double slowMultiplier = 1.0;
 	private double normalMultiplier = 1.0;
 	private double speedMultiplier = 1.0;
 
@@ -198,6 +198,7 @@ class SwerveSubsystem extends SubsystemBase {
 	public boolean toggleFieldRelative() {
 		boolean fr = !isFieldRelative();
 		setFieldRelative(fr);
+		m_gyro.reset();
 		return fr;
 	}
 
