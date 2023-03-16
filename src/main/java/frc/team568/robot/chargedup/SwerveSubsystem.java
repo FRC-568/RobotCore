@@ -317,6 +317,7 @@ class SwerveSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("target y speed", () -> getTargetTrajectory().getY(), null);
 		builder.addDoubleProperty("target rot speed", () -> getTargetRotation().getRadians(), null);
 		builder.addDoubleProperty("actual wheel speed", () -> getModules()[0].getState().speedMetersPerSecond, null);
+		builder.addDoubleProperty("wheel position", () -> getModules()[0].m_driveEncoder.getPosition(), null);
 	}
 
 	public final class PIDConfig {

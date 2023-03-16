@@ -9,6 +9,8 @@ import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxRampRate
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kWheelCircumference;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpeed;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kDrivePidChannel;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kRelativeEncoderResolution;
+import static frc.team568.robot.chargedup.Constants.SwerveConstants.kDriveGearRatio;
 
 import java.util.function.DoubleSupplier;
 
@@ -42,7 +44,8 @@ public class SwerveModule implements Sendable {
 	private final CANSparkMax m_turningMotor;
 	final CANCoder m_turningEncoder;
 
-	private final RelativeEncoder m_driveEncoder;
+	// WARNING: CHANGE THIS BACK TO PRIVATE
+	public final RelativeEncoder m_driveEncoder;
 	final SparkMaxPIDController m_drivePIDController;
 
 	// Gains are for example purposes only - must be determined for your own robot!
@@ -76,8 +79,8 @@ public class SwerveModule implements Sendable {
 		m_driveMotor.setClosedLoopRampRate(kMaxRampRate);
 
 		m_driveEncoder = m_driveMotor.getEncoder();
-		m_driveEncoder.setPositionConversionFactor(kWheelCircumference / m_driveEncoder.getCountsPerRevolution());
-		m_driveEncoder.setVelocityConversionFactor((kWheelCircumference / m_driveEncoder.getCountsPerRevolution()) / 60);
+		m_driveEncoder.setPositionConversionFactor(kWheelCircumference / kDriveGearRatio);
+        m_driveEncoder.setVelocityConversionFactor(kWheelCircumference / kDriveGearRatio / 60);
 		drivePosition = m_driveEncoder::getPosition;
 		driveVelocity = m_driveEncoder::getVelocity;
 		
