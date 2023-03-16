@@ -15,11 +15,11 @@ final class Constants {
 
 		static final int kEncoderResolution = 4096; // counts per rotation of turning motor
 		static final double kRelativeEncoderResolution = 42;
-		static final double kWheelRadius = 0.047625; // 3.75 inch wheels on mk4i
+		static final double kWheelRadius = 0.0508; // 4 inch wheels on mk4i
 		static final double kWheelCircumference = 2 * Math.PI * kWheelRadius;
 		static final double kTurnGearRatio = 150.0 / 7.0;
 		static final double kDriveGearRatio = 8.14;
-		static final double kMaxSpeed = 5; // 3 meters per second - 2.5 is probably more reliable / safe
+		static final double kMaxSpeed = 3.5; // 3.6 meters per second - 2.5 is probably more reliable / safe
 		static final double kMaxDriveRpm = kMaxSpeed / kWheelCircumference * 60; // Max drive speed in RPM
 		static final double kMaxDriveAcceleration = kMaxDriveRpm / 2.0; // Max velocity after 1s
 		static final double kMaxRampRate = 1.0;
