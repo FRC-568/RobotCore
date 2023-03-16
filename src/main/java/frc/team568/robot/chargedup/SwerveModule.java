@@ -137,6 +137,14 @@ public class SwerveModule implements Sendable {
 				drivePosition.getAsDouble(), new Rotation2d(turningAngle.getAsDouble()));
 	}
 
+	public double getTurnKs() {
+		return m_turnFeedforward.ks;
+	}
+
+	public double getTurnKv() {
+		return m_turnFeedforward.kv;
+	}
+
 	/**
 	 * Sets the desired state for the module.
 	 *
