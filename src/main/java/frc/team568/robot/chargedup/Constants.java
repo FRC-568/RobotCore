@@ -6,7 +6,7 @@ final class Constants {
 		
 		static final int kDriverControllerPort = 0;
 		static final int kCopilotControllerPort = 1;
-		static final double kControllerDeadband = 0.2; // inputs below are ignored; above are re-scaled from deadband offset.
+		static final double kControllerDeadband = 0.05; // inputs below are ignored; above are re-scaled from deadband offset.
 		static final double kAxisSlewRate = 10; // Controller axis max rate of change in units per second.
 
 	}
@@ -19,10 +19,10 @@ final class Constants {
 		static final double kWheelCircumference = 2 * Math.PI * kWheelRadius;
 		static final double kTurnGearRatio = 150.0 / 7.0;
 		static final double kDriveGearRatio = 8.14;
-		static final double kMaxSpeed = 3.5; // 3.6 meters per second - 2.5 is probably more reliable / safe
+		static final double kMaxSpeed = 3.6; // 3.2 meters per second - 2.5 is probably more reliable / safe
 		static final double kMaxDriveRpm = kMaxSpeed / kWheelCircumference * 60; // Max drive speed in RPM
-		static final double kMaxDriveAcceleration = kMaxDriveRpm / 2.0; // Max velocity after 1s
-		static final double kMaxRampRate = 1.0;
+		static final double kMaxDriveAcceleration = kMaxDriveRpm / 0.15; // Max velocity after 1s
+		static final double kMaxRampRate = 0.15;
 		static final double kMaxSpinRate = 4 * Math.PI; // 2 rotations per second
 		static final double kModuleMaxAngularVelocity = 32 * Math.PI; // 2 rotations per second
 		static final double kModuleMaxAngularAcceleration = 32 * Math.PI; // radians per second squared

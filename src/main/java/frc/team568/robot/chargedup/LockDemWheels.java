@@ -6,11 +6,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class LockDemWheels extends CommandBase {
 	SwerveSubsystem drive;
-	boolean done = false;
 	SwerveModuleState[] position = { new SwerveModuleState(0, new Rotation2d(Math.PI/2)),
 									 new SwerveModuleState(0, new Rotation2d(0)),
-									 new SwerveModuleState(0, new Rotation2d(Math.PI/2)),
-									 new SwerveModuleState(0, new Rotation2d(0)) };
+									 new SwerveModuleState(0, new Rotation2d(0)),
+									 new SwerveModuleState(0, new Rotation2d(Math.PI/2)) };
 
 	LockDemWheels(SwerveSubsystem drive) {
 		addRequirements(drive);
@@ -18,18 +17,15 @@ public class LockDemWheels extends CommandBase {
 	}
 
 	@Override
-	public void initialize() { }
+	public void initialize() {	}
 
 	@Override
 	public void execute() {
 		drive.setModuleStates(position);
-		done = true;
 	}
 
 	@Override
-	public boolean isFinished() {
-		return done;
-	}
+	public boolean isFinished() { return false; }
 
 	@Override
 	public void end(boolean interrupted) { }

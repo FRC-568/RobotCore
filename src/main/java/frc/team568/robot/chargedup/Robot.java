@@ -20,9 +20,9 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		LiveWindow.disableAllTelemetry();
-		// LiveWindow.enableTelemetry(container.drive);
-		// LiveWindow.enableTelemetry(container.lift);
+		// LiveWindow.disableAllTelemetry();
+		LiveWindow.enableTelemetry(container.drive);
+		LiveWindow.enableTelemetry(container.lift);
 
 		if (m_autonomousCommand != null)
 			m_autonomousCommand.cancel();

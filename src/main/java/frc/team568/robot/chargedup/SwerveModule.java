@@ -47,6 +47,7 @@ public class SwerveModule implements Sendable {
 	// WARNING: CHANGE THIS BACK TO PRIVATE
 	public final RelativeEncoder m_driveEncoder;
 	final SparkMaxPIDController m_drivePIDController;
+	private double m_driveFeedforward = 0.088;
 
 	// Gains are for example purposes only - must be determined for your own robot!
 	public PIDController m_turningPIDController = new PIDController(12, 0, 0);
@@ -108,6 +109,7 @@ public class SwerveModule implements Sendable {
 		this.location = location;
 
 		m_turningPIDController.enableContinuousInput(0, 2*Math.PI);
+		m_turningPIDController.setTolerance(0.01745);
 
 		SendableRegistry.addLW(this, "Swerve " + driveMotorChannel);
 		SendableRegistry.addChild(this, m_driveMotor);
@@ -145,6 +147,14 @@ public class SwerveModule implements Sendable {
 		return m_turnFeedforward.kv;
 	}
 
+	public double getDriveFF() {
+		return m_driveFeedforward;
+	}
+
+	public void setDriveFF(double ff) {
+		m_driveFeedforward = ff;
+	}
+
 	/**
 	 * Sets the desired state for the module.
 	 *
@@ -166,6 +176,7 @@ public class SwerveModule implements Sendable {
 		// final double speedRpm = state.speedMetersPerSecond * 60 / (kWheelCircumference);
 		// m_drivePIDController.setReference(speedRpm, ControlType.kSmartVelocity, kDrivePidChannel);
 		m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kSmartVelocity, kDrivePidChannel);
+		m_drivePIDController.setFF(m_driveFeedforward);
 	}
 
 	@Override

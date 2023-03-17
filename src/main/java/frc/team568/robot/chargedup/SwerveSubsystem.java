@@ -59,7 +59,7 @@ class SwerveSubsystem extends SubsystemBase {
 	private final SwerveDrivePoseEstimator m_estimator;
 
 	private boolean slowMode = false;
-	private double slowMultiplier = 1.0;
+	private double slowMultiplier = 0.25;
 	private double normalMultiplier = 1.0;
 	private double speedMultiplier = 1.0;
 
@@ -210,6 +210,7 @@ class SwerveSubsystem extends SubsystemBase {
 				controller.setI(drivePID.getI(), kDrivePidChannel);
 				controller.setD(drivePID.getD(), kDrivePidChannel);
 				module.m_driveMotor.burnFlash();
+				module.setDriveFF(drivePID.getKv());
 			}
 			drivePID.clearDirtyFlag();
 		}
@@ -255,7 +256,7 @@ class SwerveSubsystem extends SubsystemBase {
 		kI = driveController.getI(kDrivePidChannel);
 		kD = driveController.getD(kDrivePidChannel);
 		kS = 0.0;
-		kV = 0.0;
+		kV = m_modules[0].getDriveFF();
 
 
 		entryP = layout.addPersistent("kP", kP).withPosition(0, 0).withSize(1, 1).getEntry();
@@ -317,7 +318,14 @@ class SwerveSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("target x speed", () -> getTargetTrajectory().getX(), null);
 		builder.addDoubleProperty("target y speed", () -> getTargetTrajectory().getY(), null);
 		builder.addDoubleProperty("target rot speed", () -> getTargetRotation().getRadians(), null);
-		builder.addDoubleProperty("actual wheel speed", () -> getModules()[0].getState().speedMetersPerSecond, null);
+		builder.addDoubleProperty("actual wheel speed 1", () -> getModules()[0].getState().speedMetersPerSecond, null);
+		builder.addDoubleProperty("actual wheel speed 2", () -> getModules()[1].getState().speedMetersPerSecond, null);
+		builder.addDoubleProperty("actual wheel speed 3", () -> getModules()[2].getState().speedMetersPerSecond, null);
+		builder.addDoubleProperty("actual wheel speed 4", () -> getModules()[3].getState().speedMetersPerSecond, null);
+		builder.addDoubleProperty("actual wheel angle 1", () -> getModules()[0].getState().angle.getDegrees(), null);
+		builder.addDoubleProperty("actual wheel angle 2", () -> getModules()[1].getState().angle.getDegrees(), null);
+		builder.addDoubleProperty("actual wheel angle 3", () -> getModules()[2].getState().angle.getDegrees(), null);
+		builder.addDoubleProperty("actual wheel angle 4", () -> getModules()[3].getState().angle.getDegrees(), null);
 		builder.addDoubleProperty("wheel position", () -> getModules()[0].m_driveEncoder.getPosition(), null);
 	}
 
