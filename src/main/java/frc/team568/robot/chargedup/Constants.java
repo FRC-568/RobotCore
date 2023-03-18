@@ -19,7 +19,7 @@ final class Constants {
 		static final double kWheelCircumference = 2 * Math.PI * kWheelRadius;
 		static final double kTurnGearRatio = 150.0 / 7.0;
 		static final double kDriveGearRatio = 8.14;
-		static final double kMaxSpeed = 3.6; // 3.2 meters per second - 2.5 is probably more reliable / safe
+		static final double kMaxSpeed = 3.4; // 3.2 meters per second - 2.5 is probably more reliable / safe
 		static final double kMaxDriveRpm = kMaxSpeed / kWheelCircumference * 60; // Max drive speed in RPM
 		static final double kMaxDriveAcceleration = kMaxDriveRpm / 0.15; // Max velocity after 1s
 		static final double kMaxRampRate = 0.15;

@@ -1,9 +1,11 @@
 package frc.team568.robot.chargedup;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class DriveDistanceIGuess extends CommandBase {
 	SwerveSubsystem drive;
+	Pose2d initPose;
 	double xDist = 0.0;
 	double yDist = 0.0;
 	double xSpeed = 0.0;
@@ -26,22 +28,25 @@ public class DriveDistanceIGuess extends CommandBase {
 	@Override
 	public void execute() {
 		// TODO: make this not extremely bad
-		if (drive.getPose().getX() < xDist) {
-			if (drive.getPose().getY() < yDist) {
-				drive.drive(xSpeed, ySpeed, 0);
-			} else {
-				drive.drive(xSpeed, 0, 0);
-			}
-		} else {
-			if (drive.getPose().getY() < yDist) {
-				drive.drive(0, ySpeed, 0);
-			}
-		}
+		// if (drive.getPose().getX() < xDist) {
+		// 	if (drive.getPose().getY() < yDist) {
+		// 		drive.drive(xSpeed, ySpeed, 0);
+		// 	} else {
+		// 		drive.drive(xSpeed, 0, 0);
+		// 	}
+		// } else {
+		// 	if (drive.getPose().getY() < yDist) {
+		// 		drive.drive(0, ySpeed, 0);
+		// 	}
+		// }
+		drive.drive(xSpeed, 0, 0);
+		initPose = drive.getPose();
 	}
 
 	@Override
 	public boolean isFinished() {
-		return drive.getPose().getX() >= xDist && drive.getPose().getY() >= yDist;
+		// return drive.getPose().getX() >= xDist && drive.getPose().getY() >= yDist;
+		return (drive.getPose().getX() - initPose.getX()) >= xDist;
 	}
 
 	@Override

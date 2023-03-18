@@ -81,11 +81,13 @@ public class LiftSubsystem extends SubsystemBase {
 		stageMotor.configForwardSoftLimitThreshold(STAGE_LEVELS[2]);
 		// TODO: change to true
 		stageMotor.configForwardSoftLimitEnable(false);
+		stageMotor.setSelectedSensorPosition(0.0);
 
 		carriageMotor = new CANSparkMax(carriagePort, MotorType.kBrushed);
 		carriageMotor.setOpenLoopRampRate(0.5);
 		carriagePid = carriageMotor.getPIDController();
 		carriageEncoder = carriageMotor.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 8192);
+		carriageEncoder.setPosition(0.0);
 		// addChild("carriageMotor", carriageMotor);
         limitSwitch2 = new DigitalInput(switchPort2);
 		// addChild("limitSwitch2", limitSwitch2);
@@ -181,10 +183,10 @@ public class LiftSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		if (limitSwitch1.get()) {
+		if (!limitSwitch1.get()) {
 			stageMotor.setSelectedSensorPosition(0.0);
 		}
-		if (limitSwitch2.get()) {
+		if (!limitSwitch2.get()) {
 			carriageEncoder.setPosition(0.0);
 		}
 	}
@@ -193,7 +195,7 @@ public class LiftSubsystem extends SubsystemBase {
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
 		builder.addDoubleProperty("Stage position", () -> getStagePos(), null);
-		builder.addDoubleProperty("Carrage pos", () -> getCarriagePos(), null);
+		builder.addDoubleProperty("Carriage pos", () -> getCarriagePos(), null);
 		builder.addDoubleProperty("ff1", () -> feedforward1, (value) -> feedforward1 = value);
 		builder.addDoubleProperty("accel1", () -> accel1, (value) -> accel1 = value);
 		builder.addDoubleProperty("maxV1", () -> maxV1, (value) -> maxV1 = value);

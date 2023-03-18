@@ -109,11 +109,19 @@ final class RobotContainer {
 		
 		if (pathString == null) {
 			return Commands.none();
+		} else if (pathString == "short") {
+			return new DriveDistanceIGuess(drive, 2, 0, 0.5, 0);
+		} else if (pathString == "long") {
+			return new DriveDistanceIGuess(drive, 3, 0, 0.5, 0);
+		} else if (pathString == "test") {
+			return new DriveDistanceIGuess(drive, 0.5, 0, 0.25, 0);
 		}
+
+		return Commands.none();
 		
 		// PathPlannerTrajectory path = PathPlanner.loadPath(pathString, new PathConstraints(4.0, 3.0));
-		// return new ScorePreload(lift).andThen(autoBuilder.fullAuto(path));
-		return new DriveDistanceIGuess(drive, 0, 2, 0, 0.5);
+		// return new ScorePreload(lift).andThen(autoBuilder.fullAuto(path))
+		
 		// return Commands.none();
 	}
 
@@ -121,11 +129,14 @@ final class RobotContainer {
 		autoTab = Shuffleboard.getTab("Auto");
 		programChooser = new SendableChooser<>();
 		programChooser.setDefaultOption("Wait", null);
-		programChooser.addOption("Score & Prepare", "ScorePreloadAndPrepare");
-		programChooser.addOption("Score & Engage", "ScorePreloadAndEngage");
-		programChooser.addOption("Score & Engage Station Side", "ScorePreloadAndEngageStationSide");
-		programChooser.addOption("Score & Engage Wall Side", "ScorePreloadAndEngageWallSide");
-		programChooser.addOption("Score & Exit", "ScorePreloadAndExit");
+		programChooser.addOption("Short boi", "short");
+		programChooser.addOption("Long boi", "long");
+		programChooser.addOption("Test boi", "test");
+		// programChooser.addOption("Score & Prepare", "ScorePreloadAndPrepare");
+		// programChooser.addOption("Score & Engage", "ScorePreloadAndEngage");
+		// programChooser.addOption("Score & Engage Station Side", "ScorePreloadAndEngageStationSide");
+		// programChooser.addOption("Score & Engage Wall Side", "ScorePreloadAndEngageWallSide");
+		// programChooser.addOption("Score & Exit", "ScorePreloadAndExit");
 		autoTab.add("Auto Program", programChooser);
 	}
 
