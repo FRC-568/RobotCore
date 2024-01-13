@@ -4,11 +4,11 @@
 
 package frc.team568.robot.chargedup;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /** Add your docs here. */
 
-public class SwerveSubsystemDefaultCommand extends CommandBase{
+public class SwerveSubsystemDefaultCommand extends Command{
 	public final SwerveSubsystem drive;
 
 	public SwerveSubsystemDefaultCommand(final SwerveSubsystem drive){

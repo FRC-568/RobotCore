@@ -11,7 +11,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.DriveBase;
 import frc.team568.robot.subsystems.SubsystemBase;
@@ -305,7 +305,7 @@ public class Shooter extends SubsystemBase {
 
 	public void initDefaultCommand() {
 
-		setDefaultCommand(new CommandBase() {
+		setDefaultCommand(new Command() {
 
 			{
 				addRequirements(Shooter.this);

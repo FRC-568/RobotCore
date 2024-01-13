@@ -38,7 +38,7 @@ class SwerveSubsystem extends SubsystemBase {
 
 	private final SwerveModule[] m_modules;
 	private final SwerveDriveKinematics m_kinematics;
-	private final Gyro m_gyro = new ADXRS450_Gyro();
+	private final Gyro m_gyro = (Gyro) new ADXRS450_Gyro();
 
 	final ShuffleboardTab configTab;
 

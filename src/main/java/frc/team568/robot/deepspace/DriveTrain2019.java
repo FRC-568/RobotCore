@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
@@ -266,7 +266,7 @@ public class DriveTrain2019 extends SubsystemBase {
 	}
 
 	protected void initDefaultCommand() {
-		setDefaultCommand(new CommandBase() {
+		setDefaultCommand(new Command() {
 			double comboStartTime = 0;
 			boolean safeMode = true;
 			boolean alreadyToggled = false;
@@ -334,7 +334,7 @@ public class DriveTrain2019 extends SubsystemBase {
 	}
 
 	public Command getCommandTurnBy(double degrees) {
-		return new CommandBase() {
+		return new Command() {
 			double targetAngle;
 
 			{ addRequirements(DriveTrain2019.this); }

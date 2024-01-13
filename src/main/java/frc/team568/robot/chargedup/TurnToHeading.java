@@ -11,10 +11,10 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /** Add your docs here. */
-public class TurnToHeading extends CommandBase {
+public class TurnToHeading extends Command {
 	private static final int HOLD_MAX = 3;
 	private int holdCount = 0;
 

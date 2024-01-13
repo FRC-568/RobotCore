@@ -12,7 +12,7 @@ import frc.team568.grip.GearLifterTarget;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public final class VisionTargetTracker extends SubsystemBase {
@@ -97,7 +97,7 @@ public final class VisionTargetTracker extends SubsystemBase {
 	}
 
 	protected void initDefaultCommand() {
-		class ImageProcessor extends CommandBase {
+		class ImageProcessor extends Command {
 			public ImageProcessor() {
 				addRequirements(VisionTargetTracker.this);
 			}

@@ -3,10 +3,10 @@ package frc.team568.robot.deepspace;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
-public class TapeTrackerCommand extends CommandBase {
+public class TapeTrackerCommand extends Command {
 	TalonSRXDrive drive;
 	GripPipeline pipeline;
 	Camera tracker;

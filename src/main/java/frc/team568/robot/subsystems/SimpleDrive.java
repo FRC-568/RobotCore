@@ -3,7 +3,7 @@ package frc.team568.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.RobotBase;
 
 public class SimpleDrive extends SubsystemBase {
@@ -28,7 +28,7 @@ public class SimpleDrive extends SubsystemBase {
 	
 	public void initDefaultCommand() {
 
-		setDefaultCommand(new CommandBase() {
+		setDefaultCommand(new Command() {
 
 			{
 				addRequirements(SimpleDrive.this);

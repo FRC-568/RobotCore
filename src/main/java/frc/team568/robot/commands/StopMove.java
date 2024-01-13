@@ -1,9 +1,9 @@
 package frc.team568.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.subsystems.TwoMotorDrive;
 
-public class StopMove extends CommandBase {
+public class StopMove extends Command {
 
 	private final TwoMotorDrive drive;
 	private boolean isFin = false;

@@ -46,7 +46,7 @@ public class MechyDrive extends SubsystemBase implements OmniDriveSubsystem {
 	}
 
 	public MechyDrive useADXRS450_Gyro() {
-		return useGyro(new ADXRS450_Gyro());
+		return useGyro((Gyro) new ADXRS450_Gyro());
 	}
 
 	public MechyDrive useGyro(Gyro gyro) {

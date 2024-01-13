@@ -8,7 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -39,7 +39,7 @@ class Lift extends SubsystemBase {
 	}
 
 	public Lift withControl(final DoubleSupplier liftControl) {
-		setDefaultCommand(new CommandBase() {
+		setDefaultCommand(new Command() {
 			
 			{ addRequirements(Lift.this); }
 
@@ -62,7 +62,7 @@ class Lift extends SubsystemBase {
 		return Lift.this;
 	}
 
-	public class MoveToCommand extends CommandBase {
+	public class MoveToCommand extends Command {
 		private final DoubleSupplier targetValueSupplier;
 		private double targetPosition;
 

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.Xinput;
 
@@ -149,7 +149,7 @@ public class WestCoastDrive extends SubsystemBase {
 		fr.setSelectedSensorPosition(0);
 	}
 
-	protected class DefaultCommand extends CommandBase {
+	protected class DefaultCommand extends Command {
 
 		DefaultCommand() {
 			addRequirements(WestCoastDrive.this);

@@ -1,9 +1,9 @@
 package frc.team568.robot.chargedup;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class DriveDistanceIGuess extends CommandBase {
+public class DriveDistanceIGuess extends Command {
 	SwerveSubsystem drive;
 	Pose2d initPose;
 	double xDist = 0.0;

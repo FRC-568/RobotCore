@@ -2,9 +2,9 @@ package frc.team568.robot.chargedup;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class LockDemWheels extends CommandBase {
+public class LockDemWheels extends Command {
 	SwerveSubsystem drive;
 	private static boolean toggle = false;
 	SwerveModuleState[] position = { new SwerveModuleState(0, new Rotation2d(Math.PI/2)),

@@ -3,9 +3,9 @@ package frc.team568.robot.commands;
 import frc.team568.robot.subsystems.DriveTrain;
 import frc.team568.robot.subsystems.VisionTargetTracker;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class MoveToVisionTarget extends CommandBase {
+public class MoveToVisionTarget extends Command {
 	private final DriveTrain driveTrain;
 	private final VisionTargetTracker vision;
 	private static final double MAX_SPEED = .4;

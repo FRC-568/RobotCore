@@ -36,7 +36,7 @@ public class Robot extends RobotBase {
 	DriveForTime autonomousDriveForTime;
 	TalonSRXDrive drive;
 	RobotContainer robotContainer;
-	Gyro gyro = new ADXRS450_Gyro();
+	Gyro gyro = (Gyro) new ADXRS450_Gyro();
 	Compressor compressor;
 	Command autonomousCommand;
 	XinputController driverController = new XinputController(drivingControllerPort);

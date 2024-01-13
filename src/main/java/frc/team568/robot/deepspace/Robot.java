@@ -32,7 +32,7 @@ public class Robot extends RobotBase {
 	Command autonomousCommand;
 	PowerDistribution pdp;
 	Compressor compressor;
-	Gyro gyro = new ADXRS450_Gyro();
+	Gyro gyro = (Gyro) new ADXRS450_Gyro();
 
 	TalonSRXDrive drive;
 	EvoDriveShifter shifter;

@@ -20,7 +20,7 @@ public class GyroSubsystem extends SubsystemBase {
 	}
 
 	public Gyro getGyro() {
-		return gyro;
+		return (Gyro) gyro;
 	}
 
 	@Override

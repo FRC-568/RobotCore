@@ -8,11 +8,11 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.MathUtil;
 import frc.team568.robot.subsystems.TwoMotorDrive;
 
-public class Turn extends CommandBase {
+public class Turn extends Command {
 	
 	private NetworkTableEntry isFinEntry;
 

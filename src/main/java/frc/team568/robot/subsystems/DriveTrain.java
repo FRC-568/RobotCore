@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.RobotBase;
 
 public class DriveTrain extends SubsystemBase {
@@ -120,7 +120,7 @@ public class DriveTrain extends SubsystemBase {
 	}
 
 	protected void initDefaultCommand() {
-		setDefaultCommand(new CommandBase() {
+		setDefaultCommand(new Command() {
 			{
 				addRequirements(DriveTrain.this);
 				SendableRegistry.addChild(DriveTrain.this, this);

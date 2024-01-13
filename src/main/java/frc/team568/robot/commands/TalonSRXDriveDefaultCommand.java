@@ -5,11 +5,11 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.subsystems.DriveBase.Input;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
-public class TalonSRXDriveDefaultCommand extends CommandBase {
+public class TalonSRXDriveDefaultCommand extends Command {
 	final TalonSRXDrive drive;
 	Map<Input, DoubleSupplier> inputMap;
 

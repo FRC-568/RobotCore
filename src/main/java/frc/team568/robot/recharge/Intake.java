@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.RobotBase;
 import frc.team568.robot.subsystems.SubsystemBase;
 
@@ -35,7 +35,7 @@ public class Intake extends SubsystemBase {
 
 	public void initDefaultCommand() {
 
-		setDefaultCommand(new CommandBase() {
+		setDefaultCommand(new Command() {
 		
 			{
 				addRequirements(Intake.this);

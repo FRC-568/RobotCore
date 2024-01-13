@@ -9,11 +9,11 @@ import static frc.team568.robot.rechargemodified.DriveConstants.WHEEL_CIRCUMFERE
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.MathUtil;
 import frc.team568.robot.subsystems.TwoMotorDrive;
 
-public class DriveDistance extends CommandBase {
+public class DriveDistance extends Command {
 
 	private final TwoMotorDrive drive;
 	private final double speed;

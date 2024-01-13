@@ -2,11 +2,15 @@ package frc.team568.robot.chargedup;
 
 import java.util.HashMap;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
+// import com.pathplanner.lib.PathConstraints;
+// import com.pathplanner.lib.PathPlanner;
+// import com.pathplanner.lib.PathPlannerTrajectory;
+// import com.pathplanner.lib.auto.PIDConstants;
+// import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import com.pathplanner.lib.*;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -35,7 +39,7 @@ final class RobotContainer {
 	final SwerveSubsystem drive;
 	final LiftSubsystem lift;
 	HashMap<String, Command> eventMap = new HashMap<>();
-	SwerveAutoBuilder autoBuilder;
+	AutoBuilder autoBuilder;
 	LockDemWheels lockWheels;
 
 	// Auto tab objects
@@ -57,18 +61,17 @@ final class RobotContainer {
 		lift = new LiftSubsystem(12, 11, 0, 1);
 
 		configureButtonBindings();
-
-		autoBuilder = new SwerveAutoBuilder(
-				drive::getPose, // Pose2d supplier
-				drive::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
-				drive.getKinematics(), // SwerveDriveKinematics
-				new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-				new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
-				drive::setModuleStates, // Module states consumer used to output to the drive subsystem
-				eventMap,
-				true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-				drive // The drive subsystem. Used to properly set the requirements of path following commands
-			);
+		// autoBuilder = new AutoBuilder(
+		// 		drive::getPose, // Pose2d supplier
+		// 		drive::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+		// 		drive.getKinematics(), // SwerveDriveKinematics
+		// 		new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+		// 		new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+		// 		drive::setModuleStates, // Module states consumer used to output to the drive subsystem
+		// 		eventMap,
+		// 		true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+		// 		drive // The drive subsystem. Used to properly set the requirements of path following commands
+		// 	);
 
 		setupAutoTab();
 		setupDriverTab();

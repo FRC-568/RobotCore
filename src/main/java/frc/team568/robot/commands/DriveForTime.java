@@ -1,10 +1,10 @@
 package frc.team568.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.subsystems.TalonSRXDrive;
 
-public class DriveForTime extends CommandBase {
+public class DriveForTime extends Command {
 	
 	private final Timer timer = new Timer();
 	private final double speed;

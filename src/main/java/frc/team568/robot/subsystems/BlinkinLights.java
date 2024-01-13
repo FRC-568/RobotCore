@@ -2,9 +2,9 @@ package frc.team568.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilderImpl;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -37,17 +37,17 @@ public class BlinkinLights extends SubsystemBase {
 
 	public void setTeamColor() {
 		Color teamColor;
-		switch (DriverStation.getAlliance()) {
-		case Blue:
-			teamColor = Color.BLUE;
-			break;
-		case Red:
-			teamColor = Color.RED;
-			break;
-		default:
-			teamColor = Color.GREEN;
-			break;
+		switch (DriverStation.getAlliance().get()) {
+			case Red:
+				teamColor = Color.RED;
+				break;
+			case Blue:
+				teamColor = Color.BLUE;
+				break;
+			default:
+				teamColor = Color.GREEN;
 		}
+		
 		setColor(teamColor);
 	}
 
@@ -55,16 +55,16 @@ public class BlinkinLights extends SubsystemBase {
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
 		builder.setSmartDashboardType("Blinkin");
-		if (builder instanceof SendableBuilderImpl) {
-			NetworkTable chooserTable = ((SendableBuilderImpl) builder).getTable().getSubTable("Light Color");
-			SendableBuilderImpl ccBuilder = new SendableBuilderImpl();
-			ccBuilder.setTable(chooserTable);
-			colorChooser.initSendable(ccBuilder);
-			ccBuilder.update();
-			ccBuilder.addStringProperty("selected", () -> getColor().name(), name -> setColor(Color.valueOf(name)));
-			ccBuilder.startListeners();
-			chooserTable.getEntry(".name").setString("Light Color");
-		}
+		// if (builder instanceof SendableBuilderImpl) {
+		// 	NetworkTable chooserTable = ((SendableBuilderImpl) builder).getTable().getSubTable("Light Color");
+		// 	SendableBuilder ccBuilder = new SendableBuilder();
+		// 	ccBuilder.setTable(chooserTable);
+		// 	colorChooser.initSendable(ccBuilder);
+		// 	ccBuilder.update();
+		// 	ccBuilder.addStringProperty("selected", () -> getColor().name(), name -> setColor(Color.valueOf(name)));
+		// 	ccBuilder.startListeners();
+		// 	chooserTable.getEntry(".name").setString("Light Color");
+		// }
 	}
 
 	public enum Color {

@@ -21,7 +21,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.VecBuilder;
 import frc.team568.robot.RobotBase;
 
@@ -43,7 +43,7 @@ public class TwoMotorDrive extends SubsystemBase {
 	protected WPI_TalonSRX leftMotor;
 	protected WPI_TalonSRX rightMotor;
 	protected Pose2d m_pose;
-	protected Gyro gyro = new ADXRS450_Gyro();
+	protected Gyro gyro = (Gyro) new ADXRS450_Gyro();
 
 	// Create our gyro object like we would on a real robot.
 	private AnalogGyro m_gyro = new AnalogGyro(1);
@@ -227,7 +227,7 @@ public class TwoMotorDrive extends SubsystemBase {
 	}
 
 	public void initDefaultCommand() {
-		setDefaultCommand(new CommandBase() {
+		setDefaultCommand(new Command() {
 
 			double comboStartTime = 0;
 			boolean alreadyToggled = false;

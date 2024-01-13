@@ -54,7 +54,7 @@ public class Robot extends RobotBase {
 		coDriver = new XinputController(1);
 		pdp = new PowerDistribution();
 		pcm = new PneumaticsControlModule();
-		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
+		gyro = (Gyro) new ADXRS450_Gyro(Port.kOnboardCS0);
 		drive = new MecanumSubsystem(gyro);
 		compressor = new Compressor(Config.kcompressor, PneumaticsModuleType.CTREPCM);
 		camera = CameraServer.startAutomaticCapture();

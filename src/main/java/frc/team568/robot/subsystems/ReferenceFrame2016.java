@@ -35,7 +35,7 @@ public class ReferenceFrame2016 extends SubsystemBase implements Gyro {
 		threshold = .03;
 
 		gyro = new ADXRS450_Gyro();
-		accel = new ADXL362(Range.k16G);
+		accel = new ADXL362(edu.wpi.first.wpilibj.ADXL362.Range.k8G);
 		calibrateAccel();
 
 		xFilter = LinearFilter.movingAverage(filterPoles);
