@@ -2,12 +2,9 @@ package frc.team568.robot.drive;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.SensorTimeBase;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -16,10 +13,11 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 public final class Mk4iFactory {
 	private static final double WHEEL_RADIUS = 0.047625; //3.75 inch wheels on mk4i
 	private static final double NEO_ENCODER_UNITS = 42;
-	private static final double CANCODER_UNITS = 4096;
+	//private static final double CANCODER_UNITS = 4096;
 
 	private MotorController driveMotor;
 	private MotorController turningMotor;
+	private CANcoder turningEncoder;
 	private DoubleSupplier drivePosition;
 	private DoubleSupplier driveVelocity;
 	private DoubleSupplier turningAngle;
@@ -64,17 +62,12 @@ public final class Mk4iFactory {
 	}
 
 	public Mk4iFactory withTurningCANCoder(int port) {
-		var encoder = new CANCoder(port);
+		turningEncoder = new CANcoder(port);
 
-		var config = new CANCoderConfiguration();
-		config.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
-		config.sensorCoefficient = 2 * Math.PI / CANCODER_UNITS;
-		config.sensorTimeBase = SensorTimeBase.PerSecond;
-		config.unitString = "radians";
-		encoder.configAllSettings(config);
+		// 2024 Migration - add conversion rate here is needed.
 
-		turningAngle = encoder::getAbsolutePosition;
-		turningRate = encoder::getVelocity;
+		turningAngle = () -> turningEncoder.getAbsolutePosition().getValueAsDouble() /* 2 * Math.PI / CANCODER_UNITS */;
+		turningRate = () -> turningEncoder.getVelocity().getValueAsDouble() /* 2 * Math.PI / CANCODER_UNITS */;
 
 		return this;
 	}
@@ -113,7 +106,7 @@ public final class Mk4iFactory {
 			}
 
 			public void setDesiredState(SwerveModuleState desiredState) {
-				//TODO: use PID and Feedforward to apply values here
+				//TO-DO: use PID and Feedforward to apply values here
 			}
 		};
 	}

@@ -6,13 +6,9 @@ package frc.team568.robot.swervebot;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.CANCoderStatusFrame;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.ctre.phoenix.sensors.SensorTimeBase;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -28,7 +24,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 
 public class SwerveModule implements Sendable {
 	private static final double kWheelRadius = 0.047625; // 3.75 inch wheels on mk4i
-	private static final int kEncoderResolution = 4096;
+	//private static final int kEncoderResolution = 4096;
 
 	private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularSpeed;
 	private static final double kModuleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
@@ -43,6 +39,7 @@ public class SwerveModule implements Sendable {
 	private final CANSparkMax m_turningMotor;
 
 	private final RelativeEncoder m_driveEncoder;
+	private CANcoder m_turningEncoder;
 
 	// Gains are for example purposes only - must be determined for your own robot!
 	private final PIDController m_drivePIDController = new PIDController(0.05, 0, 0);
@@ -72,8 +69,6 @@ public class SwerveModule implements Sendable {
 			int turningMotorChannel,
 			int turningEncoderChannel) {
 
-		var m_turningEncoder = new CANCoder(turningEncoderChannel);
-
 		m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
 		m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
 		m_turningMotor.setInverted(true);
@@ -84,23 +79,20 @@ public class SwerveModule implements Sendable {
 		drivePosition = m_driveEncoder::getPosition;
 		driveVelocity = m_driveEncoder::getVelocity;
 
-		m_turningEncoder = new CANCoder(turningEncoderChannel);
+		m_turningEncoder = new CANcoder(turningEncoderChannel);
 		// Save CAN bandwidth
-		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20);
-		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 100);
-		CANCoderConfiguration config = new CANCoderConfiguration();
-		config.magnetOffsetDegrees = 0;
-		config.sensorCoefficient = 2 * Math.PI / kEncoderResolution;
-		config.unitString = "radians";
-		config.sensorTimeBase = SensorTimeBase.PerSecond;
-		config.sensorDirection = false;
-		config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
-		m_turningEncoder.configAllSettings(config);
+		m_turningEncoder.getPosition().setUpdateFrequency(50);
+		m_turningEncoder.getFaultField().setUpdateFrequency(10);
+		
+		// 2024 conversion - Cancoder configuration options are more limited in Phoenix6
+		//  so they have been removed from this code - use configuration tool instead.
+	
 		// Limit the PID Controller's input range between -pi and pi and set the input
 		// to be continuous.
 		// m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
-		turningAngle = m_turningEncoder::getPosition;
+		//  2024 conversion / untested. This code expects units in Radians - if it can't be set in the tool, add conversion here.
+		turningAngle = () -> m_turningEncoder.getAbsolutePosition().getValueAsDouble() /* * 2 * Math.PI / kEncoderResolution */;
 
 		SendableRegistry.addLW(this, "Swerve " + driveMotorChannel);
 		SendableRegistry.addChild(this, m_drivePIDController);

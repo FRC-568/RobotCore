@@ -2,19 +2,13 @@ package frc.team568.robot.chargedup;
 
 import java.util.HashMap;
 
-// import com.pathplanner.lib.PathConstraints;
-// import com.pathplanner.lib.PathPlanner;
-// import com.pathplanner.lib.PathPlannerTrajectory;
-// import com.pathplanner.lib.auto.PIDConstants;
-// import com.pathplanner.lib.auto.SwerveAutoBuilder;
-import com.pathplanner.lib.*;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -26,9 +20,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.team568.robot.deepspace.Camera;
-
-import static frc.team568.robot.chargedup.Constants.OIConstants.kControllerDeadband;
 
 final class RobotContainer {
 	private static final Translation2d ZERO_POS = new Translation2d(0, 0);
@@ -39,7 +30,6 @@ final class RobotContainer {
 	final SwerveSubsystem drive;
 	final LiftSubsystem lift;
 	HashMap<String, Command> eventMap = new HashMap<>();
-	AutoBuilder autoBuilder;
 	LockDemWheels lockWheels;
 
 	// Auto tab objects
@@ -47,7 +37,7 @@ final class RobotContainer {
 	private ShuffleboardTab driverTab;
 	private SendableChooser<String> programChooser;
 
-	private PowerDistribution pd;
+	PowerDistribution pd;
 
 	public RobotContainer() {
 		controller1 = new CommandXboxController(0);
@@ -61,17 +51,22 @@ final class RobotContainer {
 		lift = new LiftSubsystem(12, 11, 0, 1);
 
 		configureButtonBindings();
-		// autoBuilder = new AutoBuilder(
-		// 		drive::getPose, // Pose2d supplier
-		// 		drive::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
-		// 		drive.getKinematics(), // SwerveDriveKinematics
-		// 		new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-		// 		new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
-		// 		drive::setModuleStates, // Module states consumer used to output to the drive subsystem
-		// 		eventMap,
-		// 		true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-		// 		drive // The drive subsystem. Used to properly set the requirements of path following commands
-		// 	);
+
+		// 2024 Migration - keeping code for reference; placeholders and numbers are estimated and will need to be measured on the bot.
+		AutoBuilder.configureHolonomic(
+				drive::getPose, // Pose2d supplier
+				drive::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+				drive::getChassisSpeeds,
+				drive::setModuleStates, // SwerveDriveKinematics
+				new HolonomicPathFollowerConfig(
+					new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+					new PIDConstants(0.5, 0.0, 0.0),
+					5.0,
+					0.5,
+					new ReplanningConfig()), // PID constants to correct for rotation error (used to create the rotation controller)
+				() -> true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+				drive // The drive subsystem. Used to properly set the requirements of path following commands
+			);
 
 		setupAutoTab();
 		setupDriverTab();
@@ -93,7 +88,7 @@ final class RobotContainer {
 		controller2.rightTrigger().whileTrue(Commands.runEnd(() -> lift.setCarriage(controller2.getRightTriggerAxis()), () -> lift.setCarriage(0), lift));
 		controller2.leftTrigger().whileTrue(Commands.runEnd(() -> lift.setCarriage(-controller2.getLeftTriggerAxis()), () -> lift.setCarriage(0), lift));
 	
-		// TODO: check parens
+		// TO-DO: check parens
 		// controller2.leftStick().whileTrue(Commands.runEnd(() -> lift.setStage(MathUtil.applyDeadband(controller2.getLeftY(), kControllerDeadband)), () -> lift.setStage(0), lift));
 		// controller2.rightStick().whileTrue(Commands.runEnd(() -> lift.setCarriage(MathUtil.applyDeadband(controller2.getRightY(), kControllerDeadband)), () -> lift.setCarriage(0), lift));
 		

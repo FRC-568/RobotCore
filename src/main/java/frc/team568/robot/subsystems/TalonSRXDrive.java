@@ -10,10 +10,9 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import frc.team568.robot.RobotBase;
 
 public class TalonSRXDrive extends DriveBase {
@@ -28,12 +27,9 @@ public class TalonSRXDrive extends DriveBase {
 	private boolean _tankControls = Preferences.getBoolean("Tank Controls", false);
 
 	public final DifferentialDrive drive;
-	private Gyro gyro;
+	private ADXRS450_Gyro gyro;
 	private WPI_TalonSRX[] motorsL;
 	private WPI_TalonSRX[] motorsR;
-
-	private MotorControllerGroup leftMotors;
-	private MotorControllerGroup rightMotors;
 
 	private DifferentialDriveOdometry odometry;
 
@@ -79,9 +75,6 @@ public class TalonSRXDrive extends DriveBase {
 
 		DifferentialDrive d = new DifferentialDrive(motorsL[0], motorsR[0]);
 		SendableRegistry.addChild(this, d);
-
-		leftMotors = new MotorControllerGroup(motorsL[0]);
-		rightMotors = new MotorControllerGroup(motorsR[0]);
 
 		odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()), 0, 0);
 	 
@@ -141,7 +134,7 @@ public class TalonSRXDrive extends DriveBase {
 		talon.setSensorPhase(true);
 	}
 
-	public TalonSRXDrive withGyro(final Gyro gyro) {
+	public TalonSRXDrive withGyro(final ADXRS450_Gyro gyro) {
 		this.gyro = gyro;
 		return this;
 	}
@@ -157,8 +150,8 @@ public class TalonSRXDrive extends DriveBase {
 	}
 
 	public void tankDriveVolts(double leftVolts, double rightVolts) {
-		leftMotors.setVoltage(leftVolts);
-		rightMotors.setVoltage(-rightVolts);
+		motorsL[0].setVoltage(leftVolts);
+		motorsR[0].setVoltage(-rightVolts);
 		drive.feed();
 	  }
 

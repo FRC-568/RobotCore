@@ -14,9 +14,8 @@
     "**/.factorypath": true,
     "**/*~": true
   },
-  "wpilib.online": true,
   "editor.insertSpaces": false,
-  "java.saveActions.organizeImports": true
+  "java.saveActions.organizeImports": true,
   "java.test.config": [
     {
       "name": "WPIlibUnitTests",

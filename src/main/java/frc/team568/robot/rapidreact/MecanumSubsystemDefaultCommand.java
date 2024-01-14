@@ -7,14 +7,14 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.subsystems.DriveBase.Input;
 
 public class MecanumSubsystemDefaultCommand extends Command {
 	private final MecanumSubsystem drive;
 	private boolean fieldRelativeControls = false;
-	private Gyro gyro;
+	private ADXRS450_Gyro gyro;
 
 	Map<Input, DoubleSupplier> inputMap = new HashMap<>();
 

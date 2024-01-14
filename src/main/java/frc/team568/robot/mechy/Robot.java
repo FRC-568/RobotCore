@@ -24,7 +24,7 @@ public class Robot extends RobotBase {
 		super("Mechy");
 
 		drive = new MechyDrive(1, 2, 3, 4)
-			.useADXRS450_Gyro()
+			.useGyro()
 			.buildControlCommand()
 				.withForwardAxis(() -> -driverController.getRawAxis(Xinput.LeftStickY))
 				.withSideAxis(() -> driverController.getRawAxis(Xinput.LeftStickX))

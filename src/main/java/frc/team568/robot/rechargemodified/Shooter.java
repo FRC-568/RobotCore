@@ -3,7 +3,7 @@ package frc.team568.robot.rechargemodified;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -23,10 +23,10 @@ import frc.team568.robot.subsystems.TwoMotorDrive;
 public class Shooter extends SubsystemBase {
 
 	// Motors
-	private WPI_TalonFX leftShooter;
-	private WPI_TalonFX rightShooter;
-	private WPI_TalonFX lifter;
-	private WPI_TalonFX aimer;
+	private TalonFX leftShooter;
+	private TalonFX rightShooter;
+	private TalonFX lifter;
+	private TalonFX aimer;
 	private TwoMotorDrive drive;
 	private final double MIN_POWER = 0.05;
 	private final double TURN_P = 0.1;
@@ -82,10 +82,10 @@ public class Shooter extends SubsystemBase {
 		super(robot);
 
 		// Initialize motors
-		leftShooter = new WPI_TalonFX(port("leftShooter"));
-		rightShooter = new WPI_TalonFX(port("rightShooter"));
-		lifter = new WPI_TalonFX(port("lifter"));
-		aimer = new WPI_TalonFX(port("aimer"));
+		leftShooter = new TalonFX(port("leftShooter"));
+		rightShooter = new TalonFX(port("rightShooter"));
+		lifter = new TalonFX(port("lifter"));
+		aimer = new TalonFX(port("aimer"));
 
 		// Initialize pot
 		pot = new AnalogInput(port("pot"));
@@ -135,13 +135,13 @@ public class Shooter extends SubsystemBase {
 
 	public double getLeftVel() {
 
-		return leftShooter.getSelectedSensorVelocity();
+		return leftShooter.getVelocity().getValueAsDouble();
 
 	}
 
 	public double getRightVel() {
 
-		return rightShooter.getSelectedSensorVelocity();
+		return rightShooter.getVelocity().getValueAsDouble();
 
 	}
 
@@ -159,19 +159,19 @@ public class Shooter extends SubsystemBase {
 
 	public double getLeftPos() {
 
-		return leftShooter.getSelectedSensorPosition();
+		return leftShooter.getPosition().getValueAsDouble();
 
 	}
 	
 	public double getRightPos() {
 
-		return rightShooter.getSelectedSensorPosition();
+		return rightShooter.getPosition().getValueAsDouble();
 
 	}
 
 	public double getLifterPos() {
 
-		return lifter.getSelectedSensorPosition();
+		return lifter.getPosition().getValueAsDouble();
 
 	}
 
@@ -223,7 +223,7 @@ public class Shooter extends SubsystemBase {
 				if (potPos.size() > 100) potPos.remove(0);
 
 				// Set encoder position using limit switch
-				if (!limit.get()) lifter.setSelectedSensorPosition(LIFTER_HIGH);
+				if (!limit.get()) lifter.setPosition(LIFTER_HIGH);
 
 				// Automatically set hood position
 				if (hoodMode == MODES.def) {

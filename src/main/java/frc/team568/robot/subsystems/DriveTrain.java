@@ -1,26 +1,24 @@
 package frc.team568.robot.subsystems;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.RobotBase;
 
 public class DriveTrain extends SubsystemBase {
-	protected MotorController leftFront;
-	protected MotorController leftBack;
-	protected MotorController rightFront;
-	protected MotorController rightBack;
+	protected VictorSP leftFront;
+	protected VictorSP leftBack;
+	protected VictorSP rightFront;
+	protected VictorSP rightBack;
 	protected DifferentialDrive myDrive;
 
 	protected Joystick driveStick1;
-	private Gyro gyro;
+	private ADXRS450_Gyro gyro;
 
-	public DriveTrain(RobotBase robot, Gyro gyro) {
+	public DriveTrain(RobotBase robot, ADXRS450_Gyro gyro) {
 		super(robot);
 		this.gyro = gyro;
 
@@ -34,7 +32,8 @@ public class DriveTrain extends SubsystemBase {
 		rightFront.setInverted(false);
 		rightBack.setInverted(false);
 
-		myDrive = new DifferentialDrive(new MotorControllerGroup(leftFront, leftBack), new MotorControllerGroup(rightFront, rightBack));
+		leftFront.addFollower(leftBack);
+		rightFront.addFollower(rightBack);
 
 		driveStick1 = new Joystick(0);
 		initDefaultCommand();

@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,7 +17,7 @@ public class MechyDrive extends SubsystemBase implements OmniDriveSubsystem {
 	public static double inputDeadband = 0.05;
 
 	protected MecanumDrive drive;
-	protected Gyro gyro;
+	protected ADXRS450_Gyro gyro;
 
 	protected boolean m_fieldPOVEnabled = false;
 	protected boolean m_safeModeEnabled = false;
@@ -45,17 +44,17 @@ public class MechyDrive extends SubsystemBase implements OmniDriveSubsystem {
 		addChild("drive", drive);
 	}
 
-	public MechyDrive useADXRS450_Gyro() {
-		return useGyro((Gyro) new ADXRS450_Gyro());
+	public MechyDrive useGyro() {
+		return useGyro(new ADXRS450_Gyro());
 	}
 
-	public MechyDrive useGyro(Gyro gyro) {
+	public MechyDrive useGyro(ADXRS450_Gyro gyro) {
 		this.gyro = gyro;
 		resetHeading();
 		return this;
 	}
 
-	public Gyro getGyro() {
+	public ADXRS450_Gyro getGyro() {
 		return gyro;
 	}
 

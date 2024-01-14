@@ -26,16 +26,16 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.SPI.Mode;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.team568.util.Vector2;
 
 // Temporarily hide 2020 deprecation warnings
-@SuppressWarnings("all")
+//@SuppressWarnings("all")
 public class PMW3901 implements Sendable, Closeable {
 	private static final CLibrary c = CLibrary.INSTANCE;
 	private static final HalLibrary hal = HalLibrary.INSTANCE;
@@ -69,11 +69,13 @@ public class PMW3901 implements Sendable, Closeable {
 		 * PMW3901 officially supports a 2MHz clock; but may need more time between the
 		 * address byte and data byte on read commands (35uS). If read commands are
 		 * failing, lower this to ~14kHz.
+		 * 
+		 * 2024-01-13 - quickly replacing deprecated references to setSampleDataOnTrailingEdge()
+		 *  and setClockActiveLow() with new API without testing. The new mode setting may be wrong.
 		 */
 		spi.setClockRate(SPI_CLOCK);
-		spi.setMSBFirst();
-		spi.setSampleDataOnTrailingEdge();
-		spi.setClockActiveLow();
+		//spi.setMSBFirst(); // Method was removed - is BE now implied?
+		spi.setMode(Mode.kMode3);
 		spi.setChipSelectActiveLow();
 
 		txBuffer = new Memory(2);
@@ -306,7 +308,7 @@ public class PMW3901 implements Sendable, Closeable {
 	}
 
 	protected interface CLibrary extends Library {
-		CLibrary INSTANCE = Native.loadLibrary("c", CLibrary.class);
+		CLibrary INSTANCE = Native.load("c", CLibrary.class);
 
 		public static int Spi_Ioc_Message(int size) {
 			final int _IOC_SIZEBITS = 14;
@@ -325,7 +327,7 @@ public class PMW3901 implements Sendable, Closeable {
 	}
 
 	protected interface HalLibrary extends Library {
-		HalLibrary INSTANCE = Native.loadLibrary("wpiHal", HalLibrary.class);
+		HalLibrary INSTANCE = Native.load("wpiHal", HalLibrary.class);
 
 		public int HAL_GetSPIHandle(int port);
 	}

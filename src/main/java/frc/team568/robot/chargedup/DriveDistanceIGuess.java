@@ -27,7 +27,7 @@ public class DriveDistanceIGuess extends Command {
 
 	@Override
 	public void execute() {
-		// TODO: make this not extremely bad
+		// TO-DO: make this not extremely bad
 		// if (drive.getPose().getX() < xDist) {
 		// 	if (drive.getPose().getY() < yDist) {
 		// 		drive.drive(xSpeed, ySpeed, 0);

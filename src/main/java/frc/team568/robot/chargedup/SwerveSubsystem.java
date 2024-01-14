@@ -26,7 +26,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -38,12 +37,12 @@ class SwerveSubsystem extends SubsystemBase {
 
 	private final SwerveModule[] m_modules;
 	private final SwerveDriveKinematics m_kinematics;
-	private final Gyro m_gyro = (Gyro) new ADXRS450_Gyro();
+	private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
 
 	final ShuffleboardTab configTab;
 
-	private GenericEntry[] cancoderOffsets;
-	private double[] cancoderPrevOffsets;
+	//private GenericEntry[] cancoderOffsets;
+	//private double[] cancoderPrevOffsets;
 
 	private Translation2d targetTrajectory = new Translation2d(0, 0);
 	private Rotation2d targetRotation = new Rotation2d(0);
@@ -52,7 +51,7 @@ class SwerveSubsystem extends SubsystemBase {
 
 	PIDConfig drivePID, turnPID;
 
-	// TODO: set relative cam pose to robot
+	// TO-DO: set relative cam pose to robot
 	// private final AprilTags apriltag = new AprilTags("photonvision", new Translation3d(0.0, 0.0, 0.0),
 	// 		new Rotation3d(0.0, 0.0, 0.0));
 
@@ -115,6 +114,10 @@ class SwerveSubsystem extends SubsystemBase {
 		setModuleStates(swerveModuleStates);
 	}
 
+	public ChassisSpeeds getChassisSpeeds() {
+		return m_kinematics.toChassisSpeeds(getModuleStates());
+	}
+
 	public void toggleSlowMode() {
 		slowMode = !slowMode;
 		if (slowMode) {
@@ -142,6 +145,15 @@ class SwerveSubsystem extends SubsystemBase {
 
 	protected SwerveModule[] getModules() {
 		return m_modules.clone();
+	}
+
+	protected SwerveModuleState[] getModuleStates() {
+		var states = new SwerveModuleState[m_modules.length];
+		for (int i = 0; i < m_modules.length; i++) {
+			states[i].angle = m_modules[i].getPosition().angle;
+			states[i].speedMetersPerSecond = m_modules[i].m_driveEncoder.getVelocity();
+		}
+		return states;
 	}
 
 	protected SwerveModulePosition[] getModulePositions() {
@@ -225,6 +237,8 @@ class SwerveSubsystem extends SubsystemBase {
 			turnPID.clearDirtyFlag();
 		}
 
+		// 2024 migration - Is this necessary? More testing needed.
+		/*
 		for (int i = 0; i < cancoderOffsets.length; i++) {
 			var newValue = cancoderOffsets[i].get().getDouble();
 			if (newValue != cancoderPrevOffsets[i]) {
@@ -233,6 +247,7 @@ class SwerveSubsystem extends SubsystemBase {
 				cancoderPrevOffsets[i] = newValue;
 			}
 		}
+		*/
 	}
 
 	@Override
@@ -291,15 +306,18 @@ class SwerveSubsystem extends SubsystemBase {
 		// Add section for CANCoder settings
 		layout = configTab.getLayout("CANCoders", BuiltInLayouts.kGrid).withPosition(2, 2).withSize(2, 2);
 
-		cancoderOffsets = new GenericEntry[m_modules.length];
-		cancoderPrevOffsets = new double[m_modules.length];
+		//cancoderOffsets = new GenericEntry[m_modules.length];
+		//cancoderPrevOffsets = new double[m_modules.length];
 
+		// 2024 Migration - does this work? Need a better way to do this in Phoneix6
+		/*
 		for (int i = 0; i < m_modules.length; i++) {
 			double encValue = m_modules[i].m_turningEncoder.configGetMagnetOffset();
 			String modName = ModuleIndex.byIndex(i).name();
 			cancoderOffsets[i] = layout.addPersistent(modName + " Offset", encValue).getEntry();
 			cancoderPrevOffsets[i] = encValue;
 		}
+		*/
 
 		return configTab;
 	}

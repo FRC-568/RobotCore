@@ -8,7 +8,7 @@ import static frc.team568.robot.rapidreact.Config.Intake.kLiftUp;
 import static frc.team568.robot.rapidreact.Config.Intake.kMotorId;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DoubleSolenoid;

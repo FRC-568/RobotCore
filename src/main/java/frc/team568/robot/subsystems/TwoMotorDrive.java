@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -43,7 +42,7 @@ public class TwoMotorDrive extends SubsystemBase {
 	protected WPI_TalonSRX leftMotor;
 	protected WPI_TalonSRX rightMotor;
 	protected Pose2d m_pose;
-	protected Gyro gyro = (Gyro) new ADXRS450_Gyro();
+	protected ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 
 	// Create our gyro object like we would on a real robot.
 	private AnalogGyro m_gyro = new AnalogGyro(1);

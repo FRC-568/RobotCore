@@ -8,19 +8,17 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkBase.SoftLimitDirection;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+//import com.revrobotics.CANSparkBase.SoftLimitDirection;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LiftSubsystem extends SubsystemBase {
-	// TODO: figure out encoder stuff
-
     // === stage ===
 	private WPI_TalonSRX stageMotor;
     private DigitalInput limitSwitch1;
@@ -34,7 +32,7 @@ public class LiftSubsystem extends SubsystemBase {
 
     // === carriage ===
 	private CANSparkMax carriageMotor;
-	private SparkMaxPIDController carriagePid;
+	private SparkPIDController carriagePid;
 	private RelativeEncoder carriageEncoder;
 	private DigitalInput limitSwitch2;
 	private static double feedforward2 = 0.0;
@@ -56,8 +54,6 @@ public class LiftSubsystem extends SubsystemBase {
 	boolean override = false;
 
 	public LiftSubsystem(int stagePort, int carriagePort, int switchPort1, int switchPort2) {
-		// TODO: set init position to level 1
-		// TODO: set limit switch to normally open or closed
 		stageMotor = new WPI_TalonSRX(stagePort);
 		addChild("stageMotor", stageMotor);
         limitSwitch1 = new DigitalInput(switchPort1);
@@ -79,14 +75,13 @@ public class LiftSubsystem extends SubsystemBase {
 		stageMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(false, 24, 30.0, 100.0));
 		stageMotor.configOpenloopRamp(0.5);
 		stageMotor.configForwardSoftLimitThreshold(STAGE_LEVELS[2]);
-		// TODO: change to true
 		stageMotor.configForwardSoftLimitEnable(false);
 		stageMotor.setSelectedSensorPosition(0.0);
 
 		carriageMotor = new CANSparkMax(carriagePort, MotorType.kBrushed);
 		carriageMotor.setOpenLoopRampRate(0.5);
 		carriagePid = carriageMotor.getPIDController();
-		carriageEncoder = carriageMotor.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 8192);
+		carriageEncoder = carriageMotor.getEncoder(SparkRelativeEncoder.Type.kQuadrature, 8192);
 		carriageEncoder.setPosition(0.0);
 		// addChild("carriageMotor", carriageMotor);
         limitSwitch2 = new DigitalInput(switchPort2);

@@ -48,7 +48,7 @@ public class AprilTags extends SubsystemBase {
             aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
             estimator = new PhotonPoseEstimator(
                     aprilTagFieldLayout,
-                    PoseStrategy.AVERAGE_BEST_TARGETS, // TODO: test strats
+                    PoseStrategy.AVERAGE_BEST_TARGETS,
                     camera,
                     robotToCam);
         } catch (IOException e) {

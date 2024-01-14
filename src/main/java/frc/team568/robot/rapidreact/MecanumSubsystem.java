@@ -17,8 +17,8 @@ import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -28,7 +28,7 @@ public class MecanumSubsystem extends SubsystemBase {
 	public double wheelRadius = 3;
 	protected final MecanumDrive drive;
 	protected WPI_TalonSRX motorFL, motorFR, motorBL, motorBR;
-	private Gyro gyro;
+	private ADXRS450_Gyro gyro;
 
 	// Locations of the wheels relative to the robot center.
 	Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
@@ -39,7 +39,7 @@ public class MecanumSubsystem extends SubsystemBase {
 	MecanumDriveKinematics m_kinematics;
 	MecanumDriveOdometry m_odometry;
 
-	public MecanumSubsystem(Gyro gyro) {
+	public MecanumSubsystem(ADXRS450_Gyro gyro) {
 		this.gyro = gyro;
 		motorBL = new WPI_TalonSRX(kMotorID_BL);
 		motorFL = new WPI_TalonSRX(kMotorId_FL);
@@ -84,7 +84,7 @@ public class MecanumSubsystem extends SubsystemBase {
 		motor.configOpenloopRamp(0.1);
 	}
 
-	public Gyro getGyro() {
+	public ADXRS450_Gyro getGyro() {
 		return gyro;
 	}
 	

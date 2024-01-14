@@ -10,7 +10,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain {
@@ -27,7 +26,7 @@ public class Drivetrain {
 	private final SwerveModule m_backLeft = new SwerveModule(5, 6, 3);
 	private final SwerveModule m_backRight = new SwerveModule(7, 8, 4);
 
-	private final Gyro m_gyro = (Gyro) new ADXRS450_Gyro();
+	private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
 
 	private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
 			m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);

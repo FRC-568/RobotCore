@@ -4,25 +4,22 @@
 
 package frc.team568.robot.chargedup;
 
-import static frc.team568.robot.chargedup.Constants.SwerveConstants.kEncoderResolution;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxRampRate;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kWheelCircumference;
-import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpeed;
+//import static frc.team568.robot.chargedup.Constants.SwerveConstants.kMaxSpeed;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kDrivePidChannel;
-import static frc.team568.robot.chargedup.Constants.SwerveConstants.kRelativeEncoderResolution;
+//import static frc.team568.robot.chargedup.Constants.SwerveConstants.kRelativeEncoderResolution;
 import static frc.team568.robot.chargedup.Constants.SwerveConstants.kDriveGearRatio;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderStatusFrame;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.ctre.phoenix.sensors.SensorTimeBase;
-import com.revrobotics.CANSparkBase.*;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -41,11 +38,11 @@ public class SwerveModule implements Sendable {
 
 	final CANSparkMax m_driveMotor;
 	private final CANSparkMax m_turningMotor;
-	final CANCoder m_turningEncoder;
+	final CANcoder m_turningEncoder;
 
 	// WARNING: CHANGE THIS BACK TO PRIVATE
 	public final RelativeEncoder m_driveEncoder;
-	final SparkMaxPIDController m_drivePIDController;
+	final SparkPIDController m_drivePIDController;
 	private double m_driveFeedforward = 0.088;
 
 	// Gains are for example purposes only - must be determined for your own robot!
@@ -91,19 +88,14 @@ public class SwerveModule implements Sendable {
 		m_turningMotor.setIdleMode(IdleMode.kBrake);
 		m_turningMotor.setInverted(true);
 
-		m_turningEncoder = new CANCoder(turningEncoderChannel);
-		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20);
-		m_turningEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 100);
-		//m_turningEncoder.configMagnetOffset(turnOffset);
-		m_turningEncoder.configFeedbackCoefficient(
-			2 * Math.PI / kEncoderResolution,
-			"radians",
-			SensorTimeBase.PerSecond);
-		m_turningEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+		m_turningEncoder = new CANcoder(turningEncoderChannel);
+		m_turningEncoder.getPosition().setUpdateFrequency(50);
+		m_turningEncoder.getFaultField().setUpdateFrequency(10);
 		m_turningMotor.setClosedLoopRampRate(0);
 		// m_turningPIDController.setIntegratorRange(-3, 3);
 
-		turningAngle = m_turningEncoder::getPosition;
+		// 2024 migration - assuming unit conversion is set in encoder config - uncomment here if needed.
+		turningAngle = () -> m_turningEncoder.getAbsolutePosition().getValueAsDouble() /* * 2 * Math.PI / kEncoderResolution */;
 
 		this.location = location;
 

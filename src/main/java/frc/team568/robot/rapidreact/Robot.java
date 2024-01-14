@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,7 +29,7 @@ import frc.team568.robot.subsystems.DriveBase.Input;
 public class Robot extends RobotBase {
 	PowerDistribution pdp;
 	MecanumSubsystem drive;
-	Gyro gyro;
+	ADXRS450_Gyro gyro;
 	Compressor compressor;
 	UsbCamera camera;
 	PneumaticsControlModule pcm;
@@ -54,7 +53,7 @@ public class Robot extends RobotBase {
 		coDriver = new XinputController(1);
 		pdp = new PowerDistribution();
 		pcm = new PneumaticsControlModule();
-		gyro = (Gyro) new ADXRS450_Gyro(Port.kOnboardCS0);
+		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
 		drive = new MecanumSubsystem(gyro);
 		compressor = new Compressor(Config.kcompressor, PneumaticsModuleType.CTREPCM);
 		camera = CameraServer.startAutomaticCapture();
