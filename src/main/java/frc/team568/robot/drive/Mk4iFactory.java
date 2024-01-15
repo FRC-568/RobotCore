@@ -64,10 +64,8 @@ public final class Mk4iFactory {
 	public Mk4iFactory withTurningCANCoder(int port) {
 		turningEncoder = new CANcoder(port);
 
-		// 2024 Migration - add conversion rate here is needed.
-
-		turningAngle = () -> turningEncoder.getAbsolutePosition().getValueAsDouble() /* 2 * Math.PI / CANCODER_UNITS */;
-		turningRate = () -> turningEncoder.getVelocity().getValueAsDouble() /* 2 * Math.PI / CANCODER_UNITS */;
+		turningAngle = () -> turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
+		turningRate = () -> turningEncoder.getVelocity().getValueAsDouble() * 2 * Math.PI;
 
 		return this;
 	}

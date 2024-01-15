@@ -83,16 +83,12 @@ public class SwerveModule implements Sendable {
 		// Save CAN bandwidth
 		m_turningEncoder.getPosition().setUpdateFrequency(50);
 		m_turningEncoder.getFaultField().setUpdateFrequency(10);
-		
-		// 2024 conversion - Cancoder configuration options are more limited in Phoenix6
-		//  so they have been removed from this code - use configuration tool instead.
-	
+
 		// Limit the PID Controller's input range between -pi and pi and set the input
 		// to be continuous.
 		// m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
-		//  2024 conversion / untested. This code expects units in Radians - if it can't be set in the tool, add conversion here.
-		turningAngle = () -> m_turningEncoder.getAbsolutePosition().getValueAsDouble() /* * 2 * Math.PI / kEncoderResolution */;
+		turningAngle = () -> m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
 
 		SendableRegistry.addLW(this, "Swerve " + driveMotorChannel);
 		SendableRegistry.addChild(this, m_drivePIDController);

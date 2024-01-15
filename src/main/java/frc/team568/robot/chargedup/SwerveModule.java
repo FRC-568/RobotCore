@@ -94,12 +94,11 @@ public class SwerveModule implements Sendable {
 		m_turningMotor.setClosedLoopRampRate(0);
 		// m_turningPIDController.setIntegratorRange(-3, 3);
 
-		// 2024 migration - assuming unit conversion is set in encoder config - uncomment here if needed.
-		turningAngle = () -> m_turningEncoder.getAbsolutePosition().getValueAsDouble() /* * 2 * Math.PI / kEncoderResolution */;
+		turningAngle = () -> m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
 
 		this.location = location;
 
-		m_turningPIDController.enableContinuousInput(0, 2*Math.PI);
+		//m_turningPIDController.enableContinuousInput(0, 2*Math.PI);
 		m_turningPIDController.setTolerance(0.01745);
 
 		SendableRegistry.addLW(this, "Swerve " + driveMotorChannel);
