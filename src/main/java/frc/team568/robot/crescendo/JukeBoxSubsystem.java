@@ -6,33 +6,41 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class PivotSubsystem extends SubsystemBase {
+public class JukeBoxSubsystem extends SubsystemBase {
     //=== motors ===
-	private TalonFX leftMotor;
-    private TalonFX rightMotor;
+	private TalonFX leftOutakeMotor;
+    private TalonFX rightOutakeMotor;
+	private CANSparkMax intakeMotor;
 
 
 	boolean override = false;
 
-	public PivotSubsystem(int leftMotorPort, int rightMotorPort) {
-		leftMotor = new TalonFX(leftMotorPort);
-		addChild("leftMotor", leftMotor);
+	public JukeBoxSubsystem(int leftOutakeMotorPort, int rightOutakeMotorPort, int intakeMotorPort) {
+		leftOutakeMotor = new TalonFX(leftOutakeMotorPort);
+		addChild("leftOutakeMotor", leftOutakeMotor);
 
-		rightMotor = new TalonFX(rightMotorPort);
-		addChild("rightMotor", rightMotor);
-
+		rightOutakeMotor = new TalonFX(rightOutakeMotorPort);
+		addChild("rightOutakeMotor", rightOutakeMotor);
+		
+		// intakeMotor = new CANSparkMax(intakeMotorPort);
+		// addChild("intakeMotor", intakeMotor);
+		
 		MotorOutputConfigs currentConfigs = new MotorOutputConfigs();
 		currentConfigs.Inverted = InvertedValue.Clockwise_Positive; //TODO: reverse directions based on design
 
-		leftMotor.getConfigurator().apply(currentConfigs);
-		rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
+		leftOutakeMotor.getConfigurator().apply(currentConfigs);
+		rightOutakeMotor.setControl(new Follower(leftOutakeMotor.getDeviceID(), true));
+		intakeMotor.setInverted(true);
+
+		//TODO: Make invert intake motor based on design
 
 		//manning
-		//rightMotor.optimizeBusUtilization()
+		//rightOutakeMotor.optimizeBusUtilization()
 		
 		
 		//=== pid configs ===
@@ -42,22 +50,12 @@ public class PivotSubsystem extends SubsystemBase {
 		slot0Configs.kI = 0; //no output for integrated error
 		slot0Configs.kD = 0; //A velocity of 1 rps results in 0.1 V output at a setting of 0.1
 
-		leftMotor.getConfigurator().apply(slot0Configs);
+		leftOutakeMotor.getConfigurator().apply(slot0Configs);
         
 	}
 
-    public void setAngle(double angle){
-		angle /= 360.0; //degrees to rotations
-		final PositionVoltage request = new PositionVoltage(0).withSlot(0);
-
-		//set position to 10 rotations
-		leftMotor.setControl(request.withPosition(angle));
+	public void setIntakeSpeed(double speed) {
 		
-		
-	}
-
-	public boolean getAngle(){
-		return false;
 	}
 
 	@Override
