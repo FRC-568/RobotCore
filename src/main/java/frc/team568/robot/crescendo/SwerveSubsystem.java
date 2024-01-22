@@ -21,6 +21,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
@@ -37,7 +38,7 @@ class SwerveSubsystem extends SubsystemBase {
 	private Translation2d targetTrajectory = new Translation2d(0, 0);
 	private Rotation2d targetRotation = new Rotation2d(0);
 
-	private GenericEntry _fieldRelative;
+	private boolean _fieldRelative = Preferences.getBoolean(FIELD_REL_KEY, false);
 
 	protected SwerveDrive drive;
 
@@ -152,11 +153,12 @@ class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public boolean isFieldRelative() {
-		return _fieldRelative.getBoolean(true);
+		return _fieldRelative;
 	}
 
 	public void setFieldRelative(boolean isEnabled) {
-		_fieldRelative.setBoolean(isEnabled);
+		_fieldRelative = isEnabled;
+		Preferences.setBoolean(FIELD_REL_KEY, _fieldRelative);
 	}
 
 	public boolean toggleFieldRelative() {
