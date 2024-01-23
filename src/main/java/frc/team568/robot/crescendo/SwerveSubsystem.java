@@ -5,20 +5,19 @@
 package frc.team568.robot.crescendo;
 
 import static frc.team568.robot.crescendo.Constants.SwerveConstants.kMaxSpeed;
+import static frc.team568.robot.crescendo.Constants.SwerveConstants.kNormalMultiplier;
+import static frc.team568.robot.crescendo.Constants.SwerveConstants.kSlowMultiplier;
 
 import java.io.File;
 import java.io.IOException;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Preferences;
@@ -29,23 +28,13 @@ import swervelib.SwerveModule;
 
 class SwerveSubsystem extends SubsystemBase {
 	protected static final String FIELD_REL_KEY = "Field Relative";
-
-	private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
-
-	//private GenericEntry[] cancoderOffsets;
-	//private double[] cancoderPrevOffsets;
-
-	private Translation2d targetTrajectory = new Translation2d(0, 0);
-	private Rotation2d targetRotation = new Rotation2d(0);
-
 	private boolean _fieldRelative = Preferences.getBoolean(FIELD_REL_KEY, false);
 
-	protected SwerveDrive drive;
+	protected static final String SLOW_MODE_KEY = "Slow Mode";
+	private boolean _slowMode = Preferences.getBoolean(SLOW_MODE_KEY, false);
+	private double speedMultiplier = _slowMode ? kSlowMultiplier : kNormalMultiplier;
 
-	private boolean slowMode = false;
-	private double slowMultiplier = 0.25;
-	private double normalMultiplier = 1.0;
-	private double speedMultiplier = 1.0;
+	protected SwerveDrive drive;
 
 	public SwerveSubsystem(Pose2d startingPose) {
 		try {
@@ -76,11 +65,8 @@ class SwerveSubsystem extends SubsystemBase {
 	 * @param fieldRelative Override setting for field relative controls
 	 */
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-		xSpeed = xSpeed * speedMultiplier;
-		ySpeed = ySpeed * speedMultiplier;
-		setModuleStates(fieldRelative
-				? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
-				: new ChassisSpeeds(xSpeed, ySpeed, rot));
+		var translation = new Translation2d(xSpeed * speedMultiplier, ySpeed * speedMultiplier);
+		drive.drive(translation, rot, fieldRelative, true);
 	}
 
 	public void setModuleStates(ChassisSpeeds chassisSpeeds) {
@@ -89,23 +75,6 @@ class SwerveSubsystem extends SubsystemBase {
 
 	public ChassisSpeeds getChassisSpeeds() {
 		return drive.kinematics.toChassisSpeeds(getModuleStates());
-	}
-
-	public void toggleSlowMode() {
-		slowMode = !slowMode;
-		if (slowMode) {
-			speedMultiplier = slowMultiplier;
-		} else {
-			speedMultiplier = normalMultiplier;
-		}
-	}
-
-	public Translation2d getTargetTrajectory(){
-		return targetTrajectory;
-	}
-
-	public Rotation2d getTargetRotation(){
-		return targetRotation;
 	}
 
 	public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
@@ -131,15 +100,7 @@ class SwerveSubsystem extends SubsystemBase {
 	protected SwerveModulePosition[] getModulePositions() {
 		return drive.getModulePositions();
 	}
-/* 
-	public Rotation2d getHeading() {
-		return m_gyro.getRotation2d();
-	}
 
-	/*public void resetHeading() {
-		m_gyro.reset();
-	}
-*/
 	public SwerveDriveKinematics getKinematics() {
 		return drive.kinematics;
 	}
@@ -152,6 +113,20 @@ class SwerveSubsystem extends SubsystemBase {
 		drive.resetOdometry(pose);
 	}
 
+	public double getTravelSpeedMS() {
+		var cs = getChassisSpeeds();
+		return new Translation2d(cs.vxMetersPerSecond, cs.vyMetersPerSecond).getNorm();
+	}
+
+	public double getTravelBearingDeg() {
+		var cs = getChassisSpeeds();
+		return new Translation2d(cs.vxMetersPerSecond, cs.vyMetersPerSecond).getAngle().getDegrees();
+	}
+
+	public double getHeadingDeg() {
+		return drive.getYaw().getDegrees();
+	}
+
 	public boolean isFieldRelative() {
 		return _fieldRelative;
 	}
@@ -159,6 +134,7 @@ class SwerveSubsystem extends SubsystemBase {
 	public void setFieldRelative(boolean isEnabled) {
 		_fieldRelative = isEnabled;
 		Preferences.setBoolean(FIELD_REL_KEY, _fieldRelative);
+		System.out.printf("Field relative control is %s.\n", _fieldRelative ? "enabled" : "disabled");
 	}
 
 	public boolean toggleFieldRelative() {
@@ -167,11 +143,29 @@ class SwerveSubsystem extends SubsystemBase {
 		return fr;
 	}
 
+	public boolean isSlowModeActive() {
+		return _slowMode;
+	}
+
+	public void setSlowMode(boolean isEnabled) {
+		_slowMode = isEnabled;
+		speedMultiplier = _slowMode ? kSlowMultiplier : kNormalMultiplier;
+		Preferences.setBoolean(SLOW_MODE_KEY, _slowMode);
+		System.out.printf("%s controls activated. (%d%%)\n", _slowMode ? "Slow" : "Fast", speedMultiplier * 100);
+	}
+
+	public boolean toggleSlowMode() {
+		boolean sm = !isSlowModeActive();
+		setSlowMode(sm);
+		return sm;
+	}
+
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
 
 		builder.addBooleanProperty(FIELD_REL_KEY, this::isFieldRelative, this::setFieldRelative);
+		builder.addBooleanProperty(SLOW_MODE_KEY, this::isSlowModeActive, this::setSlowMode);
 	}
 
 }
