@@ -7,10 +7,9 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
+//import edu.wpi.first.cameraserver.CameraServer;
+//import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -23,9 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 
 final class RobotContainer {
-	private static final Translation2d ZERO_POS = new Translation2d(0, 0);
-
-	UsbCamera camera;
+	//UsbCamera camera;
 	CommandXboxController controller1;
 	CommandXboxController controller2;
 	final SwerveSubsystem drive;
@@ -41,7 +38,7 @@ final class RobotContainer {
 	public RobotContainer() {
 		controller1 = new CommandXboxController(0);
 		controller2 = new CommandXboxController(1);
-		camera = CameraServer.startAutomaticCapture();
+		//camera = CameraServer.startAutomaticCapture();
 		// WARNING: this pose is empty
 		drive = new SwerveSubsystem(new Pose2d());
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
@@ -96,10 +93,10 @@ final class RobotContainer {
 
 	private void setupDriverTab() {
 		driverTab = Shuffleboard.getTab( "Driver");
-		driverTab.addDouble("Travel Velocity", () -> drive.getTargetTrajectory().getDistance(ZERO_POS)).withSize(1, 1).withPosition(0, 0);
-		driverTab.addDouble("Travel Direction", () -> drive.getTargetTrajectory().getAngle().getDegrees()).withSize(1, 1).withPosition(0, 0);
-		driverTab.addDouble("Travel Facing", () -> drive.getTargetRotation().getDegrees()).withSize(1, 1).withPosition(4, 0);
-		driverTab.add(camera).withPosition(0, 0).withSize(3, 3);
+		driverTab.addDouble("Travel Velocity", drive::getTravelSpeedMS).withSize(1, 1).withPosition(0, 0);
+		driverTab.addDouble("Travel Direction", drive::getTravelBearingDeg).withSize(1, 1).withPosition(0, 0);
+		driverTab.addDouble("Travel Facing", drive::getHeadingDeg).withSize(1, 1).withPosition(4, 0);
+		//driverTab.add(camera).withPosition(0, 0).withSize(3, 3);
 	}
 
 }

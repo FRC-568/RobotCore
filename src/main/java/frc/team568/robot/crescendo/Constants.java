@@ -27,16 +27,9 @@ final class Constants {
 		static final double kModuleMaxAngularVelocity = 32 * Math.PI; // 2 rotations per second
 		static final double kModuleMaxAngularAcceleration = 32 * Math.PI; // radians per second squared
 		static final int kDrivePidChannel = 0;
-		
-		static final double kFrontOffset = 0.3849685;
-		static final double kLeftOffset = 0.38735;
-		static final double kRightOffset = 0.38735;
-		static final double kBackOffset = 0.3849685;
+		static final double kSlowMultiplier = 0.25;
+		static final double kNormalMultiplier = 1.0;
 
-		static final double kFrontRot = 5;
-		static final double kLeftRot = -35;
-		static final double kRightRot = 105;
-		static final double kBackRot = 307;
 	}
 
 }
