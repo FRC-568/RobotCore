@@ -33,11 +33,14 @@ public class JukeBoxSubsystem extends SubsystemBase {
 		//addChild("intakeMotor", intakeMotor);
 		//TODO: thats important
 		
-		MotorOutputConfigs currentConfigs = new MotorOutputConfigs();
-		currentConfigs.Inverted = InvertedValue.Clockwise_Positive; //TODO: reverse directions based on design
+		MotorOutputConfigs lConfigs = new MotorOutputConfigs();
+		lConfigs.Inverted = InvertedValue.Clockwise_Positive; //TODO: reverse directions based on design
 
-		leftOuttakeMotor.getConfigurator().apply(currentConfigs);
-		rightOuttakeMotor.setControl(new Follower(leftOuttakeMotor.getDeviceID(), true));
+		MotorOutputConfigs rConfigs = new MotorOutputConfigs();
+		rConfigs.Inverted = InvertedValue.Clockwise_Positive;
+
+		leftOuttakeMotor.getConfigurator().apply(lConfigs);
+		rightOuttakeMotor.getConfigurator().apply(rConfigs);
 		intakeMotor.setInverted(true);
 
 		//TODO: Make invert intake motor based on design
@@ -57,8 +60,13 @@ public class JukeBoxSubsystem extends SubsystemBase {
         
 	}
 
-	public void setIntakeSpeed(double speed) {
-		
+	public void setIntakeSpeed(double lSpeed, double rSpeed) {
+		leftOuttakeMotor.set(lSpeed);
+		rightOuttakeMotor.set(rSpeed);
+	}
+
+	public void setIntakeSpeed(double speed){
+		intakeMotor.set(speed);
 	}
 
 	@Override
