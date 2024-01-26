@@ -20,7 +20,8 @@ public class Up extends Command {
 	public void execute() {
 		pivot.setAngle(angle);
 	}
-
+	
+	@Override
 	public boolean isFinished() {
 		return false;
 	}

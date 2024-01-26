@@ -2,18 +2,22 @@ package frc.team568.robot.crescendo;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class PneumaticSubsystem extends Command {
-  	private final DoubleSolenoid dSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
-	private final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
+public class PneumaticSubsystem extends SubsystemBase {
+  	private DoubleSolenoid dSolenoid;
+	private Compressor compressor;
+
+	PneumaticSubsystem(DoubleSolenoid dSolenoid,Compressor compressor){
+		this.dSolenoid = dSolenoid;
+		this.compressor = compressor;
+	}
 	
-	public void Forward(){
+	public void Up(){
 		dSolenoid.set(DoubleSolenoid.Value.kForward);
 	}
 
-	public void Reverse(){
+	public void Down(){
 		dSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 
@@ -39,20 +43,5 @@ public class PneumaticSubsystem extends Command {
 
 	public void clEnable(){
 		compressor.enableDigital();
-	}
-
-	@Override
-	public void initialize() {
-		dSolenoid.set(DoubleSolenoid.Value.kReverse);
-	}
-
-	@Override
-	public boolean isFinished() {
-		return false;
-	}
-
-	@Override
-	public void end(boolean interrupted) {
-		dSolenoid.set(DoubleSolenoid.Value.kOff);
 	}
 }
