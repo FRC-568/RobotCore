@@ -2,17 +2,14 @@ package frc.team568.robot.crescendo;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class JukeBoxSubsystem extends SubsystemBase {
+public class JukeboxSubsystem extends SubsystemBase {
     //=== motors ===
 	private TalonFX leftOuttakeMotor;
     private TalonFX rightOuttakeMotor;
@@ -21,7 +18,7 @@ public class JukeBoxSubsystem extends SubsystemBase {
 
 	boolean override = false;
 
-	public JukeBoxSubsystem(int leftOuttakeMotorPort, int rightOuttakeMotorPort, int intakeMotorPort) {
+	public JukeboxSubsystem(int leftOuttakeMotorPort, int rightOuttakeMotorPort, int intakeMotorPort) {
 		leftOuttakeMotor = new TalonFX(leftOuttakeMotorPort);
 		addChild("leftOuttakeMotor", leftOuttakeMotor);
 

@@ -37,7 +37,6 @@ final class Constants {
 		static final double kLeftRot = -35;
 		static final double kRightRot = 105;
 		static final double kBackRot = 307;
-
 	}
 
 }
