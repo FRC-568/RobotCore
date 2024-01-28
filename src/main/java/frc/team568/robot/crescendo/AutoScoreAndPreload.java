@@ -26,7 +26,7 @@ public class AutoScoreAndPreload extends SequentialCommandGroup {
         3.0
 	);
 
-	AutoScoreAndPreLoad(SwerveSubsystem drive, JukeboxSubsystem juke, PivotSubsystem pivot) {
+	public AutoScoreAndPreload(SwerveSubsystem drive, JukeboxSubsystem juke, PivotSubsystem pivot) {
 		addRequirements(drive,juke,pivot);
 		addCommands(
 			autoToSpeaker, // go to place
