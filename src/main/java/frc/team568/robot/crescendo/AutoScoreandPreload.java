@@ -10,7 +10,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
-public class AutoScoreandPreload extends SequentialCommandGroup {
+public class AutoScoreAndPreLoad extends SequentialCommandGroup {
 
 	RobotContainer builder;
 	PathPlannerPath path = PathPlannerPath.fromPathFile("LeftScorePreloadAndExit");
@@ -26,7 +26,7 @@ public class AutoScoreandPreload extends SequentialCommandGroup {
         3.0
 	);
 
-	AutoScoreandPreload(SwerveSubsystem drive, JukeBoxSubsystem juke, PivotSubsystem pivot) {
+	AutoScoreAndPreLoad(SwerveSubsystem drive, JukeBoxSubsystem juke, PivotSubsystem pivot) {
 		addRequirements(drive,juke,pivot);
 		addCommands(
 			autoToSpeaker, // go to place
