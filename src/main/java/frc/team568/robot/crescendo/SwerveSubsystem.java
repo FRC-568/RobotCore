@@ -66,7 +66,7 @@ class SwerveSubsystem extends SubsystemBase {
 	 */
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
 		var translation = new Translation2d(xSpeed * speedMultiplier, ySpeed * speedMultiplier);
-		drive.drive(translation, rot, fieldRelative, true);
+		drive.drive(translation, rot, fieldRelative, false);
 	}
 
 	public void setModuleStates(ChassisSpeeds chassisSpeeds) {

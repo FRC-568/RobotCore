@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import swervelib.telemetry.SwerveDriveTelemetry;
 
 
 final class RobotContainer {
@@ -41,11 +42,13 @@ final class RobotContainer {
 		//camera = CameraServer.startAutomaticCapture();
 		// WARNING: this pose is empty
 		drive = new SwerveSubsystem(new Pose2d());
+		SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
 
 		configureButtonBindings();
 
 		// 2024 Migration - keeping code for reference; placeholders and numbers are estimated and will need to be measured on the bot.
+		/*
 		AutoBuilder.configureHolonomic(
 				drive::getPose, // Pose2d supplier
 				drive::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
@@ -60,6 +63,7 @@ final class RobotContainer {
 				() -> true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
 				drive // The drive subsystem. Used to properly set the requirements of path following commands
 			);
+			*/
 
 		setupAutoTab();
 		setupDriverTab();
