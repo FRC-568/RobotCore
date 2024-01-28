@@ -14,6 +14,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -43,6 +45,8 @@ final class RobotContainer {
 	GenericEntry kiEntry;
 							
 	GenericEntry kdEntry;
+
+	ComplexWidget EnterButton;
 
 	PowerDistribution pd;
 
@@ -120,7 +124,7 @@ final class RobotContainer {
 		driverTab.addDouble("Travel Facing", drive::getHeadingDeg).withSize(1, 1).withPosition(4, 0);
 		// driverTab.add(camera).withPosition(0, 0).withSize(3, 3);
 	}
-
+	
 	private void setupConfigTab() {
 		configTab = Shuffleboard.getTab("Config");
 
@@ -129,21 +133,24 @@ final class RobotContainer {
 		.withPosition(0, 0)
 		.withSize(1, 1)
 		.getEntry();
+		
 
 		
 		kiEntry = configTab.add("ki",0)
 		.withProperties(Map.of("min", 0, "max", 1))
-		.withPosition(0, 0)
+		.withPosition(1, 0)
 		.withSize(1, 1)
 		.getEntry();
 							
 		kdEntry = configTab.add("kd", 0)
 		.withProperties(Map.of("min", 0, "max", 1))
-		.withPosition(0, 0)
+		.withPosition(2, 0)
 		.withSize(1, 1)
 		.getEntry();
 
-		//EnterButton = configTab.add("enter", false)
-		//.withWidget("button")
+		EnterButton = configTab.add(new InstantCommand(() -> 
+		pivot.populate(kpEntry.getDouble(0), kiEntry.getDouble(0), kdEntry.getDouble(0))
+		));
+		
 	}
 }

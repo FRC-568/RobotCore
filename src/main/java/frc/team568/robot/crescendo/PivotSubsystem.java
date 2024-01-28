@@ -65,6 +65,16 @@ public class PivotSubsystem extends SubsystemBase {
 		return false;
 	}
 
+	
+	public void populate(double kP, double kI, double kD){
+		Slot0Configs slot0Configs = new Slot0Configs();
+		slot0Configs.kP = kP;
+		slot0Configs.kI = kI;
+		slot0Configs.kD = kD;
+
+		leftMotor.getConfigurator().apply(slot0Configs);
+	}
+
 	@Override
 	public void periodic() {
 		
