@@ -10,7 +10,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
-public class AutoScoreAndPreLoad extends SequentialCommandGroup {
+public class AutoScoreAndPreload extends SequentialCommandGroup {
 
 	RobotContainer builder;
 	PathPlannerPath path = PathPlannerPath.fromPathFile("LeftScorePreloadAndExit");
