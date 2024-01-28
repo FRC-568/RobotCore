@@ -3,14 +3,14 @@ package frc.team568.robot.crescendo;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class Intake extends Command {
-	JukeBoxSubsystem juke;
+	JukeboxSubsystem juke;
 	PivotSubsystem pivot;
 	
 	double speed;
 	int angle;
 
 
-	Intake(JukeBoxSubsystem juke, PivotSubsystem pivot){
+	Intake(JukeboxSubsystem juke, PivotSubsystem pivot){
 		this.juke = juke;
 		this.pivot = pivot;
 	}

@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class ScoreAmp extends Command {
-	JukeBoxSubsystem jukebox;
+	JukeboxSubsystem jukebox;
 	PivotSubsystem pivot;
 	private double initTime;
 
-	ScoreAmp(JukeBoxSubsystem jukebox, PivotSubsystem pivot) {
+	ScoreAmp(JukeboxSubsystem jukebox, PivotSubsystem pivot) {
 		addRequirements(jukebox);
 		addRequirements(pivot);
 

@@ -46,6 +46,11 @@ public class PivotSubsystem extends SubsystemBase {
         
 	}
 
+	/**
+	 * 
+	 * @param angle degrees from ... somewhere
+	 */
+	//TODO: figure out where 0 is
     public void setAngle(double angle){
 		angle /= 360.0; //degrees to rotations
 		final PositionVoltage request = new PositionVoltage(0).withSlot(0);
