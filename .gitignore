@@ -171,6 +171,8 @@ out/
 
 # Simulation GUI and other tools window save file
 *-window.json
+/networktables.json
+/simgui*.json
 
 # WPILib tools per-user settings
 .OutlineViewer/
