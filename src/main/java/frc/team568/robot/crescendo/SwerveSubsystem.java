@@ -11,6 +11,11 @@ import static frc.team568.robot.crescendo.Constants.SwerveConstants.kSlowMultipl
 import java.io.File;
 import java.io.IOException;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -125,6 +130,29 @@ class SwerveSubsystem extends SubsystemBase {
 
 	public double getHeadingDeg() {
 		return drive.getYaw().getDegrees();
+	}
+
+	public void configurePathplanner() {
+		AutoBuilder.configureHolonomic(
+				this::getPose, // Pose2d supplier
+				this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+				this::getChassisSpeeds,
+				this::setModuleStates, // SwerveDriveKinematics
+				new HolonomicPathFollowerConfig(
+					new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+					new PIDConstants(0.5, 0.0, 0.0),
+					5.0,
+					0.5,
+					new ReplanningConfig(true, true)), // PID constants to correct for rotation error (used to create the rotation controller)
+				() -> {
+					var alliance = DriverStation.getAlliance();
+					if (alliance.isPresent()) {
+						return alliance.get() == DriverStation.Alliance.Red;
+					}
+					return false;
+				},
+				this
+			);
 	}
 
 	public boolean isFieldRelative() {

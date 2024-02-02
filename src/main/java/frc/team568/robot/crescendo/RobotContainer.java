@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 
 //import edu.wpi.first.cameraserver.CameraServer;
 //import edu.wpi.first.cscore.UsbCamera;
@@ -14,7 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -61,26 +58,9 @@ final class RobotContainer {
 
 		SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
+		drive.configurePathplanner();
 
 		configureButtonBindings();
-
-		// 2024 Migration - keeping code for reference; placeholders and numbers are estimated and will need to be measured on the bot.
-		/*
-		AutoBuilder.configureHolonomic(
-				drive::getPose, // Pose2d supplier
-				drive::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
-				drive::getChassisSpeeds,
-				drive::setModuleStates, // SwerveDriveKinematics
-				new HolonomicPathFollowerConfig(
-					new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-					new PIDConstants(0.5, 0.0, 0.0),
-					5.0,
-					0.5,
-					new ReplanningConfig()), // PID constants to correct for rotation error (used to create the rotation controller)
-				() -> true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-				drive // The drive subsystem. Used to properly set the requirements of path following commands
-			);
-			*/
 
 		setupAutoTab();
 		setupDriverTab();
@@ -100,8 +80,8 @@ final class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		// String pathString = programChooser.getSelected();
-
-		return Commands.none();
+		return AutoBuilder.buildAuto("Line");
+		//return Commands.none();
 
 		// PathPlannerTrajectory path = PathPlanner.loadPath(pathString, new
 		// PathConstraints(4.0, 3.0));
