@@ -2,6 +2,7 @@ package frc.team568.robot.crescendo;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.CANSparkMax;
@@ -14,6 +15,7 @@ public class JukeboxSubsystem extends SubsystemBase {
 	private TalonFX leftOuttakeMotor;
     private TalonFX rightOuttakeMotor;
 	private CANSparkMax intakeMotor;
+	final VelocityVoltage m_velocity = new VelocityVoltage(0);
 
 
 	boolean override = false;
@@ -64,11 +66,8 @@ public class JukeboxSubsystem extends SubsystemBase {
 	}
 
 	public void setOuttakeSpeed(double lSpeed, double rSpeed) {
-
-			leftOuttakeMotor.setVoltage(lSpeed);
-			rightOuttakeMotor.setVoltage(rSpeed);
-
-
+		leftOuttakeMotor.setControl(m_velocity.withVelocity(lSpeed));
+		leftOuttakeMotor.setControl(m_velocity.withVelocity(rSpeed));
 	}
 
 	public void setIntakeSpeed(double speed){
