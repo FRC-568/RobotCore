@@ -43,7 +43,7 @@ final class RobotContainer {
 							
 	GenericEntry kdEntry;
 
-	ComplexWidget EnterButton;
+	ComplexWidget enterButton;
 
 	PowerDistribution pd;
 
@@ -71,11 +71,13 @@ final class RobotContainer {
 
 	public void configureButtonBindings() {
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
-		controller1.leftBumper().whileTrue(new Intake(jukebox, pivot)); //intake until bumper is released
+		/*controller1.leftBumper().whileTrue(new Intake(jukebox, pivot)); //intake until bumper is released
 		controller1.b().onTrue(new ScoreAmp(jukebox, pivot));
 		controller1.x().onTrue(new ScoreSpeaker(jukebox, pivot));
 		controller1.y().onTrue(new InstantCommand(() -> pivot.setAngle(0)));
-		controller1.a().onTrue(new InstantCommand(() -> pivot.setAngle(90)));
+		controller1.a().onTrue(new InstantCommand(() -> pivot.setAngle(90)));*/
+		
+		jukebox.setDefaultCommand(getAutonomousCommand());
 	}
 
 	public Command getAutonomousCommand() {
@@ -128,8 +130,8 @@ final class RobotContainer {
 		.withSize(1, 1)
 		.getEntry();
 
-		EnterButton = configTab.add(new InstantCommand(() -> 
-		pivot.populate(kpEntry.getDouble(0), kiEntry.getDouble(0), kdEntry.getDouble(0))
+		enterButton = configTab.add(new InstantCommand(() -> 
+			pivot.populate(kpEntry.getDouble(0), kiEntry.getDouble(0), kdEntry.getDouble(0))
 		));
 		
 	}
