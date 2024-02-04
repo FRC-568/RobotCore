@@ -67,7 +67,7 @@ public class JukeboxSubsystem extends SubsystemBase {
 
 	public void setOuttakeSpeed(double lSpeed, double rSpeed) {
 		leftOuttakeMotor.setControl(m_velocity.withVelocity(lSpeed));
-		leftOuttakeMotor.setControl(m_velocity.withVelocity(rSpeed));
+		rightOuttakeMotor.setControl(m_velocity.withVelocity(rSpeed));
 	}
 
 	public void setIntakeSpeed(double speed){
