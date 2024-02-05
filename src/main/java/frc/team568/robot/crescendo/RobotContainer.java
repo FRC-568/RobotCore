@@ -43,7 +43,7 @@ final class RobotContainer {
 							
 	GenericEntry kdEntry;
 
-	ComplexWidget EnterButton;
+	ComplexWidget enterButton;
 
 	PowerDistribution pd;
 
@@ -139,10 +139,9 @@ final class RobotContainer {
 		.withPosition(2, 0)
 		.withSize(1, 1)
 		.getEntry();
-
+		
 		// EnterButton = configTab.add(new InstantCommand(() -> 
 		// pivot.populate(kpEntry.getDouble(0), kiEntry.getDouble(0), kdEntry.getDouble(0))
 		// ));
-		
 	}
 }
