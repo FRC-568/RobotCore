@@ -1,25 +1,31 @@
 package frc.team568.robot.crescendo.subsystem;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
-
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PivotSubsystem extends SubsystemBase {
     //=== motors ===
 	private TalonFX leftMotor;
+	private CANcoder leftMotorcCaNcoder;
     private TalonFX rightMotor;
-
 
 	boolean override = false;
 
 	public PivotSubsystem(int leftMotorPort, int rightMotorPort) {
 		leftMotor = new TalonFX(leftMotorPort);
+		leftMotorcCaNcoder = new CANcoder(leftMotorPort);
 		addChild("leftMotor", leftMotor);
 
 		rightMotor = new TalonFX(rightMotorPort);
@@ -57,8 +63,6 @@ public class PivotSubsystem extends SubsystemBase {
 
 		//set position to 10 rotations
 		leftMotor.setControl(request.withPosition(angle));
-		
-		
 	}
 
 	public boolean getAngle(){
@@ -75,6 +79,7 @@ public class PivotSubsystem extends SubsystemBase {
 		leftMotor.getConfigurator().apply(slot0Configs);
 	}
 
+
 	public void track(double distance){
 		double h = 12.34; //speaker height
 		double d = distance;
@@ -85,6 +90,16 @@ public class PivotSubsystem extends SubsystemBase {
 		double theta = Math.atan(h / d) + 180 - alpha - Math.asin( (c / a) * Math.sin(alpha) )
 
 		setAngle( Math.toDegrees(theta) );
+	}
+
+
+	public void setDef(){
+		Slot0Configs slot0Configs = new Slot0Configs();
+		slot0Configs.kP = 0;
+		slot0Configs.kI = 0;
+		slot0Configs.kD = 0;
+
+		leftMotor.getConfigurator().apply(slot0Configs);
 	}
 
 	@Override
