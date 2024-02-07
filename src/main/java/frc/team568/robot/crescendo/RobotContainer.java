@@ -29,8 +29,8 @@ final class RobotContainer {
 	CommandXboxController controller1;
 	CommandXboxController controller2;
 	final SwerveSubsystem drive;
-	final PivotSubsystem pivot;
-	final JukeboxSubsystem jukebox;
+	// final PivotSubsystem pivot;
+	// final JukeboxSubsystem jukebox;
 	HashMap<String, Command> eventMap = new HashMap<>();
 
 	// Auto tab objects
@@ -55,8 +55,8 @@ final class RobotContainer {
 		//camera = CameraServer.startAutomaticCapture();
 		// WARNING: this pose is empty
 		drive = new SwerveSubsystem(new Pose2d());
-		pivot = new PivotSubsystem(0, 0);
-		jukebox = new JukeboxSubsystem(1, 2, 3);
+		// pivot = new PivotSubsystem(0, 0);
+		// jukebox = new JukeboxSubsystem(1, 2, 3);
 
 		SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
@@ -69,14 +69,14 @@ final class RobotContainer {
 		setupConfigTab();
 
 		pd = new PowerDistribution(1, ModuleType.kRev);
-
+/* 
 		jukebox.setDefaultCommand(new InstantCommand(
 			() -> {
 				jukebox.setOuttakeSpeed(controller1.getLeftTriggerAxis(),controller1.getRightTriggerAxis());
 				jukebox.setIntakeSpeed(controller1.getLeftY());
 			}
 		));
-		
+		*/
 	}
 
 	public void configureButtonBindings() {
@@ -89,7 +89,7 @@ final class RobotContainer {
 		//getRightTriggerAxis()
 		// controller1.rightTrigger().whileTrue(Commands.runEnd(() -> new Command(jukebox.setOuttakeSpeed(controller1.getRightTriggerAxis(),controller1.getRightTriggerAxis())),() ->new Command(jukebox.setOuttakeSpeed(0,0))));
 		// controller1.leftTrigger().whileTrue(Commands.runEnd(() -> new Command(jukebox.setIntakeSpeed(controller1.getLeftTriggerAxis())),() ->new Command(jukebox.setIntakeSpeed(0))));
-	
+		controller1.back().onTrue(AutoBuilder.buildAuto("New New Auto"));
 		
 	}
 
@@ -141,10 +141,9 @@ final class RobotContainer {
 		.withPosition(2, 0)
 		.withSize(1, 1)
 		.getEntry();
-
-		enterButton = configTab.add(new InstantCommand(() -> 
-			pivot.populate(kpEntry.getDouble(0), kiEntry.getDouble(0), kdEntry.getDouble(0))
-		));
 		
+		// EnterButton = configTab.add(new InstantCommand(() -> 
+		// pivot.populate(kpEntry.getDouble(0), kiEntry.getDouble(0), kdEntry.getDouble(0))
+		// ));
 	}
 }

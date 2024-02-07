@@ -83,7 +83,7 @@ class SwerveSubsystem extends SubsystemBase {
 	}
 
 	public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
-		setModuleStates(swerveModuleStates, true);
+		setModuleStates(swerveModuleStates, false);
 	}
 
 	public void setModuleStates(SwerveModuleState[] swerveModuleStates, boolean isOpenLoop) {
@@ -139,11 +139,11 @@ class SwerveSubsystem extends SubsystemBase {
 				this::getChassisSpeeds,
 				this::setModuleStates, // SwerveDriveKinematics
 				new HolonomicPathFollowerConfig(
-					new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-					new PIDConstants(0.5, 0.0, 0.0),
-					5.0,
-					0.5,
-					new ReplanningConfig(true, true)), // PID constants to correct for rotation error (used to create the rotation controller)
+					new PIDConstants(0.05, 0.0, 0.05), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+					new PIDConstants(0.05, 0.0, 0.0),
+					1.0,
+					0.39,
+					new ReplanningConfig(true, true, 1, 1)), // PID constants to correct for rotation error (used to create the rotation controller)
 				() -> {
 					var alliance = DriverStation.getAlliance();
 					if (alliance.isPresent()) {
