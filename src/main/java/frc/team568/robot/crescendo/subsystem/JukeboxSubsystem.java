@@ -1,5 +1,6 @@
-package frc.team568.robot.crescendo;
+package frc.team568.robot.crescendo.subsystem;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -7,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -15,7 +17,8 @@ public class JukeboxSubsystem extends SubsystemBase {
 	private TalonFX leftOuttakeMotor;
     private TalonFX rightOuttakeMotor;
 	private CANSparkMax intakeMotor;
-	final VelocityVoltage m_velocity = new VelocityVoltage(0);
+
+	final private VelocityVoltage velocity = new VelocityVoltage(0);
 
 
 	boolean override = false;
@@ -50,8 +53,7 @@ public class JukeboxSubsystem extends SubsystemBase {
 
 		//TODO: Make invert intake motor based on design
 
-		//manning
-		//rightOuttakeMotor.optimizeBusUtilization()
+		velocity.Slot = 0;
 		
 		
 		//=== pid configs ===
@@ -62,12 +64,19 @@ public class JukeboxSubsystem extends SubsystemBase {
 		slot0Configs.kD = 0; //A velocity of 1 rps results in 0.1 V output at a setting of 0.1
 
 		leftOuttakeMotor.getConfigurator().apply(slot0Configs);
+		rightOuttakeMotor.getConfigurator().apply(slot0Configs);
         
 	}
-
+	/**
+	 * 
+	 * @param lSpeed rps
+	 * @param rSpeed rps
+	 */
 	public void setOuttakeSpeed(double lSpeed, double rSpeed) {
-		leftOuttakeMotor.setControl(m_velocity.withVelocity(lSpeed));
-		rightOuttakeMotor.setControl(m_velocity.withVelocity(rSpeed));
+		
+		leftOuttakeMotor.setControl(velocity.withVelocity(lSpeed));
+		rightOuttakeMotor.setControl(velocity.withVelocity(rSpeed));
+
 	}
 
 	public void setIntakeSpeed(double speed){

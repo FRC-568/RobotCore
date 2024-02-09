@@ -1,11 +1,12 @@
-package frc.team568.robot.crescendo;
+package frc.team568.robot.crescendo.command;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class DownPneumatic extends Command {
+public class UpPneumatic extends Command {
 	DoubleSolenoid dSolenoid;
-	
-	DownPneumatic(DoubleSolenoid dSolenoid){
+
+	UpPneumatic(DoubleSolenoid dSolenoid){
 		this.dSolenoid = dSolenoid;
 	}
 
@@ -23,5 +24,4 @@ public class DownPneumatic extends Command {
 	public boolean isFinished() {
 		return false;
 	}
-	
 }

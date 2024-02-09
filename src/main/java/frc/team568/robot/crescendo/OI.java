@@ -43,7 +43,7 @@ final class OI {
 					* Constants.SwerveConstants.kMaxSpeed;
 			swerveCCW = () -> -m_rotLimiter
 					.calculate(MathUtil.applyDeadband(driverController.getRightX(), kControllerDeadband))
-					* Constants.SwerveConstants.kMaxSpinRate / 4;
+					* Math.pow(Constants.SwerveConstants.kMaxSpinRate / 4,2);
 		}
 	}
 

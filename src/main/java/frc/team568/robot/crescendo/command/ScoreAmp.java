@@ -1,7 +1,9 @@
-package frc.team568.robot.crescendo;
+package frc.team568.robot.crescendo.command;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
+import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 
 public class ScoreAmp extends Command {
 	JukeboxSubsystem jukebox;

@@ -31,7 +31,7 @@ import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveModule;
 
-class SwerveSubsystem extends SubsystemBase {
+public class SwerveSubsystem extends SubsystemBase {
 	protected static final String FIELD_REL_KEY = "Field Relative";
 	private boolean _fieldRelative = Preferences.getBoolean(FIELD_REL_KEY, false);
 
@@ -143,7 +143,7 @@ class SwerveSubsystem extends SubsystemBase {
 					new PIDConstants(0.05, 0.0, 0.0),
 					1.0,
 					0.39,
-					new ReplanningConfig(true, true, 1, 1)), // PID constants to correct for rotation error (used to create the rotation controller)
+					new ReplanningConfig(true, true, 0.75, 1)), // PID constants to correct for rotation error (used to create the rotation controller)
 				() -> {
 					var alliance = DriverStation.getAlliance();
 					if (alliance.isPresent()) {

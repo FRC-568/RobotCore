@@ -20,9 +20,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
+import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
-final class RobotContainer {
+public final class RobotContainer {
 	// UsbCamera camera;
 	CommandXboxController controller1;
 	CommandXboxController controller2;
@@ -83,7 +85,7 @@ final class RobotContainer {
 		//getRightTriggerAxis()
 		// OI.Button.runOuttake.whileTrue(Commands.runEnd(() -> new Command(jukebox.setOuttakeSpeed(OI.Axis.outtakeSpeed.getAsDouble(), OI.Axis.outtakeSpeed.getAsDouble())), () -> new Command(jukebox.setOuttakeSpeed(0,0))));
 		// OI.Button.runIntake.whileTrue(Commands.runEnd(() -> new Command(jukebox.setIntakeSpeed(OI.Axis.intakeSpeed.getAsDouble())), () -> new Command(jukebox.setIntakeSpeed(0))));
-		controller1.back().onTrue(AutoBuilder.buildAuto("New New Auto"));
+		controller1.back().onTrue(AutoBuilder.buildAuto("Backwards Line"));
 		
 	}
 

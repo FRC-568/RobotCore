@@ -1,8 +1,12 @@
-package frc.team568.robot.crescendo;
+package frc.team568.robot.crescendo.command;
 
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.team568.robot.crescendo.RobotContainer;
+import frc.team568.robot.crescendo.SwerveSubsystem;
+import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
+import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.util.Units;
 
@@ -12,7 +16,6 @@ import com.pathplanner.lib.path.PathConstraints;
 
 public class AutoScoreAndPreload extends SequentialCommandGroup {
 
-	RobotContainer builder;
 	PathPlannerPath path = PathPlannerPath.fromPathFile("LeftScorePreloadAndExit");
 	PathConstraints constraints = new PathConstraints(
         3.0, 4.0,
