@@ -12,7 +12,7 @@ public class Intake extends Command {
 	int angle;
 
 
-	Intake(JukeboxSubsystem juke, PivotSubsystem pivot){
+	public Intake(JukeboxSubsystem juke, PivotSubsystem pivot){
 		this.juke = juke;
 		this.pivot = pivot;
 	}

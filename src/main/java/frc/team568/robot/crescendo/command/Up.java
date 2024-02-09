@@ -8,7 +8,7 @@ public class Up extends Command {
 
 	int angle;
 
-	Up(PivotSubsystem pivot){
+	public Up(PivotSubsystem pivot){
 		this.pivot = pivot;
 	}
 

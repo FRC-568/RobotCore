@@ -10,7 +10,7 @@ public class ScoreSpeaker extends Command {
 	PivotSubsystem pivot;
 	private double initTime;
 
-	ScoreSpeaker(JukeboxSubsystem jukebox, PivotSubsystem pivot) {
+	public ScoreSpeaker(JukeboxSubsystem jukebox, PivotSubsystem pivot) {
 		addRequirements(jukebox);
 		addRequirements(pivot);
 

@@ -7,7 +7,7 @@ public class Closing extends Command {
 	PivotSubsystem pivot;
 	
 	int angle;
-	Closing(PivotSubsystem pivot){
+	public Closing(PivotSubsystem pivot){
 		this.pivot = pivot;
 	}
 

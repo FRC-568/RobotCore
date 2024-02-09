@@ -10,7 +10,7 @@ public class ScoreAmp extends Command {
 	PivotSubsystem pivot;
 	private double initTime;
 
-	ScoreAmp(JukeboxSubsystem jukebox, PivotSubsystem pivot) {
+	public ScoreAmp(JukeboxSubsystem jukebox, PivotSubsystem pivot) {
 		addRequirements(jukebox);
 		addRequirements(pivot);
 

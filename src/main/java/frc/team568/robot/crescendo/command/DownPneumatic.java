@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class DownPneumatic extends Command {
 	DoubleSolenoid dSolenoid;
 	
-	DownPneumatic(DoubleSolenoid dSolenoid){
+	public DownPneumatic(DoubleSolenoid dSolenoid){
 		this.dSolenoid = dSolenoid;
 	}
 
