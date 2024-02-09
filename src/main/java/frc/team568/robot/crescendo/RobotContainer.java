@@ -24,7 +24,7 @@ import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
-final class RobotContainer {
+public final class RobotContainer {
 	// UsbCamera camera;
 	CommandXboxController controller1;
 	CommandXboxController controller2;
@@ -89,7 +89,7 @@ final class RobotContainer {
 		//getRightTriggerAxis()
 		// controller1.rightTrigger().whileTrue(Commands.runEnd(() -> new Command(jukebox.setOuttakeSpeed(controller1.getRightTriggerAxis(),controller1.getRightTriggerAxis())),() ->new Command(jukebox.setOuttakeSpeed(0,0))));
 		// controller1.leftTrigger().whileTrue(Commands.runEnd(() -> new Command(jukebox.setIntakeSpeed(controller1.getLeftTriggerAxis())),() ->new Command(jukebox.setIntakeSpeed(0))));
-		controller1.back().onTrue(AutoBuilder.buildAuto("New New Auto"));
+		controller1.back().onTrue(AutoBuilder.buildAuto("Backwards Line"));
 		
 	}
 
