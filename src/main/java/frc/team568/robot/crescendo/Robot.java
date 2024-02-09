@@ -4,8 +4,10 @@
 
 package frc.team568.robot.crescendo;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -16,6 +18,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		container = new RobotContainer();
+		if (DriverStation.isFMSAttached())
+			Shuffleboard.selectTab(OI.autoTab.getTitle());
 	}
 
 	@Override
@@ -26,6 +30,9 @@ public class Robot extends TimedRobot {
 
 		if (m_autonomousCommand != null)
 			m_autonomousCommand.cancel();
+			
+		if (DriverStation.isFMSAttached())
+			Shuffleboard.selectTab(OI.driverTab.getTitle());
 	}
 
 	@Override
@@ -35,6 +42,9 @@ public class Robot extends TimedRobot {
 		m_autonomousCommand = container.getAutonomousCommand();
 		if (m_autonomousCommand != null)
 			m_autonomousCommand.schedule();
+
+		if (DriverStation.isFMSAttached())
+			Shuffleboard.selectTab(OI.driverTab.getTitle());
 	}
 
 	@Override

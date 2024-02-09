@@ -31,10 +31,6 @@ final class RobotContainer {
 	// final JukeboxSubsystem jukebox;
 	HashMap<String, Command> eventMap = new HashMap<>();
 
-	// Auto tab objects
-	private ShuffleboardTab autoTab;
-	private ShuffleboardTab driverTab;
-	private ShuffleboardTab configTab;
 	private SendableChooser<String> programChooser;
 
 	GenericEntry kpEntry;
@@ -79,14 +75,14 @@ final class RobotContainer {
 
 	public void configureButtonBindings() {
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
-		// controller1.leftBumper().whileTrue(new Intake(jukebox, pivot)); //intake until bumper is released
-		// controller1.b().onTrue(new ScoreAmp(jukebox, pivot));
-		// controller1.x().onTrue(new ScoreSpeaker(jukebox, pivot));
-		// controller1.y().onTrue(new InstantCommand(() -> pivot.setAngle(0)));
-		// controller1.a().onTrue(new InstantCommand(() -> pivot.setAngle(90)));
+		// OI.Button.intake.whileTrue(new Intake(jukebox, pivot)); //intake until bumper is released
+		// OI.Button.scoreAmp.onTrue(new ScoreAmp(jukebox, pivot));
+		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
+		// OI.Button.pivotDown.onTrue(new InstantCommand(() -> pivot.setAngle(0)));
+		// OI.Button.pivotUp.onTrue(new InstantCommand(() -> pivot.setAngle(90)));
 		//getRightTriggerAxis()
-		// controller1.rightTrigger().whileTrue(Commands.runEnd(() -> new Command(jukebox.setOuttakeSpeed(controller1.getRightTriggerAxis(),controller1.getRightTriggerAxis())),() ->new Command(jukebox.setOuttakeSpeed(0,0))));
-		// controller1.leftTrigger().whileTrue(Commands.runEnd(() -> new Command(jukebox.setIntakeSpeed(controller1.getLeftTriggerAxis())),() ->new Command(jukebox.setIntakeSpeed(0))));
+		// OI.Button.runOuttake.whileTrue(Commands.runEnd(() -> new Command(jukebox.setOuttakeSpeed(OI.Axis.outtakeSpeed.getAsDouble(), OI.Axis.outtakeSpeed.getAsDouble())), () -> new Command(jukebox.setOuttakeSpeed(0,0))));
+		// OI.Button.runIntake.whileTrue(Commands.runEnd(() -> new Command(jukebox.setIntakeSpeed(OI.Axis.intakeSpeed.getAsDouble())), () -> new Command(jukebox.setIntakeSpeed(0))));
 		controller1.back().onTrue(AutoBuilder.buildAuto("New New Auto"));
 		
 	}
@@ -104,37 +100,32 @@ final class RobotContainer {
 	}
 
 	private void setupAutoTab() {
-		autoTab = Shuffleboard.getTab("Auto");
 		programChooser = new SendableChooser<>();
 		programChooser.setDefaultOption("Wait", null);
-		autoTab.add("Auto Program", programChooser);
+		OI.autoTab.add("Auto Program", programChooser);
 	}
 
 	private void setupDriverTab() {
-		driverTab = Shuffleboard.getTab("Driver");
-		driverTab.addDouble("Travel Velocity", drive::getTravelSpeedMS).withSize(1, 1).withPosition(0, 0);
-		driverTab.addDouble("Travel Direction", drive::getTravelBearingDeg).withSize(1, 1).withPosition(0, 0);
-		driverTab.addDouble("Travel Facing", drive::getHeadingDeg).withSize(1, 1).withPosition(4, 0);
+		OI.driverTab.addDouble("Travel Velocity", drive::getTravelSpeedMS).withSize(1, 1).withPosition(0, 0);
+		OI.driverTab.addDouble("Travel Direction", drive::getTravelBearingDeg).withSize(1, 1).withPosition(0, 0);
+		OI.driverTab.addDouble("Travel Facing", drive::getHeadingDeg).withSize(1, 1).withPosition(4, 0);
 		// driverTab.add(camera).withPosition(0, 0).withSize(3, 3);
 	}
 	
 	private void setupConfigTab() {
-		configTab = Shuffleboard.getTab("Config");
-
-		kpEntry = configTab.add("kp", 0)
+		kpEntry = OI.configTab.add("kp", 0)
 		.withProperties(Map.of("min", 0, "max", 1))
 		.withPosition(0, 0)
 		.withSize(1, 1)
 		.getEntry();
-
 		
-		kiEntry = configTab.add("ki",0)
+		kiEntry = OI.configTab.add("ki",0)
 		.withProperties(Map.of("min", 0, "max", 1))
 		.withPosition(1, 0)
 		.withSize(1, 1)
 		.getEntry();
 							
-		kdEntry = configTab.add("kd", 0)
+		kdEntry = OI.configTab.add("kd", 0)
 		.withProperties(Map.of("min", 0, "max", 1))
 		.withPosition(2, 0)
 		.withSize(1, 1)
