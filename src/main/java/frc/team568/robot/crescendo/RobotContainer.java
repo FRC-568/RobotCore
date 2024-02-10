@@ -87,6 +87,7 @@ public final class RobotContainer {
 
 		SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
+		drive.setDefaultCommand(new PivotSubsystemDefaultCommand(aim));
 		drive.configurePathplanner();
 
 		configureButtonBindings();

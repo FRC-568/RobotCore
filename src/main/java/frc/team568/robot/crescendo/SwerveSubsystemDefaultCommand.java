@@ -14,7 +14,7 @@ public class SwerveSubsystemDefaultCommand extends Command{
 	public SwerveSubsystemDefaultCommand(final SwerveSubsystem drive){
 		this.drive = drive;
 		addRequirements(drive);
-	}
+}
 	
 
 	@Override

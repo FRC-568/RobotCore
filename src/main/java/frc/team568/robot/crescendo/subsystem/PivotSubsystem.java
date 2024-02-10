@@ -108,7 +108,7 @@ public class PivotSubsystem extends SubsystemBase {
 
 		double theta = Math.atan(h / d) + Math.PI - alpha - Math.asin( (c / a) * Math.sin(alpha) );
 
-		setAngle( Math.toDegrees(theta) );
+		setAngle( Math.toDegrees(theta));
 	}
 
 
