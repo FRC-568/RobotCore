@@ -2,6 +2,7 @@ package frc.team568.robot.crescendo.subsystem;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -16,6 +17,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -32,12 +34,19 @@ public class PivotSubsystem extends SubsystemBase {
 	private final double min = 0;
 	private final double max = 0.5; //rotations
 
+	DigitalInput limitSwitch = new DigitalInput(0);
+
 	boolean override = false;
 
 	public PivotSubsystem(int leftMotorPort, int rightMotorPort) {
 		leftMotor = new TalonFX(leftMotorPort);
 
 		leftMotor.setNeutralMode(NeutralModeValue.Coast); // Set neutral mode
+
+		HardwareLimitSwitchConfigs limitSwitchConfigs = new HardwareLimitSwitchConfigs();
+		limitSwitchConfigs.ReverseLimitAutosetPositionEnable = true;
+		limitSwitchConfigs.ReverseLimitAutosetPositionValue = 0;
+
 		leftMotor.setControl(new DutyCycleOut(0)
 		.withLimitForwardMotion(leftMotor.getPosition().getValueAsDouble() > max)
 		.withLimitReverseMotion(leftMotor.getPosition().getValueAsDouble() < min));
@@ -48,12 +57,18 @@ public class PivotSubsystem extends SubsystemBase {
 		rightMotor = new TalonFX(rightMotorPort);
 		addChild("rightMotor", rightMotor);
 
+
+
+
 		MotorOutputConfigs currentConfigs = new MotorOutputConfigs();
 		currentConfigs.Inverted = InvertedValue.Clockwise_Positive; //TODO: reverse directions based on design
 		
 
 		leftMotor.getConfigurator().apply(currentConfigs);
 		rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
+
+		leftMotor.getConfigurator().apply(limitSwitchConfigs);
+		rightMotor.getConfigurator().apply(limitSwitchConfigs);
 
 		//manning
 		//rightMotor.optimizeBusUtilization()
@@ -100,6 +115,15 @@ public class PivotSubsystem extends SubsystemBase {
 		leftMotor.getConfigurator().apply(slot0Configs);
 	}
 
+	public void setMotorSpeed(double speed) {
+			if (limitSwitch.get()) {
+				leftMotor.set(0);
+				rightMotor.set(0);
+			} else {
+				leftMotor.set(speed);
+				rightMotor.set(speed);
+			}
+	}
 
 	public void aim(double distance){
 		double h = 12.34; //speaker height
