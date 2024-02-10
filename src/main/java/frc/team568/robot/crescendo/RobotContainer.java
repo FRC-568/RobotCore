@@ -7,13 +7,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
 //import edu.wpi.first.cameraserver.CameraServer;
 //import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -32,18 +30,16 @@ public final class RobotContainer {
 
 
 	// Auto tab objects
-	private AutoTab autoTab;
-	private ShuffleboardTab driverTab;
-	private ShuffleboardTab configTab;
+	public AutoTab autoTab;
+	
+	// Driver tab objects
+	public DriverTab driverTab;
+	
+	// Config tab objects
+	public ConfigTab configTab;
 
 	public DoubleSolenoid dSolenoid = new DoubleSolenoid(null, 0, 0);
 
-
-	GenericEntry kpEntry;
-		
-	GenericEntry kiEntry;
-							
-	GenericEntry kdEntry;
 
 	ComplexWidget enterButton;
 
@@ -67,8 +63,8 @@ public final class RobotContainer {
 		configureButtonBindings();
 
 		autoTab = new AutoTab(this);
-		setupDriverTab();
-		setupConfigTab();
+		driverTab = new DriverTab(this);
+		configTab = new ConfigTab(this);
 
 		pd = new PowerDistribution(1, ModuleType.kRev);
 /* 
@@ -97,36 +93,5 @@ public final class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		return autoTab.chooser.getSelected();
-	}
-
-	private void setupDriverTab() {
-		OI.driverTab.addDouble("Travel Velocity", drive::getTravelSpeedMS).withSize(1, 1).withPosition(0, 0);
-		OI.driverTab.addDouble("Travel Direction", drive::getTravelBearingDeg).withSize(1, 1).withPosition(0, 0);
-		OI.driverTab.addDouble("Travel Facing", drive::getHeadingDeg).withSize(1, 1).withPosition(4, 0);
-		// driverTab.add(camera).withPosition(0, 0).withSize(3, 3);
-	}
-	
-	private void setupConfigTab() {
-		kpEntry = OI.configTab.add("kp", 0)
-		.withProperties(Map.of("min", 0, "max", 1))
-		.withPosition(0, 0)
-		.withSize(1, 1)
-		.getEntry();
-		
-		kiEntry = OI.configTab.add("ki",0)
-		.withProperties(Map.of("min", 0, "max", 1))
-		.withPosition(1, 0)
-		.withSize(1, 1)
-		.getEntry();
-							
-		kdEntry = OI.configTab.add("kd", 0)
-		.withProperties(Map.of("min", 0, "max", 1))
-		.withPosition(2, 0)
-		.withSize(1, 1)
-		.getEntry();
-		
-		// EnterButton = configTab.add(new InstantCommand(() -> 
-		// pivot.populate(kpEntry.getDouble(0), kiEntry.getDouble(0), kdEntry.getDouble(0))
-		// ));
 	}
 }
