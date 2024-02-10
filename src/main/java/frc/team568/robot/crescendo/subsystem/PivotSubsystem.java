@@ -40,7 +40,7 @@ public class PivotSubsystem extends SubsystemBase {
 		leftMotor.setNeutralMode(NeutralModeValue.Coast); // Set neutral mode
 		leftMotor.setControl(new DutyCycleOut(0)
 		.withLimitForwardMotion(leftMotor.getPosition().getValueAsDouble() > max)
-		.withLimitReverseMotion(leftMotor.getPosition().getValueAsDouble() < min))
+		.withLimitReverseMotion(leftMotor.getPosition().getValueAsDouble() < min));
 		
 
 		addChild("leftMotor", leftMotor);
@@ -81,7 +81,9 @@ public class PivotSubsystem extends SubsystemBase {
 		final PositionVoltage request = new PositionVoltage(0).withSlot(0);
 
 		//set position to 10 rotations
-		leftMotor.setControl(request.withPosition(angle));
+		leftMotor.setControl(request.withPosition(angle)
+		.withLimitForwardMotion(leftMotor.getPosition().getValueAsDouble() > max)
+		.withLimitReverseMotion(leftMotor.getPosition().getValueAsDouble() < min));
 	}
 
 	public double getAngle(){

@@ -106,7 +106,7 @@ public final class RobotContainer {
 		));
 		*/
 
-		aim = new Aim();
+		aim = new Aim(pivot);
 		autoScoreAndPreload = new AutoScoreAndPreload(drive, jukebox, pivot);
 		closing = new Closing(pivot);
 		downpneumatic = new DownPneumatic(dSolenoid);
