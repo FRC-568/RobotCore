@@ -36,7 +36,7 @@ public class JukeboxSubsystem extends SubsystemBase {
 		//TODO: thats important
 		
 		MotorOutputConfigs lConfigs = new MotorOutputConfigs();
-		lConfigs.Inverted = InvertedValue.Clockwise_Positive; //TODO: reverse directions based on design
+		lConfigs.Inverted = InvertedValue.CounterClockwise_Positive ; //TODO: reverse directions based on design
 
 		MotorOutputConfigs rConfigs = new MotorOutputConfigs();
 		rConfigs.Inverted = InvertedValue.Clockwise_Positive;

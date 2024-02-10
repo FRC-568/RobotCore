@@ -29,13 +29,19 @@ public class PivotSubsystem extends SubsystemBase {
 	private CANcoder leftMotorcCaNcoder;
     private TalonFX rightMotor;
 
+	private final double min = 0;
+	private final double max = 0.5; //rotations
+
 	boolean override = false;
 
 	public PivotSubsystem(int leftMotorPort, int rightMotorPort) {
 		leftMotor = new TalonFX(leftMotorPort);
 
 		leftMotor.setNeutralMode(NeutralModeValue.Coast); // Set neutral mode
-		leftMotor.setControl(new DutyCycleOut(0));
+		leftMotor.setControl(new DutyCycleOut(0)
+		.withLimitForwardMotion(leftMotor.getPosition().getValueAsDouble() > max)
+		.withLimitReverseMotion(leftMotor.getPosition().getValueAsDouble() < min))
+		
 
 		addChild("leftMotor", leftMotor);
 
@@ -44,6 +50,7 @@ public class PivotSubsystem extends SubsystemBase {
 
 		MotorOutputConfigs currentConfigs = new MotorOutputConfigs();
 		currentConfigs.Inverted = InvertedValue.Clockwise_Positive; //TODO: reverse directions based on design
+		
 
 		leftMotor.getConfigurator().apply(currentConfigs);
 		rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
@@ -58,6 +65,7 @@ public class PivotSubsystem extends SubsystemBase {
 		slot0Configs.kP = 0; //An error of 0.5 rotations and a value of 24 results in 12 V output
 		slot0Configs.kI = 0; //no output for integrated error
 		slot0Configs.kD = 0; //A velocity of 1 rps results in 0.1 V output at a setting of 0.1
+		
 
 		leftMotor.getConfigurator().apply(slot0Configs);
         
@@ -96,7 +104,7 @@ public class PivotSubsystem extends SubsystemBase {
 		double d = distance;
 		double a = Math.sqrt(d * d + h * h);
 		double c = 5.67; //arm length
-		double alpha = 60.0; //angle between arm and jukebox 
+		double alpha = Math.toRadians(60.0); //angle between arm and jukebox 
 
 		double theta = Math.atan(h / d) + Math.PI - alpha - Math.asin( (c / a) * Math.sin(alpha) );
 

@@ -14,13 +14,15 @@ public class Aim extends Command{
 	DoubleSupplier distance;
 
 
+
 	public Aim(PivotSubsystem pivot){
 		this.pivot = pivot;
+		distance = () -> Math.random();
 	}
 
 	@Override
 	public void initialize() {
-		distance = () -> Math.random();
+		
 	}
 
 	@Override
