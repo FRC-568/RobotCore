@@ -41,6 +41,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	protected SwerveDrive drive;
 
+	
+
 	public SwerveSubsystem(Pose2d startingPose) {
 		try {
 			drive = new SwerveParser(new File(Filesystem.getDeployDirectory(),"swerve")).createSwerveDrive(kMaxSpeed);
@@ -139,11 +141,11 @@ public class SwerveSubsystem extends SubsystemBase {
 				this::getChassisSpeeds,
 				this::setModuleStates, // SwerveDriveKinematics
 				new HolonomicPathFollowerConfig(
-					new PIDConstants(0.05, 0.0, 0.05), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-					new PIDConstants(0.05, 0.0, 0.0),
+					new PIDConstants(0.03, 0.0, 0.05), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+					new PIDConstants(0.003, 0.0, 0),
 					1.0,
 					0.39,
-					new ReplanningConfig(true, true, 0.75, 1)), // PID constants to correct for rotation error (used to create the rotation controller)
+					new ReplanningConfig(true, true, 0.09, 0.3)), // PID constants to correct for rotation error (used to create the rotation controller)
 				() -> {
 					var alliance = DriverStation.getAlliance();
 					if (alliance.isPresent()) {
@@ -195,5 +197,7 @@ public class SwerveSubsystem extends SubsystemBase {
 		builder.addBooleanProperty(FIELD_REL_KEY, this::isFieldRelative, this::setFieldRelative);
 		builder.addBooleanProperty(SLOW_MODE_KEY, this::isSlowModeActive, this::setSlowMode);
 	}
+
+	
 
 }
