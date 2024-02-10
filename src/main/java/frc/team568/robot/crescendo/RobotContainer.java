@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
-
 //import edu.wpi.first.cameraserver.CameraServer;
 //import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,23 +13,10 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.team568.robot.crescendo.command.Aim;
-import frc.team568.robot.crescendo.command.AutoScoreAndPreload;
-import frc.team568.robot.crescendo.command.Closing;
-import frc.team568.robot.crescendo.command.DownPneumatic;
-import frc.team568.robot.crescendo.command.Intake;
-import frc.team568.robot.crescendo.command.ScoreAmp;
-import frc.team568.robot.crescendo.command.ScoreSpeaker;
-import frc.team568.robot.crescendo.command.Up;
-import frc.team568.robot.crescendo.command.UpPneumatic;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -48,12 +32,11 @@ public final class RobotContainer {
 
 
 	// Auto tab objects
-	private ShuffleboardTab autoTab;
+	private AutoTab autoTab;
 	private ShuffleboardTab driverTab;
 	private ShuffleboardTab configTab;
-	private SendableChooser<Command> programChooser;
 
-	private DoubleSolenoid dSolenoid = new DoubleSolenoid(null, 0, 0);
+	public DoubleSolenoid dSolenoid = new DoubleSolenoid(null, 0, 0);
 
 
 	GenericEntry kpEntry;
@@ -66,15 +49,6 @@ public final class RobotContainer {
 
 	PowerDistribution pd;
 
-	private Command aim;
-	private Command autoScoreAndPreload;
-	private Command closing;
-	private Command downpneumatic;
-	private Command intake;
-	private Command scoreamp;
-	private Command scorespeaker;
-	private Command up;
-	private Command uppneumatic;
 
 	public RobotContainer() {
 		controller1 = new CommandXboxController(0);
@@ -92,7 +66,7 @@ public final class RobotContainer {
 
 		configureButtonBindings();
 
-		setupAutoTab();
+		autoTab = new AutoTab(this);
 		setupDriverTab();
 		setupConfigTab();
 
@@ -105,16 +79,6 @@ public final class RobotContainer {
 			}
 		));
 		*/
-
-		aim = new Aim(pivot);
-		autoScoreAndPreload = new AutoScoreAndPreload(drive, jukebox, pivot);
-		closing = new Closing(pivot);
-		downpneumatic = new DownPneumatic(dSolenoid);
-		intake = new Intake(jukebox, pivot);
-		scoreamp = new ScoreAmp(jukebox, pivot);
-		scorespeaker = new ScoreSpeaker(jukebox, pivot);
-		up = new Up(pivot);
-		uppneumatic = new UpPneumatic(dSolenoid);
 	}
 
 	public void configureButtonBindings() {
@@ -132,29 +96,7 @@ public final class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		return programChooser.getSelected();
-	}
-
-	private void setupAutoTab() {
-		programChooser = new SendableChooser<>();
-
-		programChooser.setDefaultOption("Wait", null);
-		OI.autoTab.add("Auto Program", programChooser);
-
-		programChooser.addOption("Aim", aim);
-		programChooser.addOption("AutoScoreAndPreload", autoScoreAndPreload);
-		programChooser.addOption("Closing", closing);
-		programChooser.addOption("Closing", downpneumatic);
-		programChooser.addOption("Intake", intake);
-		programChooser.addOption("Score AMP", scoreamp);
-		programChooser.addOption("Score Speaker", scorespeaker);
-		programChooser.addOption("Up", up);
-		programChooser.addOption("Up Pneumatic", uppneumatic);
-
-		SmartDashboard.putData(programChooser);
-		autoTab.add("Auto Program", programChooser);
-
-		
+		return autoTab.chooser.getSelected();
 	}
 
 	private void setupDriverTab() {
