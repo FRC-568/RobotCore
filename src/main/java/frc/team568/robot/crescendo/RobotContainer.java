@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+
 //import edu.wpi.first.cameraserver.CameraServer;
 //import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,20 +15,15 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
-import swervelib.telemetry.SwerveDriveTelemetry;
 
 public final class RobotContainer {
 	// UsbCamera camera;
-	CommandXboxController controller1;
-	CommandXboxController controller2;
 	final SwerveSubsystem drive;
 	final PivotSubsystem pivot = new PivotSubsystem(0, 0);
 	final JukeboxSubsystem jukebox = new JukeboxSubsystem(0, 0, 0);
-	HashMap<String, Command> eventMap = new HashMap<>();
-
+	Map<String, Command> eventMap = new HashMap<>();
 
 	// Auto tab objects
 	public AutoTab autoTab;
@@ -47,34 +43,23 @@ public final class RobotContainer {
 
 
 	public RobotContainer() {
-		controller1 = new CommandXboxController(0);
-		controller2 = new CommandXboxController(1);
 		//camera = CameraServer.startAutomaticCapture();
-		// WARNING: this pose is empty
-		drive = new SwerveSubsystem(new Pose2d());
-		// pivot = new PivotSubsystem(0, 0);
-		// jukebox = new JukeboxSubsystem(1, 2, 3);
 
-		SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
+		drive = new SwerveSubsystem(new Pose2d());
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
-		drive.setDefaultCommand(new PivotSubsystemDefaultCommand(pivot));
 		drive.configurePathplanner();
 
-		configureButtonBindings();
+		pivot.setDefaultCommand(new PivotSubsystemDefaultCommand(pivot));
+
+		jukebox.initDefaultCommand(OI.Axis.intakeSpeed, OI.Axis.outtakeSpeed);
+
+		pd = new PowerDistribution(1, ModuleType.kRev);
 
 		autoTab = new AutoTab(this);
 		driverTab = new DriverTab(this);
 		configTab = new ConfigTab(this);
 
-		pd = new PowerDistribution(1, ModuleType.kRev);
-/* 
-		jukebox.setDefaultCommand(new InstantCommand(
-			() -> {
-				jukebox.setOuttakeSpeed(controller1.getLeftTriggerAxis(),controller1.getRightTriggerAxis());
-				jukebox.setIntakeSpeed(controller1.getLeftY());
-			}
-		));
-		*/
+		configureButtonBindings();
 	}
 
 	public void configureButtonBindings() {
@@ -84,11 +69,7 @@ public final class RobotContainer {
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
 		// OI.Button.pivotDown.onTrue(new InstantCommand(() -> pivot.setAngle(0)));
 		// OI.Button.pivotUp.onTrue(new InstantCommand(() -> pivot.setAngle(90)));
-		//getRightTriggerAxis()
-		// OI.Button.runOuttake.whileTrue(Commands.runEnd(() -> new Command(jukebox.setOuttakeSpeed(OI.Axis.outtakeSpeed.getAsDouble(), OI.Axis.outtakeSpeed.getAsDouble())), () -> new Command(jukebox.setOuttakeSpeed(0,0))));
-		// OI.Button.runIntake.whileTrue(Commands.runEnd(() -> new Command(jukebox.setIntakeSpeed(OI.Axis.intakeSpeed.getAsDouble())), () -> new Command(jukebox.setIntakeSpeed(0))));
-		controller1.back().onTrue(AutoBuilder.buildAuto("Backwards Line"));
-		
+		OI.driverController.back().onTrue(AutoBuilder.buildAuto("Backwards Line"));
 	}
 
 	public Command getAutonomousCommand() {

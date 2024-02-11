@@ -7,6 +7,7 @@ package frc.team568.robot.crescendo;
 import static frc.team568.robot.crescendo.Constants.SwerveConstants.kMaxSpeed;
 import static frc.team568.robot.crescendo.Constants.SwerveConstants.kNormalMultiplier;
 import static frc.team568.robot.crescendo.Constants.SwerveConstants.kSlowMultiplier;
+import static frc.team568.robot.crescendo.Constants.SwerveConstants.kWheelbaseRadius;
 
 import java.io.File;
 import java.io.IOException;
@@ -144,7 +145,7 @@ public class SwerveSubsystem extends SubsystemBase {
 					new PIDConstants(0.03, 0.0, 0.05), // PID constants to correct for translation error (used to create the X and Y PID controllers)
 					new PIDConstants(0.003, 0.0, 0),
 					1.0,
-					0.39,
+					kWheelbaseRadius,
 					new ReplanningConfig(true, true, 0.09, 0.3)), // PID constants to correct for rotation error (used to create the rotation controller)
 				() -> {
 					var alliance = DriverStation.getAlliance();

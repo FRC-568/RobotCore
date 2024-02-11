@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class Robot extends TimedRobot {
 	private RobotContainer container;
@@ -20,6 +21,8 @@ public class Robot extends TimedRobot {
 		container = new RobotContainer();
 		if (DriverStation.isFMSAttached())
 			Shuffleboard.selectTab(OI.autoTab.getTitle());
+		else
+			SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
 	}
 
 	@Override

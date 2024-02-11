@@ -26,6 +26,7 @@ final class Constants {
 		static final double kMaxSpinRate = 4 * Math.PI; // 2 rotations per second
 		static final double kModuleMaxAngularVelocity = 32 * Math.PI; // 2 rotations per second
 		static final double kModuleMaxAngularAcceleration = 32 * Math.PI; // radians per second squared
+		static final double kWheelbaseRadius = 0.390641141;
 		static final int kDrivePidChannel = 0;
 		static final double kSlowMultiplier = 0.25;
 		static final double kNormalMultiplier = 1.0;
