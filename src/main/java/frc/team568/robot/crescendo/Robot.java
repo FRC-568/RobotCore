@@ -18,6 +18,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
+		
 		container = new RobotContainer();
 		if (DriverStation.isFMSAttached())
 			Shuffleboard.selectTab(OI.autoTab.getTitle());
@@ -33,9 +34,6 @@ public class Robot extends TimedRobot {
 
 		if (m_autonomousCommand != null)
 			m_autonomousCommand.cancel();
-			
-		if (DriverStation.isFMSAttached())
-			Shuffleboard.selectTab(OI.driverTab.getTitle());
 	}
 
 	@Override
@@ -45,17 +43,6 @@ public class Robot extends TimedRobot {
 		m_autonomousCommand = container.getAutonomousCommand();
 		if (m_autonomousCommand != null)
 			m_autonomousCommand.schedule();
-
-		if (DriverStation.isFMSAttached())
-			Shuffleboard.selectTab(OI.driverTab.getTitle());
-	}
-
-	@Override
-	public void testInit() {
-		LiveWindow.enableAllTelemetry();
-
-		if (m_autonomousCommand != null)
-			m_autonomousCommand.cancel();
 	}
 
 	@Override

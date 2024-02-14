@@ -1,4 +1,4 @@
-package frc.team568.robot.crescendo.command;
+package frc.team568.robot.crescendo;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.Command;
