@@ -12,7 +12,7 @@ public class UpPneumatic extends Command {
 
 	@Override
 	public void initialize() {
-		dSolenoid.set(DoubleSolenoid.Value.kForward);
+		dSolenoid.set(DoubleSolenoid.Value.kOff);
 	}
 
 	@Override
