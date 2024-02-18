@@ -1,12 +1,12 @@
 package frc.team568.robot.crescendo;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class DownPneumatic extends Command {
-	DoubleSolenoid dSolenoid;
+	public DoubleSolenoid dSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
 	
-	public DownPneumatic(DoubleSolenoid dSolenoid){
-		this.dSolenoid = dSolenoid;
+	public DownPneumatic(){
 	}
 
 	@Override

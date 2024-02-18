@@ -8,14 +8,14 @@ public class AutoTab {
 	public SendableChooser<Command> chooser = new SendableChooser<>();
 	
 	public AutoTab(RobotContainer container) {
-		var dSolenoid = container.dSolenoid;
+		//var dSolenoid = container.dSolenoid;
 
-		Command downpneumatic = new DownPneumatic(dSolenoid);
-		Command uppneumatic = new UpPneumatic(dSolenoid);
+		//Command downpneumatic = new DownPneumatic(dSolenoid);
+		//Command uppneumatic = new UpPneumatic(dSolenoid);
 		
 		chooser.setDefaultOption("Wait", null);
-		chooser.addOption("Down Pneumatic", downpneumatic);
-		chooser.addOption("Up Pneumatic", uppneumatic);
+		//chooser.addOption("Down Pneumatic", downpneumatic);
+		//chooser.addOption("Up Pneumatic", uppneumatic);
 
 		OI.autoTab.add("Auto Program", chooser);
 

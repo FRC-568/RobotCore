@@ -14,6 +14,6 @@ final class OI {
 		//public static final Trigger pneumaticup = driverController.leftBumper();
 		//public static final Trigger pneumaticdown = driverController.rightBumper();
 		public static final Trigger pneumaticsubsystem = driverController.rightBumper();
-		public static final Trigger switchstate = driverController.leftBumper();
+		//public static final Trigger test = driverController.x();
 	}
 }
