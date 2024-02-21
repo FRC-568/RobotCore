@@ -35,6 +35,7 @@ import frc.team568.robot.crescendo.command.Up;
 import frc.team568.robot.crescendo.command.UpPneumatic;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
+import frc.team568.robot.crescendo.subsystem.VisionSubsystem;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
 public final class RobotContainer {
@@ -44,6 +45,7 @@ public final class RobotContainer {
 	final SwerveSubsystem drive;
 	final PivotSubsystem pivot = new PivotSubsystem(0, 0);
 	final JukeboxSubsystem jukebox = new JukeboxSubsystem(0, 0, 0);
+	final VisionSubsystem vision = new VisionSubsystem();
 	HashMap<String, Command> eventMap = new HashMap<>();
 
 
