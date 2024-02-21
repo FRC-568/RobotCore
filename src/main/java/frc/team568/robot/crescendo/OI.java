@@ -13,7 +13,6 @@ final class OI {
 	static final class Button{
 		//public static final Trigger pneumaticup = driverController.leftBumper();
 		//public static final Trigger pneumaticdown = driverController.rightBumper();
-		public static final Trigger pneumaticsubsystem = driverController.rightBumper();
-		//public static final Trigger test = driverController.x();
+		public static final Trigger pneumaticsubsystem = driverController.button(6);
 	}
 }
