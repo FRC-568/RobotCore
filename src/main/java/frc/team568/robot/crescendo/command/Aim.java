@@ -8,12 +8,9 @@ import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 
 public class Aim extends Command{
 	
-	
 	PivotSubsystem pivot;
 	
 	DoubleSupplier distance;
-
-
 
 	public Aim(PivotSubsystem pivot){
 		this.pivot = pivot;

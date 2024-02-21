@@ -14,9 +14,8 @@ public class SwerveSubsystemDefaultCommand extends Command{
 	public SwerveSubsystemDefaultCommand(final SwerveSubsystem drive){
 		this.drive = drive;
 		addRequirements(drive);
-}
+	}
 	
-
 	@Override
 	public void execute(){
 		// Get the x speed. We are inverting this because Xbox controllers return
@@ -36,5 +35,4 @@ public class SwerveSubsystemDefaultCommand extends Command{
 
 		drive.drive(xSpeed, ySpeed, rot);
 	}
-
 }

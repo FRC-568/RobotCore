@@ -32,5 +32,4 @@ final class Constants {
 		static final double kNormalMultiplier = 1.0;
 
 	}
-
 }

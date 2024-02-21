@@ -11,7 +11,6 @@ public class Intake extends Command {
 	double speed;
 	int angle;
 
-
 	public Intake(JukeboxSubsystem juke, PivotSubsystem pivot){
 		this.juke = juke;
 		this.pivot = pivot;

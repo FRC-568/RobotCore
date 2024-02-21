@@ -58,5 +58,4 @@ final class OI {
 		public static final Trigger runOuttake = driverController.rightTrigger();
 		public static final Trigger runIntake = driverController.leftTrigger();
 	}
-
 }

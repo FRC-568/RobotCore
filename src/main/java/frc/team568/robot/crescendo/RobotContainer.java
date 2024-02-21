@@ -8,7 +8,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 //import edu.wpi.first.cameraserver.CameraServer;
 //import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 

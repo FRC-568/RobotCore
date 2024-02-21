@@ -27,5 +27,4 @@ public class TuningAndConfigs{
 		.withWidget(BuiltInWidgets.kNumberSlider)
 		.withProperties(Map.of("min",0,"max",360))
 		.getEntry();
-
 }

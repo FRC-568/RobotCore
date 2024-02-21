@@ -42,8 +42,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	protected SwerveDrive drive;
 
-	
-
 	public SwerveSubsystem(Pose2d startingPose) {
 		try {
 			drive = new SwerveParser(new File(Filesystem.getDeployDirectory(),"swerve")).createSwerveDrive(kMaxSpeed);
@@ -95,7 +93,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
 		drive.setModuleStates(swerveModuleStates, isOpenLoop);
 	}
-
 
 	protected SwerveModule[] getModules() {
 		return drive.getModules();
@@ -198,7 +195,4 @@ public class SwerveSubsystem extends SubsystemBase {
 		builder.addBooleanProperty(FIELD_REL_KEY, this::isFieldRelative, this::setFieldRelative);
 		builder.addBooleanProperty(SLOW_MODE_KEY, this::isSlowModeActive, this::setSlowMode);
 	}
-
-	
-
 }
