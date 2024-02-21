@@ -20,28 +20,28 @@ public class AutoTab {
 		var pivot = container.pivot; 
 		var drive = container.drive; 
 		var jukebox = container.jukebox;
-		var dSolenoid = container.dSolenoid;
+		//var dSolenoid = container.dSolenoid;
 		
 		Command aim = new Aim(pivot);
 		Command autoScoreAndPreload = new AutoScoreAndPreload(drive, jukebox, pivot);
 		Command closing = new Closing(pivot);
-		Command downpneumatic = new DownPneumatic(dSolenoid);
+		//Command downpneumatic = new DownPneumatic(dSolenoid);
 		Command intake = new Intake(jukebox, pivot);
 		Command scoreamp = new ScoreAmp(jukebox, pivot);
 		Command scorespeaker = new ScoreSpeaker(jukebox, pivot);
 		Command up = new Up(pivot);
-		Command uppneumatic = new UpPneumatic(dSolenoid);
+		//Command uppneumatic = new UpPneumatic(dSolenoid);
 		
 		chooser.setDefaultOption("Wait", null);
 		chooser.addOption("Aim", aim);
 		chooser.addOption("AutoScoreAndPreload", autoScoreAndPreload);
 		chooser.addOption("Closing", closing);
-		chooser.addOption("Closing", downpneumatic);
+		//chooser.addOption("Closing", downpneumatic);
 		chooser.addOption("Intake", intake);
 		chooser.addOption("Score AMP", scoreamp);
 		chooser.addOption("Score Speaker", scorespeaker);
 		chooser.addOption("Up", up);
-		chooser.addOption("Up Pneumatic", uppneumatic);
+		//chooser.addOption("Up Pneumatic", uppneumatic);
 
 		OI.autoTab.add("Auto Program", chooser);
 

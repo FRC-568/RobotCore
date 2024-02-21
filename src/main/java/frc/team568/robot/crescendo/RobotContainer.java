@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
+import frc.team568.robot.crescendo.subsystem.PneumaticSubsystem;
 
 public final class RobotContainer {
 	// UsbCamera camera;
@@ -34,8 +35,8 @@ public final class RobotContainer {
 	// Config tab objects
 	public ConfigTab configTab;
 
-	public DoubleSolenoid dSolenoid = new DoubleSolenoid(null, 0, 0);
-
+	// Pneumatic Subsystem object
+	public PneumaticSubsystem pneumaticsub;
 
 	ComplexWidget enterButton;
 
@@ -58,6 +59,7 @@ public final class RobotContainer {
 		autoTab = new AutoTab(this);
 		driverTab = new DriverTab(this);
 		configTab = new ConfigTab(this);
+		pneumaticsub = new PneumaticSubsystem();
 
 		configureButtonBindings();
 	}
@@ -69,6 +71,7 @@ public final class RobotContainer {
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
 		// OI.Button.pivotDown.onTrue(new InstantCommand(() -> pivot.setAngle(0)));
 		// OI.Button.pivotUp.onTrue(new InstantCommand(() -> pivot.setAngle(90)));
+		OI.Button.pneumaticstateswitch.onTrue(new InstantCommand(pneumaticsub::SwitchState));
 		OI.driverController.back().onTrue(AutoBuilder.buildAuto("Backwards Line"));
 	}
 

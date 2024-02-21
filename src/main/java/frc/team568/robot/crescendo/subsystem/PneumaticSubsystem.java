@@ -2,24 +2,20 @@ package frc.team568.robot.crescendo.subsystem;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PneumaticSubsystem extends SubsystemBase {
-  	private DoubleSolenoid dSolenoid;
-	private Compressor compressor;
+	public DoubleSolenoid dSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+	public Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
-	PneumaticSubsystem(DoubleSolenoid dSolenoid,Compressor compressor){
-		this.dSolenoid = dSolenoid;
-		this.compressor = compressor;
-	}
-	
-	public void Up(){
-		dSolenoid.set(DoubleSolenoid.Value.kForward);
-	}
-
-	public void Down(){
+	public PneumaticSubsystem(){
 		dSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
+
+	public void SwitchState(){
+		dSolenoid.toggle();
+	} 
 
 	public double getPressure(){
 		return compressor.getPressure();
