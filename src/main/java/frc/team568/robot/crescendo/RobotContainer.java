@@ -91,6 +91,9 @@ public final class RobotContainer {
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
 		drive.configurePathplanner();
 
+		vision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
+		vision.startPoseListenerThread();
+
 		configureButtonBindings();
 
 		setupAutoTab();

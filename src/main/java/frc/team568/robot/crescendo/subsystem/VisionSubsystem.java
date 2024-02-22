@@ -1,6 +1,9 @@
 package frc.team568.robot.crescendo.subsystem;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -9,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,16 +24,18 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 public class VisionSubsystem extends SubsystemBase {
+	private static final double kPoseUpdateInterval = 1.0;
+
 	protected PhotonCamera camera;
 	private final PhotonPoseEstimator photonEstimator;
 	private double lastEstTimestamp = 0;
+	private final Collection<Consumer<EstimatedRobotPose>> poseListeners = new ArrayList<>();
+	private final Notifier listenerThread = new Notifier(this::updatePoseListeners);
 
 	private static String CAMERA_NAME = "photonvision";
 	public static final AprilTagFieldLayout kTagLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
 	public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5),
 			new Rotation3d(0, 0, 0));
-
-	private int pollCount = 0;
 
 	private ShuffleboardTab cameraTab;
 	private GenericEntry targetArea, targetId, targetPitch, targetPose, targetSkew;
@@ -65,19 +71,6 @@ public class VisionSubsystem extends SubsystemBase {
 		poseX = cameraTab.add("X: ", 0).getEntry();
 		poseY = cameraTab.add("Y: ", 0).getEntry();
 		poseZ = cameraTab.add("Z: ", 0).getEntry();
-	}
-
-	public void periodic() {
-		// periodic runs every 20 milliseconds, we don't need to talk to the camera that
-		// often
-		// we should consider calling the function from the swerve subsystem to better
-		// align the swerve readings with the camera readings
-		if (pollCount >= 50) {
-			getLatestResult();
-			pollCount = 0;
-		} else {
-			pollCount++;
-		}
 	}
 
 	public PhotonPipelineResult getLatestResult() {
@@ -122,6 +115,31 @@ public class VisionSubsystem extends SubsystemBase {
 		if (newResult)
 			lastEstTimestamp = latestTimestamp;
 		return visionEst;
+	}
+
+	public void addPoseListener(Consumer<EstimatedRobotPose> listener) {
+		if (listener != null && !poseListeners.contains(listener))
+			poseListeners.add(listener);
+	}
+
+	public void startPoseListenerThread() {
+		startPoseListenerThread(kPoseUpdateInterval);
+	}
+
+	public void startPoseListenerThread(double interval) {
+		listenerThread.stop();
+		listenerThread.startPeriodic(interval);
+	}
+
+	public void stopPoseListenerThread() {
+		listenerThread.stop();
+	}
+
+	private void updatePoseListeners() {
+		var pose = getEstimatedGlobalPose();
+		if (pose.isPresent())
+			for (var l : poseListeners)
+				l.accept(pose.get());
 	}
 
 }
