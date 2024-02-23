@@ -7,8 +7,8 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -88,7 +88,7 @@ public class JukeboxSubsystem extends SubsystemBase {
 		intakeMotor.set(speed);
 	}
 
-	public void initDefaultCommand(final DoubleSupplier intakeSpeed, final DoubleSupplier outtakeSpeed) {
+	public void initDefaultCommand(final DoubleSupplier intakeSpeed, final DoubleSupplier outtakeSpeedL, final DoubleSupplier outtakeSpeedR) {
 		setDefaultCommand(new Command() {
 
 			{ addRequirements(JukeboxSubsystem.this); }
@@ -96,7 +96,7 @@ public class JukeboxSubsystem extends SubsystemBase {
 			@Override
 			public void execute() {
 				setIntakeSpeed(intakeSpeed.getAsDouble());
-				setOuttakeSpeed(outtakeSpeed.getAsDouble());
+				setOuttakeSpeed(outtakeSpeedL.getAsDouble(), outtakeSpeedR.getAsDouble());
 			}
 
 			@Override

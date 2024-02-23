@@ -2,8 +2,8 @@ package frc.team568.robot.crescendo;
 
 import static frc.team568.robot.crescendo.Constants.OIConstants.kAxisSlewRate;
 import static frc.team568.robot.crescendo.Constants.OIConstants.kControllerDeadband;
-import static frc.team568.robot.crescendo.Constants.OIConstants.kDriverControllerPort;
 import static frc.team568.robot.crescendo.Constants.OIConstants.kCopilotControllerPort;
+import static frc.team568.robot.crescendo.Constants.OIConstants.kDriverControllerPort;
 
 import java.util.function.DoubleSupplier;
 
@@ -26,8 +26,9 @@ final class OI {
 		public static final DoubleSupplier swerveForward;
 		public static final DoubleSupplier swerveLeft;
 		public static final DoubleSupplier swerveCCW;
-		public static final DoubleSupplier intakeSpeed = driverController::getLeftTriggerAxis;
-		public static final DoubleSupplier outtakeSpeed = driverController::getRightTriggerAxis;
+		public static final DoubleSupplier intakeSpeed = () -> Math.pow(driverController.getLeftY(), 3);
+		public static final DoubleSupplier outtakeSpeedL = driverController::getLeftTriggerAxis;
+		public static final DoubleSupplier outtakeSpeedR = driverController::getRightTriggerAxis;
 
 		static {
 			// Slew rate limiters to make joystick inputs more gentle; 1/x sec from 0 to 1.
