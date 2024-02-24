@@ -5,23 +5,24 @@ import java.util.Map;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
-//import edu.wpi.first.cameraserver.CameraServer;
-//import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import frc.team568.robot.crescendo.subsystem.PneumaticSubsystem;
+import frc.team568.robot.crescendo.subsystem.VisionSubsystem;
 
 public final class RobotContainer {
-	// UsbCamera camera;
 	final SwerveSubsystem drive;
 	final PivotSubsystem pivot = new PivotSubsystem(0, 0);
 	final JukeboxSubsystem jukebox = new JukeboxSubsystem(0, 0, 0);
+	final VisionSubsystem vision = new VisionSubsystem();
+
 	Map<String, Command> eventMap = new HashMap<>();
 
 	// Auto tab objects
@@ -49,6 +50,9 @@ public final class RobotContainer {
 		drive.configurePathplanner();
 
 		pivot.setDefaultCommand(new PivotSubsystemDefaultCommand(pivot));
+
+		vision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
+		vision.startPoseListenerThread();
 
 		jukebox.initDefaultCommand(OI.Axis.intakeSpeed, OI.Axis.outtakeSpeedL, OI.Axis.outtakeSpeedR);
 

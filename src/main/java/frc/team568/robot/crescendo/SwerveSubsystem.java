@@ -132,6 +132,10 @@ public class SwerveSubsystem extends SubsystemBase {
 		return drive.getYaw().getDegrees();
 	}
 
+	public void addVisionMeasurement(Pose2d robotPose, double timestamp) {
+		drive.addVisionMeasurement(robotPose, timestamp);
+	}
+
 	public void configurePathplanner() {
 		AutoBuilder.configureHolonomic(
 				this::getPose, // Pose2d supplier
