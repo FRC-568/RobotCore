@@ -115,16 +115,6 @@ public class PivotSubsystem extends SubsystemBase {
 		leftMotor.getConfigurator().apply(slot0Configs);
 	}
 
-	public void setMotorSpeed(double speed) {
-			if (limitSwitch.get()) {
-				leftMotor.set(0);
-				rightMotor.set(0);
-			} else {
-				leftMotor.set(speed);
-				rightMotor.set(speed);
-			}
-	}
-
 	public void aim(double distance){
 		double h = 12.34; //speaker height
 		double d = distance;
@@ -145,6 +135,14 @@ public class PivotSubsystem extends SubsystemBase {
 		slot0Configs.kD = 0;
 
 		leftMotor.getConfigurator().apply(slot0Configs);
+	}
+
+	public void setVoltage(double voltage){
+		leftMotor.setVoltage(voltage);
+	}
+
+	public boolean getSwitch(){
+		return limitSwitch.get(); 
 	}
 
 	@Override
