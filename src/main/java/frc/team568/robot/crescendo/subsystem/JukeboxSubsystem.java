@@ -21,7 +21,9 @@ public class JukeboxSubsystem extends SubsystemBase {
 	private CANSparkMax intakeMotor;
 
 	final private VelocityVoltage velocity = new VelocityVoltage(0);
-
+	
+	final DutyCycleOut leftRequest = new DutyCycleOut(0.0);
+	final DutyCycleOut rightRequest = new DutyCycleOut(0.0);
 
 	boolean override = false;
 
@@ -62,8 +64,8 @@ public class JukeboxSubsystem extends SubsystemBase {
 		slot0Configs.kI = 0; //no output for integrated error
 		slot0Configs.kD = 0; //A velocity of 1 rps results in 0.1 V output at a setting of 0.1
 
-		leftOuttakeMotor.getConfigurator().apply(slot0Configs);
-		rightOuttakeMotor.getConfigurator().apply(slot0Configs);
+	//	leftOuttakeMotor.getConfigurator().apply(slot0Configs);
+	//	rightOuttakeMotor.getConfigurator().apply(slot0Configs);
 	}
 	
 	/**
@@ -80,8 +82,8 @@ public class JukeboxSubsystem extends SubsystemBase {
 	 * @param rSpeed rps
 	 */
 	public void setOuttakeSpeed(double lSpeed, double rSpeed) {
-		leftOuttakeMotor.setControl(velocity.withVelocity(lSpeed));
-		rightOuttakeMotor.setControl(velocity.withVelocity(rSpeed));
+		leftOuttakeMotor.setControl(leftRequest.withOutput(lSpeed));
+		rightOuttakeMotor.setControl(rightRequest.withOutput(rSpeed));
 	}
 
 	public void setIntakeSpeed(double speed){
