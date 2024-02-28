@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -40,10 +41,10 @@ public class JukeboxSubsystem extends SubsystemBase {
 		//addChild("intakeMotor", intakeMotor);
 		
 		MotorOutputConfigs lConfigs = new MotorOutputConfigs();
-		lConfigs.Inverted = InvertedValue.CounterClockwise_Positive ; //TODO: reverse directions based on design
+		lConfigs.Inverted = InvertedValue.Clockwise_Positive ; //TODO: reverse directions based on design
 
 		MotorOutputConfigs rConfigs = new MotorOutputConfigs();
-		rConfigs.Inverted = InvertedValue.Clockwise_Positive;
+		rConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
         
         //leftOuttakeMotor.selectProfileSlot(0, 0);
         //leftOuttakeMotor.configClosedloopRamp(0.1);
