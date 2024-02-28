@@ -26,7 +26,7 @@ final class OI {
 		public static final DoubleSupplier swerveForward;
 		public static final DoubleSupplier swerveLeft;
 		public static final DoubleSupplier swerveCCW;
-		public static final DoubleSupplier intakeSpeed = () -> Math.pow(driverController.getLeftY(), 3);
+		public static final DoubleSupplier intakeSpeed = () -> Math.pow(driverController.getRightY(), 3);
 		public static final DoubleSupplier outtakeSpeedL = driverController::getLeftTriggerAxis;
 		public static final DoubleSupplier outtakeSpeedR = driverController::getRightTriggerAxis;
 

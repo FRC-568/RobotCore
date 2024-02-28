@@ -18,10 +18,10 @@ import frc.team568.robot.crescendo.subsystem.PneumaticSubsystem;
 import frc.team568.robot.crescendo.subsystem.VisionSubsystem;
 
 public final class RobotContainer {
-	final SwerveSubsystem drive;
-	final PivotSubsystem pivot = new PivotSubsystem(0, 0);
-	final JukeboxSubsystem jukebox = new JukeboxSubsystem(0, 0, 0);
-	final VisionSubsystem vision = new VisionSubsystem();
+	 final SwerveSubsystem drive;
+	  PivotSubsystem pivot /* = new PivotSubsystem(0, 0)*/;
+	   final JukeboxSubsystem jukebox = new JukeboxSubsystem(12, 11, 13);
+	    final VisionSubsystem vision = new VisionSubsystem();
 
 	Map<String, Command> eventMap = new HashMap<>();
 
@@ -49,7 +49,7 @@ public final class RobotContainer {
 		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
 		drive.configurePathplanner();
 
-		pivot.setDefaultCommand(new PivotSubsystemDefaultCommand(pivot));
+		//pivot.setDefaultCommand(new PivotSubsystemDefaultCommand(pivot));
 
 		vision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
 		vision.startPoseListenerThread();
@@ -58,7 +58,7 @@ public final class RobotContainer {
 
 		pd = new PowerDistribution(1, ModuleType.kRev);
 
-		autoTab = new AutoTab(this);
+		//autoTab = new AutoTab(this);
 		driverTab = new DriverTab(this);
 		configTab = new ConfigTab(this);
 		pneumaticsub = new PneumaticSubsystem();

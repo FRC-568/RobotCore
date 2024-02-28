@@ -2,6 +2,8 @@ package frc.team568.robot.crescendo.subsystem;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -18,7 +20,7 @@ public class JukeboxSubsystem extends SubsystemBase {
     //=== motors ===
 	private TalonFX leftOuttakeMotor;
     private TalonFX rightOuttakeMotor;
-	private CANSparkMax intakeMotor;
+	private VictorSPX intakeMotor;
 
 	final private VelocityVoltage velocity = new VelocityVoltage(0);
 
@@ -32,10 +34,8 @@ public class JukeboxSubsystem extends SubsystemBase {
 		rightOuttakeMotor = new TalonFX(rightOuttakeMotorPort);
 		addChild("rightOuttakeMotor", rightOuttakeMotor);
 
-		intakeMotor = new CANSparkMax(intakeMotorPort, MotorType.kBrushless);
-		addChild("intakeMotor", builder -> {
-			builder.addDoubleProperty("output", intakeMotor::get, null);
-		});
+		intakeMotor = new VictorSPX(intakeMotorPort);
+		//addChild("intakeMotor", intakeMotor);
 		
 		MotorOutputConfigs lConfigs = new MotorOutputConfigs();
 		lConfigs.Inverted = InvertedValue.CounterClockwise_Positive ; //TODO: reverse directions based on design
@@ -58,7 +58,7 @@ public class JukeboxSubsystem extends SubsystemBase {
 		//=== pid configs ===
 		//TODO: allow on the fly configuration
 		Slot0Configs slot0Configs = new Slot0Configs();
-		slot0Configs.kP = 0; //An error of 0.5 rotations and a value of 24 results in 12 V output
+		slot0Configs.kP = 0.5; //An error of 0.5 rotations and a value of 24 results in 12 V output
 		slot0Configs.kI = 0; //no output for integrated error
 		slot0Configs.kD = 0; //A velocity of 1 rps results in 0.1 V output at a setting of 0.1
 
@@ -85,7 +85,7 @@ public class JukeboxSubsystem extends SubsystemBase {
 	}
 
 	public void setIntakeSpeed(double speed){
-		intakeMotor.set(speed);
+		intakeMotor.set(ControlMode.PercentOutput, speed);
 	}
 
 	public void initDefaultCommand(final DoubleSupplier intakeSpeed, final DoubleSupplier outtakeSpeedL, final DoubleSupplier outtakeSpeedR) {
