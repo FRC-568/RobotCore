@@ -1,0 +1,89 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.27,
+        "y": 7.0
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.2102662821238153,
+        "y": 6.994353501200889
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.88,
+        "y": 7.42
+      },
+      "prevControl": {
+        "x": 7.467780702298762,
+        "y": 7.64577699307657
+      },
+      "nextControl": {
+        "x": 8.292219297701237,
+        "y": 7.19422300692343
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.058360990831247,
+        "y": 6.6493351038958615
+      },
+      "prevControl": {
+        "x": 5.517181464628454,
+        "y": 6.799907077698944
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Shoot Note",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Intake and Shoot Note",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 15.461217740441903,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "LeftBlue",
+  "previewStartingState": {
+    "rotation": 0.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

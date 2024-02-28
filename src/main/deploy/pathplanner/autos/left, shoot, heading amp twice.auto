@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.68,
+      "y": 6.69
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left, ShootNote1&2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left, heading amp first"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left, amp to center note(amp)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left, center note to amp"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "LeftBlue",
+  "choreoAuto": false
+}

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6807503073680006,
-      "y": 6.6890563410815895
+      "x": 1.33,
+      "y": 5.53
     },
-    "rotation": 60.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,12 +14,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "left, ShootNote1&2"
+            "pathName": "Center shoot pixel"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "CenterBlue",
   "choreoAuto": false
 }

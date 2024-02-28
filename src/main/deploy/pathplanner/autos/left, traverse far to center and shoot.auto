@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6807503073680006,
-      "y": 6.6890563410815895
+      "x": 0.68,
+      "y": 6.69
     },
-    "rotation": 60.0
+    "rotation": 59.80196424860489
   },
   "command": {
     "type": "sequential",
@@ -16,10 +16,16 @@
           "data": {
             "pathName": "left, ShootNote1&2"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left, traverse to center line"
+          }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "LeftBlue",
   "choreoAuto": false
 }
