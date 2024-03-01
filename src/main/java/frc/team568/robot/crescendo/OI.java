@@ -21,14 +21,15 @@ final class OI {
 	static final ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
 	static final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
 	static final ShuffleboardTab configTab = Shuffleboard.getTab("Config");
+	static final ShuffleboardTab flywheelTab = Shuffleboard.getTab("flywheel tuning");
 
 	static final class Axis {
 		public static final DoubleSupplier swerveForward;
 		public static final DoubleSupplier swerveLeft;
 		public static final DoubleSupplier swerveCCW;
-		public static final DoubleSupplier intakeSpeed = () -> Math.pow(driverController.getRightY(), 3);
-		public static final DoubleSupplier outtakeSpeedL = driverController::getLeftTriggerAxis;
-		public static final DoubleSupplier outtakeSpeedR = driverController::getRightTriggerAxis;
+		public static final DoubleSupplier intakeSpeed = () -> Math.pow(copilotController.getRightY(), 1);
+		public static final DoubleSupplier outtakeSpeedL = copilotController::getLeftTriggerAxis;
+		public static final DoubleSupplier outtakeSpeedR = copilotController::getRightTriggerAxis;
 
 		static {
 			// Slew rate limiters to make joystick inputs more gentle; 1/x sec from 0 to 1.

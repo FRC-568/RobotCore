@@ -10,8 +10,6 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -109,6 +107,14 @@ public class JukeboxSubsystem extends SubsystemBase {
 			}
 
 		});
+	}
+
+	public double getLeftVelo(){
+		return leftOuttakeMotor.getVelocity().getValueAsDouble();
+	}
+
+	public double getRightVelo(){
+		return rightOuttakeMotor.getVelocity().getValueAsDouble();
 	}
 
 	@Override

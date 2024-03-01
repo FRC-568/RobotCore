@@ -34,6 +34,8 @@ public final class RobotContainer {
 	// Config tab objects
 	public ConfigTab configTab;
 
+	public FlywheelTab flywheelTab;
+
 	// Pneumatic Subsystem object
 	public PneumaticSubsystem pneumaticsub;
 
@@ -61,6 +63,7 @@ public final class RobotContainer {
 		//autoTab = new AutoTab(this);
 		driverTab = new DriverTab(this);
 		configTab = new ConfigTab(this);
+		flywheelTab = new FlywheelTab(this);
 		pneumaticsub = new PneumaticSubsystem();
 
 		configureButtonBindings();
