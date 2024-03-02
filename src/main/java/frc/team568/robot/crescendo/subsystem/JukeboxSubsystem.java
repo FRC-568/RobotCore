@@ -10,8 +10,10 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -25,6 +27,9 @@ public class JukeboxSubsystem extends SubsystemBase {
 	
 	final DutyCycleOut leftRequest = new DutyCycleOut(0.0);
 	final DutyCycleOut rightRequest = new DutyCycleOut(0.0);
+
+	private ColorSensorV3 distanceSensor;
+	private Port distanceSensorPort;
 
 	boolean override = false;
 
@@ -62,6 +67,9 @@ public class JukeboxSubsystem extends SubsystemBase {
 		slot0Configs.kP = 0.5; //An error of 0.5 rotations and a value of 24 results in 12 V output
 		slot0Configs.kI = 0; //no output for integrated error
 		slot0Configs.kD = 0; //A velocity of 1 rps results in 0.1 V output at a setting of 0.1
+
+		distanceSensorPort = Port.kOnboard;
+		distanceSensor = new ColorSensorV3(distanceSensorPort);
 
 	//	leftOuttakeMotor.getConfigurator().apply(slot0Configs);
 	//	rightOuttakeMotor.getConfigurator().apply(slot0Configs);
@@ -115,6 +123,10 @@ public class JukeboxSubsystem extends SubsystemBase {
 
 	public double getRightVelo(){
 		return rightOuttakeMotor.getVelocity().getValueAsDouble();
+	}
+
+	public double getDistance(){
+		return distanceSensor.getProximity();
 	}
 
 	@Override

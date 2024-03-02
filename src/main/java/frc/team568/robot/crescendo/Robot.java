@@ -23,13 +23,6 @@ public class Robot extends TimedRobot {
 	private RobotContainer container;
 	private Command m_autonomousCommand;
 
-	private final I2C.Port i2cPort = I2C.Port.kOnboard;
-	private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
-	private final ColorMatch m_colorMatcher = new ColorMatch();
-
-	//add color, i dont know values
-	private final Color kTarget = new Color();
-
 	@Override
 	public void robotInit() {
 		container = new RobotContainer();
@@ -38,7 +31,6 @@ public class Robot extends TimedRobot {
 		else
 			SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
 		
-		m_colorMatcher.addColorMatch(kTarget);
 	}
 
 	@Override
@@ -87,16 +79,6 @@ public class Robot extends TimedRobot {
 	public void robotPeriodic() {
 		CommandScheduler.getInstance().run();
 
-		Color detectedColor = m_colorSensor.getColor();
-		String colorString;
-    	ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
-		if (match.color == kTarget) {
-			colorString = "Note";
-		}else {
-			colorString = "Unknown";
-		}
-
-		SmartDashboard.putString("Detected Color", colorString);
 	}
 
 	@Override
