@@ -22,7 +22,7 @@ public class AutoTab {
 		var jukebox = container.jukebox;
 		//var dSolenoid = container.dSolenoid;
 		
-		Command aim = new Aim(pivot);
+		//Command aim = new Aim(pivot);
 		Command autoScoreAndPreload = new AutoScoreAndPreload(drive, jukebox, pivot);
 		Command closing = new Closing(pivot);
 		//Command downpneumatic = new DownPneumatic(dSolenoid);
@@ -33,7 +33,7 @@ public class AutoTab {
 		//Command uppneumatic = new UpPneumatic(dSolenoid);
 		
 		chooser.setDefaultOption("Wait", null);
-		chooser.addOption("Aim", aim);
+		//chooser.addOption("Aim", aim);
 		chooser.addOption("AutoScoreAndPreload", autoScoreAndPreload);
 		chooser.addOption("Closing", closing);
 		//chooser.addOption("Closing", downpneumatic);
