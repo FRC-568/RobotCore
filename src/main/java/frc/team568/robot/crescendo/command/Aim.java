@@ -12,9 +12,8 @@ public class Aim extends Command{
 	
 	DoubleSupplier distance;
 
-	public Aim(PivotSubsystem pivot){
+	public Aim(PivotSubsystem pivot, DoubleSupplier distance){
 		this.pivot = pivot;
-		distance = () -> Math.random();
 	}
 
 	@Override
