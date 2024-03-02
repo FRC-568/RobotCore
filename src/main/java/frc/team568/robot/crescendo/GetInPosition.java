@@ -29,7 +29,6 @@ public class GetInPosition {
 	double[] speakCoords;
 	double[] yRestraints; 
 
-	double angle;
 	double maxAngle = 59; //THIS ANGLE IS IN DEGREES (1.03 radians, if needed). If changed, you will have to mess with line 77
 	double tooClose = 0.92; //This measurement if from the subwoofer size from wall. The number is in meters, but can be converted to another metric if needed. Just make sure you change whatever else
 	double wallHeight = 2.11; //Height of the wall(speaker) in meters, if changed to a different metric, change other varibales that may be in centimeters
@@ -157,6 +156,5 @@ public class GetInPosition {
 	private Pose3d translateToShooter(){ // Unused method translating robot position to make jukebox position possible better results. 
 		return new Pose3d(getPosition());// No real application for the method yet, but there could be idk ¯\_(ツ)_/¯
 	}
-
 	// **EVERYTHING HERE IS ASSUMING THAT THE NOTE WILL BE SHOT FROM THE ROBOT INTO A STRAIGHT (enough) LINE SO THAT IT CAN MAKE IT INTO THE SPEAKER**
 }
