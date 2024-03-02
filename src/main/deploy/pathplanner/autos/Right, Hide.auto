@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.33,
-      "y": 5.53
+      "x": 0.7046435911053639,
+      "y": 4.403168079063431
     },
     "rotation": 0
   },
@@ -14,12 +14,18 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center shoot pixel"
+            "pathName": "right, ShootNote1&2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "right, Hide"
           }
         }
       ]
     }
   },
-  "folder": "CenterBlue",
+  "folder": "RightBlue",
   "choreoAuto": false
 }

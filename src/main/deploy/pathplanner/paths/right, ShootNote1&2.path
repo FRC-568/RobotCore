@@ -1,0 +1,84 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7046435911053639,
+        "y": 4.403168079063431
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.207492232130282,
+        "y": 4.421417626500663
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.6450227445909436,
+        "y": 4.244579398249706
+      },
+      "prevControl": {
+        "x": 2.6776767221404687,
+        "y": 4.24766610792684
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.45,
+      "rotationDegrees": -0.7168193193957557,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": -23.089999999999975,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "ScoreSpeaker",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "AutoScoreAndPreload",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -23.085133672808276,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "RightBlue",
+  "previewStartingState": {
+    "rotation": -57.87500155961247,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

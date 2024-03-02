@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.33,
+      "y": 5.53
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "center, ShootNote1&2 "
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "center, ShootTopNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "center, HideTop"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "CenterBlue",
+  "choreoAuto": false
+}
