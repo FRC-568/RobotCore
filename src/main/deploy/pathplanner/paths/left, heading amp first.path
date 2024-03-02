@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Note in amp",
+      "name": "IntakeNote",
       "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
@@ -42,7 +42,7 @@
       }
     },
     {
-      "name": "Intake Note",
+      "name": "ScoreAmp",
       "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",

@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot Note",
+      "name": "ScoreSpeaker",
       "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
@@ -42,7 +42,7 @@
       }
     },
     {
-      "name": "Intake and Shoot Note",
+      "name": "AutoScoreAndPreload",
       "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",

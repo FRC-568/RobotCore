@@ -16,24 +16,27 @@ public class IntakeNote extends Command{
 
 		// Find Note
 		// Drive in
-
 	}
 
 	@Override
 	public void end(boolean interrupted) {
 		// Stop intake
+		intakeWheels.setIntakeSpeed(0);
+
 	}
 
 	@Override
 	public void initialize() {
 		// Power intake
+		intakeWheels.setIntakeSpeed(1);
+
 		// Find position
 	}
 
 	@Override
 	public boolean isFinished() {
 		// returns true or false if finished
-		return true;
+		return intakeWheels.hasNote();
 	}
 
 }

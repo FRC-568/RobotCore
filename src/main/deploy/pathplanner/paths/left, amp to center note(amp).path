@@ -38,8 +38,18 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Note in Amp",
+      "name": "ScoreAmp",
       "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "IntakeNote",
+      "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
         "data": {

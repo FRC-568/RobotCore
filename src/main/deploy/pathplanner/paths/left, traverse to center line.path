@@ -48,7 +48,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot Note",
+      "name": "Intake",
       "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
@@ -58,8 +58,28 @@
       }
     },
     {
-      "name": "Intake and Shoot Note",
+      "name": "Intake",
       "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "ShootNote",
+      "waypointRelativePos": 0.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "ShootNote",
+      "waypointRelativePos": 2.0,
       "command": {
         "type": "parallel",
         "data": {
