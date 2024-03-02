@@ -30,7 +30,7 @@ public class GetInPosition {
 	double[] yRestraints; 
 
 	double angle;
-	double maxAngle = 59; //THIS ANGLE IS IN DEGREES (1.03 radians, if needed). If changed, you will have to mess with line 81
+	double maxAngle = 59; //THIS ANGLE IS IN DEGREES (1.03 radians, if needed). If changed, you will have to mess with line 77
 	double tooClose = 0.92; //This measurement if from the subwoofer size from wall. The number is in meters, but can be converted to another metric if needed. Just make sure you change whatever else
 	double wallHeight = 2.11; //Height of the wall(speaker) in meters, if changed to a different metric, change other varibales that may be in centimeters
 
