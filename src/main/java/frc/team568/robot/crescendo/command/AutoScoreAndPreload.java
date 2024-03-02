@@ -3,11 +3,12 @@ package frc.team568.robot.crescendo.command;
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.team568.robot.crescendo.SwerveSubsystem;
-import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
-import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.util.Units;
+
+import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
+import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
+import frc.team568.robot.subsystems.SwerveSubsystem;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.auto.AutoBuilder;

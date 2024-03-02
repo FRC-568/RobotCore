@@ -2,20 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.team568.robot.crescendo;
-
-import static frc.team568.robot.crescendo.Constants.SwerveConstants.kMaxSpeed;
-import static frc.team568.robot.crescendo.Constants.SwerveConstants.kNormalMultiplier;
-import static frc.team568.robot.crescendo.Constants.SwerveConstants.kSlowMultiplier;
-import static frc.team568.robot.crescendo.Constants.SwerveConstants.kWheelbaseRadius;
+package frc.team568.robot.subsystems;
 
 import java.io.File;
 import java.io.IOException;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -27,8 +18,11 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.SwerveDrive;
+import swervelib.parser.SwerveControllerConfiguration;
+import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveModule;
 
@@ -37,18 +31,27 @@ public class SwerveSubsystem extends SubsystemBase {
 	private boolean _fieldRelative = Preferences.getBoolean(FIELD_REL_KEY, false);
 
 	protected static final String SLOW_MODE_KEY = "Slow Mode";
+	private double slowMultiplier = 0.25, normalMultiplier = 1.0;
 	private boolean _slowMode = Preferences.getBoolean(SLOW_MODE_KEY, false);
-	private double speedMultiplier = _slowMode ? kSlowMultiplier : kNormalMultiplier;
+	private double speedMultiplier = _slowMode ? slowMultiplier : normalMultiplier;
 
-	protected SwerveDrive drive;
+	public final SwerveDrive drive;
 
-	public SwerveSubsystem(Pose2d startingPose) {
+	public SwerveSubsystem(File configDirectory, double maxSpeedMPS) {
 		try {
-			drive = new SwerveParser(new File(Filesystem.getDeployDirectory(),"swerve")).createSwerveDrive(kMaxSpeed);
-		} catch(IOException e) {
-			DriverStation.reportError(e.getMessage(),e.getStackTrace());
+			this.drive = new SwerveParser(configDirectory).createSwerveDrive(maxSpeedMPS);
+		} catch (IOException e) {
+			DriverStation.reportError(e.getMessage(), e.getStackTrace());
 			throw new RuntimeException("Cannot create SwerveSubsystem: cannot read config files.");
 		}
+	}
+
+	public SwerveSubsystem(String configDirectoryPath, double maxSpeedMPS) {
+		this(new File(Filesystem.getDeployDirectory(), configDirectoryPath), maxSpeedMPS);
+	}
+
+	public SwerveSubsystem(SwerveDriveConfiguration config, SwerveControllerConfiguration controllerConfig, double maxSpeedMPS) {
+		this.drive = new SwerveDrive(config, controllerConfig, maxSpeedMPS);
 	}
 
 	/**
@@ -65,9 +68,12 @@ public class SwerveSubsystem extends SubsystemBase {
 	/**
 	 * Method to drive the robot using joystick info.
 	 *
-	 * @param xSpeed        Speed of the robot in meters / second along the x direction (forward).
-	 * @param ySpeed        Speed of the robot in meters / second along the y direction (sideways).
-	 * @param rot           Angular rate of the robot in radians (counter-clockwise is positive.)
+	 * @param xSpeed        Speed of the robot in meters / second along the x
+	 *                      direction (forward).
+	 * @param ySpeed        Speed of the robot in meters / second along the y
+	 *                      direction (sideways).
+	 * @param rot           Angular rate of the robot in radians (counter-clockwise
+	 *                      is positive.)
 	 * @param fieldRelative Override setting for field relative controls
 	 */
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
@@ -136,29 +142,6 @@ public class SwerveSubsystem extends SubsystemBase {
 		drive.addVisionMeasurement(robotPose, timestamp);
 	}
 
-	public void configurePathplanner() {
-		AutoBuilder.configureHolonomic(
-				this::getPose, // Pose2d supplier
-				this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
-				this::getChassisSpeeds,
-				this::setModuleStates, // SwerveDriveKinematics
-				new HolonomicPathFollowerConfig(
-					new PIDConstants(0.03, 0.0, 0.05), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-					new PIDConstants(0.003, 0.0, 0),
-					1.0,
-					kWheelbaseRadius,
-					new ReplanningConfig(true, true, 0.09, 0.3)), // PID constants to correct for rotation error (used to create the rotation controller)
-				() -> {
-					var alliance = DriverStation.getAlliance();
-					if (alliance.isPresent()) {
-						return alliance.get() == DriverStation.Alliance.Red;
-					}
-					return false;
-				},
-				this
-			);
-	}
-
 	public boolean isFieldRelative() {
 		return _fieldRelative;
 	}
@@ -181,15 +164,36 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public void setSlowMode(boolean isEnabled) {
 		_slowMode = isEnabled;
-		speedMultiplier = _slowMode ? kSlowMultiplier : kNormalMultiplier;
+		speedMultiplier = _slowMode ? slowMultiplier : normalMultiplier;
 		Preferences.setBoolean(SLOW_MODE_KEY, _slowMode);
 		System.out.printf("%s controls activated. (%d%%)\n", _slowMode ? "Slow" : "Fast", speedMultiplier * 100);
+	}
+
+	public void setSpeedMultipliers(double slowMultiplier, double normalMultiplier) {
+		this.slowMultiplier = slowMultiplier;
+		this.normalMultiplier = normalMultiplier;
+		if (isSlowModeActive())
+			speedMultiplier = slowMultiplier;
+		else
+			speedMultiplier = normalMultiplier;
 	}
 
 	public boolean toggleSlowMode() {
 		boolean sm = !isSlowModeActive();
 		setSlowMode(sm);
 		return sm;
+	}
+
+	public void initDefaultCommand(
+			final DoubleSupplier swerveForward,
+			final DoubleSupplier swerveLeft,
+			final DoubleSupplier swerveCCW) {
+		setDefaultCommand(new RunCommand(
+				() -> drive(
+					swerveForward.getAsDouble(),
+					swerveLeft.getAsDouble(),
+					swerveCCW.getAsDouble()),
+				this));
 	}
 
 	@Override

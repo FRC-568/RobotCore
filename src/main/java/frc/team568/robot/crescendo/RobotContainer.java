@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
@@ -16,12 +19,16 @@ import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import frc.team568.robot.crescendo.subsystem.PneumaticSubsystem;
 import frc.team568.robot.crescendo.subsystem.VisionSubsystem;
+import frc.team568.robot.subsystems.SwerveSubsystem;
+
+import static frc.team568.robot.crescendo.Constants.SwerveConstants.kMaxSpeed;
+import static frc.team568.robot.crescendo.Constants.SwerveConstants.kWheelbaseRadius;
 
 public final class RobotContainer {
-	 final SwerveSubsystem drive;
-	  PivotSubsystem pivot /* = new PivotSubsystem(0, 0)*/;
-	   final JukeboxSubsystem jukebox = new JukeboxSubsystem(12, 11, 13);
-	    final VisionSubsystem vision = new VisionSubsystem();
+	public final SwerveSubsystem drive;
+	public PivotSubsystem pivot /* = new PivotSubsystem(0, 0)*/;
+	public final JukeboxSubsystem jukebox = new JukeboxSubsystem(12, 11, 13);
+	public final VisionSubsystem vision = new VisionSubsystem();
 
 	Map<String, Command> eventMap = new HashMap<>();
 
@@ -34,7 +41,7 @@ public final class RobotContainer {
 	// Config tab objects
 	public ConfigTab configTab;
 
-	public FlywheelTab flywheelTab;
+	//public FlywheelTab flywheelTab;
 
 	// Pneumatic Subsystem object
 	public PneumaticSubsystem pneumaticsub;
@@ -45,11 +52,9 @@ public final class RobotContainer {
 
 
 	public RobotContainer() {
-		//camera = CameraServer.startAutomaticCapture();
-
-		drive = new SwerveSubsystem(new Pose2d());
-		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
-		drive.configurePathplanner();
+		drive = new SwerveSubsystem("swerve", kMaxSpeed);
+		drive.initDefaultCommand(OI.Axis.swerveForward, OI.Axis.swerveLeft, OI.Axis.swerveCCW);
+		configurePathplanner();
 
 		//pivot.setDefaultCommand(new PivotSubsystemDefaultCommand(pivot));
 
@@ -63,7 +68,7 @@ public final class RobotContainer {
 		//autoTab = new AutoTab(this);
 		driverTab = new DriverTab(this);
 		configTab = new ConfigTab(this);
-		flywheelTab = new FlywheelTab(this);
+		//flywheelTab = new FlywheelTab(this);
 		pneumaticsub = new PneumaticSubsystem();
 
 		configureButtonBindings();
@@ -78,6 +83,28 @@ public final class RobotContainer {
 		// OI.Button.pivotUp.onTrue(new InstantCommand(() -> pivot.setAngle(90)));
 		OI.Button.pneumaticstateswitch.onTrue(new InstantCommand(pneumaticsub::SwitchState));
 		OI.driverController.back().onTrue(AutoBuilder.buildAuto("Backwards Line"));
+	}
+
+	public void configurePathplanner() {
+		AutoBuilder.configureHolonomic(
+				drive::getPose, // Pose2d supplier
+				drive::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+				drive::getChassisSpeeds,
+				drive::setModuleStates, // SwerveDriveKinematics
+				new HolonomicPathFollowerConfig(
+					new PIDConstants(0.03, 0.0, 0.05), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+					new PIDConstants(0.003, 0.0, 0),
+					1.0,
+					kWheelbaseRadius,
+					new ReplanningConfig(true, true, 0.09, 0.3)), // PID constants to correct for rotation error (used to create the rotation controller)
+				() -> {
+					var alliance = DriverStation.getAlliance();
+					return alliance.isPresent()
+						? alliance.get() == DriverStation.Alliance.Red
+						: false;
+				},
+				drive
+			);
 	}
 
 	public Command getAutonomousCommand() {
