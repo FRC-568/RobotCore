@@ -117,6 +117,16 @@ public class JukeboxSubsystem extends SubsystemBase {
 		});
 	}
 
+	public boolean hasNote(){
+		double value = getDistance();
+		double distanse = 200;
+		
+		if(value<distanse){
+			return true;
+		}
+		return false;
+	}
+
 	public double getLeftVelo(){
 		return leftOuttakeMotor.getVelocity().getValueAsDouble();
 	}
