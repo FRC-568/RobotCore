@@ -38,7 +38,7 @@ public final class RobotContainer {
 		vision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
 		vision.startPoseListenerThread();
 
-		pd = new PowerDistribution(1, ModuleType.kRev);
+		pd = new PowerDistribution(1, ModuleType.kCTRE);
 
 		configureButtonBindings();
 	}
