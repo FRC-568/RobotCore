@@ -3,6 +3,7 @@ package frc.team568.robot.crescendo;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -14,7 +15,18 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
+import frc.team568.robot.crescendo.command.Aim;
+import frc.team568.robot.crescendo.command.AutoScoreAndPreload;
+import frc.team568.robot.crescendo.command.Closing;
+import frc.team568.robot.crescendo.command.DownPneumatic;
+import frc.team568.robot.crescendo.command.HomePivot;
+import frc.team568.robot.crescendo.command.Intake;
+import frc.team568.robot.crescendo.command.NoteRun;
+import frc.team568.robot.crescendo.command.ScoreAmp;
+import frc.team568.robot.crescendo.command.ScoreSpeaker;
+import frc.team568.robot.crescendo.command.Shoot;
+import frc.team568.robot.crescendo.command.Up;
+import frc.team568.robot.crescendo.command.UpPneumatic;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import frc.team568.robot.crescendo.subsystem.PneumaticSubsystem;
@@ -54,6 +66,7 @@ public final class RobotContainer {
 	public RobotContainer() {
 		drive = new SwerveSubsystem("crescendo", kMaxSpeed);
 		drive.initDefaultCommand(OI.Axis.swerveForward, OI.Axis.swerveLeft, OI.Axis.swerveCCW);
+		registerPathPlannerCommands();
 		configurePathplanner();
 
 		//pivot.setDefaultCommand(new PivotSubsystemDefaultCommand(pivot));
@@ -70,8 +83,23 @@ public final class RobotContainer {
 		configTab = new ConfigTab(this);
 		//flywheelTab = new FlywheelTab(this);
 		pneumaticsub = new PneumaticSubsystem();
-
+	
 		configureButtonBindings();
+	}
+
+	public void registerPathPlannerCommands(){
+		NamedCommands.registerCommand("Aim", new Aim(pivot, null));
+		NamedCommands.registerCommand("AutoScoreAndPreload", new AutoScoreAndPreload(drive, jukebox, pivot));
+		NamedCommands.registerCommand("Intake", new Intake(jukebox, pivot));
+		NamedCommands.registerCommand("Closing", new Closing(pivot));
+		NamedCommands.registerCommand("HomePivot", new HomePivot(pivot));
+		NamedCommands.registerCommand("NoteRun", new NoteRun(jukebox));
+		NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(jukebox, pivot));
+		NamedCommands.registerCommand("ScoreAmp", new ScoreAmp(jukebox, pivot));
+		NamedCommands.registerCommand("Shoot", new Shoot());
+		NamedCommands.registerCommand("Up", new Up(pivot));
+		NamedCommands.registerCommand("UpPneumatic", new UpPneumatic(null));
+		NamedCommands.registerCommand("DownPneumatic", new DownPneumatic(null));
 	}
 
 	public void configureButtonBindings() {
