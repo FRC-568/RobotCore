@@ -3,10 +3,9 @@ package frc.team568.robot.crescendo.command;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 
-public class Aim extends Command{
+public class Aim extends Command {
 	
 	PivotSubsystem pivot;
 	
@@ -35,4 +34,5 @@ public class Aim extends Command{
 	public void end(boolean interrupted) {
 		
 	}
+
 }

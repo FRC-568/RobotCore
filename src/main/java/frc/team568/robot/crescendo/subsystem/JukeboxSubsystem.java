@@ -13,9 +13,10 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import static frc.team568.robot.crescendo.Constants.JukeboxConstants.*;
 
 public class JukeboxSubsystem extends SubsystemBase {
     //=== motors ===
@@ -23,28 +24,29 @@ public class JukeboxSubsystem extends SubsystemBase {
     private TalonFX rightOuttakeMotor;
 	private VictorSPX intakeMotor;
 
-	final private VelocityVoltage velocity = new VelocityVoltage(0);
-	
-	final DutyCycleOut leftRequest = new DutyCycleOut(0.0);
-	final DutyCycleOut rightRequest = new DutyCycleOut(0.0);
+	private final VelocityVoltage velocity = new VelocityVoltage(0);
+	private final DutyCycleOut leftRequest = new DutyCycleOut(0.0);
+	private final DutyCycleOut rightRequest = new DutyCycleOut(0.0);
 
 	private ColorSensorV3 distanceSensor;
-	private Port distanceSensorPort;
 
 	boolean override = false;
 
-	public JukeboxSubsystem(int leftOuttakeMotorPort, int rightOuttakeMotorPort, int intakeMotorPort) {
-		leftOuttakeMotor = new TalonFX(leftOuttakeMotorPort);
+	public JukeboxSubsystem() {
+		leftOuttakeMotor = new TalonFX(kLeftOuttakePort);
 		addChild("leftOuttakeMotor", leftOuttakeMotor);
 
-		rightOuttakeMotor = new TalonFX(rightOuttakeMotorPort);
+		rightOuttakeMotor = new TalonFX(kRightOuttakePort);
 		addChild("rightOuttakeMotor", rightOuttakeMotor);
 
-		intakeMotor = new VictorSPX(intakeMotorPort);
-		//addChild("intakeMotor", intakeMotor);
+		intakeMotor = new VictorSPX(kIntakePort);
+		addChild("intakeMotor", builder -> {
+			builder.addDoubleProperty("Output Voltage", intakeMotor::getMotorOutputVoltage, null);
+			builder.addDoubleProperty("Output Percent", intakeMotor::getMotorOutputPercent, null);
+		});
 		
 		MotorOutputConfigs lConfigs = new MotorOutputConfigs();
-		lConfigs.Inverted = InvertedValue.Clockwise_Positive ; //TODO: reverse directions based on design
+		lConfigs.Inverted = InvertedValue.Clockwise_Positive ;
 
 		MotorOutputConfigs rConfigs = new MotorOutputConfigs();
 		rConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -57,19 +59,15 @@ public class JukeboxSubsystem extends SubsystemBase {
 
 		intakeMotor.setInverted(true);
 
-		//TODO: Make invert intake motor based on design
-
 		velocity.Slot = 0;
 		
 		//=== pid configs ===
-		//TODO: allow on the fly configuration
 		Slot0Configs slot0Configs = new Slot0Configs();
 		slot0Configs.kP = 0.5; //An error of 0.5 rotations and a value of 24 results in 12 V output
 		slot0Configs.kI = 0; //no output for integrated error
 		slot0Configs.kD = 0; //A velocity of 1 rps results in 0.1 V output at a setting of 0.1
 
-		distanceSensorPort = Port.kOnboard;
-		distanceSensor = new ColorSensorV3(distanceSensorPort);
+		distanceSensor = new ColorSensorV3(kNoteDetectorPort);
 
 	//	leftOuttakeMotor.getConfigurator().apply(slot0Configs);
 	//	rightOuttakeMotor.getConfigurator().apply(slot0Configs);
@@ -118,13 +116,7 @@ public class JukeboxSubsystem extends SubsystemBase {
 	}
 
 	public boolean hasNote(){
-		double value = getDistance();
-		double distanse = 200;
-		
-		if(value<distanse){
-			return true;
-		}
-		return false;
+		return getDistance() < kNoteDetectionDistance;
 	}
 
 	public double getLeftVelo(){

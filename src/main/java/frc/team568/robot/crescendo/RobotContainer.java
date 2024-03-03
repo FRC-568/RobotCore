@@ -1,10 +1,7 @@
 package frc.team568.robot.crescendo;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -12,13 +9,12 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+
 import frc.team568.robot.crescendo.command.Aim;
 import frc.team568.robot.crescendo.command.AutoScoreAndPreload;
 import frc.team568.robot.crescendo.command.Closing;
-import frc.team568.robot.crescendo.command.DownPneumatic;
 import frc.team568.robot.crescendo.command.HomePivot;
 import frc.team568.robot.crescendo.command.Intake;
 import frc.team568.robot.crescendo.command.NoteRun;
@@ -26,7 +22,6 @@ import frc.team568.robot.crescendo.command.ScoreAmp;
 import frc.team568.robot.crescendo.command.ScoreSpeaker;
 import frc.team568.robot.crescendo.command.Shoot;
 import frc.team568.robot.crescendo.command.Up;
-import frc.team568.robot.crescendo.command.UpPneumatic;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import frc.team568.robot.crescendo.subsystem.PneumaticSubsystem;
@@ -38,52 +33,43 @@ import static frc.team568.robot.crescendo.Constants.SwerveConstants.kWheelbaseRa
 
 public final class RobotContainer {
 	public final SwerveSubsystem drive;
-	public PivotSubsystem pivot /* = new PivotSubsystem(0, 0)*/;
-	public final JukeboxSubsystem jukebox = new JukeboxSubsystem(12, 11, 13);
-	public final VisionSubsystem vision = new VisionSubsystem();
+	public PivotSubsystem pivot;
+	public final JukeboxSubsystem jukebox;
+	public final VisionSubsystem vision;
+	public final PneumaticSubsystem lift;
+	public final PowerDistribution pd;
 
-	Map<String, Command> eventMap = new HashMap<>();
-
-	// Auto tab objects
 	public AutoTab autoTab;
-	
-	// Driver tab objects
 	public DriverTab driverTab;
-	
-	// Config tab objects
 	public ConfigTab configTab;
-
 	//public FlywheelTab flywheelTab;
-
-	// Pneumatic Subsystem object
-	public PneumaticSubsystem pneumaticsub;
-
-	ComplexWidget enterButton;
-
-	PowerDistribution pd;
-
 
 	public RobotContainer() {
 		drive = new SwerveSubsystem("crescendo", kMaxSpeed);
 		drive.initDefaultCommand(OI.Axis.swerveForward, OI.Axis.swerveLeft, OI.Axis.swerveCCW);
-		registerPathPlannerCommands();
 		configurePathplanner();
 
+		//pivot = new PivotSubsystem(0, 0);
 		//pivot.setDefaultCommand(new PivotSubsystemDefaultCommand(pivot));
 
+		jukebox = new JukeboxSubsystem();
+		jukebox.initDefaultCommand(OI.Axis.intakeSpeed, OI.Axis.outtakeSpeedL, OI.Axis.outtakeSpeedR);
+
+		vision = new VisionSubsystem();
 		vision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
 		vision.startPoseListenerThread();
 
-		jukebox.initDefaultCommand(OI.Axis.intakeSpeed, OI.Axis.outtakeSpeedL, OI.Axis.outtakeSpeedR);
+		lift = new PneumaticSubsystem();
 
 		pd = new PowerDistribution(1, ModuleType.kRev);
+
+		registerPathPlannerCommands();
 
 		//autoTab = new AutoTab(this);
 		driverTab = new DriverTab(this);
 		configTab = new ConfigTab(this);
 		//flywheelTab = new FlywheelTab(this);
-		pneumaticsub = new PneumaticSubsystem();
-	
+
 		configureButtonBindings();
 	}
 
@@ -98,8 +84,8 @@ public final class RobotContainer {
 		NamedCommands.registerCommand("ScoreAmp", new ScoreAmp(jukebox, pivot));
 		NamedCommands.registerCommand("Shoot", new Shoot());
 		NamedCommands.registerCommand("Up", new Up(pivot));
-		NamedCommands.registerCommand("UpPneumatic", new UpPneumatic(null));
-		NamedCommands.registerCommand("DownPneumatic", new DownPneumatic(null));
+		NamedCommands.registerCommand("UpPneumatic", lift.getExtendCommand());
+		NamedCommands.registerCommand("DownPneumatic", lift.getRetractCommand());
 	}
 
 	public void configureButtonBindings() {
@@ -109,8 +95,7 @@ public final class RobotContainer {
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
 		// OI.Button.pivotDown.onTrue(new InstantCommand(() -> pivot.setAngle(0)));
 		// OI.Button.pivotUp.onTrue(new InstantCommand(() -> pivot.setAngle(90)));
-		OI.Button.pneumaticstateswitch.onTrue(new InstantCommand(pneumaticsub::SwitchState));
-		OI.driverController.back().onTrue(AutoBuilder.buildAuto("Backwards Line"));
+		OI.Button.pneumaticstateswitch.onTrue(lift.getToggleCommand());
 	}
 
 	public void configurePathplanner() {

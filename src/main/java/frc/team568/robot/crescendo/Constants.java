@@ -1,6 +1,8 @@
 package frc.team568.robot.crescendo;
 
-final class Constants {
+import edu.wpi.first.wpilibj.I2C;
+
+public final class Constants {
 
 	static final class OIConstants {
 		
@@ -30,6 +32,21 @@ final class Constants {
 		static final int kDrivePidChannel = 0;
 		static final double kSlowMultiplier = 0.25;
 		static final double kNormalMultiplier = 1.0;
+
+	}
+
+	public static final class PivotConstants {
+		public static final int kLeftMotorPort = 14;
+		public static final int kRightMotorPort = 15;
+	}
+
+	public static final class JukeboxConstants {
+
+		public static final int kIntakePort = 13;
+		public static final int kLeftOuttakePort = 12;
+		public static final int kRightOuttakePort = 11;
+		public static final I2C.Port kNoteDetectorPort = I2C.Port.kOnboard;
+		public static final double kNoteDetectionDistance = 200;
 
 	}
 }
