@@ -91,7 +91,7 @@
             {
               "type": "named",
               "data": {
-                "name": "ShootNote"
+                "name": "Shoot"
               }
             }
           ]
@@ -108,7 +108,7 @@
             {
               "type": "named",
               "data": {
-                "name": "ShootNote"
+                "name": "Shoot"
               }
             }
           ]
