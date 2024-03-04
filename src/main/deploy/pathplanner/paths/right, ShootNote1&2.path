@@ -48,7 +48,14 @@
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ScoreSpeaker"
+              }
+            }
+          ]
         }
       }
     },
@@ -58,7 +65,14 @@
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoScoreAndPreload"
+              }
+            }
+          ]
         }
       }
     }
