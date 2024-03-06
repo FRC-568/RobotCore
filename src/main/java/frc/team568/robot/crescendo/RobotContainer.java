@@ -107,7 +107,7 @@ public final class RobotContainer {
 				new HolonomicPathFollowerConfig(
 					new PIDConstants(0.03, 0.0, 0.05), // PID constants to correct for translation error (used to create the X and Y PID controllers)
 					new PIDConstants(0.003, 0.0, 0),
-					1.0,
+					4.5,
 					kWheelbaseRadius,
 					new ReplanningConfig(true, true, 0.09, 0.3)), // PID constants to correct for rotation error (used to create the rotation controller)
 				() -> {
