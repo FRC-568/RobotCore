@@ -10,6 +10,5 @@ public class FlywheelTab {
 		OI.flywheelTab.addDouble("right Flywheel", jukebox::getRightVelo).withPosition(3,1);
 		OI.flywheelTab.addDouble("sensor distance", jukebox::getDistance);
 		OI.flywheelTab.addBoolean("contains note", jukebox::hasNote);
-
 	}
 }

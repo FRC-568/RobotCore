@@ -13,18 +13,15 @@ public class IntakeNote extends Command{
 	
 	@Override
 	public void execute() {
-
-		// Find Note
-		// Drive in
+		intakeWheels.setIntakeSpeed(0.5);
 	}
 
 	@Override
 	public void end(boolean interrupted) {
 		// Stop intake
 		intakeWheels.setIntakeSpeed(0);
-
 	}
-
+	
 	@Override
 	public void initialize() {
 		// Power intake

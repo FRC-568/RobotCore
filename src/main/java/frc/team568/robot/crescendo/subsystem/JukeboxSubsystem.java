@@ -116,7 +116,13 @@ public class JukeboxSubsystem extends SubsystemBase {
 	}
 
 	public boolean hasNote(){
-		return getDistance() < kNoteDetectionDistance;
+		double value = getDistance();
+		double distanse = 350;
+		
+		if(value>distanse){
+			return true;
+		}
+		return false;
 	}
 
 	public double getLeftVelo(){

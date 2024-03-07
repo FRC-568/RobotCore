@@ -11,26 +11,29 @@ public class Intake extends Command {
 	double speed;
 	int angle;
 
-	public Intake(JukeboxSubsystem juke, PivotSubsystem pivot){
+	public Intake(JukeboxSubsystem juke, PivotSubsystem pivot) {
 		this.juke = juke;
 		this.pivot = pivot;
+	}
+	public Intake(JukeboxSubsystem juke) {
+		this.juke = juke;
 	}
 
 	@Override
 	public void initialize() {
-		speed = 1;
+		speed = 0.5;
 		angle = 0;
 	}
 
 	@Override
 	public void execute() {
 		juke.setIntakeSpeed(speed);
-		pivot.setAngle(angle);
+		// pivot.setAngle(angle);
 	}
 
 	@Override
 	public boolean isFinished() {
-		return false;
+		return juke.hasNote();
 	}
 
 	@Override

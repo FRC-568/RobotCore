@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import java.util.Optional;
-
-<<<<<<< HEAD
 import frc.team568.robot.crescendo.command.Aim;
 import frc.team568.robot.crescendo.command.AutoScoreAndPreload;
 import frc.team568.robot.crescendo.command.Closing;
@@ -25,9 +23,6 @@ import frc.team568.robot.crescendo.command.ScoreAmp;
 import frc.team568.robot.crescendo.command.ScoreSpeaker;
 import frc.team568.robot.crescendo.command.Shoot;
 import frc.team568.robot.crescendo.command.Up;
-=======
-import frc.team568.robot.crescendo.command.Shoot;
->>>>>>> a1b0507 (add one button outtake)
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import frc.team568.robot.crescendo.subsystem.PneumaticSubsystem;
@@ -41,17 +36,11 @@ public final class RobotContainer {
 	public Optional<Alliance> alliance;
 
 	public final SwerveSubsystem drive;
-<<<<<<< HEAD
 	public PivotSubsystem pivot;
 	public final JukeboxSubsystem jukebox;
 	public final VisionSubsystem vision;
 	public final PneumaticSubsystem lift;
 	public final PowerDistribution pd;
-=======
-	public PivotSubsystem pivot /* = new PivotSubsystem(0, 0)*/;
-	public final JukeboxSubsystem jukebox = new JukeboxSubsystem(11, 12, 13);
-	public final VisionSubsystem vision = new VisionSubsystem();
->>>>>>> a1b0507 (add one button outtake)
 
 	public AutoTab autoTab;
 	public DriverTab driverTab;
@@ -105,19 +94,15 @@ public final class RobotContainer {
 	}
 
 	public void configureButtonBindings() {
-		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
-		// OI.Button.intake.whileTrue(new Intake(jukebox, pivot)); //intake until bumper is released
+		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRela       per is released
 		// OI.Button.scoreAmp.onTrue(new ScoreAmp(jukebox, pivot));
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
 		// OI.Button.pivotDown.onTrue(new InstantCommand(() -> pivot.setAngle(0)));
 		// OI.Button.pivotUp.onTrue(new InstantCommand(() -> pivot.setAngle(90)));
-<<<<<<< HEAD
-		OI.Button.pneumaticstateswitch.onTrue(lift.getToggleCommand());
-=======
+
 		OI.Button.pneumaticstateswitch.onTrue(new InstantCommand(pneumaticsub::SwitchState));
 		OI.driverController.back().onTrue(AutoBuilder.buildAuto("Backwards Line"));
 		OI.Button.shoot.onTrue(new Shoot(jukebox));
->>>>>>> a1b0507 (add one button outtake)
 	}
 
 	public void configurePathplanner() {

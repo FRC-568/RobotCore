@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-package frc.team568.robot.crescendo.command;
-
-import edu.wpi.first.wpilibj2.command.Command;
-
-public class Shoot extends Command{
-
-	public Shoot(){
-		
-	}
-=======
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -42,5 +31,4 @@ public class Shoot extends SequentialCommandGroup {
       )
     );
   }
->>>>>>> 7585408 (add shoot command)
 }
