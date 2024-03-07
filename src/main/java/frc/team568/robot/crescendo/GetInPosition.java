@@ -39,7 +39,7 @@ public class GetInPosition {
 
 	public GetInPosition(){
 		swerveSub = new SwerveSubsystem("crescendo", kMaxSpeed);
-		scorespeaker = new ScoreSpeaker(jukebox, pivot);
+		scorespeaker = new ScoreSpeaker(jukebox, pivot, this::getPosition, false); //TODO: fix isRed
 
 		speakCoords[0] = 0;
 		speakCoords[1] = 0; //TODO: Replace the placeholder coordinates (0 = X, 1 = Y) with proper coordinates about the location of the speaker. Avery should be working on getting that (I think)

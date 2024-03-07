@@ -19,13 +19,13 @@ public class AutoTab {
 		var jukebox = container.jukebox;
 		//var dSolenoid = container.dSolenoid;
 		
-		Command closing = new Closing(pivot);
+		//Command closing = new Closing(pivot);
 		//Command downpneumatic = new DownPneumatic(dSolenoid);
-		Command intake = new Intake(jukebox, pivot);
-		Command scoreamp = new ScoreAmp(jukebox, pivot);
+		//Command intake = new Intake(jukebox, pivot);
+		//Command scoreamp = new ScoreAmp(jukebox, pivot);
 		//Command up = new Up(pivot);
 		//Command uppneumatic = new UpPneumatic(dSolenoid);
-		
+		/* 
 		chooser.setDefaultOption("Wait", null);
 		chooser.addOption("Closing", closing);
 		//chooser.addOption("Closing", downpneumatic);
@@ -34,6 +34,7 @@ public class AutoTab {
 		//chooser.addOption("Up", up);
 		//chooser.addOption("Up Pneumatic", uppneumatic);
 		OI.autoTab.add("Auto Program", chooser);
+		*/
 	}
 
 }

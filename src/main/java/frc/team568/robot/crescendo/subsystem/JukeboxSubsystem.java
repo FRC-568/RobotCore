@@ -46,10 +46,10 @@ public class JukeboxSubsystem extends SubsystemBase {
 		});
 		
 		MotorOutputConfigs lConfigs = new MotorOutputConfigs();
-		lConfigs.Inverted = InvertedValue.Clockwise_Positive ;
+		lConfigs.Inverted = InvertedValue.CounterClockwise_Positive ;
 
 		MotorOutputConfigs rConfigs = new MotorOutputConfigs();
-		rConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+		rConfigs.Inverted = InvertedValue.Clockwise_Positive;
         
         //leftOuttakeMotor.selectProfileSlot(0, 0);
         //leftOuttakeMotor.configClosedloopRamp(0.1);
