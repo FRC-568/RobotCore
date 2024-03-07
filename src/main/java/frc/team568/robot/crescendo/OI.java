@@ -6,6 +6,7 @@ import static frc.team568.robot.crescendo.Constants.OIConstants.kCopilotControll
 import static frc.team568.robot.crescendo.Constants.OIConstants.kDriverControllerPort;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -59,5 +60,7 @@ final class OI {
 		public static final Trigger pivotUp = driverController.a();
 		public static final Trigger runOuttake = driverController.rightTrigger();
 		public static final Trigger runIntake = driverController.leftTrigger();
+
+		public static final Trigger shoot = copilotController.a();
 	}
 }
