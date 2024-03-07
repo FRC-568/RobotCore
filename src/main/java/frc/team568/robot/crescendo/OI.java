@@ -31,6 +31,8 @@ final class OI {
 		public static final DoubleSupplier intakeSpeed = () -> Math.pow(copilotController.getRightY(), 1);
 		public static final DoubleSupplier outtakeSpeedL = copilotController::getLeftTriggerAxis;
 		public static final DoubleSupplier outtakeSpeedR = copilotController::getRightTriggerAxis;
+		public static final DoubleSupplier pivotPower = copilotController::getLeftY;
+
 
 		static {
 			// Slew rate limiters to make joystick inputs more gentle; 1/x sec from 0 to 1.

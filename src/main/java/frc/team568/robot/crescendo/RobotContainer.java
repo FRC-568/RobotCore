@@ -36,11 +36,17 @@ public final class RobotContainer {
 	public Optional<Alliance> alliance;
 
 	public final SwerveSubsystem drive;
+<<<<<<< HEAD
 	public PivotSubsystem pivot;
 	public final JukeboxSubsystem jukebox;
 	public final VisionSubsystem vision;
 	public final PneumaticSubsystem lift;
 	public final PowerDistribution pd;
+=======
+	public PivotSubsystem pivot = new PivotSubsystem(14, 15);
+	public final JukeboxSubsystem jukebox = new JukeboxSubsystem(11, 12, 13);
+	public final VisionSubsystem vision = new VisionSubsystem();
+>>>>>>> 1c8a3f7 (Add open loop pivot control to gamepad)
 
 	public AutoTab autoTab;
 	public DriverTab driverTab;
@@ -64,7 +70,12 @@ public final class RobotContainer {
 		vision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
 		vision.startPoseListenerThread();
 
+<<<<<<< HEAD
 		lift = new PneumaticSubsystem();
+=======
+		jukebox.initDefaultCommand(OI.Axis.intakeSpeed, OI.Axis.outtakeSpeedL, OI.Axis.outtakeSpeedR);
+		pivot.initDefaultCommand(OI.Axis.pivotPower);
+>>>>>>> 1c8a3f7 (Add open loop pivot control to gamepad)
 
 		pd = new PowerDistribution(1, ModuleType.kRev);
 
