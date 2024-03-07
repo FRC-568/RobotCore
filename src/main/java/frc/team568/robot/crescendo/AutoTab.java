@@ -23,7 +23,7 @@ public class AutoTab {
 		//Command downpneumatic = new DownPneumatic(dSolenoid);
 		Command intake = new Intake(jukebox, pivot);
 		Command scoreamp = new ScoreAmp(jukebox, pivot);
-		Command up = new Up(pivot);
+		//Command up = new Up(pivot);
 		//Command uppneumatic = new UpPneumatic(dSolenoid);
 		
 		chooser.setDefaultOption("Wait", null);
@@ -31,7 +31,7 @@ public class AutoTab {
 		//chooser.addOption("Closing", downpneumatic);
 		chooser.addOption("Intake", intake);
 		chooser.addOption("Score AMP", scoreamp);
-		chooser.addOption("Up", up);
+		//chooser.addOption("Up", up);
 		//chooser.addOption("Up Pneumatic", uppneumatic);
 		OI.autoTab.add("Auto Program", chooser);
 	}
