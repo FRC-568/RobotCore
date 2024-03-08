@@ -5,15 +5,12 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.team568.robot.crescendo.command.ScoreSpeaker;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import frc.team568.robot.subsystems.SwerveSubsystem;
-import static frc.team568.robot.crescendo.Constants.SwerveConstants.kMaxSpeed;
 import java.lang.Math;
 
-public class GetInPosition {
+public class RotationCalc {
 
 	SwerveSubsystem swerveSub;
 	JukeboxSubsystem jukebox;
@@ -34,26 +31,17 @@ public class GetInPosition {
 	double wallHeight = 2.11; //Height of the wall(speaker) in meters, if changed to a different metric, change other varibales that may be in centimeters
 
 	Rotation2d rotation;
-
+	Location location;
 	Rotation3d shooterRotation;
 
-	public GetInPosition(){
-		swerveSub = new SwerveSubsystem("crescendo", kMaxSpeed);
-		scorespeaker = new ScoreSpeaker(jukebox, pivot, this::getPosition, false); //TODO: fix isRed
+	public RotationCalc(SwerveSubsystem drive){
 
-		speakCoords[0] = 0;
-		speakCoords[1] = 0; //TODO: Replace the placeholder coordinates (0 = X, 1 = Y) with proper coordinates about the location of the speaker. Avery should be working on getting that (I think)
+		speakCoords[0] = location.getTranslation().getX();
+		speakCoords[1] = location.getTranslation().getZ();
 		
 		yRestraints[0] = speakCoords[0] + 6;
 		yRestraints[1] = speakCoords[1] - 6; // 6 is just a placeholder for both. It is in meters
 
-		if (isRobotInZone()){
-			Commands.run((Runnable)scorespeaker, jukebox,pivot); // Unsure about the syntax if this line, sooo yeah
-			System.out.print("Yippie");
-		}
-		else{
-			goToZone();
-		}
 	}
 
 	private Pose2d getPosition(){
@@ -88,19 +76,19 @@ public class GetInPosition {
 		return Math.hypot(checkXDistance(), checkYDistance()); //Distance between the robot and the speaker in a straight line
 	}
 
-	private double calcHyp() {
+	/*private double calcHyp() {
 		return Math.hypot(checkTotDistance(), wallHeight);
 	}
 
 	private double checkShootAngle(){
 		return Math.acos(checkTotDistance()/calcHyp()); // angle of robot's current position to the position of the TOP of the speaker
 	}
-
+	*/
 	private double getRobotSpeakerOffset(){
 		return Math.acos(checkXDistance()/checkTotDistance()); // angle of robot's position to the position of the speaker in general
 	}
 
-	private Boolean checkWithinYRestraints(){
+	/*private Boolean checkWithinYRestraints(){
 		return ((yRestraints[0] > robCoords[1]) & (robCoords[1] > yRestraints[1]));
 	}
 
@@ -114,20 +102,29 @@ public class GetInPosition {
 
 	private Boolean isRobotInZone(){ 
 		return (checkAngleGood() & checkDistanceGood());
-	}
+	}*/
 
-	private void pointToSpeaker(){ //Determines the best angle to rotate from. OpAM is the robot rotating clockwises, OpAP is the robot rotating counter clockwise
+	public Rotation2d pointToSpeaker(){ //Determines the best angle to rotate from. OpAM is the robot rotating clockwises, OpAP is the robot rotating counter clockwise
 		double optimalAngleMinus = (getRot() - getRobotSpeakerOffset());
 		double optimalAnglePlus = (getRot() + getRobotSpeakerOffset());
 		if (optimalAngleMinus - optimalAnglePlus < 0){
-			swerveSub.drive(0, 0, -optimalAngleMinus);
+			return Rotation2d.fromDegrees((getRot() - optimalAngleMinus)); // Go clockwise
 		}
 		else{
-			swerveSub.drive(0, 0, optimalAnglePlus);
+			return Rotation2d.fromDegrees((getRot() + optimalAnglePlus)); // Go counter-clockwise 
 		} 
+	} //TODO: check math and fix it
+
+	public boolean isPointingToSpeaker(){
+		if (3 > (getRot() - getRobotSpeakerOffset()) | (getRot() - getRobotSpeakerOffset()) > -3){ // Idea is to allow the robot an error of 3 (6 in total) degrees so that it isn't constantly trying to get the perfect rotation 
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 
-	private double getNeededYChange(){
+	/*private double getNeededYChange(){
 		if (yRestraints[0] < robCoords[1]){
 			return (robCoords[1] - yRestraints[1]); //If the robot is too far up in the field, go down
 		}
@@ -155,6 +152,6 @@ public class GetInPosition {
 
 	private Pose3d translateToShooter(){ // Unused method translating robot position to make jukebox position possible better results. 
 		return new Pose3d(getPosition());// No real application for the method yet, but there could be idk ¯\_(ツ)_/¯
-	}
+	}*/
 	// **EVERYTHING HERE IS ASSUMING THAT THE NOTE WILL BE SHOT FROM THE ROBOT INTO A STRAIGHT (enough) LINE SO THAT IT CAN MAKE IT INTO THE SPEAKER**
 }

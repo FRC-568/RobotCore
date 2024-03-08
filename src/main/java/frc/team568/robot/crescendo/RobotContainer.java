@@ -15,8 +15,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import java.util.Optional;
 import frc.team568.robot.crescendo.command.Aim;
 import frc.team568.robot.crescendo.command.Closing;
+import frc.team568.robot.crescendo.command.GoToSpeaker;
 import frc.team568.robot.crescendo.command.HomePivot;
 import frc.team568.robot.crescendo.command.Intake;
+import frc.team568.robot.crescendo.command.LookAtSpeaker;
 import frc.team568.robot.crescendo.command.NoteRun;
 import frc.team568.robot.crescendo.command.ScoreAmp;
 import frc.team568.robot.crescendo.command.ScoreSpeaker;
@@ -91,6 +93,8 @@ public final class RobotContainer {
 		NamedCommands.registerCommand("Up", new Up(pivot));
 		NamedCommands.registerCommand("UpPneumatic", lift.getExtendCommand());
 		NamedCommands.registerCommand("DownPneumatic", lift.getRetractCommand());
+		NamedCommands.registerCommand("GoToSpeaker", new GoToSpeaker());
+		NamedCommands.registerCommand("LookAtSpeaker", new LookAtSpeaker());
 		*/
 	}
 
