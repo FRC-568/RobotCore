@@ -1,125 +1,99 @@
 package frc.team568.robot.crescendo;
 
 import static frc.team568.robot.crescendo.Constants.SwerveConstants.kMaxSpeed;
-import static frc.team568.robot.crescendo.Constants.SwerveConstants.kWheelbaseRadius;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+//import edu.wpi.first.cameraserver.CameraServer;
+//import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+
+import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.team568.robot.crescendo.command.Intake;
-import frc.team568.robot.crescendo.command.Shoot;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.team568.robot.chargedup.SwerveSubsystemDefaultCommand;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
-import frc.team568.robot.crescendo.subsystem.PneumaticSubsystem;
-import frc.team568.robot.crescendo.subsystem.VisionSubsystem;
 import frc.team568.robot.subsystems.SwerveSubsystem;
+import swervelib.telemetry.SwerveDriveTelemetry;
 
 public final class RobotContainer {
-	public Optional<Alliance> alliance;
+	// UsbCamera camera;
+	CommandXboxController controller1;
+	CommandXboxController controller2;
+	final SwerveSubsystem drive;
+	final PivotSubsystem pivot = new PivotSubsystem();
+	final JukeboxSubsystem jukebox = new JukeboxSubsystem();
+	HashMap<String, Command> eventMap = new HashMap<>();
 
-	public final SwerveSubsystem drive;
-	public PivotSubsystem pivot;
-	public final JukeboxSubsystem jukebox;
-	public final VisionSubsystem vision;
-	public final PneumaticSubsystem lift;
-	public final PowerDistribution pd;
 
+	// Auto tab objects
 	public AutoTab autoTab;
+	
+	// Driver tab objects
 	public DriverTab driverTab;
+	
+	// Config tab objects
 	public ConfigTab configTab;
-	//public FlywheelTab flywheelTab;
+
+	public DoubleSolenoid dSolenoid = new DoubleSolenoid(null, 0, 0);
+
+
+	ComplexWidget enterButton;
+
+	PowerDistribution pd;
+
 
 	public RobotContainer() {
-		alliance = DriverStation.getAlliance();
+		controller1 = new CommandXboxController(0);
+		controller2 = new CommandXboxController(1);
+		//camera = CameraServer.startAutomaticCapture();
+		// WARNING: this pose is empty
+		drive = new SwerveSubsystem("crescendo", kMaxSpeed);		// pivot = new PivotSubsystem(0, 0);
+		// jukebox = new JukeboxSubsystem(1, 2, 3);
 
-		drive = new SwerveSubsystem("crescendo", kMaxSpeed);
-		drive.initDefaultCommand(OI.Axis.swerveForward, OI.Axis.swerveLeft, OI.Axis.swerveCCW);
-		configurePathplanner();
-
-		//pivot = new PivotSubsystem(0, 0);
-		//pivot.setDefaultCommand(new PivotSubsystemDefaultCommand(pivot));
-
-		jukebox = new JukeboxSubsystem();
-		jukebox.initDefaultCommand(OI.Axis.intakeSpeed, OI.Axis.outtakeSpeedL, OI.Axis.outtakeSpeedR);
-
-		vision = new VisionSubsystem();
-		vision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
-		vision.startPoseListenerThread();
-		
-		lift = new PneumaticSubsystem();
-
-		pd = new PowerDistribution(1, ModuleType.kRev);
-
-		registerPathPlannerCommands();
-
-		//autoTab = new AutoTab(this);
-		driverTab = new DriverTab(this);
-		configTab = new ConfigTab(this);
-		//flywheelTab = new FlywheelTab(this);
+		/* 
+		SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
+		drive.setDefaultCommand(new SwerveSubsystemDefaultCommand(drive));
+		drive.setDefaultCommand(new PivotSubsystemDefaultCommand(pivot));
+		drive.configurePathplanner();
+		*/
 
 		configureButtonBindings();
-	}
 
-	public void registerPathPlannerCommands(){
-		/* 
-		NamedCommands.registerCommand("Aim", new Aim(pivot, null));
-		//NamedCommands.registerCommand("AutoScoreAndPreload", new AutoScoreAndPreload(drive, jukebox, pivot));
-		NamedCommands.registerCommand("Intake", new Intake(jukebox, pivot));
-		NamedCommands.registerCommand("Closing", new Closing(pivot));
-		NamedCommands.registerCommand("HomePivot", new HomePivot(pivot));
-		NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(jukebox, pivot, drive::getPose, false));
-		NamedCommands.registerCommand("ScoreAmp", new ScoreAmp(jukebox, pivot));
-		NamedCommands.registerCommand("Shoot", new Shoot(jukebox));
-		NamedCommands.registerCommand("UpPneumatic", lift.getExtendCommand());
-		NamedCommands.registerCommand("DownPneumatic", lift.getRetractCommand());
-		NamedCommands.registerCommand("GoToSpeaker", new GoToSpeaker());
-		NamedCommands.registerCommand("LookAtSpeaker", new LookAtSpeaker());
+		autoTab = new AutoTab(this);
+		driverTab = new DriverTab(this);
+		configTab = new ConfigTab(this);
+
+		pd = new PowerDistribution(1, ModuleType.kRev);
+/* 
+		jukebox.setDefaultCommand(new InstantCommand(
+			() -> {
+				jukebox.setOuttakeSpeed(controller1.getLeftTriggerAxis(),controller1.getRightTriggerAxis());
+				jukebox.setIntakeSpeed(controller1.getLeftY());
+			}
+		));
 		*/
 	}
 
 	public void configureButtonBindings() {
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
+		// OI.Button.intake.whileTrue(new Intake(jukebox, pivot)); //intake until bumper is released
 		// OI.Button.scoreAmp.onTrue(new ScoreAmp(jukebox, pivot));
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
 		// OI.Button.pivotDown.onTrue(new InstantCommand(() -> pivot.setAngle(0)));
 		// OI.Button.pivotUp.onTrue(new InstantCommand(() -> pivot.setAngle(90)));
-
-		OI.Button.pneumaticstateswitch.onTrue(lift.getToggleCommand());
-		OI.driverController.back().onTrue(AutoBuilder.buildAuto("Backwards Line"));
-		OI.Button.shoot.onTrue(new Shoot(jukebox));
-		OI.Button.intake.onTrue(new Intake(jukebox));
-	}
-
-	public void configurePathplanner() {
-		AutoBuilder.configureHolonomic(
-				drive::getPose, // Pose2d supplier
-				drive::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
-				drive::getChassisSpeeds,
-				drive::setModuleStates, // SwerveDriveKinematics
-				new HolonomicPathFollowerConfig(
-					new PIDConstants(0.03, 0.0, 0.05), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-					new PIDConstants(0.003, 0.0, 0),
-					4.5,
-					kWheelbaseRadius,
-					new ReplanningConfig(true, true, 0.09, 0.3)), // PID constants to correct for rotation error (used to create the rotation controller)
-				() -> {
-					// var alliance = DriverStation.getAlliance();
-					return alliance.isPresent()
-						? alliance.get() == DriverStation.Alliance.Red
-						: false;
-				},
-				drive
-			);
+		//getRightTriggerAxis()
+		// OI.Button.runOuttake.whileTrue(Commands.runEnd(() -> new Command(jukebox.setOuttakeSpeed(OI.Axis.outtakeSpeed.getAsDouble(), OI.Axis.outtakeSpeed.getAsDouble())), () -> new Command(jukebox.setOuttakeSpeed(0,0))));
+		// OI.Button.runIntake.whileTrue(Commands.runEnd(() -> new Command(jukebox.setIntakeSpeed(OI.Axis.intakeSpeed.getAsDouble())), () -> new Command(jukebox.setIntakeSpeed(0))));
+		controller1.back().onTrue(AutoBuilder.buildAuto("Backwards Line"));
+		
 	}
 
 	public Command getAutonomousCommand() {
