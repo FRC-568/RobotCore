@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.9,
-        "y": 7.29
+        "x": 2.27,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.959634201747413,
-        "y": 7.296615283965863
+        "x": 2.2102662821238153,
+        "y": 6.994353501200889
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.88,
-        "y": 7.42
+        "x": 4.898017619158466,
+        "y": 7.292548935354047
       },
       "prevControl": {
-        "x": 7.467780702298762,
-        "y": 7.64577699307657
-      },
-      "nextControl": {
-        "x": 8.292219297701237,
-        "y": 7.19422300692343
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 4.058360990831247,
-        "y": 6.6493351038958615
-      },
-      "prevControl": {
-        "x": 5.517181464628454,
-        "y": 6.799907077698944
+        "x": 4.859675920545557,
+        "y": 7.288295650885978
       },
       "nextControl": null,
       "isLocked": false,
@@ -66,7 +50,7 @@
     },
     {
       "name": "ShootNote",
-      "waypointRelativePos": 2.0,
+      "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
         "data": {
