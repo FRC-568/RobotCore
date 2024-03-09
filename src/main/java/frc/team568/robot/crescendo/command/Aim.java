@@ -17,7 +17,7 @@ public class Aim extends Command {
 
 	@Override
 	public void initialize() {
-		
+	addRequirements(pivot);
 	}
 
 	@Override

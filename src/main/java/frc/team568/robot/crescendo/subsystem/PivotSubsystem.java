@@ -1,16 +1,16 @@
 package frc.team568.robot.crescendo.subsystem;
 
 
+import static frc.team568.robot.crescendo.Constants.PivotConstants.kLeftMotorPort;
+import static frc.team568.robot.crescendo.Constants.PivotConstants.kRightMotorPort;
+
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -20,15 +20,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DutyCycle;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SensorTerm;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import static frc.team568.robot.crescendo.Constants.PivotConstants.*;
 
 public class PivotSubsystem extends SubsystemBase {
 	// === motors ===
@@ -87,6 +80,7 @@ public class PivotSubsystem extends SubsystemBase {
 	public double getAngle() {
 		return 0;
 	}
+	
 
 	public void setPower(double power) {
 		leftMotor.setControl(openloopRequest.withOutput(power));
@@ -118,8 +112,10 @@ public class PivotSubsystem extends SubsystemBase {
 	}
 
 	public boolean getSwitch() {
+
 		return limitSwitch.get();
 	}
+
 
 	public void initDefaultCommand(final DoubleSupplier pivotPower) {
 		setDefaultCommand(new Command() {

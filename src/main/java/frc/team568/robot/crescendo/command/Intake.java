@@ -14,9 +14,11 @@ public class Intake extends Command {
 	public Intake(JukeboxSubsystem juke, PivotSubsystem pivot) {
 		this.juke = juke;
 		this.pivot = pivot;
+		addRequirements(juke, pivot);
 	}
 	public Intake(JukeboxSubsystem juke) {
 		this.juke = juke;
+		addRequirements(juke);
 	}
 
 	@Override

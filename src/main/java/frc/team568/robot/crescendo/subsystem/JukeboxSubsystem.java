@@ -1,5 +1,10 @@
 package frc.team568.robot.crescendo.subsystem;
 
+import static frc.team568.robot.crescendo.Constants.JukeboxConstants.kIntakePort;
+import static frc.team568.robot.crescendo.Constants.JukeboxConstants.kLeftOuttakePort;
+import static frc.team568.robot.crescendo.Constants.JukeboxConstants.kNoteDetectorPort;
+import static frc.team568.robot.crescendo.Constants.JukeboxConstants.kRightOuttakePort;
+
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -15,8 +20,6 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import static frc.team568.robot.crescendo.Constants.JukeboxConstants.*;
 
 public class JukeboxSubsystem extends SubsystemBase {
     //=== motors ===

@@ -7,15 +7,21 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team568.robot.subsystems.SwerveSubsystem;
 
 public class GoToSpeaker extends Command{
 
 	Pose2d targetSpeaker;
 	PathConstraints constraints;
-
+	SwerveSubsystem drive;
+	
+	public GoToSpeaker(SwerveSubsystem drive){
+		this.drive = drive;
+	}
 	public void initialize(){
 		targetSpeaker =  new Pose2d(1.57, 5.53, Rotation2d.fromDegrees(180)); // X and Y taken from grid on pathfinder
 		constraints = new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720)); //taken from default contraints in PP
+		addRequirements(drive);
 	}
 
 	public void execute(){

@@ -1,33 +1,14 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 package frc.team568.robot.crescendo.command;
+
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.team568.robot.crescendo.FieldElements;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
-import frc.team568.robot.recharge.Constants;
-
-import java.util.function.Supplier;
-import java.util.function.DoubleSupplier;
-
-
 
 public class ScoreSpeaker extends SequentialCommandGroup {
 	private double initTime;

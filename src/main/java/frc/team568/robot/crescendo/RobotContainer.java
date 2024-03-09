@@ -1,37 +1,28 @@
 package frc.team568.robot.crescendo;
 
+import static frc.team568.robot.crescendo.Constants.SwerveConstants.kMaxSpeed;
+import static frc.team568.robot.crescendo.Constants.SwerveConstants.kWheelbaseRadius;
+
+import java.util.Optional;
+
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import java.util.Optional;
-import frc.team568.robot.crescendo.command.Aim;
-import frc.team568.robot.crescendo.command.Closing;
-import frc.team568.robot.crescendo.command.GoToSpeaker;
-import frc.team568.robot.crescendo.command.HomePivot;
 import frc.team568.robot.crescendo.command.Intake;
-import frc.team568.robot.crescendo.command.LookAtSpeaker;
-import frc.team568.robot.crescendo.command.NoteRun;
-import frc.team568.robot.crescendo.command.ScoreAmp;
-import frc.team568.robot.crescendo.command.ScoreSpeaker;
 import frc.team568.robot.crescendo.command.Shoot;
-import frc.team568.robot.crescendo.command.Up;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import frc.team568.robot.crescendo.subsystem.PneumaticSubsystem;
 import frc.team568.robot.crescendo.subsystem.VisionSubsystem;
 import frc.team568.robot.subsystems.SwerveSubsystem;
-
-import static frc.team568.robot.crescendo.Constants.SwerveConstants.kMaxSpeed;
-import static frc.team568.robot.crescendo.Constants.SwerveConstants.kWheelbaseRadius;
 
 public final class RobotContainer {
 	public Optional<Alliance> alliance;
@@ -86,11 +77,9 @@ public final class RobotContainer {
 		NamedCommands.registerCommand("Intake", new Intake(jukebox, pivot));
 		NamedCommands.registerCommand("Closing", new Closing(pivot));
 		NamedCommands.registerCommand("HomePivot", new HomePivot(pivot));
-		NamedCommands.registerCommand("NoteRun", new NoteRun(jukebox));
 		NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(jukebox, pivot, drive::getPose, false));
 		NamedCommands.registerCommand("ScoreAmp", new ScoreAmp(jukebox, pivot));
 		NamedCommands.registerCommand("Shoot", new Shoot(jukebox));
-		NamedCommands.registerCommand("Up", new Up(pivot));
 		NamedCommands.registerCommand("UpPneumatic", lift.getExtendCommand());
 		NamedCommands.registerCommand("DownPneumatic", lift.getRetractCommand());
 		NamedCommands.registerCommand("GoToSpeaker", new GoToSpeaker());

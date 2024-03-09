@@ -1,7 +1,5 @@
 package frc.team568.robot.crescendo.command;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
@@ -11,7 +9,8 @@ public class SpinUp extends Command{
 	
 	private JukeboxSubsystem jukebox;
 	private double initTime;
-	public SpinUp(JukeboxSubsystem jukebox){
+	public SpinUp(JukeboxSubsystem jukebox) {
+		addRequirements(jukebox);
 		this.jukebox = jukebox;
 	}
 

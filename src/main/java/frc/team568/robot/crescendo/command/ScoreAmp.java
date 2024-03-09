@@ -11,8 +11,7 @@ public class ScoreAmp extends Command {
 	private double initTime;
 
 	public ScoreAmp(JukeboxSubsystem jukebox, PivotSubsystem pivot) {
-		addRequirements(jukebox);
-		addRequirements(pivot);
+		addRequirements(jukebox, pivot);
 
 		this.jukebox = jukebox;
 		this.pivot = pivot;

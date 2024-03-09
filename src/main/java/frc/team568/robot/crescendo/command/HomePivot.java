@@ -8,6 +8,7 @@ public class HomePivot extends Command {
 
 	public HomePivot(PivotSubsystem pivot){
 		this.pivot = pivot;
+		addRequirements(pivot);
 	}
 
 	@Override
@@ -26,5 +27,8 @@ public class HomePivot extends Command {
 
 	@Override
 	public void end(boolean interrupted) {
+		if(!interrupted){
+			pivot.resetAngle();
+		}
 	}
 }
