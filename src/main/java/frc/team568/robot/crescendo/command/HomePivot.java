@@ -27,8 +27,6 @@ public class HomePivot extends Command {
 
 	@Override
 	public void end(boolean interrupted) {
-		if(!interrupted){
-			pivot.resetAngle();
-		}
+		
 	}
 }
