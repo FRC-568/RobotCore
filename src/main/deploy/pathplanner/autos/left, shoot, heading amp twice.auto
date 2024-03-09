@@ -6,6 +6,12 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "left, ShootNote1&2"
@@ -15,6 +21,12 @@
           "type": "path",
           "data": {
             "pathName": "left, heading amp first"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
