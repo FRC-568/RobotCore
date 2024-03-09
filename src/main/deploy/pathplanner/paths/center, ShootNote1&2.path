@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.328428690111537,
+        "x": 1.334062365809026,
         "y": 5.52811290895741
       },
       "isLocked": false,
@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.6251465329533996,
+        "x": 2.533077793428314,
         "y": 5.52811290895741
       },
       "prevControl": {
-        "x": 1.6251465329533996,
-        "y": 5.52811290895741
+        "x": 2.2392222966264113,
+        "y": 5.500957616469326
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,7 +50,7 @@
     },
     {
       "name": "IntakeNote",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.5,
       "command": {
         "type": "parallel",
         "data": {
@@ -91,13 +91,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 176.33182965924715,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "CenterBlue",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -179.4065057805251,
     "velocity": 0
   },
   "useDefaultConstraints": true
