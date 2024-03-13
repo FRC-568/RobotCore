@@ -21,8 +21,8 @@ public class Shoot extends SequentialCommandGroup {
       new RunCommand(() -> {jukebox.setIntakeSpeed(-0.1);}).withTimeout(0.25),
       new SpinUp(jukebox).withTimeout(3)
       .raceWith(
-        new WaitCommand(1)
-        .andThen(new RunCommand(() -> { jukebox.setIntakeSpeed(1); }).withTimeout(3))
+        new WaitCommand(2)
+        .andThen(new RunCommand(() -> { jukebox.setIntakeSpeed(1); }).withTimeout(1))
       )
     );
   }

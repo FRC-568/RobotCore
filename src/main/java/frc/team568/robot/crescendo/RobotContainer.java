@@ -35,9 +35,15 @@ public final class RobotContainer {
 	public final PowerDistribution pd;
 
 	public AutoTab autoTab;
+<<<<<<< HEAD
 		public DriverTab driverTab;
 		public ConfigTab configTab;
 //public FlywheelTab flywheelTab;
+=======
+	public DriverTab driverTab;
+	public ConfigTab configTab;
+	public FlywheelTab flywheelTab;
+>>>>>>> 279f4b6 (add pid constants to jukebox outtake)
 
 	public RobotContainer() {
 		alliance = DriverStation.getAlliance();
@@ -65,7 +71,11 @@ public final class RobotContainer {
 		//autoTab = new AutoTab(this);
 		driverTab = new DriverTab(this);
 		configTab = new ConfigTab(this);
+<<<<<<< HEAD
 //flywheelTab = new FlywheelTab(this);
+=======
+		flywheelTab = new FlywheelTab(this);
+>>>>>>> 279f4b6 (add pid constants to jukebox outtake)
 
 		configureButtonBindings();
 	}

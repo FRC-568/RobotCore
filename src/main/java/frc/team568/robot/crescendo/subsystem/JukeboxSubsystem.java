@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.ColorSensorV3;
@@ -20,6 +21,8 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.team568.robot.crescendo.Constants;
+import frc.team568.robot.crescendo.Constants.JukeboxConstants;
 
 public class JukeboxSubsystem extends SubsystemBase {
     //=== motors ===
@@ -28,8 +31,8 @@ public class JukeboxSubsystem extends SubsystemBase {
 	private VictorSPX intakeMotor;
 
 	private final VelocityVoltage velocity = new VelocityVoltage(0);
-	private final DutyCycleOut leftRequest = new DutyCycleOut(0.0);
-	private final DutyCycleOut rightRequest = new DutyCycleOut(0.0);
+	private final VelocityVoltage leftRequest = new VelocityVoltage(0.0);
+	private final VelocityVoltage rightRequest = new VelocityVoltage(0.0);
 
 	private ColorSensorV3 distanceSensor;
 
@@ -66,9 +69,14 @@ public class JukeboxSubsystem extends SubsystemBase {
 		
 		//=== pid configs ===
 		Slot0Configs slot0Configs = new Slot0Configs();
-		slot0Configs.kP = 0.5; //An error of 0.5 rotations and a value of 24 results in 12 V output
-		slot0Configs.kI = 0; //no output for integrated error
-		slot0Configs.kD = 0; //A velocity of 1 rps results in 0.1 V output at a setting of 0.1
+		slot0Configs.kS = JukeboxConstants.outtakeKS;
+		slot0Configs.kV = JukeboxConstants.outtakeKV;
+		slot0Configs.kP = JukeboxConstants.outtakeKP;
+		slot0Configs.kI = JukeboxConstants.outtakeKI; 
+		slot0Configs.kD = JukeboxConstants.outtakeKD; 
+
+		leftOuttakeMotor.getConfigurator().apply(slot0Configs);
+		rightOuttakeMotor.getConfigurator().apply(slot0Configs);
 
 		distanceSensor = new ColorSensorV3(kNoteDetectorPort);
 
@@ -90,8 +98,17 @@ public class JukeboxSubsystem extends SubsystemBase {
 	 * @param rSpeed rps
 	 */
 	public void setOuttakeSpeed(double lSpeed, double rSpeed) {
-		leftOuttakeMotor.setControl(leftRequest.withOutput(lSpeed));
-		rightOuttakeMotor.setControl(rightRequest.withOutput(rSpeed));
+		leftOuttakeMotor.setControl(leftRequest.withVelocity(lSpeed * JukeboxConstants.kMaxVelocity ));
+		rightOuttakeMotor.setControl(rightRequest.withVelocity(rSpeed * JukeboxConstants.kMaxVelocity));
+		
+	}
+
+	public double getLeftVoltage(){
+		return leftOuttakeMotor.getMotorVoltage().getValueAsDouble();
+	}
+
+	public double getRightVoltage(){
+		return rightOuttakeMotor.getMotorVoltage().getValueAsDouble();
 	}
 
 	public void setIntakeSpeed(double speed){

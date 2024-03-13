@@ -21,7 +21,7 @@ public class SpinUp extends Command{
 
 	@Override
 	public void execute() {
-		double difference = 0.3;
+		double difference = 0.0;
 		jukebox.setOuttakeSpeed(1, 1 - difference);
 	}
 

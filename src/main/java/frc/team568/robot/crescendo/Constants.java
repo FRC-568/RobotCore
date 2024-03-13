@@ -48,5 +48,13 @@ public final class Constants {
 		public static final I2C.Port kNoteDetectorPort = I2C.Port.kOnboard;
 		public static final double kNoteDetectionDistance = 200;
 
+		public static final double kMaxVelocity = 96.5; 
+		public static final double outtakeKS = 0.24;
+		public static final double outtakeKV = 0.114;
+		public static final double outtakeKP = 0.5; //An error of 0.5 rotations and a value of 24 results in 12 V output
+		public static final double outtakeKI = 0; //no output for integrated error
+		public static final double outtakeKD = 0; //A velocity of 1 rps results in 0.1 V output at a setting of 0.1
+
+
 	}
 }
