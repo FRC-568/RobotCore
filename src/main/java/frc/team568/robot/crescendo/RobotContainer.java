@@ -95,7 +95,6 @@ public final class RobotContainer {
 		// OI.Button.pivotUp.onTrue(new InstantCommand(() -> pivot.setAngle(90)));
 		
 		OI.Button.pneumaticstateswitch.onTrue(lift.getToggleCommand());
-		OI.driverController.back().onTrue(AutoBuilder.buildAuto("Backwards Line"));
 		OI.Button.shoot.onTrue(new Shoot(jukebox));
 		OI.Button.intake.onTrue(new Intake(jukebox));
 	}
