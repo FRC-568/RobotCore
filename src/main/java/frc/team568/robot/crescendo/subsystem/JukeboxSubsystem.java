@@ -8,12 +8,10 @@ import static frc.team568.robot.crescendo.Constants.JukeboxConstants.kRightOutta
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.ColorSensorV3;
@@ -21,14 +19,13 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team568.robot.crescendo.Constants;
 import frc.team568.robot.crescendo.Constants.JukeboxConstants;
 
 public class JukeboxSubsystem extends SubsystemBase {
     //=== motors ===
 	private TalonFX leftOuttakeMotor;
     private TalonFX rightOuttakeMotor;
-	private VictorSPX intakeMotor;
+	private TalonSRX intakeMotor;
 
 	private final VelocityVoltage velocity = new VelocityVoltage(0);
 	private final VelocityVoltage leftRequest = new VelocityVoltage(0.0);
@@ -45,7 +42,7 @@ public class JukeboxSubsystem extends SubsystemBase {
 		rightOuttakeMotor = new TalonFX(kRightOuttakePort);
 		addChild("rightOuttakeMotor", rightOuttakeMotor);
 
-		intakeMotor = new VictorSPX(kIntakePort);
+		intakeMotor = new TalonSRX(kIntakePort);
 		addChild("intakeMotor", builder -> {
 			builder.addDoubleProperty("Output Voltage", intakeMotor::getMotorOutputVoltage, null);
 			builder.addDoubleProperty("Output Percent", intakeMotor::getMotorOutputPercent, null);
@@ -79,9 +76,6 @@ public class JukeboxSubsystem extends SubsystemBase {
 		rightOuttakeMotor.getConfigurator().apply(slot0Configs);
 
 		distanceSensor = new ColorSensorV3(kNoteDetectorPort);
-
-	//	leftOuttakeMotor.getConfigurator().apply(slot0Configs);
-	//	rightOuttakeMotor.getConfigurator().apply(slot0Configs);
 	}
 	
 	/**
@@ -100,7 +94,6 @@ public class JukeboxSubsystem extends SubsystemBase {
 	public void setOuttakeSpeed(double lSpeed, double rSpeed) {
 		leftOuttakeMotor.setControl(leftRequest.withVelocity(lSpeed * JukeboxConstants.kMaxVelocity ));
 		rightOuttakeMotor.setControl(rightRequest.withVelocity(rSpeed * JukeboxConstants.kMaxVelocity));
-		
 	}
 
 	public double getLeftVoltage(){
@@ -128,21 +121,17 @@ public class JukeboxSubsystem extends SubsystemBase {
 
 			@Override
 			public void end(boolean interrupted) {
-				setIntakeSpeed(0);
-				setOuttakeSpeed(0);
+				// if (!interrupted) {
+				// 	setIntakeSpeed(0);
+				// 	setOuttakeSpeed(0);
+				// }
 			}
 
 		});
 	}
 
 	public boolean hasNote(){
-		double value = getDistance();
-		double distanse = 350;
-		
-		if(value>distanse){
-			return true;
-		}
-		return false;
+		return getDistance() > JukeboxConstants.kNoteDetectionDistance;
 	}
 
 	public double getLeftVelo(){
@@ -151,6 +140,14 @@ public class JukeboxSubsystem extends SubsystemBase {
 
 	public double getRightVelo(){
 		return rightOuttakeMotor.getVelocity().getValueAsDouble();
+	}
+
+	public double getLeftDesiredVelo(){
+		return leftRequest.Velocity;
+	}
+
+	public double getRightDesiredVelo(){
+		return rightRequest.Velocity;
 	}
 
 	public double getDistance(){
@@ -165,6 +162,5 @@ public class JukeboxSubsystem extends SubsystemBase {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
-		//builder.addDoubleProperty("Stage position", () -> getStagePos(), null);
 	}
 }

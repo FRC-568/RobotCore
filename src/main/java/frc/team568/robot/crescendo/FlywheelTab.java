@@ -6,8 +6,10 @@ public class FlywheelTab {
 		var jukebox = container.jukebox;
  
 		
-		OI.flywheelTab.addDouble("left Flywheel", jukebox::getLeftVelo).withPosition(1,1);
-		OI.flywheelTab.addDouble("right Flywheel", jukebox::getRightVelo).withPosition(3,1);
+		OI.flywheelTab.addDouble("left vel", jukebox::getLeftVelo).withPosition(1,1);
+		OI.flywheelTab.addDouble("right vel", jukebox::getRightVelo).withPosition(3,1);
+		OI.flywheelTab.addDouble("left desired vel", jukebox::getLeftDesiredVelo);
+		OI.flywheelTab.addDouble("right desired vel", jukebox::getRightDesiredVelo);
 
 		OI.flywheelTab.addDouble("leftVoltage", jukebox::getLeftVoltage);
 		OI.flywheelTab.addDouble("rightVoltage", jukebox::getRightVoltage);
