@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 
 public class IntakeNote extends Command{
-	// Step 1: Turn on Intake (from intake wheels)
 	JukeboxSubsystem intakeWheels;
 
 	public IntakeNote(JukeboxSubsystem intakeWheels) {
@@ -13,26 +12,23 @@ public class IntakeNote extends Command{
 	
 	@Override
 	public void execute() {
-		intakeWheels.setIntakeSpeed(0.5);
+		intakeWheels.runIntake(0.5);
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		// Stop intake
-		intakeWheels.setIntakeSpeed(0);
+		intakeWheels.stopIntake();
 	}
 	
 	@Override
 	public void initialize() {
-		// Power intake
-		intakeWheels.setIntakeSpeed(1);
+		intakeWheels.runIntake();
 
 		// Find position
 	}
 
 	@Override
 	public boolean isFinished() {
-		// returns true or false if finished
 		return intakeWheels.hasNote();
 	}
 

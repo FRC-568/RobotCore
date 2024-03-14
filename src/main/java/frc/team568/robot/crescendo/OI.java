@@ -27,9 +27,8 @@ final class OI {
 		public static final DoubleSupplier swerveForward;
 		public static final DoubleSupplier swerveLeft;
 		public static final DoubleSupplier swerveCCW;
-		public static final DoubleSupplier intakeSpeed = () -> Math.pow(MathUtil.applyDeadband(copilotController.getRightY(), 0.1), 3);
-		public static final DoubleSupplier outtakeSpeedL = copilotController::getLeftTriggerAxis;
-		public static final DoubleSupplier outtakeSpeedR = copilotController::getRightTriggerAxis;
+		public static final DoubleSupplier intakeSpeed = copilotController::getLeftTriggerAxis;
+		public static final DoubleSupplier outtakeSpeed = copilotController::getRightTriggerAxis;
 		public static final DoubleSupplier pivotPower = copilotController::getLeftY;
 
 

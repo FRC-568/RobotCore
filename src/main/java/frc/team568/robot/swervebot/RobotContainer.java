@@ -45,7 +45,6 @@ public final class RobotContainer {
 
 	public void configureButtonBindings() {
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
-		OI.driverController.back().onTrue(AutoBuilder.buildAuto("Backwards Line"));
 	}
 
 	public void configurePathplanner() {

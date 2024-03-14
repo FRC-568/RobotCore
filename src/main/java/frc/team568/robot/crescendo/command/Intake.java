@@ -29,7 +29,7 @@ public class Intake extends Command {
 
 	@Override
 	public void execute() {
-		juke.setIntakeSpeed(speed);
+		juke.runIntake(speed);
 		// pivot.setAngle(angle);
 	}
 
@@ -40,7 +40,6 @@ public class Intake extends Command {
 
 	@Override
 	public void end(boolean interrupted) {
-		speed = 0;
-		juke.setIntakeSpeed(speed);
+		juke.stopIntake();
 	}
 }

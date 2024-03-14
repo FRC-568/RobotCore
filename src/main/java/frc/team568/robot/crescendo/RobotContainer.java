@@ -50,7 +50,8 @@ public final class RobotContainer {
 		//pivot.setDefaultCommand(new PivotSubsystemDefaultCommand(pivot));
 
 		jukebox = new JukeboxSubsystem();
-		jukebox.initDefaultCommand(OI.Axis.intakeSpeed, OI.Axis.outtakeSpeedL, OI.Axis.outtakeSpeedR);
+		jukebox.setOuttakeBias(-0.3);
+		jukebox.initDefaultCommand(OI.Axis.intakeSpeed, OI.Axis.outtakeSpeed);
 
 		vision = new VisionSubsystem();
 		vision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
