@@ -1,7 +1,8 @@
 package frc.team568.robot.crescendo.subsystem;
 
-
 import static frc.team568.robot.crescendo.Constants.PivotConstants.kLeftMotorPort;
+import static frc.team568.robot.crescendo.Constants.PivotConstants.kMaxAngle;
+import static frc.team568.robot.crescendo.Constants.PivotConstants.kMinAngle;
 import static frc.team568.robot.crescendo.Constants.PivotConstants.kRightMotorPort;
 
 import java.util.function.DoubleSupplier;
@@ -17,9 +18,9 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.ReverseLimitValue;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -28,26 +29,21 @@ public class PivotSubsystem extends SubsystemBase {
 	private TalonFX leftMotor;
 	private TalonFX rightMotor;
 
-	private final double min = 0;
-	private final double max = 0.5; // rotations
-
-	DigitalInput limitSwitch = new DigitalInput(0);
+	private static final double GEARING = 10 * 5 * 5.8;
 
 	boolean override = false;
 	private DutyCycleOut openloopRequest = new DutyCycleOut(0.0);
+
 	public PivotSubsystem() {
-		// TODO: Confirm if we are really using Falcon 500s for the pivot and if a physical limit switch will be installed.
 		TalonFXConfiguration motorConfig = new TalonFXConfiguration()
 				.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast)
 						.withInverted(InvertedValue.Clockwise_Positive))
-				.withHardwareLimitSwitch(
-						new HardwareLimitSwitchConfigs().withForwardLimitEnable(true).withReverseLimitEnable(true)
-								.withReverseLimitAutosetPositionValue(0).withReverseLimitAutosetPositionEnable(true))
-				.withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs().withForwardSoftLimitThreshold(max)
-						.withForwardSoftLimitEnable(true).withReverseSoftLimitThreshold(min)
-						.withReverseSoftLimitEnable(true))
+				.withHardwareLimitSwitch(new HardwareLimitSwitchConfigs().withReverseLimitEnable(true)
+						.withReverseLimitAutosetPositionValue(degToRot(kMinAngle)).withReverseLimitAutosetPositionEnable(true))
+				.withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs().withForwardSoftLimitThreshold(degToRot(kMaxAngle))
+						.withForwardSoftLimitEnable(true))
 				.withSlot0(new Slot0Configs().withKP(0.5).withKI(0).withKD(0.005));
-//TODO: make this readable
+
 		leftMotor = new TalonFX(kLeftMotorPort);
 		addChild("leftMotor", leftMotor);
 		leftMotor.getConfigurator().apply(motorConfig);
@@ -58,35 +54,22 @@ public class PivotSubsystem extends SubsystemBase {
 		rightMotor.getConfigurator().apply(motorConfig);
 		rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
 
-		// manning
-		// rightMotor.optimizeBusUtilization()
+		leftMotor.setPosition(degToRot(90)); // Assume the pivot is vertical at power on
 	}
 
-	/**
-	 * 
-	 * @param angle degrees from ... somewhere
-	 */
-	// TODO: figure out where 0 is
 	public void setAngle(double angle) {
-		angle /= 360.0; // degrees to rotations
-		final PositionVoltage request = new PositionVoltage(0).withSlot(0);
-
-		// set position to 10 rotations
-		leftMotor.setControl(request.withPosition(angle)
-				.withLimitForwardMotion(leftMotor.getPosition().getValueAsDouble() > max)
-				.withLimitReverseMotion(leftMotor.getPosition().getValueAsDouble() < min));
+		leftMotor.setControl(new PositionVoltage(degToRot(angle)).withSlot(0));
 	}
 
 	public double getAngle() {
-		return 0;
+		return rotToDeg(leftMotor.getPosition().getValueAsDouble());
 	}
-	
 
 	public void setPower(double power) {
 		leftMotor.setControl(openloopRequest.withOutput(power));
 	}
 
-	public void populate(double kP, double kI, double kD){
+	public void populate(double kP, double kI, double kD) {
 		Slot0Configs slot0Configs = new Slot0Configs();
 		slot0Configs.kP = kP;
 		slot0Configs.kI = kI;
@@ -112,15 +95,23 @@ public class PivotSubsystem extends SubsystemBase {
 	}
 
 	public boolean getSwitch() {
-
-		return limitSwitch.get();
+		return leftMotor.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround;
 	}
 
+	private static final double degToRot(double degrees) {
+		return degrees / 360.0 * GEARING;
+	}
+
+	private static final double rotToDeg(double rotations) {
+		return rotations / GEARING * 360.0;
+	}
 
 	public void initDefaultCommand(final DoubleSupplier pivotPower) {
 		setDefaultCommand(new Command() {
 
-			{ addRequirements(PivotSubsystem.this); }
+			{
+				addRequirements(PivotSubsystem.this);
+			}
 
 			@Override
 			public void execute() {

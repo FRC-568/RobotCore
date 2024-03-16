@@ -41,6 +41,8 @@ public final class Constants {
 
 		public static final int kLeftMotorPort = 14;
 		public static final int kRightMotorPort = 15;
+		public static final double kMinAngle = 0.0;
+		public static final double kMaxAngle = 90.0;
 
 	}
 
