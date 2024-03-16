@@ -26,13 +26,15 @@ import org.photonvision.targeting.PhotonPipelineResult;
 public class VisionSubsystem extends SubsystemBase {
 	private static final double kPoseUpdateInterval = 1.0;
 
-	protected PhotonCamera camera;
-	private final PhotonPoseEstimator photonEstimator;
+	public final PhotonCamera camera;
+	public final String cameraName;
+	protected final PhotonPoseEstimator photonEstimator;
+
 	private double lastEstTimestamp = 0;
 	private final Collection<Consumer<EstimatedRobotPose>> poseListeners = new ArrayList<>();
 	private final Notifier listenerThread = new Notifier(this::updatePoseListeners);
 
-	private static String CAMERA_NAME = "photonvision";
+	private static String DEFAULT_CAMERA_NAME = "photonvision";
 	public static final AprilTagFieldLayout kTagLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
 	public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5),
 			new Rotation3d(0, 0, 0));
@@ -41,12 +43,14 @@ public class VisionSubsystem extends SubsystemBase {
 	private GenericEntry targetArea, targetId, targetPitch, targetPose, targetSkew;
 	private GenericEntry poseX, poseY, poseZ;
 
-	/**
-	 * 
-	 */
 	public VisionSubsystem() {
+		this(DEFAULT_CAMERA_NAME);
+	}
+	
+	public VisionSubsystem(String cameraName) {
+		this.cameraName = cameraName;
 		try {
-			camera = new PhotonCamera(CAMERA_NAME);
+			camera = new PhotonCamera(cameraName);
 		} catch (Exception e) {
 			DriverStation.reportError(e.getMessage(), e.getStackTrace());
 			throw new RuntimeException("Cannot create PhotonCamera object.");
@@ -59,7 +63,7 @@ public class VisionSubsystem extends SubsystemBase {
 	}
 
 	protected void setupCameraTab() {
-		cameraTab = Shuffleboard.getTab("Vision");
+		cameraTab = Shuffleboard.getTab(cameraName + "_cam");
 
 		targetArea = cameraTab.add("Area", 0).getEntry();
 		targetId = cameraTab.add("ID", -1).getEntry();

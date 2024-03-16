@@ -11,6 +11,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -26,11 +27,13 @@ import frc.team568.robot.subsystems.SwerveSubsystem;
 
 public final class RobotContainer {
 	public Optional<Alliance> alliance;
+	private Notifier rearCameraStarter;
 
 	public final SwerveSubsystem drive;
 	public PivotSubsystem pivot;
 	public final JukeboxSubsystem jukebox;
-	public final VisionSubsystem vision;
+	public VisionSubsystem targetVision;
+	public VisionSubsystem rearVision;
 	public final PneumaticSubsystem lift;
 	public final PowerDistribution pd;
 
@@ -53,9 +56,7 @@ public final class RobotContainer {
 		jukebox.setOuttakeBias(-0.3);
 		jukebox.initDefaultCommand(OI.Axis.intakeSpeed, OI.Axis.outtakeSpeed);
 
-		vision = new VisionSubsystem();
-		vision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
-		vision.startPoseListenerThread();
+		setupCameras();
 		
 		lift = new PneumaticSubsystem();
 
@@ -120,6 +121,27 @@ public final class RobotContainer {
 				},
 				drive
 			);
+	}
+
+	public void setupCameras() {
+		try {
+			targetVision = new VisionSubsystem("target_cam");
+			targetVision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
+			targetVision.startPoseListenerThread();
+		} catch (Exception e) {
+			targetVision = null;
+			DriverStation.reportWarning("Could not initialize target cam.", e.getStackTrace());
+		}
+
+		try {
+			rearVision = new VisionSubsystem("rear_cam");
+			rearVision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
+			rearCameraStarter = new Notifier(rearVision::startPoseListenerThread);
+			rearCameraStarter.startSingle(0.5);
+		} catch (Exception e) {
+			rearVision = null;
+			DriverStation.reportWarning("Could not initialize rear cam.", e.getStackTrace());
+		}
 	}
 
 	public Command getAutonomousCommand() {
