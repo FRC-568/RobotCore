@@ -48,7 +48,7 @@ public final class Constants {
 
 	public static final class JukeboxConstants {
 
-		public static final String kCANBusName = "roborio";
+		public static final String kCANBusName = "canivore";
 		public static final int kIntakePort = 13;
 		public static final int kLeftOuttakePort = 12;
 		public static final int kRightOuttakePort = 11;
