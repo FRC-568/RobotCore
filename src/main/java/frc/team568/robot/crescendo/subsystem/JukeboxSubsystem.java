@@ -13,9 +13,6 @@ import static frc.team568.robot.crescendo.Constants.JukeboxConstants.kRightOutta
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -28,6 +25,7 @@ import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -35,16 +33,16 @@ public class JukeboxSubsystem extends SubsystemBase {
 	// === motors ===
 	private final TalonFX leftOuttakeMotor;
 	private final TalonFX rightOuttakeMotor;
-	private final VictorSPX intakeMotor;
+	private final PWMVictorSPX intakeMotor;
 
 	private final ColorSensorV3 distanceSensor;
 
-	private final VelocityVoltage outtakeVelocityL;
-	private final VelocityVoltage outtakeVelocityR;
+	private final VelocityVoltage outtakeVelocity;
 	private final NeutralOut outtakeNeutral;
 
 	private double outtakeAutoSpeed = kOuttakeMaxRPS;
 	private double outtakeLeftBias = 0.0;
+	private double lastOuttakeSpeedL, lastOuttakeSpeedR;
 
 	public JukeboxSubsystem() {
 		leftOuttakeMotor = new TalonFX(kLeftOuttakePort, kCANBusName);
@@ -62,17 +60,12 @@ public class JukeboxSubsystem extends SubsystemBase {
 		outtakeMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 		rightOuttakeMotor.getConfigurator().apply(outtakeMotorConfig);
 
-		outtakeVelocityL = new VelocityVoltage(0, 100, false, outtakeAutoSpeed, 0, false, false, false);
-		outtakeVelocityR = outtakeVelocityL.clone();
+		outtakeVelocity = new VelocityVoltage(0, 100, false, outtakeAutoSpeed, 0, false, false, false);
 		outtakeNeutral = new NeutralOut();
 
-		intakeMotor = new VictorSPX(kIntakePort);
+		intakeMotor = new PWMVictorSPX(kIntakePort);
 		intakeMotor.setInverted(true);
-		intakeMotor.setNeutralMode(NeutralMode.Brake);
-		addChild("intakeMotor", builder -> {
-			builder.addDoubleProperty("Output Voltage", intakeMotor::getMotorOutputVoltage, null);
-			builder.addDoubleProperty("Output Percent", intakeMotor::getMotorOutputPercent, null);
-		});
+		addChild("intakeMotor", intakeMotor);
 
 		distanceSensor = new ColorSensorV3(kNoteDetectorPort);
 	}
@@ -91,7 +84,8 @@ public class JukeboxSubsystem extends SubsystemBase {
 		double lSpeed = speedRPS;
 		double rSpeed = speedRPS;
 		if (outtakeLeftBias != 0) {
-			double biasedSpeed = MathUtil.clamp(speedRPS * (1.0 - Math.abs(outtakeLeftBias)), kOuttakeMinRPS, kOuttakeMaxRPS);
+			double biasedSpeed = MathUtil.clamp(speedRPS * (1.0 - Math.abs(outtakeLeftBias)), kOuttakeMinRPS,
+					kOuttakeMaxRPS);
 			if (outtakeLeftBias > 0)
 				lSpeed = biasedSpeed;
 			else if (outtakeLeftBias < 0)
@@ -101,13 +95,15 @@ public class JukeboxSubsystem extends SubsystemBase {
 	}
 
 	public void runOuttakeManual(double lSpeedRPS, double rSpeedRPS) {
-		leftOuttakeMotor.setControl(outtakeVelocityL.withVelocity(lSpeedRPS));
-		rightOuttakeMotor.setControl(outtakeVelocityR.withVelocity(rSpeedRPS));
+		lastOuttakeSpeedL = lSpeedRPS;
+		lastOuttakeSpeedR = rSpeedRPS;
+		leftOuttakeMotor.setControl(outtakeVelocity.withVelocity(lSpeedRPS));
+		rightOuttakeMotor.setControl(outtakeVelocity.withVelocity(rSpeedRPS));
 	}
 
 	public void stopOuttake() {
-		outtakeVelocityL.withVelocity(0);
-		outtakeVelocityR.withVelocity(0);
+		lastOuttakeSpeedL = 0;
+		lastOuttakeSpeedR = 0;
 		leftOuttakeMotor.setControl(outtakeNeutral);
 		rightOuttakeMotor.setControl(outtakeNeutral);
 	}
@@ -125,11 +121,11 @@ public class JukeboxSubsystem extends SubsystemBase {
 	}
 
 	public void runIntake(double percentOutput) {
-		intakeMotor.set(ControlMode.PercentOutput, percentOutput);
+		intakeMotor.set(percentOutput);
 	}
 
 	public void stopIntake() {
-		intakeMotor.set(ControlMode.PercentOutput, 0);
+		intakeMotor.set(0);
 	}
 
 	public void initDefaultCommand(final DoubleSupplier intakeSpeed, final DoubleSupplier outtakeSpeed) {
@@ -148,8 +144,8 @@ public class JukeboxSubsystem extends SubsystemBase {
 			@Override
 			public void end(boolean interrupted) {
 				// if (!interrupted) {
-				// 	stopIntake();
-				// 	stopOuttake();
+				// stopIntake();
+				// stopOuttake();
 				// }
 			}
 
@@ -168,19 +164,19 @@ public class JukeboxSubsystem extends SubsystemBase {
 		return rightOuttakeMotor.getVelocity().getValueAsDouble();
 	}
 
-	public double getLeftDesiredVelo(){
-		return outtakeVelocityL.Velocity;
+	public double getLeftDesiredVelo() {
+		return lastOuttakeSpeedL;
 	}
 
-	public double getRightDesiredVelo(){
-		return outtakeVelocityR.Velocity;
+	public double getRightDesiredVelo() {
+		return lastOuttakeSpeedR;
 	}
 
-	public double getLeftVoltage(){
+	public double getLeftVoltage() {
 		return leftOuttakeMotor.getMotorVoltage().getValueAsDouble();
 	}
 
-	public double getRightVoltage(){
+	public double getRightVoltage() {
 		return rightOuttakeMotor.getMotorVoltage().getValueAsDouble();
 	}
 
