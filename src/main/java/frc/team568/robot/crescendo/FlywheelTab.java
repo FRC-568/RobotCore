@@ -4,6 +4,7 @@ public class FlywheelTab {
 	public FlywheelTab(RobotContainer container) {
 		
 		var jukebox = container.jukebox;
+		var pivot = container.pivot;
  
 		
 		OI.flywheelTab.addDouble("left vel", jukebox::getLeftVelo).withPosition(1,1);
@@ -16,5 +17,7 @@ public class FlywheelTab {
 
 		OI.flywheelTab.addDouble("sensor distance", jukebox::getDistance);
 		OI.flywheelTab.addBoolean("contains note", jukebox::hasNote);
+
+		OI.flywheelTab.addDouble("pivot angle", pivot::getAngle);
 	}
 }

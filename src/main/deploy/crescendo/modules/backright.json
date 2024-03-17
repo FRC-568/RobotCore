@@ -23,7 +23,7 @@
 	  "drive": 0
 	},
 	"encoder": {
-	  "type": "canandcoder",
+	  "type": "attached",
 	  "id": 0,
 	  "canbus": null
 	}

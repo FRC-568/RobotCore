@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
 		if (DriverStation.isFMSAttached())
 			Shuffleboard.selectTab(OI.autoTab.getTitle());
 		else
-			SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.MACHINE;
+			SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
 	}
 
 	@Override

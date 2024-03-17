@@ -47,10 +47,11 @@ public final class RobotContainer {
 		
 		drive = new SwerveSubsystem("crescendo", kMaxSpeed);
 		drive.initDefaultCommand(OI.Axis.swerveForward, OI.Axis.swerveLeft, OI.Axis.swerveCCW);
+		
 		configurePathplanner();
 
-		//pivot = new PivotSubsystem(0, 0);
-		//pivot.setDefaultCommand(new PivotSubsystemDefaultCommand(pivot));
+		pivot = new PivotSubsystem();
+		pivot.initDefaultCommand(OI.Axis.pivotPower);
 
 		jukebox = new JukeboxSubsystem();
 		jukebox.setOuttakeBias(-0.3);

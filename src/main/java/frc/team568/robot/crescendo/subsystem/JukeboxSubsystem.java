@@ -25,6 +25,7 @@ import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.motorcontrol.PWMTalonSRX;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -52,8 +53,11 @@ public class JukeboxSubsystem extends SubsystemBase {
 		addChild("rightOuttakeMotor", rightOuttakeMotor);
 
 		TalonFXConfiguration outtakeMotorConfig = new TalonFXConfiguration()
-				.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast)
-						.withInverted(InvertedValue.CounterClockwise_Positive))
+				.withMotorOutput(
+					new MotorOutputConfigs()
+					.withNeutralMode(NeutralModeValue.Coast)
+					.withInverted(InvertedValue.CounterClockwise_Positive)
+				)
 				.withSlot0(kOuttakePID);
 
 		leftOuttakeMotor.getConfigurator().apply(outtakeMotorConfig);

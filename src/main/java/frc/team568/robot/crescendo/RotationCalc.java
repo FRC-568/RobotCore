@@ -35,14 +35,14 @@ public class RotationCalc {
 	Rotation2d rotation;
 	Rotation3d shooterRotation;
 
-	Rotation2d speakerrot;
+	Rotation2d speakerRot;
 
 	public RotationCalc(SwerveSubsystem drive){
 
 		speakCoords[0] = Location.SPEAKER_TARGET.getTranslation().getX();
 		speakCoords[0] = Location.SPEAKER_TARGET.getTranslation().getZ();
 
-		speakerrot = new Rotation2d(speakCoords[0], speakCoords[1]);
+		speakerRot = new Rotation2d(speakCoords[0], speakCoords[1]);
 		
 		yRestraints[0] = speakCoords[0] + 6;
 		yRestraints[1] = speakCoords[1] - 6; // 6 is just a placeholder for both. It is in meters
@@ -103,7 +103,7 @@ public class RotationCalc {
 	// ^^ These commented out methods are potential alternatives incase the current getTargetAngle does not work
 
 	public Rotation2d getTargetAngle(){
-		double angle = speakerrot.plus(Rotation2d.fromDegrees(getRot())).getDegrees();
+		double angle = speakerRot.plus(Rotation2d.fromDegrees(getRot())).getDegrees();
 		if (angle > 180){ // Path planner only accepts ranges from -179 to 180.
 			angle = angle - 360;
 		}

@@ -1,5 +1,6 @@
 package frc.team568.robot.crescendo;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 
 import edu.wpi.first.wpilibj.I2C;
@@ -43,13 +44,25 @@ public final class Constants {
 		public static final int kRightMotorPort = 15;
 		public static final double kMinAngle = 0.0;
 		public static final double kMaxAngle = 90.0;
+		public static final Slot0Configs kPidConstants = 
+			new Slot0Configs()
+			.withKA(0)
+			.withKV(0)
+			.withKP(0)
+			.withKI(0)
+			.withKD(0);
+		
+		public static final MotionMagicConfigs kMotionMagicConfigs = 
+			new MotionMagicConfigs()
+			.withMotionMagicCruiseVelocity(0)
+			.withMotionMagicAcceleration(0);
 
 	}
 
 	public static final class JukeboxConstants {
 
 		public static final String kCANBusName = "canivore";
-		public static final int kIntakePort = 13;
+		public static final int kIntakePort = 0;
 		public static final int kLeftOuttakePort = 12;
 		public static final int kRightOuttakePort = 11;
 		public static final I2C.Port kNoteDetectorPort = I2C.Port.kOnboard;
