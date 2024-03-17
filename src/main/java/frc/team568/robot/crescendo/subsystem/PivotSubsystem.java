@@ -1,5 +1,6 @@
 package frc.team568.robot.crescendo.subsystem;
 
+import static frc.team568.robot.crescendo.Constants.PivotConstants.kCANBusName;
 import static frc.team568.robot.crescendo.Constants.PivotConstants.kLeftMotorPort;
 import static frc.team568.robot.crescendo.Constants.PivotConstants.kMaxAngle;
 import static frc.team568.robot.crescendo.Constants.PivotConstants.kMinAngle;
@@ -72,12 +73,12 @@ public class PivotSubsystem extends SubsystemBase {
 				);
 
 
-		leftMotor = new TalonFX(kLeftMotorPort);
+		leftMotor = new TalonFX(kLeftMotorPort, kCANBusName);
 		addChild("leftMotor", leftMotor);
 		leftMotor.getConfigurator().apply(motorConfig);
 		leftMotor.setControl(new DutyCycleOut(0));
 
-		rightMotor = new TalonFX(kRightMotorPort);
+		rightMotor = new TalonFX(kRightMotorPort, kCANBusName);
 		addChild("rightMotor", rightMotor);
 		rightMotor.getConfigurator().apply(motorConfig);
 		rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));

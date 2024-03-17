@@ -46,6 +46,7 @@ public final class Constants {
 
 	public static final class PivotConstants {
 
+		public static final String kCANBusName = "roborio";
 		public static final int kLeftMotorPort = 14;
 		public static final int kRightMotorPort = 15;
 		public static final double kMinAngle = 0.0;
