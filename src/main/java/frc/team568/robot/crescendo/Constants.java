@@ -46,8 +46,9 @@ public final class Constants {
 		public static final double kMaxAngle = 90.0;
 		public static final Slot0Configs kPidConstants = 
 			new Slot0Configs()
-			.withKA(0)
+			.withKS(0)
 			.withKV(0)
+			.withKA(0)
 			.withKP(0)
 			.withKI(0)
 			.withKD(0);

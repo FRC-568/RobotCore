@@ -94,8 +94,8 @@ public final class RobotContainer {
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
 				// OI.Button.scoreAmp.onTrue(new ScoreAmp(jukebox, pivot));
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
-		// OI.Button.pivotDown.onTrue(new InstantCommand(() -> pivot.setAngle(0)));
-		// OI.Button.pivotUp.onTrue(new InstantCommand(() -> pivot.setAngle(90)));
+		OI.Button.pivotDown.onTrue(new InstantCommand(() -> pivot.setAngle(0)));
+		OI.Button.pivotUp.onTrue(new InstantCommand(() -> pivot.setAngle(90)));
 		
 		OI.Button.pneumaticstateswitch.onTrue(lift.getToggleCommand());
 		OI.Button.shoot.onTrue(new Shoot(jukebox));

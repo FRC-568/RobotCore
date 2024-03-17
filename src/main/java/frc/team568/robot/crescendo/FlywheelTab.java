@@ -19,5 +19,6 @@ public class FlywheelTab {
 		OI.flywheelTab.addBoolean("contains note", jukebox::hasNote);
 
 		OI.flywheelTab.addDouble("pivot angle", pivot::getAngle);
+		OI.flywheelTab.addDouble("pivot deg/s", pivot::getVelocity);
 	}
 }

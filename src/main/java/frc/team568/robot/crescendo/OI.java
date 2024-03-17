@@ -29,7 +29,7 @@ final class OI {
 		public static final DoubleSupplier swerveCCW;
 		public static final DoubleSupplier intakeSpeed = copilotController::getLeftTriggerAxis;
 		public static final DoubleSupplier outtakeSpeed = copilotController::getRightTriggerAxis;
-		public static final DoubleSupplier pivotPower = copilotController::getLeftY;
+		public static final DoubleSupplier pivotPower = () -> -copilotController.getLeftY();
 
 
 		static {
@@ -55,12 +55,12 @@ final class OI {
 		public static final Trigger pneumaticstateswitch = driverController.rightBumper();
 		public static final Trigger scoreAmp = driverController.b();
 		public static final Trigger scoreSpeaker = driverController.x();
-		public static final Trigger pivotDown = driverController.y();
-		//public static final Trigger pivotUp = driverController.a();
 		public static final Trigger runOuttake = driverController.rightTrigger();
 		public static final Trigger runIntake = driverController.leftTrigger();
 
 		public static final Trigger shoot = copilotController.a();
 		public static final Trigger intake = copilotController.leftBumper();
+		public static final Trigger pivotDown = copilotController.x();
+		public static final Trigger pivotUp = copilotController.y();
 	}
 }

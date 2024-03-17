@@ -9,6 +9,7 @@ import static frc.team568.robot.crescendo.Constants.PivotConstants.kRightMotorPo
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -16,7 +17,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -41,15 +41,15 @@ public class PivotSubsystem extends SubsystemBase {
 				.withMotorOutput(
 					new MotorOutputConfigs()
 					.withNeutralMode(NeutralModeValue.Coast)
-					.withInverted(InvertedValue.CounterClockwise_Positive)
+					.withInverted(InvertedValue.Clockwise_Positive)
 				)
 				.withHardwareLimitSwitch(
 					new HardwareLimitSwitchConfigs()
 					.withReverseLimitEnable(true)
+					.withReverseLimitAutosetPositionEnable(true)
 					.withReverseLimitAutosetPositionValue(
 						degToRot(kMinAngle)
 					)
-					.withReverseLimitAutosetPositionEnable(true)
 				)
 				.withSoftwareLimitSwitch(
 					new SoftwareLimitSwitchConfigs()
@@ -57,6 +57,11 @@ public class PivotSubsystem extends SubsystemBase {
 					.withForwardSoftLimitThreshold(
 						degToRot(kMaxAngle)
 					)
+				)
+				.withMotionMagic(
+					new MotionMagicConfigs()
+					.withMotionMagicCruiseVelocity(degToRot(180))
+					.withMotionMagicAcceleration(degToRot(360))
 				)
 				.withSlot0(
 					kPidConstants
@@ -76,11 +81,15 @@ public class PivotSubsystem extends SubsystemBase {
 	}
 
 	public void setAngle(double angle) {
-		leftMotor.setControl(new PositionVoltage(degToRot(angle)).withSlot(0));
+		leftMotor.setControl(closedLoopRequest.withPosition(degToRot(angle)));
 	}
 
 	public double getAngle() {
 		return rotToDeg(leftMotor.getPosition().getValueAsDouble());
+	}
+
+	public double getVelocity() {
+		return rotToDeg(leftMotor.getVelocity().getValueAsDouble());
 	}
 
 	public void setPower(double power) {
