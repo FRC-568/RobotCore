@@ -3,11 +3,16 @@ package frc.team568.robot.crescendo.subsystem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.GenericEntry;
@@ -23,6 +28,9 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+import static frc.team568.robot.crescendo.Constants.VisionConstants.kMultiTagStdDevs;
+import static frc.team568.robot.crescendo.Constants.VisionConstants.kSingleTagStdDevs;
+
 public class VisionSubsystem extends SubsystemBase {
 	private static final double kPoseUpdateInterval = 1.0;
 
@@ -31,7 +39,7 @@ public class VisionSubsystem extends SubsystemBase {
 	protected final PhotonPoseEstimator photonEstimator;
 
 	private double lastEstTimestamp = 0;
-	private final Collection<Consumer<EstimatedRobotPose>> poseListeners = new ArrayList<>();
+	private final Collection<BiConsumer<EstimatedRobotPose, Matrix<N3, N1>>> poseListeners = new ArrayList<>();
 	private final Notifier listenerThread = new Notifier(this::updatePoseListeners);
 
 	private static String DEFAULT_CAMERA_NAME = "photonvision";
@@ -121,7 +129,31 @@ public class VisionSubsystem extends SubsystemBase {
 		return visionEst;
 	}
 
-	public void addPoseListener(Consumer<EstimatedRobotPose> listener) {
+	public Matrix<N3, N1> getEstimationStdDevs(Pose2d estimatedPose) {
+        var estStdDevs = kSingleTagStdDevs;
+        var targets = getLatestResult().getTargets();
+        int numTags = 0;
+        double avgDist = 0;
+        for (var tgt : targets) {
+            var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+            if (tagPose.isEmpty()) continue;
+            numTags++;
+            avgDist +=
+                    tagPose.get().toPose2d().getTranslation().getDistance(estimatedPose.getTranslation());
+        }
+        if (numTags == 0) return estStdDevs;
+        avgDist /= numTags;
+        // Decrease std devs if multiple targets are visible
+        if (numTags > 1) estStdDevs = kMultiTagStdDevs;
+        // Increase std devs based on (average) distance
+        if (numTags == 1 && avgDist > 4)
+            estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+
+        return estStdDevs;
+    }
+
+	public void addPoseListener(BiConsumer<EstimatedRobotPose, Matrix<N3, N1>> listener) {
 		if (listener != null && !poseListeners.contains(listener))
 			poseListeners.add(listener);
 	}
@@ -141,9 +173,13 @@ public class VisionSubsystem extends SubsystemBase {
 
 	private void updatePoseListeners() {
 		var pose = getEstimatedGlobalPose();
-		if (pose.isPresent())
+		if (pose.isPresent()) {
+			var p = pose.get();
+			var stdDev = getEstimationStdDevs(p.estimatedPose.toPose2d());
+
 			for (var l : poseListeners)
-				l.accept(pose.get());
+				l.accept(p, stdDev);
+		}
 	}
 
 }

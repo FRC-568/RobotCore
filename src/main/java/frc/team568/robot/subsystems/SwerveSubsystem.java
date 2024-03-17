@@ -8,12 +8,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -140,6 +143,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public void addVisionMeasurement(Pose2d robotPose, double timestamp) {
 		drive.addVisionMeasurement(robotPose, timestamp);
+	}
+
+	public void addVisionMeasurement(Pose2d robotPose, double timestamp, Matrix<N3, N1> standardDeviations) {
+		drive.addVisionMeasurement(robotPose, timestamp, standardDeviations);
 	}
 
 	public boolean isFieldRelative() {

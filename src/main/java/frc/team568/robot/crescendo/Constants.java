@@ -3,6 +3,10 @@ package frc.team568.robot.crescendo;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.I2C;
 
 public final class Constants {
@@ -77,6 +81,13 @@ public final class Constants {
 				.withKP(0.5) // An error of 0.5 rotations and a value of 24 results in 12 V output
 				.withKI(0) // no output for integrated error
 				.withKD(0); // A velocity of 1 rps results in 0.1 V output at a setting of 0.1
+
+	}
+
+	public static final class VisionConstants {
+
+        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
 	}
 }

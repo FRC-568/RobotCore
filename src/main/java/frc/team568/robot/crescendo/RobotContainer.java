@@ -3,8 +3,6 @@ package frc.team568.robot.crescendo;
 import static frc.team568.robot.crescendo.Constants.SwerveConstants.kMaxSpeed;
 import static frc.team568.robot.crescendo.Constants.SwerveConstants.kWheelbaseRadius;
 
-import java.util.Optional;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -12,7 +10,6 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,7 +23,6 @@ import frc.team568.robot.crescendo.subsystem.VisionSubsystem;
 import frc.team568.robot.subsystems.SwerveSubsystem;
 
 public final class RobotContainer {
-	public Optional<Alliance> alliance;
 	private Notifier rearCameraStarter;
 
 	public final SwerveSubsystem drive;
@@ -43,8 +39,6 @@ public final class RobotContainer {
 	public FlywheelTab flywheelTab;
 
 	public RobotContainer() {
-		alliance = DriverStation.getAlliance();
-		
 		drive = new SwerveSubsystem("crescendo", kMaxSpeed);
 		drive.initDefaultCommand(OI.Axis.swerveForward, OI.Axis.swerveLeft, OI.Axis.swerveCCW);
 		
@@ -115,7 +109,7 @@ public final class RobotContainer {
 					kWheelbaseRadius,
 					new ReplanningConfig(true, true, 0.09, 0.3)), // PID constants to correct for rotation error (used to create the rotation controller)
 				() -> {
-					// var alliance = DriverStation.getAlliance();
+					var alliance = DriverStation.getAlliance();
 					return alliance.isPresent()
 						? alliance.get() == DriverStation.Alliance.Red
 						: false;
@@ -126,8 +120,8 @@ public final class RobotContainer {
 
 	public void setupCameras() {
 		try {
-			targetVision = new VisionSubsystem("target_cam");
-			targetVision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
+			targetVision = new VisionSubsystem("target");
+			targetVision.addPoseListener((est, dev) -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, dev));
 			targetVision.startPoseListenerThread();
 		} catch (Exception e) {
 			targetVision = null;
@@ -135,8 +129,8 @@ public final class RobotContainer {
 		}
 
 		try {
-			rearVision = new VisionSubsystem("rear_cam");
-			rearVision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
+			rearVision = new VisionSubsystem("rear");
+			rearVision.addPoseListener((est, dev) -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, dev));
 			rearCameraStarter = new Notifier(rearVision::startPoseListenerThread);
 			rearCameraStarter.startSingle(0.5);
 		} catch (Exception e) {

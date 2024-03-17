@@ -35,7 +35,7 @@ public final class RobotContainer {
 		configurePathplanner();
 
 		vision = new VisionSubsystem();
-		vision.addPoseListener(est -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds));
+		vision.addPoseListener((est, dev) -> drive.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, dev));
 		vision.startPoseListenerThread();
 
 		pd = new PowerDistribution(1, ModuleType.kCTRE);
