@@ -2,44 +2,49 @@ package frc.team568.robot.crescendo;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 
 public final class Constants {
 
-	static final class OIConstants {
+	public static final class OIConstants {
 
-		static final int kDriverControllerPort = 0;
-		static final int kCopilotControllerPort = 1;
-		static final double kControllerDeadband = 0.05; // inputs below are ignored; above are re-scaled from deadband offset.
-		static final double kAxisSlewRate = 5; // Controller axis max rate of change in units per second.
+		public static final int kDriverControllerPort = 0;
+		public static final int kCopilotControllerPort = 1;
+		public static final double kControllerDeadband = 0.05; // inputs below are ignored; above are re-scaled from
+																// deadband offset.
+		public static final double kAxisSlewRate = 5; // Controller axis max rate of change in units per second.
 
 	}
 
-	static final class SwerveConstants {
+	public static final class SwerveConstants {
 
-		static final int kEncoderResolution = 4096; // counts per rotation of turning motor
-		static final double kRelativeEncoderResolution = 42;
-		static final double kWheelRadius = 0.0508; // 4 inch wheels on mk4i
-		static final double kWheelCircumference = 2 * Math.PI * kWheelRadius;
-		static final double kTurnGearRatio = 150.0 / 7.0;
-		static final double kDriveGearRatio = 8.14;
-		static final double kMaxSpeed = 3.4; // 3.2 meters per second - 2.5 is probably more reliable / safe
-		static final double kMaxDriveRpm = kMaxSpeed / kWheelCircumference * 60; // Max drive speed in RPM
-		static final double kMaxDriveAcceleration = kMaxDriveRpm / 0.15; // Max velocity after 1s
-		static final double kMaxRampRate = 0.15;
-		static final double kMaxSpinRate = 4 * Math.PI; // 2 rotations per second
-		static final double kModuleMaxAngularVelocity = 32 * Math.PI; // 2 rotations per second
-		static final double kModuleMaxAngularAcceleration = 32 * Math.PI; // radians per second squared
-		static final double kWheelbaseRadius = 0.78105;
-		static final int kDrivePidChannel = 0;
-		static final double kSlowMultiplier = 0.25;
-		static final double kNormalMultiplier = 1.0;
+		public static final int kEncoderResolution = 4096; // counts per rotation of turning motor
+		public static final double kRelativeEncoderResolution = 42;
+		public static final double kWheelRadius = 0.0508; // 4 inch wheels on mk4i
+		public static final double kWheelCircumference = 2 * Math.PI * kWheelRadius;
+		public static final double kTurnGearRatio = 150.0 / 7.0;
+		public static final double kDriveGearRatio = 8.14;
+		public static final double kMaxSpeed = 3.4; // 3.2 meters per second - 2.5 is probably more reliable / safe
+		public static final double kMaxDriveRpm = kMaxSpeed / kWheelCircumference * 60; // Max drive speed in RPM
+		public static final double kMaxDriveAcceleration = kMaxDriveRpm / 0.15; // Max velocity after 1s
+		public static final double kMaxRampRate = 0.15;
+		public static final double kMaxSpinRate = 4 * Math.PI; // 2 rotations per second
+		public static final double kModuleMaxAngularVelocity = 32 * Math.PI; // 2 rotations per second
+		public static final double kModuleMaxAngularAcceleration = 32 * Math.PI; // radians per second squared
+		public static final double kWheelbaseRadius = 0.78105;
+		public static final int kDrivePidChannel = 0;
+		public static final double kSlowMultiplier = 0.25;
+		public static final double kNormalMultiplier = 1.0;
+		public static final PathConstraints kPathFollowerConstraints = new PathConstraints(3.0, 3.0,
+				Units.degreesToRadians(540), Units.degreesToRadians(720));
 
 	}
 
@@ -89,8 +94,8 @@ public final class Constants {
 
 	public static final class VisionConstants {
 
-        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+		public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+		public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
 	}
 }

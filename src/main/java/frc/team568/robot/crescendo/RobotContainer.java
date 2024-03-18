@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -66,17 +67,24 @@ public final class RobotContainer {
 		configureButtonBindings();
 	}
 
-	public void registerPathPlannerCommands(){
+	public void registerPathPlannerCommands() {
+		var factory = new CommandFactory(drive, pivot);
+
 		NamedCommands.registerCommand("Aim", new Aim(pivot));
+		NamedCommands.registerCommand("AimAtSpeaker", factory.aimAtSpeaker().withTimeout(1));
 		NamedCommands.registerCommand("Intake", new Intake(jukebox, pivot));
 		NamedCommands.registerCommand("HomePivot", new HomePivot(pivot));
+		NamedCommands.registerCommand("LaunchNote", jukebox.getLaunchNoteCommand());
 		NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(jukebox, pivot, drive::getPose, false));
 		NamedCommands.registerCommand("ScoreAmp", new ScoreAmp(jukebox, pivot));
 		NamedCommands.registerCommand("Shoot", new Shoot(jukebox));
 		NamedCommands.registerCommand("UpPneumatic", lift.getExtendCommand());
 		NamedCommands.registerCommand("DownPneumatic", lift.getRetractCommand());
+		NamedCommands.registerCommand("GoToNoteOne", factory.goToNoteOne());
 		NamedCommands.registerCommand("GoToSpeaker", new GoToSpeaker(drive));
 		NamedCommands.registerCommand("LookAtSpeaker", new LookAtSpeaker(drive));
+		NamedCommands.registerCommand("WaitForDelay", factory.dynamicWait(autoTab::getDelayTime));
+		NamedCommands.registerCommand("WaitUntilIntake", Commands.waitUntil(jukebox::hasNote));
 	}
 
 	public void configureButtonBindings() {

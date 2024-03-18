@@ -42,6 +42,7 @@ public class PivotSubsystem extends SubsystemBase {
 	private DutyCycleOut openloopRequest = new DutyCycleOut(0.0);
 	private MotionMagicVoltage closedLoopRequest = new MotionMagicVoltage(0);
 	//private PositionVoltage normalPid = new PositionVoltage(0);
+
 	public PivotSubsystem() {
 		TalonFXConfiguration motorConfig = new TalonFXConfiguration()
 				.withMotorOutput(
@@ -129,8 +130,12 @@ public class PivotSubsystem extends SubsystemBase {
 	}
 
 	public void aim() {
+		aim(rotCalc.checkTotDistance());
+	}
+
+	public void aim(double distance) {
 		double h = 12.34; // speaker height
-		double d = rotCalc.checkTotDistance();
+		double d = distance;
 		double a = Math.sqrt(d * d + h * h);
 		double c = 5.67; // arm length
 		double alpha = Math.toRadians(60.0); // angle between arm and jukebox

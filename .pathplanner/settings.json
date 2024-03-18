@@ -4,7 +4,9 @@
   "holonomicMode": true,
   "pathFolders": [
     "CenterBlue",
+    "From Speaker",
     "LeftBlue",
+    "From Notes",
     "RightBlue"
   ],
   "autoFolders": [

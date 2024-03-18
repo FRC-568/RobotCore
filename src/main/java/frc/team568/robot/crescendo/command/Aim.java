@@ -6,33 +6,31 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 
 public class Aim extends Command {
-	
 	PivotSubsystem pivot;
-	
-	DoubleSupplier distance;
+	DoubleSupplier distanceSupplier;
 
-	public Aim(PivotSubsystem pivot){
+	public Aim(PivotSubsystem pivot) {
+		addRequirements(pivot);
 		this.pivot = pivot;
 	}
 
-	@Override
-	public void initialize() {
-	addRequirements(pivot);
+	public Aim(PivotSubsystem pivot, DoubleSupplier distanceSupplier) {
+		addRequirements(pivot);
+		this.pivot = pivot;
+		this.distanceSupplier = distanceSupplier;
 	}
 
 	@Override
 	public void execute() {
-		pivot.aim();
+		if (distanceSupplier != null)
+			pivot.aim(distanceSupplier.getAsDouble());
+		else
+			pivot.aim();
 	}
 
 	@Override
 	public boolean isFinished() {
 		return false;
-	}
-
-	@Override
-	public void end(boolean interrupted) {
-		
 	}
 
 }

@@ -27,7 +27,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.team568.robot.crescendo.command.SpinUp;
 
 public class JukeboxSubsystem extends SubsystemBase {
 	// === motors ===
@@ -119,6 +121,12 @@ public class JukeboxSubsystem extends SubsystemBase {
 		outtakeLeftBias = percentLeftSpin;
 	}
 
+	public boolean isOuttakeAtSpeed() {
+		double error = leftOuttakeMotor.getClosedLoopError().getValueAsDouble();
+		double target = leftOuttakeMotor.getClosedLoopReference().getValueAsDouble();
+		return  error / target <= 0.05;
+	}
+
 	public void runIntake() {
 		runIntake(kIntakePower);
 	}
@@ -129,6 +137,19 @@ public class JukeboxSubsystem extends SubsystemBase {
 
 	public void stopIntake() {
 		intakeMotor.set(0);
+	}
+
+	public Command getBackoffIntakeCommand() {
+		return Commands.run(() -> runIntake(-0.1), this).withTimeout(0.25);
+	}
+
+	public Command getLaunchNoteCommand() {
+		return Commands.sequence(
+				getBackoffIntakeCommand(),
+				Commands.deadline(
+                		Commands.waitUntil(this::isOuttakeAtSpeed).withTimeout(2)
+								.andThen(Commands.run(this::runIntake).withTimeout(1)),
+        				new SpinUp(this)));
 	}
 
 	public void initDefaultCommand(final DoubleSupplier intakeSpeed, final DoubleSupplier outtakeSpeed) {
