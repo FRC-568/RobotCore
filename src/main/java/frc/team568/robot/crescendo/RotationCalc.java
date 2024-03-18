@@ -29,7 +29,7 @@ public class RotationCalc {
 	public RotationCalc(SwerveSubsystem drive){
 
 		speakCoords[0] = Location.SPEAKER_TARGET.getTranslation().getX();
-		speakCoords[0] = Location.SPEAKER_TARGET.getTranslation().getZ();
+		speakCoords[1] = Location.SPEAKER_TARGET.getTranslation().getZ();
 
 		speakerRot = new Rotation2d(speakCoords[0], speakCoords[1]);
 
