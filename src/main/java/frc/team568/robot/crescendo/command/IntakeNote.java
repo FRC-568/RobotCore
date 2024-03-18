@@ -4,32 +4,32 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 
 public class IntakeNote extends Command{
-	JukeboxSubsystem intakeWheels;
+	JukeboxSubsystem jukebox;
 
-	public IntakeNote(JukeboxSubsystem intakeWheels) {
-		this.intakeWheels = intakeWheels;
+	public IntakeNote(JukeboxSubsystem jukebox) {
+		this.jukebox = jukebox;
 	}
 	
 	@Override
 	public void execute() {
-		intakeWheels.runIntake(0.5);
+		jukebox.runIntake(0.5);
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		intakeWheels.stopIntake();
+		jukebox.stopIntake();
 	}
 	
 	@Override
 	public void initialize() {
-		intakeWheels.runIntake();
+		jukebox.runIntake();
 
 		// Find position
 	}
 
 	@Override
 	public boolean isFinished() {
-		return intakeWheels.hasNote();
+		return jukebox.hasNote();
 	}
 
-}
+} // Command isn't used, and may also be a duplicate of 'Intake.java'

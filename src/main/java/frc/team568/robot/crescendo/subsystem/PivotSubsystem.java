@@ -25,6 +25,7 @@ import com.ctre.phoenix6.signals.ReverseLimitValue;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.team568.robot.crescendo.RotationCalc;
 
 public class PivotSubsystem extends SubsystemBase {
 	// === motors ===
@@ -32,6 +33,8 @@ public class PivotSubsystem extends SubsystemBase {
 	private TalonFX rightMotor;
 
 	private static final double GEARING = 10 * 5 * 5.8;
+
+	RotationCalc rotCalc;
 
 	boolean override = false;
 	private DutyCycleOut openloopRequest = new DutyCycleOut(0.0);
@@ -105,9 +108,9 @@ public class PivotSubsystem extends SubsystemBase {
 		leftMotor.getConfigurator().apply(slot0Configs);
 	}
 
-	public void aim(double distance) {
+	public void aim() {
 		double h = 12.34; // speaker height
-		double d = distance;
+		double d = rotCalc.checkTotDistance();
 		double a = Math.sqrt(d * d + h * h);
 		double c = 5.67; // arm length
 		double alpha = Math.toRadians(60.0); // angle between arm and jukebox

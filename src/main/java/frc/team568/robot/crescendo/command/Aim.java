@@ -11,7 +11,7 @@ public class Aim extends Command {
 	
 	DoubleSupplier distance;
 
-	public Aim(PivotSubsystem pivot, DoubleSupplier distance){
+	public Aim(PivotSubsystem pivot){
 		this.pivot = pivot;
 	}
 
@@ -22,7 +22,7 @@ public class Aim extends Command {
 
 	@Override
 	public void execute() {
-		pivot.aim(distance.getAsDouble());
+		pivot.aim();
 	}
 
 	@Override

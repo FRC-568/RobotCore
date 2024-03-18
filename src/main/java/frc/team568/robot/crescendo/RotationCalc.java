@@ -63,30 +63,9 @@ public class RotationCalc {
 		return getYPos() - speakCoords[1];
 	}
 
-	private double checkTotDistance(){
+	public double checkTotDistance(){
 		return Math.hypot(checkXDistance(), checkYDistance()); //Distance between the robot and the speaker in a straight line
 	}
-
-	private double getRobotSpeakerOffset(){
-		return Math.acos(checkXDistance()/checkTotDistance()); // angle of robot's position to the position of the speaker in general
-	}
-
-	/*public Rotation2d getTargetAngle(){
-		double angle = (getRobotSpeakerOffset() + getRot());
-		if (angle > 180){ // Path planner only accepts ranges from -179 to 180.
-			angle = angle - 360;
-		}
-		else if (angle <= -180){
-			angle = angle + 360;
-		}
-		return Rotation2d.fromDegrees(angle);
-	}*/
-
-	/*public Rotation2d getTargetAngle(){
-		return targetrot.minus(Rotation2d.fromDegrees(getRot()));
-	}*/                
-
-	// ^^ These commented out methods are potential alternatives incase the current getTargetAngle does not work
 
 	public Rotation2d getTargetAngle(){
 		double angle = speakerRot.plus(Rotation2d.fromDegrees(getRot())).getDegrees();

@@ -4,6 +4,7 @@ import static frc.team568.robot.crescendo.Constants.SwerveConstants.kMaxSpeed;
 import static frc.team568.robot.crescendo.Constants.SwerveConstants.kWheelbaseRadius;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -14,7 +15,13 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.team568.robot.crescendo.command.Aim;
+import frc.team568.robot.crescendo.command.GoToSpeaker;
+import frc.team568.robot.crescendo.command.HomePivot;
 import frc.team568.robot.crescendo.command.Intake;
+import frc.team568.robot.crescendo.command.LookAtSpeaker;
+import frc.team568.robot.crescendo.command.ScoreAmp;
+import frc.team568.robot.crescendo.command.ScoreSpeaker;
 import frc.team568.robot.crescendo.command.Shoot;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
@@ -68,20 +75,18 @@ public final class RobotContainer {
 	}
 
 	public void registerPathPlannerCommands(){
-		/* 
-		NamedCommands.registerCommand("Aim", new Aim(pivot, null));
-		//NamedCommands.registerCommand("AutoScoreAndPreload", new AutoScoreAndPreload(drive, jukebox, pivot));
-		NamedCommands.registerCommand("Intake", new Intake(jukebox, pivot));
-		NamedCommands.registerCommand("Closing", new Closing(pivot));
-		NamedCommands.registerCommand("HomePivot", new HomePivot(pivot));
-		NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(jukebox, pivot, drive::getPose, false));
-		NamedCommands.registerCommand("ScoreAmp", new ScoreAmp(jukebox, pivot));
-		NamedCommands.registerCommand("Shoot", new Shoot(jukebox));
-		NamedCommands.registerCommand("UpPneumatic", lift.getExtendCommand());
-		NamedCommands.registerCommand("DownPneumatic", lift.getRetractCommand());
-		NamedCommands.registerCommand("GoToSpeaker", new GoToSpeaker());
-		NamedCommands.registerCommand("LookAtSpeaker", new LookAtSpeaker());
-		*/
+		
+		NamedCommands.registerCommand("Aim", new Aim(pivot)); 
+		NamedCommands.registerCommand("Intake", new Intake(jukebox, pivot)); 
+		NamedCommands.registerCommand("HomePivot", new HomePivot(pivot)); 
+		NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(jukebox, pivot, drive::getPose)); 
+		NamedCommands.registerCommand("ScoreAmp", new ScoreAmp(jukebox, pivot));  
+		NamedCommands.registerCommand("Shoot", new Shoot(jukebox)); 
+		NamedCommands.registerCommand("UpPneumatic", lift.getExtendCommand()); 
+		NamedCommands.registerCommand("DownPneumatic", lift.getRetractCommand()); 
+		NamedCommands.registerCommand("GoToSpeaker", new GoToSpeaker(drive));
+		NamedCommands.registerCommand("LookAtSpeaker", new LookAtSpeaker(drive)); 
+		
 	}
 
 	public void configureButtonBindings() {

@@ -11,12 +11,12 @@ public class DownPneumatic extends Command {
 
 	@Override
 	public void initialize() {
-		dSolenoid.set(DoubleSolenoid.Value.kForward);
+		dSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 
 	@Override
 	public void execute() {
-		dSolenoid.set(DoubleSolenoid.Value.kForward);
+		dSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 
 	@Override
