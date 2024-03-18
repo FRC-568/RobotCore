@@ -66,7 +66,7 @@ public final class RobotContainer {
 
 		registerPathPlannerCommands();
 
-		//autoTab = new AutoTab(this);
+		autoTab = new AutoTab(this);
 		driverTab = new DriverTab(this);
 		configTab = new ConfigTab(this);
 		flywheelTab = new FlywheelTab(this);
@@ -79,7 +79,7 @@ public final class RobotContainer {
 		NamedCommands.registerCommand("Aim", new Aim(pivot)); 
 		NamedCommands.registerCommand("Intake", new Intake(jukebox, pivot)); 
 		NamedCommands.registerCommand("HomePivot", new HomePivot(pivot)); 
-		NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(jukebox, pivot, drive::getPose)); 
+		NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(jukebox, pivot)); 
 		NamedCommands.registerCommand("ScoreAmp", new ScoreAmp(jukebox, pivot));  
 		NamedCommands.registerCommand("Shoot", new Shoot(jukebox)); 
 		NamedCommands.registerCommand("UpPneumatic", lift.getExtendCommand()); 
@@ -91,7 +91,7 @@ public final class RobotContainer {
 
 	public void configureButtonBindings() {
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
-				// OI.Button.scoreAmp.onTrue(new ScoreAmp(jukebox, pivot));
+			// OI.Button.scoreAmp.onTrue(new ScoreAmp(jukebox, pivot));
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
 		OI.Button.pivotDown.onTrue(new InstantCommand(() -> pivot.setAngle(0)));
 		OI.Button.pivotUp.onTrue(new InstantCommand(() -> pivot.setAngle(90)));
