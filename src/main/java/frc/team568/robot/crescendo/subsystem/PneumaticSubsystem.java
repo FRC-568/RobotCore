@@ -24,7 +24,7 @@ public final class PneumaticSubsystem extends SubsystemBase {
 	}
 
 	public void retractLift() {
-		liftSolenoid.set(kForward);
+		liftSolenoid.set(kReverse);
 	}
 
 	public void toggleLift() {
