@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.team568.robot.crescendo.command.Aim;
 import frc.team568.robot.crescendo.command.GoToSpeaker;
 import frc.team568.robot.crescendo.command.HomePivot;
@@ -93,12 +94,12 @@ public final class RobotContainer {
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
 			// OI.Button.scoreAmp.onTrue(new ScoreAmp(jukebox, pivot));
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
-		OI.Button.pivotDown.onTrue(new InstantCommand(() -> pivot.setAngle(0)));
-		OI.Button.pivotUp.onTrue(new InstantCommand(() -> pivot.setAngle(90)));
-		
+		OI.Button.pivotDown.whileTrue(new RunCommand(() -> pivot.setAngle(0)));
+		OI.Button.pivotUp.whileTrue(new RunCommand(() -> pivot.setAngle(90)));
+
 		OI.Button.pneumaticstateswitch.onTrue(lift.getToggleCommand());
 		OI.Button.shoot.onTrue(new Shoot(jukebox));
-		OI.Button.intake.onTrue(new Intake(jukebox));
+		OI.Button.intake.whileTrue(new Intake(jukebox));
 	}
 
 	public void configurePathplanner() {

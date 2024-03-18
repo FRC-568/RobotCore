@@ -23,7 +23,7 @@ public class Intake extends Command {
 
 	@Override
 	public void initialize() {
-		speed = 0.5;
+		speed = 1;
 		angle = 0;
 	}
 

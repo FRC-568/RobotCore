@@ -58,9 +58,9 @@ final class OI {
 		public static final Trigger runOuttake = driverController.rightTrigger();
 		public static final Trigger runIntake = driverController.leftTrigger();
 
-		public static final Trigger shoot = copilotController.a();
-		public static final Trigger intake = copilotController.leftBumper();
-		public static final Trigger pivotDown = copilotController.x();
-		public static final Trigger pivotUp = copilotController.y();
+		public static final Trigger shoot = copilotController.y();
+		public static final Trigger intake = copilotController.a();
+		public static final Trigger pivotDown = copilotController.povDown();
+		public static final Trigger pivotUp = copilotController.povUp();
 	}
 }

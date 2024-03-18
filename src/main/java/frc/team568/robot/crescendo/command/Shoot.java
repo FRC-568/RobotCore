@@ -15,10 +15,10 @@ public class Shoot extends SequentialCommandGroup {
   public Shoot(JukeboxSubsystem jukebox) {
     addRequirements(jukebox);
     addCommands(
-        new RunCommand(() -> jukebox.runIntake(-0.1)).withTimeout(0.25),
+        new RunCommand(() -> jukebox.runIntake(-0.3)).withTimeout(0.25),
         new SpinUp(jukebox).withTimeout(3)
             .raceWith(
                 new WaitCommand(2)
-                    .andThen(new RunCommand(jukebox::runIntake).withTimeout(1))));
+                  .andThen(new RunCommand(jukebox::runIntake).withTimeout(1))));
   }
 }

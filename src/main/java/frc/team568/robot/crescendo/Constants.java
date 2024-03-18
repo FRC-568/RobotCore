@@ -2,12 +2,14 @@ package frc.team568.robot.crescendo;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.I2C;
+import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 
 public final class Constants {
 
@@ -48,19 +50,20 @@ public final class Constants {
 		public static final int kRightMotorPort = 15;
 		public static final double kMinAngle = 0.0;
 		public static final double kMaxAngle = 90.0;
+		public static final double kG = 0.1;
 		public static final Slot0Configs kPidConstants = 
 			new Slot0Configs()
 			.withKS(0)
-			.withKV(0)
+			.withKV(0.0) // 12/145 = 0.08
 			.withKA(0)
-			.withKP(0)
+			.withKP(0.04)
 			.withKI(0)
 			.withKD(0);
 		
 		public static final MotionMagicConfigs kMotionMagicConfigs = 
 			new MotionMagicConfigs()
-			.withMotionMagicCruiseVelocity(0)
-			.withMotionMagicAcceleration(0);
+			.withMotionMagicCruiseVelocity(PivotSubsystem.degToRot(90))
+			.withMotionMagicAcceleration(PivotSubsystem.degToRot(90));
 
 	}
 

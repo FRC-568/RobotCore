@@ -17,6 +17,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -25,6 +26,7 @@ import com.ctre.phoenix6.signals.ReverseLimitValue;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.team568.robot.crescendo.Constants;
 import frc.team568.robot.crescendo.RotationCalc;
 
 public class PivotSubsystem extends SubsystemBase {
@@ -39,6 +41,7 @@ public class PivotSubsystem extends SubsystemBase {
 	boolean override = false;
 	private DutyCycleOut openloopRequest = new DutyCycleOut(0.0);
 	private MotionMagicVoltage closedLoopRequest = new MotionMagicVoltage(0);
+	private PositionVoltage normalPid = new PositionVoltage(0);
 	public PivotSubsystem() {
 		TalonFXConfiguration motorConfig = new TalonFXConfiguration()
 				.withMotorOutput(
@@ -62,9 +65,7 @@ public class PivotSubsystem extends SubsystemBase {
 					)
 				)
 				.withMotionMagic(
-					new MotionMagicConfigs()
-					.withMotionMagicCruiseVelocity(degToRot(180))
-					.withMotionMagicAcceleration(degToRot(360))
+					Constants.PivotConstants.kMotionMagicConfigs
 				)
 				.withSlot0(
 					kPidConstants
@@ -84,7 +85,14 @@ public class PivotSubsystem extends SubsystemBase {
 	}
 
 	public void setAngle(double angle) {
-		leftMotor.setControl(closedLoopRequest.withPosition(degToRot(angle)));
+		leftMotor.setControl(closedLoopRequest.withPosition(degToRot(angle))
+		.withFeedForward(
+			Constants.PivotConstants.kG*Math.cos(Math.toRadians(getAngle()))
+		));
+		// leftMotor.setControl(normalPid.withPosition(degToRot(angle))
+		// .withFeedForward(
+		// 	Constants.PivotConstants.kG*Math.cos(Math.toRadians(getAngle()))
+		// ));
 	}
 
 	public double getAngle() {
@@ -93,6 +101,18 @@ public class PivotSubsystem extends SubsystemBase {
 
 	public double getVelocity() {
 		return rotToDeg(leftMotor.getVelocity().getValueAsDouble());
+	}
+
+	public double getVoltage() {
+		return leftMotor.getMotorVoltage().getValueAsDouble();
+	}
+
+	public double getClosedLoopReference() {
+		return rotToDeg(leftMotor.getClosedLoopReference().getValueAsDouble());
+	}
+
+	public double getClosedLoopReferenceSlope() {
+		return rotToDeg(leftMotor.getClosedLoopReferenceSlope().getValueAsDouble());
 	}
 
 	public void setPower(double power) {
@@ -128,11 +148,11 @@ public class PivotSubsystem extends SubsystemBase {
 		return leftMotor.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround;
 	}
 
-	private static final double degToRot(double degrees) {
+	public static final double degToRot(double degrees) {
 		return (degrees / 360.0) * GEARING;
 	}
 
-	private static final double rotToDeg(double rotations) {
+	public static final double rotToDeg(double rotations) {
 		return (rotations / GEARING) * 360.0;
 	}
 
@@ -164,7 +184,5 @@ public class PivotSubsystem extends SubsystemBase {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
-		// builder.addDoubleProperty("Stage position", () -> getStagePos(), null);
-
 	}
 }

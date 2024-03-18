@@ -19,6 +19,11 @@ public class FlywheelTab {
 		OI.flywheelTab.addBoolean("contains note", jukebox::hasNote);
 
 		OI.flywheelTab.addDouble("pivot angle", pivot::getAngle);
-		OI.flywheelTab.addDouble("pivot deg/s", pivot::getVelocity);
+		OI.flywheelTab.addDouble("pivot deg per s", pivot::getVelocity);
+		OI.flywheelTab.addDouble("pivot ref angle", pivot::getClosedLoopReference);
+		OI.flywheelTab.addDouble("pivot ref deg per s", pivot::getClosedLoopReferenceSlope);
+
+		OI.flywheelTab.addDouble("pivot voltage", pivot::getVoltage);
+		OI.flywheelTab.addDouble("kv ig?", () -> pivot.getVelocity()/pivot.getVoltage());
 	}
 }
