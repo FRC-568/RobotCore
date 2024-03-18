@@ -16,18 +16,9 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.team568.robot.crescendo.command.Aim;
-import frc.team568.robot.crescendo.command.GoToSpeaker;
-import frc.team568.robot.crescendo.command.HomePivot;
-import frc.team568.robot.crescendo.command.Intake;
-import frc.team568.robot.crescendo.command.LookAtSpeaker;
-import frc.team568.robot.crescendo.command.ScoreAmp;
-import frc.team568.robot.crescendo.command.ScoreSpeaker;
-import frc.team568.robot.crescendo.command.Shoot;
-import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
-import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
-import frc.team568.robot.crescendo.subsystem.PneumaticSubsystem;
-import frc.team568.robot.crescendo.subsystem.VisionSubsystem;
+
+import frc.team568.robot.crescendo.command.*;
+import frc.team568.robot.crescendo.subsystem.*;
 import frc.team568.robot.subsystems.SwerveSubsystem;
 
 public final class RobotContainer {
@@ -76,23 +67,21 @@ public final class RobotContainer {
 	}
 
 	public void registerPathPlannerCommands(){
-		
-		NamedCommands.registerCommand("Aim", new Aim(pivot)); 
-		NamedCommands.registerCommand("Intake", new Intake(jukebox, pivot)); 
-		NamedCommands.registerCommand("HomePivot", new HomePivot(pivot)); 
-		NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(jukebox, pivot)); 
-		NamedCommands.registerCommand("ScoreAmp", new ScoreAmp(jukebox, pivot));  
-		NamedCommands.registerCommand("Shoot", new Shoot(jukebox)); 
-		NamedCommands.registerCommand("UpPneumatic", lift.getExtendCommand()); 
-		NamedCommands.registerCommand("DownPneumatic", lift.getRetractCommand()); 
+		NamedCommands.registerCommand("Aim", new Aim(pivot));
+		NamedCommands.registerCommand("Intake", new Intake(jukebox, pivot));
+		NamedCommands.registerCommand("HomePivot", new HomePivot(pivot));
+		NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(jukebox, pivot, drive::getPose, false));
+		NamedCommands.registerCommand("ScoreAmp", new ScoreAmp(jukebox, pivot));
+		NamedCommands.registerCommand("Shoot", new Shoot(jukebox));
+		NamedCommands.registerCommand("UpPneumatic", lift.getExtendCommand());
+		NamedCommands.registerCommand("DownPneumatic", lift.getRetractCommand());
 		NamedCommands.registerCommand("GoToSpeaker", new GoToSpeaker(drive));
-		NamedCommands.registerCommand("LookAtSpeaker", new LookAtSpeaker(drive)); 
-		
+		NamedCommands.registerCommand("LookAtSpeaker", new LookAtSpeaker(drive));
 	}
 
 	public void configureButtonBindings() {
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
-			// OI.Button.scoreAmp.onTrue(new ScoreAmp(jukebox, pivot));
+		// OI.Button.scoreAmp.onTrue(new ScoreAmp(jukebox, pivot));
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
 		OI.Button.pivotDown.whileTrue(new RunCommand(() -> pivot.setAngle(0)));
 		OI.Button.pivotUp.whileTrue(new RunCommand(() -> pivot.setAngle(90)));

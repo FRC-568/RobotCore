@@ -2,7 +2,6 @@ package frc.team568.robot.crescendo;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;

@@ -10,7 +10,6 @@ import static frc.team568.robot.crescendo.Constants.PivotConstants.kRightMotorPo
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -18,7 +17,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
+//import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -42,7 +41,7 @@ public class PivotSubsystem extends SubsystemBase {
 	boolean override = false;
 	private DutyCycleOut openloopRequest = new DutyCycleOut(0.0);
 	private MotionMagicVoltage closedLoopRequest = new MotionMagicVoltage(0);
-	private PositionVoltage normalPid = new PositionVoltage(0);
+	//private PositionVoltage normalPid = new PositionVoltage(0);
 	public PivotSubsystem() {
 		TalonFXConfiguration motorConfig = new TalonFXConfiguration()
 				.withMotorOutput(
