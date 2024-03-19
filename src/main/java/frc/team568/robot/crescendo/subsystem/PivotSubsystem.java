@@ -47,7 +47,7 @@ public class PivotSubsystem extends SubsystemBase {
 		TalonFXConfiguration motorConfig = new TalonFXConfiguration()
 				.withMotorOutput(
 					new MotorOutputConfigs()
-					.withNeutralMode(NeutralModeValue.Coast)
+					.withNeutralMode(NeutralModeValue.Brake)
 					.withInverted(InvertedValue.Clockwise_Positive)
 				)
 				.withHardwareLimitSwitch(
