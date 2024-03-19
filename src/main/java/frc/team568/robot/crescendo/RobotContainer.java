@@ -83,7 +83,6 @@ public final class RobotContainer {
 		NamedCommands.registerCommand("GoToNoteOne", factory.goToNoteOne());
 		NamedCommands.registerCommand("GoToSpeaker", new GoToSpeaker(drive));
 		NamedCommands.registerCommand("LookAtSpeaker", new LookAtSpeaker(drive));
-		NamedCommands.registerCommand("WaitForDelay", factory.dynamicWait(autoTab::getDelayTime));
 		NamedCommands.registerCommand("WaitUntilIntake", Commands.waitUntil(jukebox::hasNote));
 	}
 
@@ -143,6 +142,6 @@ public final class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		return autoTab.chooser.getSelected();
+		return autoTab.getAutonomousCommand();
 	}
 }

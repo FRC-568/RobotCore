@@ -5,6 +5,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team568.robot.crescendo.command.GoToSpeaker;
 import frc.team568.robot.crescendo.command.LookAtSpeaker;
 import frc.team568.robot.crescendo.command.ScoreAmp;
@@ -31,6 +32,10 @@ public class AutoTab {
 		chooser.addOption("Score Preload and Nearby", AutoBuilder.buildAuto("ScorePreloadAndNearNotes"));
 
 		OI.autoTab.add("Auto Program", chooser);
+	}
+
+	public Command getAutonomousCommand() {
+		return Commands.waitSeconds(getDelayTime()).andThen(chooser.getSelected());
 	}
 
 	public double getDelayTime() {
