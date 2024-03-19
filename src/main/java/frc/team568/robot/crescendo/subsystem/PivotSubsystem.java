@@ -129,8 +129,8 @@ public class PivotSubsystem extends SubsystemBase {
 		leftMotor.getConfigurator().apply(slot0Configs);
 	}
 
-	public void aim() {
-		aim(rotCalc.checkTotDistance());
+	public void aim(boolean isSpeaker) {
+		aim(rotCalc.checkTotDistance(isSpeaker));
 	}
 
 	public void aim(double distance) {

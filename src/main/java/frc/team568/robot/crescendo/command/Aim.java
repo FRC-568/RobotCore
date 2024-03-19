@@ -25,7 +25,9 @@ public class Aim extends Command {
 		if (distanceSupplier != null)
 			pivot.aim(distanceSupplier.getAsDouble());
 		else
-			pivot.aim();
+			pivot.aim(true); 
+			// If this command is being used for both amp and speaker, 
+			// The command needs a way to know which one (Speaker or Amp) is being aimed at.
 	}
 
 	@Override

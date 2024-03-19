@@ -1,12 +1,10 @@
 package frc.team568.robot.crescendo;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.subsystems.SwerveSubsystem;
-//import java.lang.Math;
 
 public class RotationCalc {
 
@@ -14,61 +12,41 @@ public class RotationCalc {
 
 	Command scorespeaker;
 
-	Pose2d position;
-
 	Pose3d shooterposition;
 
-	double[] robCoords;
-	double[] speakCoords;
+	Translation3d speakerTranslation;
+	Translation3d ampTranslation;
+	Translation3d target;
 
-	Rotation2d rotation;
-	Rotation3d shooterRotation;
 
 	Rotation2d speakerRot;
+	Rotation2d ampRot;
+	Rotation2d targetRot;
+	Rotation2d botRot;
 
-	public RotationCalc(SwerveSubsystem drive){
 
-		speakCoords[0] = Location.SPEAKER_TARGET.getTranslation().getX();
-		speakCoords[1] = Location.SPEAKER_TARGET.getTranslation().getZ();
+	public RotationCalc(SwerveSubsystem drive){		
+		speakerRot = new Rotation2d(Location.SPEAKER_TARGET.getTranslation().getX(), Location.AMP_START.getTranslation().getZ());
+		ampRot = new Rotation2d(Location.AMP_TARGET.getTranslation().getX(), Location.AMP_TARGET.getTranslation().getZ());
 
-		speakerRot = new Rotation2d(speakCoords[0], speakCoords[1]);
-
-	}
-
-	private Pose2d getPosition(){
-		position = drive.getPose();
-		return position;
-	}
-
-	private double getXPos(){
-		robCoords[0] = getPosition().getX();
-		return robCoords[0];
-	}
-
-	private double getYPos(){
-		robCoords[1] = getPosition().getY();
-		return robCoords[1];
+		speakerTranslation = Location.SPEAKER_TARGET.getTranslation();
+		ampTranslation = Location.AMP_TARGET.getTranslation();
 	}
 
 	private double getRot(){
-		rotation = getPosition().getRotation();
-		return rotation.getDegrees();
+		botRot = drive.getPose().getRotation();
+		return botRot.getDegrees();
 	}
 
-	private double checkXDistance(){
-		return getXPos() - speakCoords[0];
+	public double checkTotDistance(boolean isSpeaker){
+		target = isSpeaker? speakerTranslation:ampTranslation;
+		return Math.hypot((drive.getPose().getX() - target.getX()) , (drive.getPose().getY()-target.getZ())); //Distance between the robot and the speaker in a straight line
 	}
 
-	private double checkYDistance(){
-		return getYPos() - speakCoords[1];
-	}
+	public Rotation2d getTargetAngle(boolean isSpeakerRot){
+		targetRot = isSpeakerRot? speakerRot:ampRot;
 
-	public double checkTotDistance(){
-		return Math.hypot(checkXDistance(), checkYDistance()); //Distance between the robot and the speaker in a straight line
-	}
-
-	public Rotation2d getTargetAngle(){
-		double angle = speakerRot.plus(Rotation2d.fromDegrees(getRot())).getDegrees();
+		double angle = (targetRot.plus((drive.getPose().getRotation()))).getDegrees();
 		if (angle > 180){ // Path planner only accepts ranges from -179 to 180.
 			angle = angle - 360;
 		}
@@ -78,9 +56,9 @@ public class RotationCalc {
 		return Rotation2d.fromDegrees(angle);
 	}
 
-	public boolean isPointingToSpeaker(){
+	public boolean isPointingToTarget(boolean isSpeakerRot){
 		return (
-			getTargetAngle().getDegrees() + 3 > getRot() || getTargetAngle().getDegrees() - 3 < getRot()
-		); // Idea is to allow the robot an error of 3 (6 in total) degrees so that it isn't constantly trying to get the 'perfect' rotation 
+			getTargetAngle(isSpeakerRot).getDegrees() + 3 > getRot() || getTargetAngle(isSpeakerRot).getDegrees() - 3 < getRot()
+		); // Give the robot an error allowance of 3 (total 6) degrees. Might be too much
 	}
 }

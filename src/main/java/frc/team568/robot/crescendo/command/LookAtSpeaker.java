@@ -20,7 +20,7 @@ public class LookAtSpeaker extends Command {
 	}
 	public void initialize(){
 		//lookSpeaker = new Pose2d(drive.getPose().getX(), drive.getPose().getY(), Rotation2d.fromDegrees(180));
-		lookSpeaker = new Pose2d(drive.getPose().getX(), drive.getPose().getY(), rotCalc.getTargetAngle());
+		lookSpeaker = new Pose2d(drive.getPose().getX(), drive.getPose().getY(), rotCalc.getTargetAngle(true));
 		constraints = new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720)); //taken from default contraints in PP
 		addRequirements(drive);
 	}
@@ -28,6 +28,6 @@ public class LookAtSpeaker extends Command {
 		AutoBuilder.pathfindToPose(lookSpeaker, constraints, 0, 0);
 	}
 	public boolean isFinished(){
-		return rotCalc.isPointingToSpeaker(); // Needs testing
+		return rotCalc.isPointingToTarget(true); // Needs testing
 	}
 }	
