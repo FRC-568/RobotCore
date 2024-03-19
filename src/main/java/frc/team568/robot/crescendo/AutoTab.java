@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.team568.robot.crescendo.command.GoToAmp;
 import frc.team568.robot.crescendo.command.GoToSpeaker;
+import frc.team568.robot.crescendo.command.LookAtAmp;
 import frc.team568.robot.crescendo.command.LookAtSpeaker;
 import frc.team568.robot.crescendo.command.ScoreAmp;
 //import frc.team568.robot.crescendo.command.ScoreSpeaker;
@@ -28,9 +29,10 @@ public class AutoTab {
 		chooser.addOption("Score AMP", new ScoreAmp(jukebox, pivot)); // Scores in Amp
 		//chooser.addOption("Score Speaker", new ScoreSpeaker(jukebox, pivot)); // IMPORTANT: Assumes the robot is already in position. If used during tele-op, you should probbaly run 'Go Speaker' first
 		chooser.addOption("Shoot (Note?)", new Shoot(jukebox)); // Just... shoots out the note?
-		chooser.addOption("Look Speaker", new LookAtSpeaker(drive)); // Makes the robot itself look at the speaker relative to where it is
-		chooser.addOption("Go Speaker", new GoToSpeaker(drive)); // Gets robot to the speaker, and should automatically look straight at it.
-		chooser.addOption("Go Amp", new GoToAmp(drive)); // Gets robot to Amp, and looks straight at it
+		chooser.addOption("Look Speaker", new LookAtSpeaker(drive)); // Makes the robot itself look at the SPEAKER relative to where it is
+		chooser.addOption("Look Amp", new LookAtAmp(drive)); // Makes the robot itself look at the AMP relative to where it is
+		chooser.addOption("Go Speaker", new GoToSpeaker(drive)); // Gets robot to a set point at the speaker, and looks straight at it
+		chooser.addOption("Go Amp", new GoToAmp(drive)); // Gets robot to a set point at the Amp, and looks straight at it
 		chooser.addOption("Score Preload and Nearby", AutoBuilder.buildAuto("ScorePreloadAndNearNotes"));
 
 		OI.autoTab.add("Auto Program", chooser);
