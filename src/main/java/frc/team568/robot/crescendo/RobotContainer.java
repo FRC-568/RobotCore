@@ -88,6 +88,7 @@ public final class RobotContainer {
 
 	public void configureButtonBindings() {
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
+		OI.Button.slowmodeControl.onTrue(new InstantCommand(drive::toggleSlowMode));
 		// OI.Button.scoreAmp.onTrue(new ScoreAmp(jukebox, pivot));
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
 		OI.Button.pivotDown.whileTrue(new RunCommand(() -> pivot.setAngle(0)));

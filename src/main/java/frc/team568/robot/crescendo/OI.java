@@ -57,6 +57,7 @@ final class OI {
 		public static final Trigger scoreSpeaker = driverController.x();
 		public static final Trigger runOuttake = driverController.rightTrigger();
 		public static final Trigger runIntake = driverController.leftTrigger();
+		public static final Trigger slowmodeControl = driverController.povRight();
 
 		public static final Trigger shoot = copilotController.y();
 		public static final Trigger intake = copilotController.a();
