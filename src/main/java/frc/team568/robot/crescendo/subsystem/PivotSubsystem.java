@@ -49,6 +49,8 @@ public class PivotSubsystem extends SubsystemBase {
 					new MotorOutputConfigs()
 					.withNeutralMode(NeutralModeValue.Brake)
 					.withInverted(InvertedValue.Clockwise_Positive)
+					.withPeakForwardDutyCycle(0.2)
+					.withPeakReverseDutyCycle(0.2)
 				)
 				.withHardwareLimitSwitch(
 					new HardwareLimitSwitchConfigs()

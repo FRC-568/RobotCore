@@ -8,14 +8,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
 
-public class Shoot extends SequentialCommandGroup {
-  double outtakeStartTime;
-
-  public Shoot(JukeboxSubsystem jukebox) {
+public class SoftShoot extends SequentialCommandGroup {
+  public SoftShoot(JukeboxSubsystem jukebox) {
     addRequirements(jukebox);
     addCommands(
         new RunCommand(() -> jukebox.runIntake(-0.2)).withTimeout(0.25),
-        new SpinUp(jukebox).withTimeout(3)
+        new RunCommand(() -> jukebox.runOuttake(60)).withTimeout(3)
             .raceWith(
                 new WaitCommand(2)
                   .andThen(new RunCommand(jukebox::runIntake).withTimeout(1))));

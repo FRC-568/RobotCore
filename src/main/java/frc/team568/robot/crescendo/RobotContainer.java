@@ -17,9 +17,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-
-import frc.team568.robot.crescendo.command.*;
-import frc.team568.robot.crescendo.subsystem.*;
+import frc.team568.robot.crescendo.command.Aim;
+import frc.team568.robot.crescendo.command.CommandFactory;
+import frc.team568.robot.crescendo.command.GoToSpeaker;
+import frc.team568.robot.crescendo.command.HomePivot;
+import frc.team568.robot.crescendo.command.Intake;
+import frc.team568.robot.crescendo.command.LookAtSpeaker;
+import frc.team568.robot.crescendo.command.ScoreAmp;
+import frc.team568.robot.crescendo.command.ScoreSpeaker;
+import frc.team568.robot.crescendo.command.Shoot;
+import frc.team568.robot.crescendo.command.SoftShoot;
+import frc.team568.robot.crescendo.subsystem.JukeboxSubsystem;
+import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
+import frc.team568.robot.crescendo.subsystem.PneumaticSubsystem;
+import frc.team568.robot.crescendo.subsystem.VisionSubsystem;
 import frc.team568.robot.subsystems.SwerveSubsystem;
 
 public final class RobotContainer {
@@ -96,6 +107,9 @@ public final class RobotContainer {
 
 		OI.Button.pneumaticstateswitch.onTrue(lift.getToggleCommand());
 		OI.Button.shoot.onTrue(new Shoot(jukebox));
+		OI.Button.softShoot.onTrue(new SoftShoot(jukebox));
+		OI.Button.shootAmp.onTrue(new RunCommand(() -> jukebox.runIntake(0.3), jukebox).withTimeout(1.5)
+									.raceWith(new RunCommand(() -> jukebox.runOuttake(5)).withTimeout(1.5)));
 		OI.Button.intake.whileTrue(new Intake(jukebox));
 	}
 

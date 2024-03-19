@@ -15,7 +15,7 @@ import frc.team568.robot.crescendo.Location;
 import frc.team568.robot.crescendo.subsystem.PivotSubsystem;
 import frc.team568.robot.subsystems.SwerveSubsystem;
 
-public class CommandFactory  {
+public class CommandFactory {
 	private final SwerveSubsystem drive;
 	private final PivotSubsystem pivot;
 
