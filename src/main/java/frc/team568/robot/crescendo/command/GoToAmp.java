@@ -9,28 +9,29 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.team568.robot.subsystems.SwerveSubsystem;
 
-public class GoToSpeaker extends Command{
+public class GoToAmp extends Command{
 
-	Pose2d targetSpeaker;
-	PathConstraints constraints;
 	SwerveSubsystem drive;
-	
-	public GoToSpeaker(SwerveSubsystem drive){
+	PathConstraints constraints;
+	Pose2d targetAmp;
+
+	public GoToAmp(SwerveSubsystem drive){
 		this.drive = drive;
 		addRequirements(drive);
-
 	}
+	
 	public void initialize(){
-		targetSpeaker =  new Pose2d(1.57, 5.53, Rotation2d.fromDegrees(180)); // X and Y taken from grid on pathfinder
-		constraints = new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720)); //taken from default contraints in PP
+		targetAmp = new Pose2d(1.88, 7.23, Rotation2d.fromDegrees(90));
+		constraints = new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+
 	}
 
 	public void execute(){
-		AutoBuilder.pathfindToPose(targetSpeaker, constraints, 0, 0);
+		AutoBuilder.pathfindToPose(targetAmp, constraints, 0, 0);
 	}
 
 	public boolean isFinished(){
-		return true; 
+		return true;
 	}
 	
 }
