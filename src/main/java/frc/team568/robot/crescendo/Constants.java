@@ -61,7 +61,7 @@ public final class Constants {
 			.withKS(0)
 			.withKV(0.0) // 12/145 = 0.08
 			.withKA(0)
-			.withKP(0.04)
+			.withKP(0.05)
 			.withKI(0)
 			.withKD(0);
 		

@@ -64,6 +64,8 @@ public class JukeboxSubsystem extends SubsystemBase {
 		leftOuttakeMotor.getConfigurator().apply(outtakeMotorConfig);
 		outtakeMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 		rightOuttakeMotor.getConfigurator().apply(outtakeMotorConfig);
+		leftOuttakeMotor.optimizeBusUtilization();
+		rightOuttakeMotor.optimizeBusUtilization();
 
 		outtakeVelocity = new VelocityVoltage(0, 100, false, outtakeAutoSpeed, 0, false, false, false);
 		outtakeNeutral = new NeutralOut();

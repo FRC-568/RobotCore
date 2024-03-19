@@ -77,11 +77,14 @@ public class PivotSubsystem extends SubsystemBase {
 		addChild("leftMotor", leftMotor);
 		leftMotor.getConfigurator().apply(motorConfig);
 		leftMotor.setControl(new DutyCycleOut(0));
+		leftMotor.optimizeBusUtilization();
 
 		rightMotor = new TalonFX(kRightMotorPort, kCANBusName);
 		addChild("rightMotor", rightMotor);
 		rightMotor.getConfigurator().apply(motorConfig);
 		rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
+		rightMotor.optimizeBusUtilization();
+
 		leftMotor.setPosition(degToRot(90)); // Assume the pivot is vertical at power on
 	}
 

@@ -48,10 +48,10 @@ public final class RobotContainer {
 		pivot.initDefaultCommand(OI.Axis.pivotPower);
 
 		jukebox = new JukeboxSubsystem();
-		jukebox.setOuttakeBias(-0.3);
+		jukebox.setOuttakeBias(-0.0);
 		jukebox.initDefaultCommand(OI.Axis.intakeSpeed, OI.Axis.outtakeSpeed);
 
-		setupCameras();
+		// setupCameras();
 		
 		lift = new PneumaticSubsystem();
 
@@ -61,7 +61,7 @@ public final class RobotContainer {
 
 		autoTab = new AutoTab(this);
 		driverTab = new DriverTab(this);
-		configTab = new ConfigTab(this);
+		// configTab = new ConfigTab(this);
 		flywheelTab = new FlywheelTab(this);
 
 		configureButtonBindings();

@@ -27,7 +27,7 @@ public class AutoTab {
 
 		chooser.setDefaultOption("Wait", null);
 		chooser.addOption("Score AMP", new ScoreAmp(jukebox, pivot)); // Scores in Amp
-		//chooser.addOption("Score Speaker", new ScoreSpeaker(jukebox, pivot)); // IMPORTANT: Assumes the robot is already in position. If used during tele-op, you should probbaly run 'Go Speaker' first
+		// chooser.addOption("Score Speaker", new ScoreSpeaker(jukebox, pivot)); // IMPORTANT: Assumes the robot is already in position. If used during tele-op, you should probbaly run 'Go Speaker' and 'Look Speaker' first
 		chooser.addOption("Shoot (Note?)", new Shoot(jukebox)); // Just... shoots out the note?
 		chooser.addOption("Look Speaker", new LookAtSpeaker(drive)); // Makes the robot itself look at the SPEAKER relative to where it is
 		chooser.addOption("Look Amp", new LookAtAmp(drive)); // Makes the robot itself look at the AMP relative to where it is
