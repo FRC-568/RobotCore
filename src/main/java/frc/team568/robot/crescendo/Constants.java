@@ -50,7 +50,7 @@ public final class Constants {
 
 	public static final class PivotConstants {
 
-		public static final String kCANBusName = "roborio";
+		public static final String kCANBusName = "canivore";
 		public static final int kLeftMotorPort = 14;
 		public static final int kRightMotorPort = 15;
 		public static final double kMinAngle = 0.0;
@@ -61,7 +61,7 @@ public final class Constants {
 			.withKS(0)
 			.withKV(0.0) // 12/145 = 0.08
 			.withKA(0)
-			.withKP(0.05)
+			.withKP(0.04) // 0.05
 			.withKI(0)
 			.withKD(0);
 		
@@ -78,7 +78,9 @@ public final class Constants {
 		public static final int kIntakePort = 0;
 		public static final int kLeftOuttakePort = 12;
 		public static final int kRightOuttakePort = 11;
-		public static final I2C.Port kNoteDetectorPort = I2C.Port.kOnboard;
+		public static final I2C.Port kNoteDetectorPort = I2C.Port.kMXP;
+		
+		;
 		public static final double kNoteDetectionRange = 350;
 		public static final double kOuttakeMinRPS = 5.0;
 		public static final double kOuttakeMaxRPS = 96.5; // previously 80.0;

@@ -9,14 +9,18 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team568.robot.crescendo.command.Aim;
 import frc.team568.robot.crescendo.command.CommandFactory;
 import frc.team568.robot.crescendo.command.GoToSpeaker;
@@ -65,6 +69,7 @@ public final class RobotContainer {
 		// setupCameras();
 		
 		lift = new PneumaticSubsystem();
+		lift.addInterupter(() -> jukebox.getLeftVelo() != 0);
 
 		pd = new PowerDistribution(1, ModuleType.kRev);
 
@@ -99,15 +104,21 @@ public final class RobotContainer {
 
 	public void configureButtonBindings() {
 		OI.Button.fieldRelativeControl.onTrue(new InstantCommand(drive::toggleFieldRelative));
-		OI.Button.slowmodeControl.onTrue(new InstantCommand(drive::toggleSlowMode));
+		// OI.Button.slowmodeControl.onTrue(new InstantCommand(drive::toggleSlowMode));
+		OI.Button.resetHeading.onTrue(new InstantCommand(() -> drive.resetPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d(0)))));
+		OI.Button.compressorOff.onTrue(new InstantCommand(() -> lift.disableCompressor()));
+		OI.Button.compressorOn.onTrue(new InstantCommand(() -> lift.enableCompressor()));
 		// OI.Button.scoreAmp.onTrue(new ScoreAmp(jukebox, pivot));
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
-		OI.Button.pivotDown.whileTrue(new RunCommand(() -> pivot.setAngle(0)));
-		OI.Button.pivotUp.whileTrue(new RunCommand(() -> pivot.setAngle(90)));
+		// OI.Button.pivotDown.whileTrue(new RunCommand(() -> pivot.setAngle(0)));
+		// OI.Button.pivotUp.whileTrue(new RunCommand(() -> pivot.setAngle(90)));
+		// OI.Button.pivotHalf.whileTrue(new RunCommand(() -> pivot.setAngle(45)));
+	
+		//new RunCommand(() -> pivot.setPower(OI.Axis.pivotPower.getAsDouble()), pivot).schedule();
 
 		OI.Button.pneumaticstateswitch.onTrue(lift.getToggleCommand());
 		OI.Button.shoot.onTrue(new Shoot(jukebox));
-		OI.Button.softShoot.onTrue(new SoftShoot(jukebox));
+		// OI.Button.softShoot.onTrue(new SoftShoot(jukebox));
 		OI.Button.shootAmp.onTrue(new RunCommand(() -> jukebox.runIntake(0.3), jukebox).withTimeout(1.5)
 									.raceWith(new RunCommand(() -> jukebox.runOuttake(5)).withTimeout(1.5)));
 		OI.Button.intake.whileTrue(new Intake(jukebox));
@@ -157,6 +168,10 @@ public final class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		return autoTab.getAutonomousCommand();
+		if (autoTab.getAutonomousCommand() == null) {
+			return Commands.none();
+		} else {
+			return autoTab.getAutonomousCommand();
+		}
 	}
 }

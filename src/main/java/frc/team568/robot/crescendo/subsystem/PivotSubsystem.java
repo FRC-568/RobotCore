@@ -41,6 +41,7 @@ public class PivotSubsystem extends SubsystemBase {
 	boolean override = false;
 	private DutyCycleOut openloopRequest = new DutyCycleOut(0.0);
 	private MotionMagicVoltage closedLoopRequest = new MotionMagicVoltage(0);
+	private boolean brakeOnNeutral = true;
 	//private PositionVoltage normalPid = new PositionVoltage(0);
 
 	public PivotSubsystem() {
@@ -49,8 +50,8 @@ public class PivotSubsystem extends SubsystemBase {
 					new MotorOutputConfigs()
 					.withNeutralMode(NeutralModeValue.Brake)
 					.withInverted(InvertedValue.Clockwise_Positive)
-					.withPeakForwardDutyCycle(0.2)
-					.withPeakReverseDutyCycle(0.2)
+					.withPeakForwardDutyCycle(0.4)
+					.withPeakReverseDutyCycle(-0.4)
 				)
 				.withHardwareLimitSwitch(
 					new HardwareLimitSwitchConfigs()
@@ -79,26 +80,91 @@ public class PivotSubsystem extends SubsystemBase {
 		addChild("leftMotor", leftMotor);
 		leftMotor.getConfigurator().apply(motorConfig);
 		leftMotor.setControl(new DutyCycleOut(0));
-		leftMotor.optimizeBusUtilization();
+		// leftMotor.optimizeBusUtilization();
 
 		rightMotor = new TalonFX(kRightMotorPort, kCANBusName);
 		addChild("rightMotor", rightMotor);
 		rightMotor.getConfigurator().apply(motorConfig);
 		rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
-		rightMotor.optimizeBusUtilization();
+		// rightMotor.optimizeBusUtilization();
 
-		leftMotor.setPosition(degToRot(90)); // Assume the pivot is vertical at power on
+		// leftMotor.setPosition(degToRot(90)); // Assume the pivot is vertical at power on
 	}
+
+	// public void toggleBrakes() {
+	// 	brakeOnNeutral = !brakeOnNeutral;
+	// 	TalonFXConfiguration config;
+	// 	if (brakeOnNeutral) {
+	// 		config = new TalonFXConfiguration()
+	// 			.withMotorOutput(
+	// 				new MotorOutputConfigs()
+	// 				.withNeutralMode(NeutralModeValue.Brake)
+	// 				.withInverted(InvertedValue.Clockwise_Positive)
+	// 				.withPeakForwardDutyCycle(0.4)
+	// 				.withPeakReverseDutyCycle(-0.4)
+	// 			)
+	// 			.withHardwareLimitSwitch(
+	// 				new HardwareLimitSwitchConfigs()
+	// 				.withReverseLimitEnable(true)
+	// 				.withReverseLimitAutosetPositionEnable(true)
+	// 				.withReverseLimitAutosetPositionValue(
+	// 					degToRot(kMinAngle)
+	// 				)
+	// 			)
+	// 			.withSoftwareLimitSwitch(
+	// 				new SoftwareLimitSwitchConfigs()
+	// 				.withForwardSoftLimitEnable(true)
+	// 				.withForwardSoftLimitThreshold(
+	// 					degToRot(kMaxAngle)
+	// 				)
+	// 			)
+	// 			.withMotionMagic(
+	// 				Constants.PivotConstants.kMotionMagicConfigs
+	// 			)
+	// 			.withSlot0(
+	// 				kPidConstants
+	// 			);
+	// 	} else {
+	// 		config = new TalonFXConfiguration()
+	// 			.withMotorOutput(
+	// 				new MotorOutputConfigs()
+	// 				.withNeutralMode(NeutralModeValue.Coast)
+	// 				.withInverted(InvertedValue.Clockwise_Positive)
+	// 				.withPeakForwardDutyCycle(0.4)
+	// 				.withPeakReverseDutyCycle(-0.4)
+	// 			)
+	// 			.withHardwareLimitSwitch(
+	// 				new HardwareLimitSwitchConfigs()
+	// 				.withReverseLimitEnable(true)
+	// 				.withReverseLimitAutosetPositionEnable(true)
+	// 				.withReverseLimitAutosetPositionValue(
+	// 					degToRot(kMinAngle)
+	// 				)
+	// 			)
+	// 			.withSoftwareLimitSwitch(
+	// 				new SoftwareLimitSwitchConfigs()
+	// 				.withForwardSoftLimitEnable(true)
+	// 				.withForwardSoftLimitThreshold(
+	// 					degToRot(kMaxAngle)
+	// 				)
+	// 			)
+	// 			.withMotionMagic(
+	// 				Constants.PivotConstants.kMotionMagicConfigs
+	// 			)
+	// 			.withSlot0(
+	// 				kPidConstants
+	// 			);
+	// 	}
+	// 	leftMotor.getConfigurator().apply(config);
+	// 	rightMotor.getConfigurator().apply(config);
+	// 	rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
+	// }
 
 	public void setAngle(double angle) {
 		leftMotor.setControl(closedLoopRequest.withPosition(degToRot(angle))
 		.withFeedForward(
 			Constants.PivotConstants.kG*Math.cos(Math.toRadians(getAngle()))
 		));
-		// leftMotor.setControl(normalPid.withPosition(degToRot(angle))
-		// .withFeedForward(
-		// 	Constants.PivotConstants.kG*Math.cos(Math.toRadians(getAngle()))
-		// ));
 	}
 
 	public double getAngle() {
@@ -123,6 +189,7 @@ public class PivotSubsystem extends SubsystemBase {
 
 	public void setPower(double power) {
 		leftMotor.setControl(openloopRequest.withOutput(power));
+		// leftMotor.clearStickyFault_ForwardSoftLimit
 	}
 
 	public void populate(double kP, double kI, double kD) {
@@ -151,7 +218,7 @@ public class PivotSubsystem extends SubsystemBase {
 	}
 
 	public void setVoltage(double voltage) {
-		leftMotor.setVoltage(voltage);
+		// leftMotor.setVoltage(voltage);
 	}
 
 	public boolean getSwitch() {
@@ -175,12 +242,19 @@ public class PivotSubsystem extends SubsystemBase {
 
 			@Override
 			public void execute() {
+				// double power = pivotPower.getAsDouble();
+				// if(power == 0){
+				// 	setAngle(getAngle());
+				// }
+				// else{
+				// 	setPower(pivotPower.getAsDouble());
+				// }
 				setPower(pivotPower.getAsDouble());
 			}
 
 			@Override
 			public void end(boolean interrupted) {
-				setPower(0);
+				// setPower(0);
 			}
 
 		});

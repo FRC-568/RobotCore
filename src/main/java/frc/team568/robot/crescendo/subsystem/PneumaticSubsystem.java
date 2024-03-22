@@ -9,13 +9,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 
+import java.util.function.BooleanSupplier;
+
 public final class PneumaticSubsystem extends SubsystemBase {
 	private final DoubleSolenoid liftSolenoid;
 	private final Compressor compressor;
+	public boolean compressorEnabled = true;
+	public BooleanSupplier interupter;
 
 	public PneumaticSubsystem() {
 		compressor = new Compressor(PneumaticsModuleType.CTREPCM);
-		liftSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+		liftSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,0, 7);
 		retractLift();
 	}
 
@@ -52,14 +56,30 @@ public final class PneumaticSubsystem extends SubsystemBase {
 	}
 
 	public void disableCompressor() {
-		compressor.disable();
+		compressorEnabled = false;
 	}
 
 	public void enableCompressor() {
-		compressor.enableDigital();
+		compressorEnabled = true;
 	}
 
 	public double getCompressorCurrent() {
 		return compressor.getCurrent();
+	}
+
+	public void addInterupter(BooleanSupplier inteupter){
+		this.interupter = inteupter;
+	}
+
+	@Override
+	public void periodic(){
+		if(compressorEnabled && interupter != null){
+			if(interupter.getAsBoolean()){
+				compressor.disable();
+			}
+			else if(!interupter.getAsBoolean()){
+				compressor.enableDigital();
+			}
+		}
 	}
 }

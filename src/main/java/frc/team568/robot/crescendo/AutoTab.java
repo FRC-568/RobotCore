@@ -6,6 +6,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.team568.robot.crescendo.command.GoToAmp;
 import frc.team568.robot.crescendo.command.GoToSpeaker;
 import frc.team568.robot.crescendo.command.LookAtAmp;
@@ -26,20 +27,23 @@ public class AutoTab {
 		delayTime = OI.autoTab.add("Delay at Start", "double", 0.0).getEntry("double");
 
 		chooser.setDefaultOption("Wait", null);
-		chooser.addOption("Score AMP", new ScoreAmp(jukebox, pivot)); // Scores in Amp
-		// chooser.addOption("Score Speaker", new ScoreSpeaker(jukebox, pivot)); // IMPORTANT: Assumes the robot is already in position. If used during tele-op, you should probbaly run 'Go Speaker' and 'Look Speaker' first
-		chooser.addOption("Shoot (Note?)", new Shoot(jukebox)); // Just... shoots out the note?
-		chooser.addOption("Look Speaker", new LookAtSpeaker(drive)); // Makes the robot itself look at the SPEAKER relative to where it is
-		chooser.addOption("Look Amp", new LookAtAmp(drive)); // Makes the robot itself look at the AMP relative to where it is
-		chooser.addOption("Go Speaker", new GoToSpeaker(drive)); // Gets robot to a set point at the speaker, and looks straight at it
-		chooser.addOption("Go Amp", new GoToAmp(drive)); // Gets robot to a set point at the Amp, and looks straight at it
-		chooser.addOption("Score Preload and Nearby", AutoBuilder.buildAuto("ScorePreloadAndNearNotes"));
+		chooser.setDefaultOption("EL SUSSY WUSSY AMOGUS", new RunCommand(() -> container.pivot.setPower(-0.2)).withTimeout(2.0)
+		.andThen(new Shoot(jukebox)));
+		// chooser.addOption("Score AMP", new ScoreAmp(jukebox, pivot)); // Scores in Amp
+		// // chooser.addOption("Score Speaker", new ScoreSpeaker(jukebox, pivot)); // IMPORTANT: Assumes the robot is already in position. If used during tele-op, you should probbaly run 'Go Speaker' and 'Look Speaker' first
+		// chooser.addOption("Shoot (Note?)", new Shoot(jukebox)); // Just... shoots out the note?
+		// chooser.addOption("Look Speaker", new LookAtSpeaker(drive)); // Makes the robot itself look at the SPEAKER relative to where it is
+		// chooser.addOption("Look Amp", new LookAtAmp(drive)); // Makes the robot itself look at the AMP relative to where it is
+		// chooser.addOption("Go Speaker", new GoToSpeaker(drive)); // Gets robot to a set point at the speaker, and looks straight at it
+		// chooser.addOption("Go Amp", new GoToAmp(drive)); // Gets robot to a set point at the Amp, and looks straight at it
+		// chooser.addOption("Score Preload and Nearby", AutoBuilder.buildAuto("ScorePreloadAndNearNotes"));
 
 		OI.autoTab.add("Auto Program", chooser);
 	}
 
 	public Command getAutonomousCommand() {
-		return Commands.waitSeconds(getDelayTime()).andThen(chooser.getSelected());
+		// return Commands.waitSeconds(getDelayTime()).andThen(chooser.getSelected());
+		return chooser.getSelected();
 	}
 
 	public double getDelayTime() {
