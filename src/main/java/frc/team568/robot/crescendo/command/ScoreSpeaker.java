@@ -17,6 +17,6 @@ public class ScoreSpeaker extends SequentialCommandGroup {
 		addCommands(new Aim(pivot), new Shoot(jukebox));
 	}
 	public ScoreSpeaker(JukeboxSubsystem jukebox, PivotSubsystem pivot, double angle) {
-		addCommands(new InstantCommand(() -> pivot.setAngle(angle)), new Shoot(jukebox));
+		addCommands(new InstantCommand(() -> pivot.moveToward(angle)), new Shoot(jukebox));
 	}
 }

@@ -25,7 +25,7 @@ public class ScoreAmp extends Command {
 	@Override
 	public void execute() {
 		final double power = 0.5;
-		pivot.setAngle(60);
+		pivot.moveToward(60);
 		jukebox.stopIntake();
 		jukebox.runOuttakeManual(power, power);
 	}

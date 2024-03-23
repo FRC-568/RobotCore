@@ -55,6 +55,8 @@ public final class Constants {
 		public static final int kRightMotorPort = 15;
 		public static final double kMinAngle = 0.0;
 		public static final double kMaxAngle = 180.0; //TODO: put this back
+		public static final double kStartingAngle = 90;
+		public static final double kGearRatio = 10 * 5 * 5.8;
 		public static final double kG = 0.1;
 		public static final Slot0Configs kPidConstants = 
 			new Slot0Configs()

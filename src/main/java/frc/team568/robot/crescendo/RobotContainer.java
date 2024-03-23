@@ -111,11 +111,11 @@ public final class RobotContainer {
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
 		OI.Button.pivotHalf.onTrue(
 			new RunCommand(() -> pivot.setPower(0.2), pivot).withTimeout(0.2)
-			.andThen(new RunCommand(() -> pivot.setAngle(15), pivot)));
+			.andThen(new RunCommand(() -> pivot.moveToward(15), pivot)));
 		OI.Button.pivotUp.onTrue(
 			new RunCommand(() -> pivot.setPower(0.2), pivot).withTimeout(0.2)
-			.andThen(new RunCommand(() -> pivot.setAngle(90), pivot)));
-		OI.Button.pivotDown.onTrue(new RunCommand(() -> pivot.setAngle(0), pivot));
+			.andThen(new RunCommand(() -> pivot.moveToward(90), pivot)));
+		OI.Button.pivotDown.onTrue(new RunCommand(() -> pivot.moveToward(0), pivot));
 	
 		//new RunCommand(() -> pivot.setPower(OI.Axis.pivotPower.getAsDouble()), pivot).schedule();
 

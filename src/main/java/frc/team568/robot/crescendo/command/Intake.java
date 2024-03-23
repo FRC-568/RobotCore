@@ -26,7 +26,7 @@ public class Intake extends Command {
 	public void execute() {
 		juke.runIntake(intakeSpeed);
 		if (pivot != null)
-			pivot.setAngle(pivotAngle);
+			pivot.moveToward(pivotAngle);
 	}
 
 	@Override

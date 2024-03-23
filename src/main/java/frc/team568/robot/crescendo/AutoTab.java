@@ -35,7 +35,7 @@ public class AutoTab {
 		preloadChooser.addOption(
 			"EL SUSSY WUSSY AMOGUS (shoot preload)", 
 			new RunCommand(
-				() -> {pivot.setAngle(10);}, 
+				() -> pivot.moveToward(10), 
 				pivot
 			)
 			.withTimeout(5.0)
