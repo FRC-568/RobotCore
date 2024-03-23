@@ -125,6 +125,8 @@ public final class RobotContainer {
 		OI.Button.shootAmp.onTrue(new RunCommand(() -> jukebox.runIntake(0.3), jukebox).withTimeout(1.5)
 									.raceWith(new RunCommand(() -> jukebox.runOuttake(5)).withTimeout(1.5)));
 		OI.Button.intake.whileTrue(new Intake(jukebox));
+
+		OI.Button.userButton.onTrue(new InstantCommand(pivot::toggleBrakes));
 	}
 
 	public void configurePathplanner() {

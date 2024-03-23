@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -79,6 +80,8 @@ final class OI {
 		public static final Trigger pneumaticstateswitch = copilotController.x();
 		public static final Trigger compressorOff = copilotController.back();
 		public static final Trigger compressorOn = copilotController.start();
+		
+		public static final Trigger userButton = new Trigger(RobotController::getUserButton);
 
 	}
 }
