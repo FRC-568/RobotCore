@@ -13,11 +13,12 @@ public class HomePivot extends Command {
 
 	@Override
 	public void initialize() {
-		pivot.setVoltage(1);
+		
 	}
 
 	@Override
 	public void execute() {
+		pivot.setVoltage(-2);
 	}
 
 	@Override

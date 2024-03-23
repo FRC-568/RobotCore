@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team568.robot.crescendo.command.Aim;
 import frc.team568.robot.crescendo.command.CommandFactory;
 import frc.team568.robot.crescendo.command.GoToSpeaker;
@@ -107,9 +109,13 @@ public final class RobotContainer {
 		OI.Button.compressorOn.onTrue(new InstantCommand(() -> lift.enableCompressor()));
 		// OI.Button.scoreAmp.onTrue(new ScoreAmp(jukebox, pivot));
 		// OI.Button.scoreSpeaker.onTrue(new ScoreSpeaker(jukebox, pivot));
-		// OI.Button.pivotDown.whileTrue(new RunCommand(() -> pivot.setAngle(0)));
-		// OI.Button.pivotUp.whileTrue(new RunCommand(() -> pivot.setAngle(90)));
-		// OI.Button.pivotHalf.whileTrue(new RunCommand(() -> pivot.setAngle(45)));
+		OI.Button.pivotHalf.onTrue(
+			new RunCommand(() -> pivot.setPower(0.2), pivot).withTimeout(0.2)
+			.andThen(new RunCommand(() -> pivot.setAngle(15), pivot)));
+		OI.Button.pivotUp.onTrue(
+			new RunCommand(() -> pivot.setPower(0.2), pivot).withTimeout(0.2)
+			.andThen(new RunCommand(() -> pivot.setAngle(90), pivot)));
+		OI.Button.pivotDown.onTrue(new RunCommand(() -> pivot.setAngle(0), pivot));
 	
 		//new RunCommand(() -> pivot.setPower(OI.Axis.pivotPower.getAsDouble()), pivot).schedule();
 
@@ -165,10 +171,10 @@ public final class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		if (autoTab.getAutonomousCommand() == null) {
-			return Commands.none();
-		} else {
+		// if (autoTab.getAutonomousCommand() == null) {
+		// 	return Commands.none();
+		// } else {
 			return autoTab.getAutonomousCommand();
-		}
+		// }
 	}
 }

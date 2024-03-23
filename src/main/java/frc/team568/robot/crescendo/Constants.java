@@ -54,21 +54,21 @@ public final class Constants {
 		public static final int kLeftMotorPort = 14;
 		public static final int kRightMotorPort = 15;
 		public static final double kMinAngle = 0.0;
-		public static final double kMaxAngle = 90.0;
+		public static final double kMaxAngle = 180.0; //TODO: put this back
 		public static final double kG = 0.1;
 		public static final Slot0Configs kPidConstants = 
 			new Slot0Configs()
 			.withKS(0)
 			.withKV(0.0) // 12/145 = 0.08
-			.withKA(0)
-			.withKP(0.04) // 0.05
+			.withKA(0) 
+			.withKP(0.2) // 0.05
 			.withKI(0)
 			.withKD(0);
 		
 		public static final MotionMagicConfigs kMotionMagicConfigs = 
 			new MotionMagicConfigs()
-			.withMotionMagicCruiseVelocity(PivotSubsystem.degToRot(90))
-			.withMotionMagicAcceleration(PivotSubsystem.degToRot(90));
+			.withMotionMagicCruiseVelocity(PivotSubsystem.degToRot(180))
+			.withMotionMagicAcceleration(PivotSubsystem.degToRot(1000));
 
 	}
 

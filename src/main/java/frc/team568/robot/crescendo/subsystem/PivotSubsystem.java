@@ -88,7 +88,7 @@ public class PivotSubsystem extends SubsystemBase {
 		rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
 		// rightMotor.optimizeBusUtilization();
 
-		// leftMotor.setPosition(degToRot(90)); // Assume the pivot is vertical at power on
+		leftMotor.setPosition(degToRot(90)); // Assume the pivot is vertical at power on
 	}
 
 	// public void toggleBrakes() {

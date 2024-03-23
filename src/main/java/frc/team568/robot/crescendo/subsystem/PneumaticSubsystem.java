@@ -85,8 +85,9 @@ public final class PneumaticSubsystem extends SubsystemBase {
 
 			if (interruptNeeded && compressorActive)
 				compressor.disable();
-			else if (!interruptNeeded && !compressorActive)
+			else if (!interruptNeeded && !compressorActive){
 				compressor.enableDigital();
+			}
 		}
 	}
 }

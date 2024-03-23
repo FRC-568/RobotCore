@@ -49,13 +49,9 @@ final class OI {
 			var yspeedLimiter = new SlewRateLimiter(kAxisSlewRate);
 			var m_rotLimiter = new SlewRateLimiter(kAxisSlewRate);
 
-			swerveForward = () -> Math.pow(xspeedLimiter
-					.calculate(MathUtil.applyDeadband(driverController.getLeftY(), kControllerDeadband)), 2)
-					* Math.signum(driverController.getLeftY())
+			swerveForward = () -> xspeedLimiter.calculate(MathUtil.applyDeadband(driverController.getLeftY(), kControllerDeadband))
 					* -Constants.SwerveConstants.kMaxSpeed;
-			swerveLeft = () -> Math.pow(yspeedLimiter
-					.calculate(MathUtil.applyDeadband(driverController.getLeftX(), kControllerDeadband)), 2)
-					* Math.signum(driverController.getLeftX())
+			swerveLeft = () -> yspeedLimiter.calculate(MathUtil.applyDeadband(driverController.getLeftX(), kControllerDeadband))
 					* -Constants.SwerveConstants.kMaxSpeed;
 			swerveCCW = () -> -m_rotLimiter
 					.calculate(MathUtil.applyDeadband(driverController.getRightX(), kControllerDeadband))
@@ -66,6 +62,7 @@ final class OI {
 	static final class Button {
 		public static final Trigger fieldRelativeControl = driverController.start();
 		public static final Trigger scoreAmp = driverController.b();
+		
 		public static final Trigger scoreSpeaker = driverController.x();
 		public static final Trigger runOuttake = driverController.rightTrigger();
 		public static final Trigger runIntake = driverController.leftTrigger();
@@ -80,8 +77,8 @@ final class OI {
 		public static final Trigger pivotUp = copilotController.povUp();
 		public static final Trigger pivotHalf = copilotController.povLeft();
 		public static final Trigger pneumaticstateswitch = copilotController.x();
-		public static final Trigger compressorOff = driverController.b();
-		public static final Trigger compressorOn = driverController.a();
+		public static final Trigger compressorOff = copilotController.back();
+		public static final Trigger compressorOn = copilotController.start();
 
 	}
 }

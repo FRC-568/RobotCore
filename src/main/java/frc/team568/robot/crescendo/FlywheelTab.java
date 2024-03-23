@@ -21,6 +21,7 @@ public class FlywheelTab {
 		OI.flywheelTab.addBoolean("compressor interupted", lift::isInterrupted);
 
 		OI.flywheelTab.addDouble("pivot angle", pivot::getAngle);
+		OI.flywheelTab.addBoolean("limit switch", pivot::getSwitch);
 		//OI.flywheelTab.addDouble("pivot angle", pivot.get);
 		// OI.flywheelTab.addDouble("pivot deg per s", pivot::getVelocity);
 		// OI.flywheelTab.addDouble("pivot ref angle", pivot::getClosedLoopReference);

@@ -45,9 +45,10 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-		// LiveWindow.disableAllTelemetry();
+		LiveWindow.disableAllTelemetry();
 
-		// m_autonomousCommand = container.getAutonomousCommand();
+		m_autonomousCommand = container.getAutonomousCommand();
+		m_autonomousCommand.schedule();
 		// if (m_autonomousCommand != null) {
 		// 	m_autonomousCommand.schedule();
 		// }
