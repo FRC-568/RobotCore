@@ -1,12 +1,9 @@
 package frc.team568.robot.crescendo;
 
-<<<<<<< HEAD
-public final class Constants {
-=======
+
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.pathplanner.lib.path.PathConstraints;
->>>>>>> 353edeb5001dc042ab15a96481056c8a02ea94b0
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
