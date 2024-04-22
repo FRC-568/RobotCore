@@ -82,7 +82,7 @@ public class PivotSubsystem extends SubsystemBase {
 		double c = 5.67; //arm length
 		double alpha = 60.0; //angle between arm and jukebox 
 
-		double theta = Math.atan(h / d) + 180 - alpha - Math.asin( (c / a) * Math.sin(alpha) )
+		double theta = Math.atan(h / d) + 180 - alpha - Math.asin( (c / a) * Math.sin(alpha) );
 
 		setAngle( Math.toDegrees(theta) );
 	}

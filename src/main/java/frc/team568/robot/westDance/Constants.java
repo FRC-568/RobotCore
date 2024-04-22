@@ -1,6 +1,6 @@
-package frc.team568.robot.crescendo;
+package frc.team568.robot.westDance;
 
-public final class Constants {
+final class Constants {
 
 	static final class OIConstants {
 		
