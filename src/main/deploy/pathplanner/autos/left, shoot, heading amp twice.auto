@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left, ShootNote1&2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left, heading amp first"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left, amp to center note(amp)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left, center note to amp"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "LeftBlue",
+  "choreoAuto": false
+}

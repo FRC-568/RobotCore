@@ -4,10 +4,13 @@
 
 package frc.team568.robot.crescendo;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class Robot extends TimedRobot {
 	private RobotContainer container;
@@ -16,16 +19,25 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		container = new RobotContainer();
+		if (DriverStation.isFMSAttached())
+			Shuffleboard.selectTab(OI.autoTab.getTitle());
+		else
+			SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.NONE;
 	}
 
 	@Override
 	public void teleopInit() {
-		// LiveWindow.disableAllTelemetry();
+		LiveWindow.disableAllTelemetry();
 		//LiveWindow.enableTelemetry(container.drive);
-		//LiveWindow.enableTelemetry(container.lift);
 
 		if (m_autonomousCommand != null)
 			m_autonomousCommand.cancel();
+			
+		if (DriverStation.isFMSAttached())
+			Shuffleboard.selectTab(OI.driverTab.getTitle());
+
+		container.lift.enableCompressor();
+		// container.lift.disableCompressor();
 	}
 
 	@Override
@@ -35,6 +47,9 @@ public class Robot extends TimedRobot {
 		m_autonomousCommand = container.getAutonomousCommand();
 		if (m_autonomousCommand != null)
 			m_autonomousCommand.schedule();
+
+		// if (DriverStation.isFMSAttached())
+		// 	Shuffleboard.selectTab(OI.driverTab.getTitle());
 	}
 
 	@Override
@@ -49,6 +64,7 @@ public class Robot extends TimedRobot {
 	public void disabledInit() {
 		// Enable telemetry for testing - disable before competition
 		LiveWindow.disableAllTelemetry();
+		container.lift.disableCompressor();
 
 		if (m_autonomousCommand != null)
 			m_autonomousCommand.cancel();
@@ -60,16 +76,12 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void testPeriodic() {
-	}
+	public void testPeriodic() {}
 
 	@Override
-	public void autonomousPeriodic() {
-	}
+	public void autonomousPeriodic() {}
 
 	@Override
-	public void teleopPeriodic() {
-	}
-
+	public void teleopPeriodic() {}
 
 }

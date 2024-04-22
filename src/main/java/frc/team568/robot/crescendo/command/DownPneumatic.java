@@ -5,18 +5,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class DownPneumatic extends Command {
 	DoubleSolenoid dSolenoid;
 	
-	DownPneumatic(DoubleSolenoid dSolenoid){
+	public DownPneumatic(DoubleSolenoid dSolenoid){
 		this.dSolenoid = dSolenoid;
 	}
 
 	@Override
 	public void initialize() {
-		dSolenoid.set(DoubleSolenoid.Value.kForward);
+		dSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 
 	@Override
 	public void execute() {
-		dSolenoid.set(DoubleSolenoid.Value.kForward);
+		dSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 
 	@Override

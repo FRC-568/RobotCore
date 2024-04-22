@@ -1,0 +1,85 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "WaitForDelay"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimAtSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LaunchNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GoToNoteOne"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimAtSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LaunchNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "N1-N2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimAtSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LaunchNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "N2-N3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimAtSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LaunchNote"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

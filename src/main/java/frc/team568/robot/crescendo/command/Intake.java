@@ -8,35 +8,34 @@ public class Intake extends Command {
 	JukeboxSubsystem juke;
 	PivotSubsystem pivot;
 	
-	double speed;
-	int angle;
+	private static final double intakeSpeed = 1.0;
+	private static final double pivotAngle = 0.0;
 
-
-	Intake(JukeboxSubsystem juke, PivotSubsystem pivot){
+	public Intake(JukeboxSubsystem juke, PivotSubsystem pivot) {
 		this.juke = juke;
 		this.pivot = pivot;
+		addRequirements(juke, pivot);
 	}
-
-	@Override
-	public void initialize() {
-		speed = 1;
-		angle = 0;
+	
+	public Intake(JukeboxSubsystem juke) {
+		this.juke = juke;
+		addRequirements(juke);
 	}
 
 	@Override
 	public void execute() {
-		juke.setIntakeSpeed(speed);
-		pivot.setAngle(angle);
+		juke.runIntake(intakeSpeed);
+		if (pivot != null)
+			pivot.moveToward(pivotAngle);
 	}
 
 	@Override
 	public boolean isFinished() {
-		return false;
+		return juke.hasNote();
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		speed = 0;
-		juke.setIntakeSpeed(speed);
+		juke.stopIntake();
 	}
 }

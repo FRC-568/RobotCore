@@ -1,0 +1,69 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.6807503073680006,
+        "y": 6.6890563410815895
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.8625257653836784,
+        "y": 6.125323187775677
+      },
+      "isLocked": false,
+      "linkedName": "S1"
+    },
+    {
+      "anchor": {
+        "x": 2.8752978027901492,
+        "y": 6.9920223351715975
+      },
+      "prevControl": {
+        "x": 1.9986647364156924,
+        "y": 6.510862832575092
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "N1"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.65,
+      "rotationDegrees": -151.24,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -151.24,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "From Speaker",
+  "previewStartingState": {
+    "rotation": -118.47935916650279,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
