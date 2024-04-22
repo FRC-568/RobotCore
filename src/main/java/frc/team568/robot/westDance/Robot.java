@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.team568.robot.crescendo;
+package frc.team568.robot.westDance;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		LiveWindow.disableAllTelemetry();
 
-		m_autonomousCommand = container.getAutonomousCommand();
+		//m_autonomousCommand = container.getAutonomousCommand();
 		if (m_autonomousCommand != null)
 			m_autonomousCommand.schedule();
 	}

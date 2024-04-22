@@ -5,7 +5,7 @@ public class FlywheelTab {
 		
 		var jukebox = container.jukebox;
 		var pivot = container.pivot;
-		var lift = container.lift;
+		//var lift = container.lift;
  
 		
 		// OI.flywheelTab.addDouble("left vel", jukebox::getLeftVelo).withPosition(1,1);
@@ -18,7 +18,7 @@ public class FlywheelTab {
 
 		// OI.flywheelTab.addDouble("sensor distance", jukebox::getDistance);
 		OI.flywheelTab.addBoolean("contains note", jukebox::hasNote);
-		OI.flywheelTab.addBoolean("compressor interupted", lift::isInterrupted);
+		//OI.flywheelTab.addBoolean("compressor interupted", lift::isInterrupted);
 
 		OI.flywheelTab.addDouble("pivot angle", pivot::getAngle);
 		OI.flywheelTab.addBoolean("limit switch", pivot::getSwitch);
