@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
 		if (DriverStation.isFMSAttached())
 			Shuffleboard.selectTab(OI.driverTab.getTitle());
 
-		container.lift.enableCompressor();
+		//container.lift.enableCompressor();
 		// container.lift.disableCompressor();
 	}
 
@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
 	public void disabledInit() {
 		// Enable telemetry for testing - disable before competition
 		LiveWindow.disableAllTelemetry();
-		container.lift.disableCompressor();
+		//container.lift.disableCompressor();
 
 		if (m_autonomousCommand != null)
 			m_autonomousCommand.cancel();
