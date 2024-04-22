@@ -32,6 +32,14 @@ public class ArmSubsystem extends SubsystemBase {
         rightArmMotor.set(ControlMode.PercentOutput, rightArmSpeed);
     }
 
+    public void setLeft(double leftArmSpeed){
+        leftArmMotor.set(ControlMode.PercentOutput, leftArmSpeed);
+    }
+
+    public void setright(double rightArmSpeed){
+        rightArmMotor.set(ControlMode.PercentOutput, rightArmSpeed);
+    }
+
     @Override
     public void periodic() {
         // Update any periodic functionality here
