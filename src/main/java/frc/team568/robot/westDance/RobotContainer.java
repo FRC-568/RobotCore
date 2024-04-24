@@ -40,18 +40,12 @@ final class RobotContainer {
 					), 
 				drive)
 		);
-		controller2.leftStick().whileTrue(
-			new RunCommand(
-				() ->
-					arms.setLeft(controller2.getLeftY()), 
-				arms)
-		);
-		controller2.rightStick().whileTrue(
-			new RunCommand(
-				() ->
-					arms.setright(controller2.getRightY()), 
-				arms)
-		);
+		arms.setDefaultCommand(new RunCommand(
+			() -> arms.setSpeed(
+				-controller2.getLeftY(), 
+				-controller2.getRightY()
+			), arms
+		));
 
 		head.setDefaultCommand(
 			new RunCommand(
